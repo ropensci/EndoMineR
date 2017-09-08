@@ -15,7 +15,6 @@ HistolChopperHistol(x, y)
 This extracts Histology details data from the report
 }
 \examples{
-I often use '[Mm][Ii][Cc][Rr][oo][Ss][Cc][Oo][Pp][Ii][Cc]|HISTOLOGY' 
-and '[Dd][Ii][Aa][Gg][Nn][Oo][Ss][Ii][Ss]'
+HistolChopperHistol(x,"Histo_ResultText")
 }
 \keyword{Histology}
