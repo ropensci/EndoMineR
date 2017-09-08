@@ -1,6 +1,3 @@
-#library(data.table)
-#library(reshape2)
-# #'@import dplyr m
 
 ########## Surveillance functions ######
 
