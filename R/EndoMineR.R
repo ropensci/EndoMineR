@@ -1,5 +1,5 @@
 
-########## Surveillance functions ######
+########## Surveillance functions f######
 
 #' SurveillanceTimeByRow
 #'
