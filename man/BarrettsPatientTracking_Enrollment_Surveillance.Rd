@@ -10,7 +10,11 @@ BarrettsPatientTracking_Enrollment_Surveillance(x, PatientID,
 \arguments{
 \item{x}{dataframe}
 
-\item{y}{column of interest}
+\item{PatientID}{column of interest with unique hospital number in it}
+
+\item{Endo_ResultPerformed}{column of interest with date endiscopy performed in it}
+
+\item{IndicationsFroExamination}{column of interest with indications in it (usually 'Surveillance' or similar)}
 }
 \description{
 This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy.

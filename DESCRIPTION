@@ -1,12 +1,12 @@
 Package: EndoMineR
 Title: Functions to mine endoscopic and associated pathology datasets
 Version: 0.0.0.9000
-Authors@R: person("Sebastian", "Zeki", email = "hadley@rstudio.com",
+Authors@R: person("Sebastian", "Zeki", email = "sebastiz@hotmail.com",
   role = c("aut", "cre"))
 Description: This script comprises the functions that I use to clean up endoscopic 
              reports and pathology reports as well as many of the scripts used for analysis.  
              The scripts assume the endoscopy and histopathology data set is merged already but it can 
-             also be used of course with the unmerged datasets
+             also be used of course with the unmerged datasets.
 Depends: R (>= 3.3.2)
 Imports:
         ggplot2,
@@ -34,6 +34,5 @@ License: What license is it under? Its under my license
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1.9000
-Suggests: knitr,
-    rmarkdown
+Suggests: rmarkdown,testthat
 VignetteBuilder: knitr

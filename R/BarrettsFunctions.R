@@ -1,3 +1,4 @@
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("PatientID",".SD","CStage","NumbOfBx","Years","Difference","barplot","head","read.table","eHospitalNum","pHospitalNum",".","EVENT","MonthYear","freq","Endoscopist","avg","v","destination","dcast","complete.cases","g","gvisSankey","head","pHospitalNum","par","plot","r","read.table","region","rgb","setDT"))
 ######  Barretts Surveillance and Therapeutic Functions ######  
 
 #' BarrettsDataAccord_Prague
@@ -86,7 +87,7 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' Specfically it combines the presence of intestinal metaplasia with Prague score so the follow-up group can be determined
 #' Being the procedure done at the time and the follow-up timings
 #' @param x the dataframe(which has to have been processed by the BarrettsDataAccord_PathStage function first to get IMorNoIM), 
-#' @param Findings The field to search (endoscopic findings)
+#' @param y The field to search (endoscopic findings)
 #' @keywords Follow-Up
 #' @export
 #' @examples BarrettsDataAccord_FUGroup(b,'FINDINGS')
@@ -125,7 +126,9 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' 
 #' This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy.
 #' @param x dataframe
-#' @param y column of interest
+#' @param PatientID column of interest with unique hospital number in it
+#' @param Endo_ResultPerformed column of interest with date endiscopy performed in it
+#' @param IndicationsFroExamination column of interest with indications in it (usually 'Surveillance' or similar)
 #' @keywords Patient Tracking
 #' @import dplyr
 #' @importFrom magrittr "%>%"
@@ -251,6 +254,8 @@ BarrettsQuality_AnalysisDocumentation <- function(x,
 #' @keywords Does something with data
 #' @export
 #' @examples BarrettsQuality_AnalysisBiopsyNumber(b,'Endo_ResultPerformed','PatientID','Endoscopist')
+
+utils::suppressForeignCheck(c("CStage", "NumbOfBx","Difference","Years"))
 
 BarrettsQuality_AnalysisBiopsyNumber <- function(x, 
     Endo_ResultPerformed, PatientID, Endoscopist) {

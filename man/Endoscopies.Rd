@@ -17,7 +17,7 @@ and ColonEndoRaw() for lower GI are better functions for the real
 (Their histology equivalents are pathRep and ColonpathRep respectively)
 }
 \examples{
-Endoscopies(x)
+Endoscopies()
 }
 \keyword{Fake}
 \keyword{endoscopy}

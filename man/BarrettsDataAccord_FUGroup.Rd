@@ -9,7 +9,7 @@ BarrettsDataAccord_FUGroup(x, y)
 \arguments{
 \item{x}{the dataframe(which has to have been processed by the BarrettsDataAccord_PathStage function first to get IMorNoIM),}
 
-\item{Findings}{The field to search (endoscopic findings)}
+\item{y}{The field to search (endoscopic findings)}
 }
 \description{
 This function accordionises the data so we get all the bits extrapolated from what's available

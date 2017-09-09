@@ -1,3 +1,6 @@
+if(getRversion() >= "2.15.1")  utils::globalVariables(c("PatientID",".SD","CStage","NumbOfBx","Years","Difference","barplot","head","read.table","eHospitalNum","pHospitalNum",".","EVENT","MonthYear","freq","Endoscopist","avg","v","destination","dcast","complete.cases","g","gvisSankey","head","pHospitalNum","par","plot","r","read.table","region","rgb","setDT"))
+
+
 ##############Endoscopy Clean-up functions##############
 
 # Title:CleanUp Aim: This script comprises the
@@ -70,7 +73,6 @@ ChopperNewLines <- function(x, y) {
 #' @examples EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
-
 #' for(i in 1:(length(EndoscTree)-1)) {
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
@@ -473,13 +475,14 @@ HistolChopperExtrapolDx <- function(x, y) {
 
 
 #' HistolChopperMacDescrip
-#'
+#' 
 #' This extracts numbers from written (spelt) numbers
+#' 
 #' @param x dataframe
 #' @param y column to extract the numbers from
 #' @keywords Macroscopic
 #' @export
-#' @examples x <- HistolChopperMacDescrip(x, y)
+#' @examples HistolChopperMacDescrip(x, y)
 
 HistolChopperMacDescrip <- function(x, y) {
     x <- data.frame(x)

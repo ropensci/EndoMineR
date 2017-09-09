@@ -15,6 +15,8 @@ Endomerge2(x, y)
 Merges endoscopy and histology data
 }
 \examples{
+EndoscopyData<-Endoscopies()
+HistopathologyData<-Histop_df()
 Endomerge(EndoscopyData,HistopathologyData)
 }
 \keyword{and}
