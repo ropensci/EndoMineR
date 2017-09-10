@@ -9,12 +9,21 @@ HistolChopperMacDescrip(x, y)
 \arguments{
 \item{x}{dataframe}
 
-\item{y}{column to extract the numbers from}
+\item{y}{column to extract the numbers from. Usually the column
+with the Nature of the specimen or the Macroscopic description in it}
 }
 \description{
 This extracts numbers from written (spelt) numbers
 }
 \examples{
-HistolChopperMacDescrip(x, y)
+#' @examples v<-PathDataFrameFinalColon
+Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Clinical Details","Nature of specimen",
+"Histology","Diagnosis","")
+for(i in 1:(length(Histoltree)-1)) {
+  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
+  as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+}
+HistolChopperMacDescrip(Mypath, "Natureofspecimen")
 }
 \keyword{Macroscopic}

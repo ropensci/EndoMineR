@@ -21,8 +21,9 @@ This function gets the biopsies taken per endoscopy and compares to the
 Barrett's length
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+v<-Endomerge2(PathDataFrameFinal,TheOGDReportFinal)
+names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
+'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')
@@ -30,7 +31,7 @@ for(i in 1:(length(EndoscTree)-1)) {
   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
   as.character(EndoscTree[i]))
 }
-BarrettsQuality_AnalysisBiopsyNumber(b,"Endoscopist","Endo_ResultPerformed","Endoscopist")
+BarrettsQuality_AnalysisBiopsyNumber(b,'Endoscopist','Endo_ResultPerformed','Endoscopist')
 }
 \keyword{Does}
 \keyword{data}

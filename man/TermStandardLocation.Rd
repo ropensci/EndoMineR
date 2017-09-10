@@ -10,20 +10,20 @@ TermStandardLocation(x, SampleLocation)
 \arguments{
 \item{x}{The dataframe}
 
-\item{y}{Column describing the Macroscopic sample from histology}
+\item{SampleLocation}{Column describing the Macroscopic sample from histology}
 }
 \description{
 Standardises the location of biopsies
 This assess the location of the biopies taken from the histopathology specimens.
 }
 \examples{
-v<-Endomerge(MyColonpath,MyColonendo)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-v<-ChopperNewLines(v,"Histo_ResultText")
+v<-MyColonpath
+Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
+v<-ChopperNewLines(v,'Histo_ResultText')
 for(i in 1:(length(Histoltree)-1)) {
- v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+ v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+ as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 }
-f<-TermStandardLocation(v,"Histo_ResultText")
+f<-TermStandardLocation(v,'Histo_ResultText')
 }
 \keyword{Withdrawal}

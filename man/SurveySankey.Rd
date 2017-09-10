@@ -7,9 +7,9 @@
 SurveySankey(dfw, y)
 }
 \arguments{
-\item{y}{the column containing the test like ProcPerformed for example}
+\item{dfw}{the dataframe extracted using the standard cleanup scripts}
 
-\item{x}{the dataframe extracted using the standard cleanup scripts}
+\item{y}{the column containing the test like ProcPerformed for example}
 }
 \description{
 This creates a Sankey plot to see the order of tests for all patients: 
@@ -19,8 +19,7 @@ y is the value of in this case the procedure type (eg EMR,
  Note the Hospital Number column MUST be called PatientID
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+v<-TheOGDReportFinal
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')
@@ -28,6 +27,6 @@ for(i in 1:(length(EndoscTree)-1)) {
   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
   as.character(EndoscTree[i]))
 }
-v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
 }
 \keyword{Sankey}

@@ -4,19 +4,29 @@
 \alias{BarrettsSurveillanceDDR}
 \title{BarrettsSurveillanceDDR}
 \usage{
-BarrettsSurveillanceDDR(x, y, z)
+BarrettsSurveillanceDDR(x, y, IMorNoIM)
 }
 \arguments{
 \item{x}{dataframe,}
 
 \item{y}{column with the Endoscopist names}
 
-\item{z}{column of the Pathological grade of specimen- is the column}
-
 \item{IMorNoIM}{extracted with the function BarrettsDataAccord_PathStage()}
 }
 \description{
 This function assesses the dysplasia detection rate per endoscopist
+}
+\examples{
+v<-TheOGDReportFinal
+EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+'Findings','Endoscopic Diagnosis','')
+for(i in 1:(length(EndoscTree)-1)) {
+  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+  as.character(EndoscTree[i]))
+}
+b<-BarrettsDataAccord_PathStage(v,'Histo_ResultText')
+BarrettsSurveillanceDDR(b,'Endoscopist','IMorNoIM')
 }
 \keyword{detection}
 \keyword{dysplasia}

@@ -10,20 +10,26 @@ GRS_Type_Assess_By_Unit(x, ProcPerformed, Endo_Endoscopist, Dx, Histol)
 \arguments{
 \item{x}{The dataframe}
 
-\item{y}{The column BxSize have been calculated}
+\item{ProcPerformed}{The column containing the Procedure type performed}
+
+\item{Endo_Endoscopist}{column containing the Endoscopist name}
+
+\item{Dx}{The column with the Histological diagnosis}
+
+\item{Histol}{The column with the Histology text in it}
 }
 \description{
 GRS_Type_Assess_By_Unit
 This extracts the polyps types from the data(for colonoscopy and flexible sigmoidosscopy data)
 }
 \examples{
-v<-Endomerge(MyColonpath,MyColonendo)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-v<-ChopperNewLines(v,"Histo_ResultText")
+v<-MyColonpath
+Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
+v<-ChopperNewLines(v,'Histo_ResultText')
 for(i in 1:(length(Histoltree)-1)) {
- v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+ v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+ as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 }
-GRSTable<-GRS_Type_Assess_By_Unit(v,"ProcedurePerformed", "Endoscopist","Diagnosis","Histology")
+GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed', 'Endoscopist','Diagnosis','Histology')
 }
 \keyword{Withdrawal}

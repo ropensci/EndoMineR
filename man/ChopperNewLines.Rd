@@ -9,16 +9,17 @@ ChopperNewLines(x, y)
 \arguments{
 \item{x}{dataframe}
 
-\item{y}{The endoscopy text column}
+\item{y}{The endoscopy report text column}
 }
 \description{
 Cleans the long lines to separate them into new lines if necessary
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:","Date of procedure:","Endoscopist:","Endoscopist:","Medications","Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:","Endoscopic Diagnosis:")
-v<-ChopperNewLines(v,"Endo_ResultText")
+v<-TheOGDReportFinal
+EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+'Date of procedure:','Endoscopist:','Endoscopist:','Medications','Instrument',
+'Extent of Exam:','Indications:','Procedure Performed:','Findings:','Endoscopic Diagnosis:')
+v<-ChopperNewLines(v,'OGDReportWhole')
 }
 \keyword{Endoscopy}
 \keyword{Newlines}

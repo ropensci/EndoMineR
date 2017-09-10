@@ -19,8 +19,7 @@ SurveillanceLastToNow
 This determines the last test done by that patient and the time between now and that last test.x is the dataframe, HospNum_Id is the Patient identifier,Endo_ResultEntered is the date the endoscopy was performed
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+v<-TheOGDReportFinal
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')
@@ -28,7 +27,7 @@ for(i in 1:(length(EndoscTree)-1)) {
   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
   as.character(EndoscTree[i]))
 }
-v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-em<-SurveillanceLastToNow(v,"HospitalNumber","Endo_ResultPerformed")
+v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+em<-SurveillanceLastToNow(v,'HospitalNumber','Endo_ResultPerformed')
 }
 \keyword{Surveillance}

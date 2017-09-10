@@ -9,14 +9,15 @@ BarrettsQuality_AnalysisDocumentation(x, Findings)
 \arguments{
 \item{x}{dataframe}
 
-\item{y}{column of interest- usually the main body of the endoscopic report}
+\item{Findings}{column of interest- usually the main body of the endoscopic report}
 }
 \description{
 This function assesses the Barrett's documentation. Need to have run the BarrettsDataAccord_Prague first
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+v<-Endomerge2(PathDataFrameFinal,TheOGDReportFinal)
+names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
+'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')
@@ -24,6 +25,7 @@ for(i in 1:(length(EndoscTree)-1)) {
   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
   as.character(EndoscTree[i]))
 }
-BarrettsQuality_AnalysisDocumentation(b,"Findings")
+b<-BarrettsDataAccord_PathStage(v,'Histo_ResultText')
+BarrettsQuality_AnalysisDocumentation(b,'Findings')
 }
 \keyword{Documentation}

@@ -9,14 +9,15 @@ BarrettsSurveillance_PathDetection(x, titlePlot)
 \arguments{
 \item{x}{the dataframe}
 
-\item{y}{The plot title}
+\item{titlePlot}{The plot title}
 }
 \description{
 This function assesses pathology of specimens taken at surveillance per year
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+v<-Endomerge2(PathDataFrameFinal,TheOGDReportFinal)
+names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
+'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')
@@ -24,7 +25,8 @@ for(i in 1:(length(EndoscTree)-1)) {
   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
   as.character(EndoscTree[i]))
 }
-BarrettsSurveillance_PathDetection(b,"Myplot")
+b<-BarrettsDataAccord_PathStage(v,'Histo_ResultText')
+BarrettsSurveillance_PathDetection(b,'Myplot')
 }
 \keyword{Does}
 \keyword{data}

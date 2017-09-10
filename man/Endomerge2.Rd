@@ -4,15 +4,24 @@
 \alias{Endomerge2}
 \title{Endomerge}
 \usage{
-Endomerge2(x, y)
+Endomerge2(x, EndoDate, EndoHospNumber, y, PathDate, PathHospNumber)
 }
 \arguments{
 \item{x}{Endoscopy dataframe}
 
+\item{EndoDate}{The date the endoscopy was performed}
+
+\item{EndoHospNumber}{The unique hospital number in the endoscopy dataset}
+
 \item{y}{Histopathology dataframe}
+
+\item{PathDate}{The date the endoscopy was performed}
+
+\item{PathHospNumber}{The unique hospital number in the endoscopy dataset}
 }
 \description{
-Merges endoscopy and histology data
+Merges endoscopy and histology data. This takes the endoscopy dataset date performed and the hospital number column
+and merges with the equivalent column in the pathology dataset
 }
 \examples{
 EndoscopyData<-Endoscopies()

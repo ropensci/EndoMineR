@@ -9,9 +9,9 @@ BarrettsTherapeuticsRFA_ByCatheter(EndoSubsetRFA, y, z)
 \arguments{
 \item{EndoSubsetRFA}{The dataframe}
 
-\item{z}{Another endoscopy report field of interest}
+\item{y}{report field of interest}
 
-\item{yEndoscopy}{report field of interest}
+\item{z}{Another endoscopy report field of interest}
 }
 \description{
 This looks at the basic numbers of RFA by catheter type used

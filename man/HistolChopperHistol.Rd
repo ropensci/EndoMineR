@@ -15,6 +15,6 @@ HistolChopperHistol(x, y)
 This extracts Histology details data from the report
 }
 \examples{
-HistolChopperHistol(x,"Histo_ResultText")
+HistolChopperHistol(x,'Histo_ResultText')
 }
 \keyword{Histology}

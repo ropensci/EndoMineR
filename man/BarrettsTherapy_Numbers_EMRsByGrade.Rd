@@ -13,8 +13,5 @@ and BarettsDataAccord_PathStage() first}
 \description{
 Plots all the pathological grades of the EMRs
 }
-\examples{
-BarrettsTherapy_Numbers_EMRsByGrade(EndoSubsetEMR)
-}
 \keyword{EMR}
 \keyword{chart}

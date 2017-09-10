@@ -19,8 +19,7 @@ HowManyTests(x, Indication, Endo_ResultPerformed, StringToSearch)
 Get an overall idea of how many endoscopies have been done for an indication by year and month
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+v<-TheOGDReportFinal
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')
@@ -28,8 +27,8 @@ for(i in 1:(length(EndoscTree)-1)) {
   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
   as.character(EndoscTree[i]))
 }
-v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-HowManyTests(v,"Indications","Endo_ResultPerformed","Surv")
+v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+HowManyTests(v,'Indications','Endo_ResultPerformed','Surv')
 }
 \keyword{Tests}
 \keyword{number}

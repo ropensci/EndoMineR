@@ -1,4 +1,8 @@
-if(getRversion() >= "2.15.1")  utils::globalVariables(c("b","PatientID",".SD","CStage","NumbOfBx","Years","Difference","barplot","head","read.table","eHospitalNum","pHospitalNum",".","EVENT","MonthYear","freq","Endoscopist","avg","v","destination","dcast","complete.cases","g","gvisSankey","head","pHospitalNum","par","plot","r","read.table","region","rgb","setDT"))
+if (getRversion() >= "2.15.1") utils::globalVariables(c("b", "PatientID", ".SD", "CStage", "NumbOfBx", 
+    "Years", "Difference", "barplot", "head", "read.table", "eHospitalNum", "pHospitalNum", ".", 
+    "EVENT", "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", "dcast", "complete.cases", 
+    "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", "region", "rgb", 
+    "setDT"))
 
 ########## Surveillance functions ######
 
@@ -9,25 +13,29 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("b","PatientID",".SD","C
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
 #' @import dplyr
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' @examples v<-TheOGDReportFinal
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-#'em<-SurveillanceTimeByRow(v,"HospitalNumber","Endo_ResultPerformed")
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure,format="%Y-%m-%d")
+#'em<-SurveillanceTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
 
 SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
-    x %>% arrange_(HospNum_Id, Endo_ResultPerformed) %>% 
-        group_by_(HospNum_Id) %>% mutate(diffDate = difftime(Endo_ResultPerformed, 
-        lead(Endo_ResultPerformed, 1), units = "days"))
+
+  HospNum_Ida <- rlang::sym(HospNum_Id)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    x %>% arrange(!!HospNum_Ida, !!Endo_ResultPerformeda) %>% group_by(!!HospNum_Ida) %>% mutate(diffDate = difftime(as.Date(!!Endo_ResultPerformeda), 
+        lead(as.Date(!!Endo_ResultPerformeda), 1), units = "days"))
 }
 
 
@@ -39,11 +47,10 @@ SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @param  HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
 #' @import dplyr
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' @examples v<-TheOGDReportFinal
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -51,13 +58,15 @@ SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-#'em<-SurveillanceLastToNow(v,"HospitalNumber","Endo_ResultPerformed")
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#'em<-SurveillanceLastToNow(v,'HospitalNumber','Endo_ResultPerformed')
 
 SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
-    x %>% arrange_(HospNum_Id, Endo_ResultPerformed) %>% 
-    group_by_(HospNum_Id) %>% mutate(diffDate = difftime(Sys.Date(), 
-         last(Endo_ResultPerformed), units = "days"))
+  HospNum_Ida <- rlang::sym(HospNum_Id)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+  
+    x %>% arrange(!!HospNum_Ida, !!Endo_ResultPerformeda) %>% group_by(!!HospNum_Ida) %>% mutate(diffDate = difftime(Sys.Date(), 
+        last(!!Endo_ResultPerformeda), units = "days"))
 }
 
 
@@ -68,11 +77,10 @@ SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
 #' @import dplyr
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' @examples v<-TheOGDReportFinal
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -80,14 +88,16 @@ SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-#'em<-SurveillanceLastTest(v,"HospitalNumber","Endo_ResultPerformed")
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#'em<-SurveillanceLastTest(v,'HospitalNumber','Endo_ResultPerformed')
 
 
 
 SurveillanceLastTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
-    x %>% group_by_(HospNum_Id) %>%  arrange_(Endo_ResultPerformed) %>% 
-    filter(row_number() == n())
+  HospNum_Ida <- rlang::sym(HospNum_Id)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    x %>% group_by(!!HospNum_Ida) %>% arrange(!!Endo_ResultPerformeda) %>% filter(row_number() == 
+        n())
 }
 
 
@@ -98,11 +108,10 @@ SurveillanceLastTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
 #' @import dplyr
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' @examples v<-TheOGDReportFinal
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -110,13 +119,15 @@ SurveillanceLastTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-#'em<-SurveillanceFirstTest(v,"HospitalNumber","Endo_ResultPerformed")
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#'em<-SurveillanceFirstTest(v,'HospitalNumber','Endo_ResultPerformed')
 
 
 SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
-    x %>%  group_by_(HospNum_Id) %>%  arrange_(Endo_ResultPerformed) %>% 
-    filter(row_number() == 1)
+  HospNum_Ida <- rlang::sym(HospNum_Id)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    x %>% group_by(!!HospNum_Ida) %>% arrange(!!Endo_ResultPerformeda) %>% filter(row_number() == 
+        1)
 }
 
 
@@ -125,12 +136,12 @@ SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #'
 #' This determines the last test done by that patient and the time between now and that last test
 #' @param x dataframe
+#' @param Endo_ResultPerformed Column with the date the Endoscopy was performed
 #' @import dplyr
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr '%>%'
 #' @keywords cats
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' @examples v<-TheOGDReportFinal
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -138,15 +149,14 @@ SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-#'em<-SurveillanceCapacity(v)
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#'em<-SurveillanceCapacity(v,"Dateofprocedure)
 
 
 SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
-    x %>%  mutate(month = format(Endo_ResultPerformed, 
-        "%m")) %>% group_by(month) %>% summarise(n = n())
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    x %>% mutate(month = format(as.Date(!!Endo_ResultPerformeda), "%m")) %>% group_by(month) %>% summarise(n = n())
 }
-
 
 #' HowManyTests
 #'
@@ -156,12 +166,11 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @param Endo_ResultPerformed column containing date the Endoscopy was performed
 #' @param StringToSearch The string in the Indication to search for
 #' @import dplyr
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr '%>%'
 #' @import lubridate
 #' @keywords Tests number
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' @examples v<-TheOGDReportFinal
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -169,29 +178,25 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-#'HowManyTests(v,"Indications","Endo_ResultPerformed","Surv")
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#'HowManyTests(v,'Indications','Endo_ResultPerformed','Surv')
 
 
-HowManyTests <- function(x, Indication, Endo_ResultPerformed, 
-    StringToSearch) {
-    TestNumbers <- x %>%  filter(stringr::str_detect(x[, Indication], 
-        StringToSearch)) %>%  arrange_(Endo_ResultPerformed) %>% 
-      group_by(day = lubridate::day(Endo_ResultPerformed), week = lubridate::week(Endo_ResultPerformed), 
-            month = month(Endo_ResultPerformed), year = lubridate::year(Endo_ResultPerformed)) %>% 
-      summarise(Number = n())
-    names(TestNumbers) <- c("day", "week", "month", 
-        "year", "freq")
-    TestNumbers$MonthYear <- paste("01_", TestNumbers$month, 
-        "_", TestNumbers$year, sep = "")
+HowManyTests <- function(x, Indication, Endo_ResultPerformed, StringToSearch) {
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    TestNumbers <- x %>% filter(stringr::str_detect(x[, Indication], StringToSearch)) %>% arrange(as.Date(!!Endo_ResultPerformeda)) %>% 
+        group_by(day = lubridate::day(as.Date(!!Endo_ResultPerformeda)), week = lubridate::week(as.Date(!!Endo_ResultPerformeda)), 
+            month = month(as.Date(!!Endo_ResultPerformeda)), year = lubridate::year(as.Date(!!Endo_ResultPerformeda))) %>% 
+        summarise(Number = n())
+    names(TestNumbers) <- c("day", "week", "month", "year", "freq")
+    TestNumbers$MonthYear <- paste("01_", TestNumbers$month, "_", TestNumbers$year, sep = "")
     TestNumbers$MonthYear <- dmy(TestNumbers$MonthYear)
     # # Then just plot it:
     
     
-    Myplot <- ggplot(data = TestNumbers, aes(x = MonthYear, 
-        y = freq)) + geom_point() + geom_line() + geom_smooth(method = "loess") + 
-        scale_x_date(labels = function(x) format(x, 
-            "%d-%b")) + theme_bw()
+    Myplot <- ggplot(data = TestNumbers, aes(x = MonthYear, y = freq)) + geom_point() + geom_line() + 
+        geom_smooth(method = "loess") + scale_x_date(labels = function(x) format(x, "%d-%b")) + 
+        theme_bw()
     functionResults <- list(Myplot = Myplot, TestNumbers = TestNumbers)
     return(functionResults)
 }
@@ -208,16 +213,15 @@ HowManyTests <- function(x, Indication, Endo_ResultPerformed,
 #' y is the value of in this case the procedure type (eg EMR,
 #'  radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)
 #'  Note the Hospital Number column MUST be called PatientID
-#' @param x the dataframe extracted using the standard cleanup scripts
+#' @param dfw the dataframe extracted using the standard cleanup scripts
 #' @param y the column containing the test like ProcPerformed for example
 #' @import dplyr
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr '%>%'
 #' @importfrom data.table setDT rowid 
-#' @importfrom reshape2 "dcast"
+#' @importfrom reshape2 'dcast'
 #' @keywords Sankey
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' @examples v<-TheOGDReportFinal
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -225,34 +229,30 @@ HowManyTests <- function(x, Indication, Endo_ResultPerformed,
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
 
 SurveySankey <- function(dfw, y) {
     # Create the Sankey diagrams
-    Sankey <- dcast(setDT(dfw)[, .SD, PatientID], 
-                    PatientID ~ rowid(PatientID), value.var = y)
+    Sankey <- dcast(setDT(dfw)[, .SD, PatientID], PatientID ~ rowid(PatientID), value.var = y)
     PtFlow <- Sankey
     PtFlow <- data.frame(PtFlow)
     PtFlow <- PtFlow[!is.na(names(PtFlow))]
     r <- c()
-    for (i in 1:ncol(PtFlow)){
-      t<-paste("ord",i,sep="")
-      r <- c(r, t)
-      names(PtFlow)<-r
+    for (i in 1:ncol(PtFlow)) {
+        t <- paste("ord", i, sep = "")
+        r <- c(r, t)
+        names(PtFlow) <- r
     }
     orders <- PtFlow %>% select(names(PtFlow))
     orders.plot <- data.frame()
     for (i in 3:ncol(orders)) {
-        ord.cache <- orders %>% group_by(orders[, i - 
-            1], orders[, i]) %>% summarise(n = n())
+        ord.cache <- orders %>% group_by(orders[, i - 1], orders[, i]) %>% summarise(n = n())
         
         colnames(ord.cache)[1:2] <- c("from", "to")
         
         # adding tags to carts
-        ord.cache$from <- paste(ord.cache$from, "(", 
-            i - 1, ")", sep = "")
-        ord.cache$to <- paste(ord.cache$to, "(", i, 
-            ")", sep = "")
+        ord.cache$from <- paste(ord.cache$from, "(", i - 1, ")", sep = "")
+        ord.cache$to <- paste(ord.cache$to, "(", i, ")", sep = "")
         
         ord.cache <- data.frame(ord.cache)
         orders.plot <- rbind(orders.plot, ord.cache)
@@ -261,13 +261,12 @@ SurveySankey <- function(dfw, y) {
     
     
     orders.plot <- data.frame(orders.plot)
-    orders.plot <- orders.plot[grepl("[A-Z]", orders.plot$from) & 
-        grepl("[A-Z]", orders.plot$to), ]
-    orders.plot <- orders.plot[!grepl("NA", orders.plot$from) & 
-        !grepl("NA", orders.plot$to), ]
-    plot(gvisSankey(orders.plot, from = "from", to = "to", 
-        weight = "n", options = list(height = 900, 
-            width = 1800, sankey = "{link:{color:{fill:'black',stroke: 'black', strokeWidth: 1 }},
+    orders.plot <- orders.plot[grepl("[A-Z]", orders.plot$from) & grepl("[A-Z]", orders.plot$to), 
+        ]
+    orders.plot <- orders.plot[!grepl("NA", orders.plot$from) & !grepl("NA", orders.plot$to), 
+        ]
+    plot(gvisSankey(orders.plot, from = "from", to = "to", weight = "n", options = list(height = 900, 
+        width = 1800, sankey = "{link:{color:{fill:'black',stroke: 'black', strokeWidth: 1 }},
                                                                                       node: { color: { fill: '#a61d4c' },
                                                                                       label: { color: '#871b47',fontName: 'Open Sans',fontSize: 35 } }}")))
     
@@ -278,17 +277,18 @@ SurveySankey <- function(dfw, y) {
 #'
 #' This allows us to look at the overall flow from one type of procedure to another using circos plots
 #' @param x dataframe 
-#' @param Indication the column containing the indication for the procedure
 #' @param Endo_ResultPerformed the column containing the date of the procedure 
 #' @param ProcPerformed The procedure that you want to plot (eg EMR,
 #'  radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)
-#' @import dplyr
+#' @param HospNum_Id Column with the patient's unique hospital number
+#' #' @import dplyr
 #' @import circlize
-#' @importFrom magrittr "%>%"
+#' @importFrom magrittr '%>%'
 #' @keywords Circos
 #' @export
 #' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
+#' 'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -296,17 +296,14 @@ SurveySankey <- function(dfw, y) {
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
 
-PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed,HospNum_Id,ProcPerformed) {
+PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed) {
     # library(dplyr) library(reshape2)
     
-    mydf <- x %>% arrange_(Endo_ResultPerformed) %>% 
-        group_by_(HospNum_Id) %>% 
-        mutate_(origin = lag(ProcPerformed, 1), destination = ProcPerformed) %>% 
-        select(origin, destination) %>% 
-        group_by(origin, destination) %>% 
-        summarise(n = n()) %>% ungroup()
+    mydf <- x %>% arrange_(Endo_ResultPerformed) %>% group_by_(HospNum_Id) %>% mutate_(origin = lag(ProcPerformed, 
+        1), destination = ProcPerformed) %>% select(origin, destination) %>% group_by(origin, 
+        destination) %>% summarise(n = n()) %>% ungroup()
     
     
     mydf <- data.frame(dcast(mydf, origin ~ destination))
@@ -316,24 +313,19 @@ PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed,HospNum_Id,ProcPerfo
     mydf <- mydf[complete.cases(mydf), ]
     
     V1 <- c("2", "7", "3", "10")
-    V2 <- c("210,150,12", "110,255,233", "125,175,0", 
-        "255,219,0")
+    V2 <- c("210,150,12", "110,255,233", "125,175,0", "255,219,0")
     
     mydf <- cbind(V1, V2, mydf)
     
-    df_format <- mydf %>% select(1:3) %>% rename(order = V1, 
-        rgb = V2, region = origin) %>% mutate(region = gsub("_", 
+    df_format <- mydf %>% select(1:3) %>% rename(order = V1, rgb = V2, region = origin) %>% mutate(region = gsub("_", 
         " ", region))
-    # flow matrix. Need to add V1 and V2 to the matrix
-    # here
+    # flow matrix. Need to add V1 and V2 to the matrix here
     
     matmydf <- as.matrix(mydf[, -(1:3)])
-    dimnames(matmydf) <- list(orig = df_format$region, 
-        dest = df_format$region)
+    dimnames(matmydf) <- list(orig = df_format$region, dest = df_format$region)
     # library('tidyr')
-    df_format <- df_format %>% dplyr::arrange(order) %>% separate(rgb, 
-        c("r", "g", "b")) %>% mutate(col = rgb(r, g, 
-        b, max = 255), max = rowSums(matmydf) + colSums(matmydf))
+    df_format <- df_format %>% dplyr::arrange(order) %>% separate(rgb, c("r", "g", "b")) %>% 
+        mutate(col = rgb(r, g, b, max = 255), max = rowSums(matmydf) + colSums(matmydf))
     
     
     # library('circlize')
@@ -341,20 +333,15 @@ PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed,HospNum_Id,ProcPerfo
     par(mar = rep(0, 4), cex = 0.9)
     circos.par(start.degree = 90, gap.degree = 4)
     par(cex = 0.8, mar = c(0, 0, 0, 0))
-    chordDiagram(x = matmydf, directional = 1, order = df_format$region, 
-        grid.col = df_format$col, annotationTrack = "grid", 
-        transparency = 0.25, annotationTrackHeight = c(0.1, 
-            0.1), diffHeight = -0.04)
+    chordDiagram(x = matmydf, directional = 1, order = df_format$region, grid.col = df_format$col, 
+        annotationTrack = "grid", transparency = 0.25, annotationTrackHeight = c(0.1, 0.1), diffHeight = -0.04)
     
     
-    circos.trackPlotRegion(track.index = 1, panel.fun = function(x, 
-        y) {
+    circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
         xlim = get.cell.meta.data("xlim")
         sector.index = get.cell.meta.data("sector.index")
-        circos.text(mean(xlim), 3.5, sector.index, 
-            facing = "bending")
-        circos.axis("top", major.at = seq(0, max(xlim), 
-            by = 5), minor.ticks = 1, labels.cex = 0.8, 
+        circos.text(mean(xlim), 3.5, sector.index, facing = "bending")
+        circos.axis("top", major.at = seq(0, max(xlim), by = 5), minor.ticks = 1, labels.cex = 0.8, 
             labels.away.percentage = 0.2, labels.niceFacing = FALSE)
     }, bg.border = NA)
     
@@ -363,22 +350,19 @@ PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed,HospNum_Id,ProcPerfo
 }
 
 
-################################## Endoscopic Performance Quality-
-################################## documentation.###### This relies on defining
-################################## terms of interest and then performing a lookup of
-################################## all the reports with these terms
+################################## Endoscopic Performance Quality- documentation.###### This relies on defining terms of
+################################## interest and then performing a lookup of all the reports with these terms
 
 #' ListLookup functions:
 #'
 #' Input is a dataframe with x=dataframe name, y=column name you are doing text mining from and PropThreshold= the number of rows that have the terms you are interested in. theframe is the dataframe, y is the columnn of interest and PropThreshold is the Proportion of reports Threshold for the graph. The aim here is simply to produce a document term matrix to get the frequency of all the words, then extract the words you are interested in with tofind (I think) then find which reports have those words. Then find what proportion of the reports have those terms
 #' @param theframe the dataframe, 
 #' @param y the column of interest, 
-#' @param myNotableWord list of wirds you are interested in
+#' @param myNotableWords list of words you are interested in
 #' @import tm
 #' @keywords Lookup
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' @examples v<-TheOGDReportFinal
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -386,27 +370,15 @@ PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed,HospNum_Id,ProcPerfo
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-#'myNotableWords<-c("arrett","oeliac")
-#'tt<-ListLookup(v,"Findings",myNotableWords)
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#'myNotableWords<-c('arrett','oeliac')
+#'tt<-ListLookup(v,'Findings',myNotableWords)
 
 ListLookup <- function(theframe, y, myNotableWords) {
     
     jeopCorpus <- Corpus(VectorSource(theframe[, y]))
-    # jeopCorpus <- tm_map(jeopCorpus,
-    # PlainTextDocument) jeopCorpus <-
-    # tm_map(jeopCorpus,
-    # content_transformer(removeWords),
-    # stopwords('english')) jeopCorpus <-
-    # tm_map(jeopCorpus, removePunctuation) jeopCorpus
-    # <- tm_map(jeopCorpus, stripWhitespace) jeopCorpus
-    # <- tm_map(jeopCorpus, removeWords,
-    # stopwords('english')) jeopCorpus <-
-    # tm_map(jeopCorpus, stemDocument)
-    
-    # Get the frequency table of terms being used over
-    # all the reports (ie counts x2 if mentioned twice
-    # in the report)
+    # Get the frequency table of terms being used over all the reports (ie counts x2 if mentioned
+    # twice in the report)
     dtm <- TermDocumentMatrix(jeopCorpus)
     m <- as.matrix(dtm)
     v <- sort(rowSums(m), decreasing = TRUE)
@@ -414,10 +386,8 @@ ListLookup <- function(theframe, y, myNotableWords) {
     d$word <- as.character(d$word)
     d$Prop <- (d$freq/nrow(theframe)) * 100
     
-    # group all the words containing stems as per
-    # myNotableWords
-    d <- sapply(myNotableWords, function(x) sum(d$Prop[grepl(x, 
-        d$word)]))
+    # group all the words containing stems as per myNotableWords
+    d <- sapply(myNotableWords, function(x) sum(d$Prop[grepl(x, d$word)]))
     d <- data.frame(X2 = names(d), Prop = as.vector(d))
     return(d)
 }
@@ -425,8 +395,7 @@ ListLookup <- function(theframe, y, myNotableWords) {
 
 ############## Pathology Quality #####
 
-# Groups anything by Endoscopist and returns the
-# table and a ggplot
+# Groups anything by Endoscopist and returns the table and a ggplot
 
 
 #' Number of biopsies
@@ -439,8 +408,7 @@ ListLookup <- function(theframe, y, myNotableWords) {
 #' @import tidyr
 #' @keywords Endoscopist
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' @examples v<-TheOGDReportFinal
 #' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 #' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 #' 'Findings','Endoscopic Diagnosis','')
@@ -448,24 +416,21 @@ ListLookup <- function(theframe, y, myNotableWords) {
 #'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
 #'   as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
-#'v<-EndoscChopperMeds(v,"Medications")
-#'Fent<-MetricByEndoscopist(v,"Endoscopist","Fent")
+#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#'v<-EndoscChopperMeds(v,'Medications')
+#'Fent<-MetricByEndoscopist(v,'Endoscopist','Fent')
 
 
 MetricByEndoscopist <- function(x, y, z) {
     group <- rlang::sym(y)
     variable <- rlang::sym(z)
     
-    NumBxPlot <- x %>% tidyr::drop_na(!!variable) %>% 
-        group_by(!!group) %>% summarise(avg = mean(!!variable))
+    NumBxPlot <- x %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>% summarise(avg = mean(!!variable))
     
     
-    ggplot(NumBxPlot) + geom_point(aes(x = Endoscopist, 
-        y = avg), colour = "red", size = 3) + labs(title = "Average  by endoscopist") + 
-        theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) + 
-        theme(axis.text.x = element_text(angle = -90)) + 
-        theme(axis.text.y = element_text(angle = -90)) + 
+    ggplot(NumBxPlot) + geom_point(aes(x = Endoscopist, y = avg), colour = "red", size = 3) + 
+        labs(title = "Average  by endoscopist") + theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) + 
+        theme(axis.text.x = element_text(angle = -90)) + theme(axis.text.y = element_text(angle = -90)) + 
         theme(legend.position = "top")
 }
 
@@ -476,17 +441,17 @@ MetricByEndoscopist <- function(x, y, z) {
 #' Standardises the location of biopsies
 #' This assess the location of the biopies taken from the histopathology specimens.
 #' @param x The dataframe 
-#' @param y Column describing the Macroscopic sample from histology
+#' @param SampleLocation Column describing the Macroscopic sample from histology
 #' @keywords Withdrawal
 #' @export
-#' @examples v<-Endomerge(MyColonpath,MyColonendo)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' @examples v<-MyColonpath
+#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
+#' v<-ChopperNewLines(v,'Histo_ResultText')
 #' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#'  v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 #' }
-#' f<-TermStandardLocation(v,"Histo_ResultText")
+#' f<-TermStandardLocation(v,'Histo_ResultText')
 
 TermStandardLocation <- function(x, SampleLocation) {
     x$SampleLocation <- tolower(x[, SampleLocation])
@@ -494,76 +459,46 @@ TermStandardLocation <- function(x, SampleLocation) {
         "Ascending ", x$SampleLocation)
     x$SampleLocation <- gsub("[Ll][Ee][Ff][Tt]|lt |[Dd]escending|[Dd]escen[^a-z]|[Dd]esc[^a-z]|[Dd]es[^a-z]|[Cc]olon [Ll]|[Ll] [Cc]olon", 
         "Descending ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Ss]igmoid|[Ss]igm[^a-z]|[Ss]igmo ", 
-        "Sigmoid ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Rr]ectal|[Rr]ectum|[Rr]ectum[a-z]|[Rr]ect ", 
-        "Rectum ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Tt]ransverse|[Tt]ransv[^a-z]|[Tt]ranv |[Tt]rans ", 
-        "Transverse ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Cc]aecum|[Cc]aecal", 
-        "Caecum ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Ss]plenic", "Splenic ", 
+    x$SampleLocation <- gsub("[Ss]igmoid|[Ss]igm[^a-z]|[Ss]igmo ", "Sigmoid ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Rr]ectal|[Rr]ectum|[Rr]ectum[a-z]|[Rr]ect ", "Rectum ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Tt]ransverse|[Tt]ransv[^a-z]|[Tt]ranv |[Tt]rans ", "Transverse ", 
         x$SampleLocation)
-    x$SampleLocation <- gsub("[Ii]leum|[Ii]leal", "Ileum ", 
+    x$SampleLocation <- gsub("[Cc]aecum|[Cc]aecal", "Caecum ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Ss]plenic", "Splenic ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Ii]leum|[Ii]leal", "Ileum ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Rr]ectosigmoid", "Rectosigmoid ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Ii]leocaecal\\s*|[Ii][Cc][Vv]|[Ii]leo-[Cc]aecum", "Ileocaecal ", 
         x$SampleLocation)
-    x$SampleLocation <- gsub("[Rr]ectosigmoid", "Rectosigmoid ", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[Ii]leocaecal\\s*|[Ii][Cc][Vv]|[Ii]leo-[Cc]aecum", 
-        "Ileocaecal ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Hh]ep[^a-z]|[Hh]epatic", 
-        "Hepatic ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Cc]olonic|[Cc]olon |[Cc]ol[^a-z]", 
-        "Colon ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Tt]erm |[Tt]erminal", 
-        "Terminal ", x$SampleLocation)
-    x$SampleLocation <- gsub("TI", "Terminal Ileum ", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[Cc]aec ", "Caecum ", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[Ss]ig ", "Sigmoid ", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[Ii]leo\\s*-\\s*[Aa]nal ", 
-        "Ileoanal ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Ii]leo\\s*[Aa]nal ", 
-        "Ileoanal ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Pp]re\\s*pouch", "PrePouch ", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[Pp]re-[Pp]ouch", "PrePouch ", 
-        x$SampleLocation)
+    x$SampleLocation <- gsub("[Hh]ep[^a-z]|[Hh]epatic", "Hepatic ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Cc]olonic|[Cc]olon |[Cc]ol[^a-z]", "Colon ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Tt]erm |[Tt]erminal", "Terminal ", x$SampleLocation)
+    x$SampleLocation <- gsub("TI", "Terminal Ileum ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Cc]aec ", "Caecum ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Ss]ig ", "Sigmoid ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Ii]leo\\s*-\\s*[Aa]nal ", "Ileoanal ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Ii]leo\\s*[Aa]nal ", "Ileoanal ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Pp]re\\s*pouch", "PrePouch ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Pp]re-[Pp]ouch", "PrePouch ", x$SampleLocation)
     x$SampleLocation <- gsub("pouch", "Pouch ", x$SampleLocation)
-    x$SampleLocation <- gsub("IleoAnal([a-zA-Z]+)", 
-        "Ileoanal \\1 ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Aa]nastomosis", "Anastomosis", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[Xx]\\s*[1-9]|", "", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[1-9]\\s*[Xx]|", "", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[Hh]yperplastic", "", 
-        x$SampleLocation)
-    x$SampleLocation <- gsub("[Dd]istal|[Pp]roximal|[Pp]rox ", 
-        "", x$SampleLocation)
+    x$SampleLocation <- gsub("IleoAnal([a-zA-Z]+)", "Ileoanal \\1 ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Aa]nastomosis", "Anastomosis", x$SampleLocation)
+    x$SampleLocation <- gsub("[Xx]\\s*[1-9]|", "", x$SampleLocation)
+    x$SampleLocation <- gsub("[1-9]\\s*[Xx]|", "", x$SampleLocation)
+    x$SampleLocation <- gsub("[Hh]yperplastic", "", x$SampleLocation)
+    x$SampleLocation <- gsub("[Dd]istal|[Pp]roximal|[Pp]rox ", "", x$SampleLocation)
     x$SampleLocation <- gsub("[Ss]essile", "", x$SampleLocation)
-    x$SampleLocation <- gsub("\\d+[Mm]{2}|\\d+[Cc][Mm]", 
-        "", x$SampleLocation)
-    x$SampleLocation <- gsub("[Pp]edunculated|[Pp]seudo", 
-        "", x$SampleLocation)
+    x$SampleLocation <- gsub("\\d+[Mm]{2}|\\d+[Cc][Mm]", "", x$SampleLocation)
+    x$SampleLocation <- gsub("[Pp]edunculated|[Pp]seudo", "", x$SampleLocation)
     x$SampleLocation <- gsub("\\d", "", x$SampleLocation)
     x$SampleLocation <- gsub("  ", " ", x$SampleLocation)
     x$SampleLocation <- gsub(":", "", x$SampleLocation)
     # For upper GI
-    x$SampleLocation <- gsub("[Gg]astric|[Ss]tomach", 
-        "Stomach", x$SampleLocation)
-    x$SampleLocation <- gsub("[Aa]ntrum|[Aa]ntral", 
-        "Antrum", x$SampleLocation)
-    x$SampleLocation <- gsub("[Dd]uodenum|[Dd]2|[Dd]uodenal", 
-        "Duodenum", x$SampleLocation)
-    x$SampleLocation <- gsub("[Oo]esophageal|[Oo]esophagus|esophag[^a-z]", 
-        "Oesophagus", x$SampleLocation)
-    x$SampleLocation <- gsub("[Gg][Oo][Jj]|[Gg]astro[Oo]esophageal", 
-        "GOJ", x$SampleLocation)
-    x$SampleLocation <- gsub("[Ff]undal|[Ff]undic|[Ff]undus", 
-        "GOJ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Gg]astric|[Ss]tomach", "Stomach", x$SampleLocation)
+    x$SampleLocation <- gsub("[Aa]ntrum|[Aa]ntral", "Antrum", x$SampleLocation)
+    x$SampleLocation <- gsub("[Dd]uodenum|[Dd]2|[Dd]uodenal", "Duodenum", x$SampleLocation)
+    x$SampleLocation <- gsub("[Oo]esophageal|[Oo]esophagus|esophag[^a-z]", "Oesophagus", x$SampleLocation)
+    x$SampleLocation <- gsub("[Gg][Oo][Jj]|[Gg]astro[Oo]esophageal", "GOJ", x$SampleLocation)
+    x$SampleLocation <- gsub("[Ff]undal|[Ff]undic|[Ff]undus", "GOJ", x$SampleLocation)
     return(x)
 }
 
@@ -574,31 +509,26 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' sites sampled without duplication
 #' @param x The dataframe 
 #' @param y SampleLocation from the TermStandardizer
-#' @param z name for the new column
 #' @import stringr
 #' @keywords Sample location
 #' @export
-#' @examples v<-Endomerge(MyColonpath,MyColonendo)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' @examples v<-MyColonpath
+#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
+#' v<-ChopperNewLines(v,'Histo_ResultText')
 #' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#'  v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 #' }
-#' f<-SampleLocator(v,"SampleLocation")
+#' f<-SampleLocator(v,'SampleLocation')
 
 SampleLocator <- function(x, y) {
     x <- data.frame(x)
-    tofind <- paste(c("Ascending", "Descending", "Sigmoid", 
-        "Rectum", "Transverse", "Caecum", "Splenic", 
-        "Ileum", "Rectosigmoid", "Ileocaecal", "Hepatic", 
-        "Colon", "Terminal", "Terminal Ileum", "Ileoanal", 
-        "Prepouch", "Pouch", "Anastomosis", "Stomach", 
-        "Antrum", "Duodenum", "Oesophagus", "GOJ"), 
-        collapse = "|")
+    tofind <- paste(c("Ascending", "Descending", "Sigmoid", "Rectum", "Transverse", "Caecum", 
+        "Splenic", "Ileum", "Rectosigmoid", "Ileocaecal", "Hepatic", "Colon", "Terminal", "Terminal Ileum", 
+        "Ileoanal", "Prepouch", "Pouch", "Anastomosis", "Stomach", "Antrum", "Duodenum", "Oesophagus", 
+        "GOJ"), collapse = "|")
     x$AllSampleLocator <- stringr::str_match_all(x[, y], tofind)
-    x$AllSampleLocator <- lapply(x$AllSampleLocator, 
-        function(p) unique(p))
+    x$AllSampleLocator <- lapply(x$AllSampleLocator, function(p) unique(p))
     return(x)
 }
 
@@ -610,25 +540,22 @@ SampleLocator <- function(x, y) {
 #' @keywords Withdrawal
 #' @import stringr
 #' @export
-#' @examples v<-Endomerge(MyColonpath,MyColonendo)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' @examples v<-MyColonpath
+#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
+#' v<-ChopperNewLines(v,'Histo_ResultText')
 #' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#'  v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 #' }
-#' f<-PolypLocator(v,"SampleLocation")
+#' f<-PolypLocator(v,'SampleLocation')
 
 
 PolypLocator <- function(x, y) {
     x <- data.frame(x)
-    tofind <- paste(c("Ascending", "Descending", "Sigmoid", 
-        "Rectum", "Transverse", "Caecum", "Splenic", 
-        "Ileum", "Rectosigmoid", "Ileocaecal", "Hepatic", 
-        "Colon", "Terminal", "Terminal Ileum", "Ileoanal", 
-        "Prepouch", "Pouch", "Anastomosis", "Stomach", 
-        "Antrum", "Duodenum", "Oesophagus", "GOJ"), 
-        collapse = "|")
+    tofind <- paste(c("Ascending", "Descending", "Sigmoid", "Rectum", "Transverse", "Caecum", 
+        "Splenic", "Ileum", "Rectosigmoid", "Ileocaecal", "Hepatic", "Colon", "Terminal", "Terminal Ileum", 
+        "Ileoanal", "Prepouch", "Pouch", "Anastomosis", "Stomach", "Antrum", "Duodenum", "Oesophagus", 
+        "GOJ"), collapse = "|")
     x$PolypLocator <- stringr::str_match_all(x[, y], tofind)
     x$PolypLocator <- lapply(x$PolypLocator, function(p) unique(p))
     return(x)
@@ -641,21 +568,20 @@ PolypLocator <- function(x, y) {
 #' Standardises the location of polyps
 #' This assess the size of the biopies take
 #' @param x The dataframe 
-#' @param y The column containing the SampleLocation from the Term Standardizer
+#' @param SampleLocation The column containing the SampleLocation from the Term Standardizer
 #' @keywords Withdrawal
 #' @export
-#' @examples v<-Endomerge(MyColonpath,MyColonendo)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' @examples v<-MyColonpath
+#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
+#' v<-ChopperNewLines(v,'Histo_ResultText')
 #' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#'  v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 #' }
-#' f<-PolypTidyUpLocator(v,"SampleLocation")
+#' f<-PolypTidyUpLocator(v,'SampleLocation')
 
 PolypTidyUpLocator <- function(x, SampleLocation) {
-    # Get all the polyps and tidy up the polyp data-
-    # Function 5
+    # Get all the polyps and tidy up the polyp data- Function 5
     x$Polyp <- stringr::str_match_all(x[, SampleLocation], ".*[Pp]olyp.*")
     x <- PolypLocator(x, "Polyp")
     
@@ -667,45 +593,42 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #' GRS_Type_Assess_By_Unit
 #' This extracts the polyps types from the data(for colonoscopy and flexible sigmoidosscopy data)
 #' @param x The dataframe 
-#' @param y The column BxSize have been calculated
+#' @param ProcPerformed The column containing the Procedure type performed
+#' @param Endo_Endoscopist column containing the Endoscopist name
+#' @param Dx The column with the Histological diagnosis
+#' @param Histol The column with the Histology text in it
 #' @keywords Withdrawal
 #' @export
-#' @examples v<-Endomerge(MyColonpath,MyColonendo)
-#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' @examples v<-MyColonpath
+#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
+#' v<-ChopperNewLines(v,'Histo_ResultText')
 #' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#'  v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 #' }
-#' GRSTable<-GRS_Type_Assess_By_Unit(v,"ProcedurePerformed", "Endoscopist","Diagnosis","Histology")
+#' GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed', 'Endoscopist','Diagnosis','Histology')
 
-GRS_Type_Assess_By_Unit <- function(x, ProcPerformed, 
-    Endo_Endoscopist, Dx, Histol) {
+GRS_Type_Assess_By_Unit <- function(x, ProcPerformed, Endo_Endoscopist, Dx, Histol) {
     x <- data.frame(x)
     
     # Adenomas by endoscopist ============
     
-    x <- x[grepl("Colonoscopy", x[, ProcPerformed]), 
-        ]
-    MyColonDataAdenomaDetectionByEndoscopist <- x[grep(".*[Aa]denom.*", 
-        x[, Dx]), ]
+    x <- x[grepl("Colonoscopy", x[, ProcPerformed]), ]
+    MyColonDataAdenomaDetectionByEndoscopist <- x[grep(".*[Aa]denom.*", x[, Dx]), ]
     MyColonDataAdenomaDetectionByEndoscopist <- MyColonDataAdenomaDetectionByEndoscopist %>% 
         group_by_(Endo_Endoscopist) %>% do(data.frame(NumAdenomas = nrow(.)))
     
-    MyColonDataColonoscopiesByEndoscopist <- x %>% 
-        group_by_(Endo_Endoscopist) %>% do(data.frame(NumColons = nrow(.)))
+    MyColonDataColonoscopiesByEndoscopist <- x %>% group_by_(Endo_Endoscopist) %>% do(data.frame(NumColons = nrow(.)))
     
     # Merge the two above by column to get proportion:
-    MyColonDataADR <- full_join(MyColonDataAdenomaDetectionByEndoscopist, 
-        MyColonDataColonoscopiesByEndoscopist, by = Endo_Endoscopist)
-    MyColonDataADR$PropAdenomas <- (MyColonDataADR$NumAdenomas/MyColonDataADR$NumColons) * 
-        100
+    MyColonDataADR <- full_join(MyColonDataAdenomaDetectionByEndoscopist, MyColonDataColonoscopiesByEndoscopist, 
+        by = Endo_Endoscopist)
+    MyColonDataADR$PropAdenomas <- (MyColonDataADR$NumAdenomas/MyColonDataADR$NumColons) * 100
     
     # Adenocarcinomas (without adenomas) by endoscopist=====
     
-    MyColonDataAdenoCarcinomaDetectionByEndoscopist <- x[grepl(".*denoca.*", 
-        x[, Histol]) & !grepl(".*denom.*", x[, Histol]), 
-        ]
+    MyColonDataAdenoCarcinomaDetectionByEndoscopist <- x[grepl(".*denoca.*", x[, Histol]) & !grepl(".*denom.*", 
+        x[, Histol]), ]
     MyColonDataAdenoCarcinomaDetectionByEndoscopist <- MyColonDataAdenoCarcinomaDetectionByEndoscopist %>% 
         group_by_(Endo_Endoscopist) %>% do(data.frame(NumAdenocarcinomas = nrow(.)))
     
@@ -715,56 +638,50 @@ GRS_Type_Assess_By_Unit <- function(x, ProcPerformed,
         100
     
     # Dysplastic grade of adenomas by endoscopist (from whole dataset) =====
-    MyColonData_HG_AdenomaDetectionByEndoscopist <- x[grepl(".*denoma.*", 
-        x[, Histol]) & grepl(".*[Hh]igh [Gg]rade.*", 
+    MyColonData_HG_AdenomaDetectionByEndoscopist <- x[grepl(".*denoma.*", x[, Histol]) & grepl(".*[Hh]igh [Gg]rade.*", 
         x[, Histol]), ]
     MyColonData_HG_AdenomaDetectionByEndoscopist <- MyColonData_HG_AdenomaDetectionByEndoscopist %>% 
         group_by_(Endo_Endoscopist) %>% do(data.frame(NumHighGradeAdenomas = nrow(.)))
     
-    MyColonData_LG_AdenomaDetectionByEndoscopist <- x[grepl(".*denoma.*", 
-        x[, Histol]) & grepl(".*[Ll]ow [Gg]rade.*", 
+    MyColonData_LG_AdenomaDetectionByEndoscopist <- x[grepl(".*denoma.*", x[, Histol]) & grepl(".*[Ll]ow [Gg]rade.*", 
         x[, Histol]), ]
     MyColonData_LG_AdenomaDetectionByEndoscopist <- MyColonData_LG_AdenomaDetectionByEndoscopist %>% 
         group_by_(Endo_Endoscopist) %>% do(data.frame(NumLowGradeAdenomas = nrow(.)))
     
-    MyColonDataHGD_Adenomas <- full_join(MyColonData_HG_AdenomaDetectionByEndoscopist, 
-        MyColonDataColonoscopiesByEndoscopist, by = Endo_Endoscopist)
+    MyColonDataHGD_Adenomas <- full_join(MyColonData_HG_AdenomaDetectionByEndoscopist, MyColonDataColonoscopiesByEndoscopist, 
+        by = Endo_Endoscopist)
     MyColonDataHGD_Adenomas$PropHGAdenomas <- (MyColonDataHGD_Adenomas$NumHighGradeAdenomas/MyColonDataHGD_Adenomas$NumColons) * 
         100
     
-    MyColonDataLGD_Adenomas <- full_join(MyColonData_LG_AdenomaDetectionByEndoscopist, 
-        MyColonDataColonoscopiesByEndoscopist, by = Endo_Endoscopist)
+    MyColonDataLGD_Adenomas <- full_join(MyColonData_LG_AdenomaDetectionByEndoscopist, MyColonDataColonoscopiesByEndoscopist, 
+        by = Endo_Endoscopist)
     MyColonDataLGD_Adenomas$PropLGAdenomas <- (MyColonDataLGD_Adenomas$NumLowGradeAdenomas/MyColonDataLGD_Adenomas$NumColons) * 
         100
     
-    MyColonData_Serr_AdenomaDetectionByEndoscopist <- x[grepl(".*[Ss]errated.*", 
-        x[, Histol]), ]
+    MyColonData_Serr_AdenomaDetectionByEndoscopist <- x[grepl(".*[Ss]errated.*", x[, Histol]), 
+        ]
     MyColonData_Serr_AdenomaDetectionByEndoscopist <- MyColonData_Serr_AdenomaDetectionByEndoscopist %>% 
         group_by_(Endo_Endoscopist) %>% do(data.frame(NumSerrAdenomas = nrow(.)))
     
-    MyColonDataSerr_Adenomas <- full_join(MyColonData_Serr_AdenomaDetectionByEndoscopist, 
-        MyColonDataColonoscopiesByEndoscopist, by = Endo_Endoscopist)
+    MyColonDataSerr_Adenomas <- full_join(MyColonData_Serr_AdenomaDetectionByEndoscopist, MyColonDataColonoscopiesByEndoscopist, 
+        by = Endo_Endoscopist)
     MyColonDataSerr_Adenomas$PropSerrAdenomas <- (MyColonDataSerr_Adenomas$NumSerrAdenomas/MyColonDataSerr_Adenomas$NumColons) * 
         100
     
     # Hyperplastic detection rate by endoscopist (from whole dataset) ====
-    MyColonDataHyperplasticDetectionByEndoscopist <- x[grep(".*yperplastic.*", 
-        x[, Dx]), ] %>% group_by_(Endo_Endoscopist) %>% 
-        do(data.frame(NumHyperplastics = nrow(.)))
+    MyColonDataHyperplasticDetectionByEndoscopist <- x[grep(".*yperplastic.*", x[, Dx]), ] %>% 
+        group_by_(Endo_Endoscopist) %>% do(data.frame(NumHyperplastics = nrow(.)))
     
-    MyColonDataColonoscopiesByEndoscopist <- x %>% 
-        group_by_(Endo_Endoscopist) %>% do(data.frame(NumColons = nrow(.)))
+    MyColonDataColonoscopiesByEndoscopist <- x %>% group_by_(Endo_Endoscopist) %>% do(data.frame(NumColons = nrow(.)))
     
     # Merge the two above by column to get proportion:
-    MyColonDataHDR <- full_join(MyColonDataHyperplasticDetectionByEndoscopist, 
-        MyColonDataColonoscopiesByEndoscopist, by = Endo_Endoscopist)
+    MyColonDataHDR <- full_join(MyColonDataHyperplasticDetectionByEndoscopist, MyColonDataColonoscopiesByEndoscopist, 
+        by = Endo_Endoscopist)
     MyColonDataHDR$PropHyperplastic <- (MyColonDataHDR$NumHyperplastics/MyColonDataHDR$NumColons) * 
         100
     
-    FinalTable <- full_join(MyColonDataADR, MyColonDataHDR, 
-        by = Endo_Endoscopist)
-    FinalTable <- full_join(FinalTable, MyColonDataAdenocarcinomas, 
-        by = Endo_Endoscopist)
+    FinalTable <- full_join(MyColonDataADR, MyColonDataHDR, by = Endo_Endoscopist)
+    FinalTable <- full_join(FinalTable, MyColonDataAdenocarcinomas, by = Endo_Endoscopist)
     FinalTable$HyperplasticToAdenomaRatio <- FinalTable$PropAdenomas/FinalTable$PropHyperplastic
     
     # Rename one column
@@ -783,17 +700,21 @@ GRS_Type_Assess_By_Unit <- function(x, ProcPerformed,
 #' @param z The column containing the Indication for the examination
 #' @keywords Withdrawal
 #' @export
-#' @examples v<-TheOGDReportFinal.rda
-#'  EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:","Date of procedure:","Endoscopist:","Endoscopist:","Medications","Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:","Endoscopic Diagnosis:")
+#' @examples v<-TheOGDReportFinal
+#'  EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+#'  'Date of procedure:','Endoscopist:','Endoscopist:','Medications','Instrument',
+#'  'Extent of Exam:','Indications:','Procedure Performed:','Findings:','Endoscopic Diagnosis:')
 #'  for(i in 1:(length(EndoscTree)-1)) {
-#'  v<-Extractor(v,"OGDReportWhole",as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
+#'  v<-Extractor(v,'OGDReportWhole',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'  as.character(EndoscTree[i]))
 #'  }
-#'  v$Dateofprocedure<-as.Date(v$Dateofprocedure,format="%d/%m/%Y")
-#'  v<-EndoscChopperEndoscopist(v,"Endoscopist")
-#'  v$Endoscopist<-gsub("Second","",v$Endoscopist)
-#'  v<-v[grepl("Gastroscopy",v$ProcedurePerformed),]
+#'  v$Dateofprocedure<-as.Date(v$Dateofprocedure,format='%d/%m/%Y')
+#'  v<-EndoscChopperEndoscopist(v,'Endoscopist')
+#'  v$Endoscopist<-gsub('Second','',v$Endoscopist)
+#'  v<-v[grepl('Gastroscopy',v$ProcedurePerformed),]
+#'  NumByEndoscopist(v,'Endoscopist','IndicationFroExamination')
 
-NumberPerformed<-function(x,y){
- NumByEndoscopist<-data.frame(table(v$Endoscopist,v$Indications))
- return(NumByEndoscopist)
+NumberPerformed <- function(x, y, z) {
+    NumByEndoscopist <- data.frame(table(x[, y], x[, z]))
+    return(NumByEndoscopist)
 }

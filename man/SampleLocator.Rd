@@ -13,8 +13,6 @@ SampleLocator(x, y)
 \item{x}{The dataframe}
 
 \item{y}{SampleLocation from the TermStandardizer}
-
-\item{z}{name for the new column}
 }
 \description{
 Determines the site of samples
@@ -23,14 +21,14 @@ although you could just run it after the term stanardiser to get an overview of 
 sites sampled without duplication
 }
 \examples{
-v<-Endomerge(MyColonpath,MyColonendo)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-v<-ChopperNewLines(v,"Histo_ResultText")
+v<-MyColonpath
+Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
+v<-ChopperNewLines(v,'Histo_ResultText')
 for(i in 1:(length(Histoltree)-1)) {
- v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+ v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+ as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 }
-f<-SampleLocator(v,"SampleLocation")
+f<-SampleLocator(v,'SampleLocation')
 }
 \keyword{Sample}
 \keyword{location}

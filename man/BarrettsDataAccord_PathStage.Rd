@@ -17,16 +17,15 @@ Specfically it extracts the histopathology worst grade
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-'Findings','Endoscopic Diagnosis','')
-for(i in 1:(length(EndoscTree)-1)) {
-  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-  as.character(EndoscTree[i]))
+v<-PathDataFrameFinalColon
+Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Clinical Details","Nature of specimen",
+"Histology","Diagnosis","")
+for(i in 1:(length(Histoltree)-1)) {
+  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
+  as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
 }
-b<-BarrettsDataAccord_PathStage(b,"Histo_ResultText")
+b<-BarrettsDataAccord_PathStage(b,'Histology')
 }
 \keyword{Pathology}
 \keyword{extraction}

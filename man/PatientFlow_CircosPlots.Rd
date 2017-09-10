@@ -11,17 +11,19 @@ PatientFlow_CircosPlots(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed)
 
 \item{Endo_ResultPerformed}{the column containing the date of the procedure}
 
+\item{HospNum_Id}{Column with the patient's unique hospital number
+#' @import dplyr}
+
 \item{ProcPerformed}{The procedure that you want to plot (eg EMR,
 radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)}
-
-\item{Indication}{the column containing the indication for the procedure}
 }
 \description{
 This allows us to look at the overall flow from one type of procedure to another using circos plots
 }
 \examples{
 v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
+'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')
@@ -29,6 +31,6 @@ for(i in 1:(length(EndoscTree)-1)) {
   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
   as.character(EndoscTree[i]))
 }
-v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
 }
 \keyword{Circos}

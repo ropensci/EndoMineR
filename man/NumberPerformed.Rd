@@ -6,7 +6,7 @@
 As per BSG recommendations for Upper GI minimum number of gastroscopies in a year (although here the time frame is user
 defined)}
 \usage{
-NumberPerformed(x, y)
+NumberPerformed(x, y, z)
 }
 \arguments{
 \item{x}{The dataframe}
@@ -21,14 +21,18 @@ As per BSG recommendations for Upper GI minimum number of gastroscopies in a yea
 defined)
 }
 \examples{
-v<-TheOGDReportFinal.rda
- EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:","Date of procedure:","Endoscopist:","Endoscopist:","Medications","Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:","Endoscopic Diagnosis:")
+v<-TheOGDReportFinal
+ EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+ 'Date of procedure:','Endoscopist:','Endoscopist:','Medications','Instrument',
+ 'Extent of Exam:','Indications:','Procedure Performed:','Findings:','Endoscopic Diagnosis:')
  for(i in 1:(length(EndoscTree)-1)) {
- v<-Extractor(v,"OGDReportWhole",as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
+ v<-Extractor(v,'OGDReportWhole',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+ as.character(EndoscTree[i]))
  }
- v$Dateofprocedure<-as.Date(v$Dateofprocedure,format="\%d/\%m/\%Y")
- v<-EndoscChopperEndoscopist(v,"Endoscopist")
- v$Endoscopist<-gsub("Second","",v$Endoscopist)
- v<-v[grepl("Gastroscopy",v$ProcedurePerformed),]
+ v$Dateofprocedure<-as.Date(v$Dateofprocedure,format='\%d/\%m/\%Y')
+ v<-EndoscChopperEndoscopist(v,'Endoscopist')
+ v$Endoscopist<-gsub('Second','',v$Endoscopist)
+ v<-v[grepl('Gastroscopy',v$ProcedurePerformed),]
+ NumByEndoscopist(v,'Endoscopist','IndicationFroExamination')
 }
 \keyword{Withdrawal}

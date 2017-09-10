@@ -12,7 +12,4 @@ BarrettsTherapeuticsOnly(x)
 \description{
 This function makes all therapeutics unique
 }
-\examples{
-BarrettsTherapeuticsOnly(b)
-}
 \keyword{Therapeutic}

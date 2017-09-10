@@ -15,9 +15,6 @@ BarrettsBasicNumbers(x, Endo_ResultPerformed)
 This looks at the basic numbers of all the therapeutic endoscopies over time.Need to have run
 BarettsDataAccord_Event() first
 }
-\examples{
-BarrettsBasicNumbers(x,'Endo_ResultPerformed')
-}
 \keyword{Number}
 \keyword{of}
 \keyword{therapies}

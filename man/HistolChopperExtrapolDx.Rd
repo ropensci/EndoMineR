@@ -15,14 +15,15 @@ HistolChopperExtrapolDx(x, y)
 This extracts other specific diagnoses from the report
 }
 \examples{
-v<-Endomerge(MyColonpath,MyColonendo)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
-Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
-v<-ChopperNewLines(v,"Histo_ResultText")
+v<-PathDataFrameFinalColon
+Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Clinical Details","Nature of specimen",
+"Histology","Diagnosis","")
 for(i in 1:(length(Histoltree)-1)) {
- v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
+  as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
 }
-v<-HistolChopperExtrapolDx(v,"Diagnosis")
+v<-HistolChopperExtrapolDx(v,'Diagnosis')
 }
 \keyword{Histology}
 \keyword{diagnosis}

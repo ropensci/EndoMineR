@@ -13,7 +13,7 @@ BarrettsDataAccord_Event(x, y, z, aa, bb)
 
 \item{z}{The Procedure Performed column}
 
-\item{aa}{The endoscopic diagnpsis column}
+\item{aa}{The endoscopic diagnosis column}
 
 \item{bb}{The endoscopic findings column if different to the Diagnosis column}
 }
@@ -23,16 +23,15 @@ Specfically it extracts the event
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
-names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+v<-TheOGDReportFinal
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')
 for(i in 1:(length(EndoscTree)-1)) {
-  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+  v<-Extractor(v,'OGDReportWhole',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
   as.character(EndoscTree[i]))
 }
-b<-BarrettsDataAccord_Event(b,"Histo_ResultText","ProcedurePerformed","Diagnosis","Findings")
+b<-BarrettsDataAccord_Event(v,'Histo_ResultText','ProcedurePerformed','EndoscopicDiagnosis','Findings')
 
 }
 \keyword{Event}
