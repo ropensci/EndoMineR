@@ -22,5 +22,15 @@ This assess where samples are taken from. This should be used after the TermStan
 although you could just run it after the term stanardiser to get an overview of where samples were taken from. It will tell you the
 sites sampled without duplication
 }
+\examples{
+v<-Endomerge(MyColonpath,MyColonendo)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+v<-ChopperNewLines(v,"Histo_ResultText")
+for(i in 1:(length(Histoltree)-1)) {
+ v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+}
+f<-SampleLocator(v,"SampleLocation")
+}
 \keyword{Sample}
 \keyword{location}

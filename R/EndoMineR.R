@@ -12,7 +12,17 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("b","PatientID",".SD","C
 #' @importFrom magrittr "%>%"
 #' @keywords Surveillance
 #' @export
-#' @examples SurveillanceTimeByRow(v,'PatientID','Endo_ResultPerformed')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'em<-SurveillanceTimeByRow(v,"HospitalNumber","Endo_ResultPerformed")
 
 SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
     x %>% arrange_(HospNum_Id, Endo_ResultPerformed) %>% 
@@ -32,8 +42,17 @@ SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr "%>%"
 #' @keywords Surveillance
 #' @export
-#' @examples SurveillanceLastToNow(v,'PatientID','Endo_ResultPerformed')
-
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'em<-SurveillanceLastToNow(v,"HospitalNumber","Endo_ResultPerformed")
 
 SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
     x %>% arrange_(HospNum_Id, Endo_ResultPerformed) %>% 
@@ -52,7 +71,18 @@ SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr "%>%"
 #' @keywords Surveillance
 #' @export
-#' @examples SurveillanceLastTest(v,'PatientID','Endo_ResultPerformed')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'em<-SurveillanceLastTest(v,"HospitalNumber","Endo_ResultPerformed")
+
 
 
 SurveillanceLastTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
@@ -71,7 +101,17 @@ SurveillanceLastTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr "%>%"
 #' @keywords Surveillance
 #' @export
-#' @examples SurveillanceFirstTest(v,'PatientID','Endo_ResultPerformed')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'em<-SurveillanceFirstTest(v,"HospitalNumber","Endo_ResultPerformed")
 
 
 SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
@@ -89,7 +129,17 @@ SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr "%>%"
 #' @keywords cats
 #' @export
-#' @examples SurveillanceFirstTest(v)
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'em<-SurveillanceCapacity(v)
 
 
 SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
@@ -110,7 +160,17 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @import lubridate
 #' @keywords Tests number
 #' @export
-#' @examples HowManyTests(v,'EXAMINATION','Endo_ResultPerformed','Abdo')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'HowManyTests(v,"Indications","Endo_ResultPerformed","Surv")
 
 
 HowManyTests <- function(x, Indication, Endo_ResultPerformed, 
@@ -152,11 +212,20 @@ HowManyTests <- function(x, Indication, Endo_ResultPerformed,
 #' @param y the column containing the test like ProcPerformed for example
 #' @import dplyr
 #' @importFrom magrittr "%>%"
-#' @importfrom data.table("setDT","rowid")
-#' @importfrom reshape2("dcast")
+#' @importfrom data.table setDT rowid 
+#' @importfrom reshape2 "dcast"
 #' @keywords Sankey
 #' @export
-#' @examples SurveySankey(v,"PROCEDUREPERFORMED")
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
 
 SurveySankey <- function(dfw, y) {
     # Create the Sankey diagrams
@@ -218,7 +287,16 @@ SurveySankey <- function(dfw, y) {
 #' @importFrom magrittr "%>%"
 #' @keywords Circos
 #' @export
-#' @examples
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
 
 PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed,HospNum_Id,ProcPerformed) {
     # library(dplyr) library(reshape2)
@@ -299,8 +377,18 @@ PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed,HospNum_Id,ProcPerfo
 #' @import tm
 #' @keywords Lookup
 #' @export
-#' @examples myNotableWords<-c('arrett','oeliac')
-#'  ListLookup(v,'Findings',myNotableWords)
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'myNotableWords<-c("arrett","oeliac")
+#'tt<-ListLookup(v,"Findings",myNotableWords)
 
 ListLookup <- function(theframe, y, myNotableWords) {
     
@@ -351,7 +439,18 @@ ListLookup <- function(theframe, y, myNotableWords) {
 #' @import tidyr
 #' @keywords Endoscopist
 #' @export
-#' @examples
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+#'v<-EndoscChopperMeds(v,"Medications")
+#'Fent<-MetricByEndoscopist(v,"Endoscopist","Fent")
 
 
 MetricByEndoscopist <- function(x, y, z) {
@@ -375,12 +474,19 @@ MetricByEndoscopist <- function(x, y, z) {
 # Determine the location of biopsies
 
 #' Standardises the location of biopsies
-#' This assess the size of the biopies take
+#' This assess the location of the biopies taken from the histopathology specimens.
 #' @param x The dataframe 
 #' @param y Column describing the Macroscopic sample from histology
 #' @keywords Withdrawal
 #' @export
-#' @examples
+#' @examples v<-Endomerge(MyColonpath,MyColonendo)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' for(i in 1:(length(Histoltree)-1)) {
+#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#' }
+#' f<-TermStandardLocation(v,"Histo_ResultText")
 
 TermStandardLocation <- function(x, SampleLocation) {
     x$SampleLocation <- tolower(x[, SampleLocation])
@@ -472,7 +578,14 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' @import stringr
 #' @keywords Sample location
 #' @export
-#' @examples
+#' @examples v<-Endomerge(MyColonpath,MyColonendo)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' for(i in 1:(length(Histoltree)-1)) {
+#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#' }
+#' f<-SampleLocator(v,"SampleLocation")
 
 SampleLocator <- function(x, y) {
     x <- data.frame(x)
@@ -497,7 +610,14 @@ SampleLocator <- function(x, y) {
 #' @keywords Withdrawal
 #' @import stringr
 #' @export
-#' @examples
+#' @examples v<-Endomerge(MyColonpath,MyColonendo)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' for(i in 1:(length(Histoltree)-1)) {
+#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#' }
+#' f<-PolypLocator(v,"SampleLocation")
 
 
 PolypLocator <- function(x, y) {
@@ -524,7 +644,14 @@ PolypLocator <- function(x, y) {
 #' @param y The column containing the SampleLocation from the Term Standardizer
 #' @keywords Withdrawal
 #' @export
-#' @examples
+#' @examples v<-Endomerge(MyColonpath,MyColonendo)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' for(i in 1:(length(Histoltree)-1)) {
+#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#' }
+#' f<-PolypTidyUpLocator(v,"SampleLocation")
 
 PolypTidyUpLocator <- function(x, SampleLocation) {
     # Get all the polyps and tidy up the polyp data-
@@ -543,7 +670,14 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #' @param y The column BxSize have been calculated
 #' @keywords Withdrawal
 #' @export
-#' @examples
+#' @examples v<-Endomerge(MyColonpath,MyColonendo)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+#' v<-ChopperNewLines(v,"Histo_ResultText")
+#' for(i in 1:(length(Histoltree)-1)) {
+#'  v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#' }
+#' GRSTable<-GRS_Type_Assess_By_Unit(v,"ProcedurePerformed", "Endoscopist","Diagnosis","Histology")
 
 GRS_Type_Assess_By_Unit <- function(x, ProcPerformed, 
     Endo_Endoscopist, Dx, Histol) {
@@ -657,11 +791,6 @@ GRS_Type_Assess_By_Unit <- function(x, ProcPerformed,
 #'  v$Dateofprocedure<-as.Date(v$Dateofprocedure,format="%d/%m/%Y")
 #'  v<-EndoscChopperEndoscopist(v,"Endoscopist")
 #'  v$Endoscopist<-gsub("Second","",v$Endoscopist)
-#'  v<-EndoscChopperMeds(v,"Medications")
-#'  v<-EndoscChopperInstrument(v,"Instrument")
-#'  v<-EndoscChopperIndications(v,"Indications")
-#'  v<-EndoscChopperProcPerformed(v,"ProcedurePerformed")
-#'  v<-EndoscChopperFindings(v,"Findings")
 #'  v<-v[grepl("Gastroscopy",v$ProcedurePerformed),]
 
 NumberPerformed<-function(x,y){

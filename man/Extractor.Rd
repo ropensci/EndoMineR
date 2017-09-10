@@ -21,6 +21,8 @@ Extractor(x, y, stra, strb, t)
 This is the main extractor for the Endoscopy and Histology report
 }
 \examples{
+v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
 EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
 'Findings','Endoscopic Diagnosis','')

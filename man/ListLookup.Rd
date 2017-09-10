@@ -17,7 +17,17 @@ ListLookup(theframe, y, myNotableWords)
 Input is a dataframe with x=dataframe name, y=column name you are doing text mining from and PropThreshold= the number of rows that have the terms you are interested in. theframe is the dataframe, y is the columnn of interest and PropThreshold is the Proportion of reports Threshold for the graph. The aim here is simply to produce a document term matrix to get the frequency of all the words, then extract the words you are interested in with tofind (I think) then find which reports have those words. Then find what proportion of the reports have those terms
 }
 \examples{
-myNotableWords<-c('arrett','oeliac')
- ListLookup(v,'Findings',myNotableWords)
+v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+'Findings','Endoscopic Diagnosis','')
+for(i in 1:(length(EndoscTree)-1)) {
+  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+  as.character(EndoscTree[i]))
+}
+v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+myNotableWords<-c("arrett","oeliac")
+tt<-ListLookup(v,"Findings",myNotableWords)
 }
 \keyword{Lookup}

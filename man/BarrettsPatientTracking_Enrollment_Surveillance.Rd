@@ -20,7 +20,16 @@ BarrettsPatientTracking_Enrollment_Surveillance(x, PatientID,
 This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy.
 }
 \examples{
-BarrettsPatientTracking_Enrollment_Surveillance(b,'PatientID','Endo_ResultPerformed','INDIC')
+v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+'Findings','Endoscopic Diagnosis','')
+for(i in 1:(length(EndoscTree)-1)) {
+  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+  as.character(EndoscTree[i]))
+}
+Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(b,"HospitalNumber","Endo_ResultPerformed","Indications")
 }
 \keyword{Patient}
 \keyword{Tracking}

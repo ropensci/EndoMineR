@@ -17,6 +17,15 @@ BarrettsPatientTracking_UniqueHospNum(x, rule, PatientID)
 This function gets the unique patient ID's for each patient, for each rule. It lists the unique PatientIDs assocaited with a rule ('Rule1','Rule2','Rule3','NoRules')
 }
 \examples{
-BarrettsPatientTracking_UniqueHospNum(b,'Rule1')
+v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+'Findings','Endoscopic Diagnosis','')
+for(i in 1:(length(EndoscTree)-1)) {
+  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+  as.character(EndoscTree[i]))
+}
+Rule<-BarrettsPatientTracking_UniqueHospNum(b,"Rule1","HospNumId")
 }
 \keyword{Rule}

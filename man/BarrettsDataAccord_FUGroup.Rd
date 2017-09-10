@@ -17,6 +17,15 @@ Specfically it combines the presence of intestinal metaplasia with Prague score 
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
-BarrettsDataAccord_FUGroup(b,'FINDINGS')
+v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+'Findings','Endoscopic Diagnosis','')
+for(i in 1:(length(EndoscTree)-1)) {
+  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+  as.character(EndoscTree[i]))
+}
+b<-BarrettsDataAccord_FUGroup(b,"Findings")
 }
 \keyword{Follow-Up}

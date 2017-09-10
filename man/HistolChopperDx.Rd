@@ -15,7 +15,14 @@ HistolChopperDx(x, y)
 This extracts Diagnosis data from the report
 }
 \examples{
-HistolChopperDx(v,'Diagnosis')
+v<-Endomerge(PathDataFrameFinalColon,ColonFinal)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+v<-ChopperNewLines(v,"Histo_ResultText")
+for(i in 1:(length(Histoltree)-1)) {
+ v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+}
+v<-HistolChopperDx(v,"Diagnosis")
 }
 \keyword{Diagnosis}
 \keyword{Histology}

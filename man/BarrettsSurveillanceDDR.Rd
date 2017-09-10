@@ -18,9 +18,6 @@ BarrettsSurveillanceDDR(x, y, z)
 \description{
 This function assesses the dysplasia detection rate per endoscopist
 }
-\examples{
-BarrettsSurveillanceDDR(x,'Endoscopist','IMorNoIM')
-}
 \keyword{detection}
 \keyword{dysplasia}
 \keyword{rate}

@@ -15,7 +15,14 @@ HistolChopperBxSize(x, y)
 This extracts the biopsy size from the report.This is usually from the Macroscopic description column.
 }
 \examples{
-HistolChopperBxSize(v,'Natureofspecimen')
+v<-Endomerge(PathDataFrameFinalColon,ColonFinal)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+v<-ChopperNewLines(v,"Histo_ResultText")
+for(i in 1:(length(Histoltree)-1)) {
+ v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+}
+v<-HistolChopperBxSize(v,"Natureofspecimen")
 }
 \keyword{biopsy}
 \keyword{size}

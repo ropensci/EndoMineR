@@ -19,4 +19,16 @@ radiofrequency ablation for Barrett's but can be any dscription of a procedure y
 \description{
 This allows us to look at the overall flow from one type of procedure to another using circos plots
 }
+\examples{
+v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+'Findings','Endoscopic Diagnosis','')
+for(i in 1:(length(EndoscTree)-1)) {
+  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+  as.character(EndoscTree[i]))
+}
+v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
+}
 \keyword{Circos}

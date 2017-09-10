@@ -10,7 +10,16 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c("PatientID",".SD","CStag
 #' @import stringr
 #' @keywords  Prague score
 #' @export
-#' @examples BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'v<-BarrettsDataAccord_Prague(v,"Endo_ResultText")
 
 BarrettsDataAccord_Prague <- function(x, y) {
     x <- data.frame(x)
@@ -31,7 +40,16 @@ BarrettsDataAccord_Prague <- function(x, y) {
 #' @param y column of interest
 #' @keywords Pathology extraction 
 #' @export
-#' @examples BarrettsDataAccord_PathStage(b,'Histo_ResultText')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'b<-BarrettsDataAccord_PathStage(b,"Histo_ResultText")
 
 BarrettsDataAccord_PathStage <- function(x, y) {
     # Get the worst pathology for that sample
@@ -63,8 +81,17 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' @param bb The endoscopic findings column if different to the Diagnosis column
 #' @keywords Event extraction
 #' @export
-#' @examples BarrettsDataAccord_Event(b,'Histo_ResultText','PROCEDURE','DIAGNOSIS','FINDINGS')
-
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#'b<-BarrettsDataAccord_Event(b,"Histo_ResultText","ProcedurePerformed","Diagnosis","Findings")
+#'
 BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
     x <- data.frame(x)
     # Get all the EVENTS in:
@@ -90,7 +117,16 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' @param y The field to search (endoscopic findings)
 #' @keywords Follow-Up
 #' @export
-#' @examples BarrettsDataAccord_FUGroup(b,'FINDINGS')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#' b<-BarrettsDataAccord_FUGroup(b,"Findings")
 
 BarrettsDataAccord_FUGroup <- function(x, y) {
     x <- data.frame(x)
@@ -133,7 +169,16 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' @import dplyr
 #' @importFrom magrittr "%>%"
 #' @export
-#' @examples BarrettsPatientTracking_Enrollment_Surveillance(b,'PatientID','Endo_ResultPerformed','INDIC')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#' Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(b,"HospitalNumber","Endo_ResultPerformed","Indications")
 
 BarrettsPatientTracking_Enrollment_Surveillance <- function(x, 
     PatientID, Endo_ResultPerformed, IndicationsFroExamination) {
@@ -166,7 +211,16 @@ BarrettsPatientTracking_Enrollment_Surveillance <- function(x,
 #' @param PatientID Column containing patient numbers
 #' @keywords Rule
 #' @export
-#' @examples BarrettsPatientTracking_UniqueHospNum(b,'Rule1')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#' Rule<-BarrettsPatientTracking_UniqueHospNum(b,"Rule1","HospNumId")
 
 BarrettsPatientTracking_UniqueHospNum <- function(x, 
     rule,PatientID) {
@@ -188,7 +242,16 @@ BarrettsPatientTracking_UniqueHospNum <- function(x,
 #' @import lattice
 #' @keywords Documentation
 #' @export
-#' @examples BarrettsQuality_AnalysisDocumentation(x,'FINDINGS')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#' BarrettsQuality_AnalysisDocumentation(b,"Findings")
 
 
 BarrettsQuality_AnalysisDocumentation <- function(x, 
@@ -253,9 +316,16 @@ BarrettsQuality_AnalysisDocumentation <- function(x,
 #' @param Endoscopist name of the column with the Endoscopist names
 #' @keywords Does something with data
 #' @export
-#' @examples BarrettsQuality_AnalysisBiopsyNumber(b,'Endo_ResultPerformed','PatientID','Endoscopist')
-
-utils::suppressForeignCheck(c("CStage", "NumbOfBx","Difference","Years"))
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#' BarrettsQuality_AnalysisBiopsyNumber(b,"Endoscopist","Endo_ResultPerformed","Endoscopist")
 
 BarrettsQuality_AnalysisBiopsyNumber <- function(x, 
     Endo_ResultPerformed, PatientID, Endoscopist) {
@@ -310,7 +380,17 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x,
 #' @import ggplot2
 #' @importFrom magrittr "%>%"
 #' @export
-#' @examples BarrettsSurveillance_PathDetection(x,'Myplot')
+#' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#' BarrettsSurveillance_PathDetection(b,"Myplot")
+
 
 BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
     x <- data.frame(x)
@@ -342,7 +422,16 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 #' @param IMorNoIM extracted with the function BarrettsDataAccord_PathStage()
 #' @keywords dysplasia detection rate
 #' @export
-#' @examples BarrettsSurveillanceDDR(x,'Endoscopist','IMorNoIM')
+#' #' @examples v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+#' names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
+#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
+#' 'Findings','Endoscopic Diagnosis','')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
+#'   as.character(EndoscTree[i]))
+#' }
+#' BarrettsSurveillanceDDR(b,"Endoscopist","IMorNoIM")
 
 
 

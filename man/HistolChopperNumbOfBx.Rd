@@ -16,7 +16,14 @@ This extracts the number of biopsies taken from the pathology report. This is us
 It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is (z)
 }
 \examples{
-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+v<-Endomerge(PathDataFrameFinalColon,ColonFinal)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+v<-ChopperNewLines(v,"Histo_ResultText")
+for(i in 1:(length(Histoltree)-1)) {
+ v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+}
+v<-HistolChopperNumbOfBx(v,"Natureofspecimen","specimen")
 }
 \keyword{Biopsy}
 \keyword{number}

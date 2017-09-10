@@ -3,7 +3,7 @@
 \name{TermStandardLocation}
 \alias{TermStandardLocation}
 \title{Standardises the location of biopsies
-This assess the size of the biopies take}
+This assess the location of the biopies taken from the histopathology specimens.}
 \usage{
 TermStandardLocation(x, SampleLocation)
 }
@@ -14,6 +14,16 @@ TermStandardLocation(x, SampleLocation)
 }
 \description{
 Standardises the location of biopsies
-This assess the size of the biopies take
+This assess the location of the biopies taken from the histopathology specimens.
+}
+\examples{
+v<-Endomerge(MyColonpath,MyColonendo)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+v<-ChopperNewLines(v,"Histo_ResultText")
+for(i in 1:(length(Histoltree)-1)) {
+ v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+}
+f<-TermStandardLocation(v,"Histo_ResultText")
 }
 \keyword{Withdrawal}

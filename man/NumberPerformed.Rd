@@ -21,7 +21,7 @@ As per BSG recommendations for Upper GI minimum number of gastroscopies in a yea
 defined)
 }
 \examples{
-v<-EndoRaw2()
+v<-TheOGDReportFinal.rda
  EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:","Date of procedure:","Endoscopist:","Endoscopist:","Medications","Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:","Endoscopic Diagnosis:")
  for(i in 1:(length(EndoscTree)-1)) {
  v<-Extractor(v,"OGDReportWhole",as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
@@ -29,11 +29,6 @@ v<-EndoRaw2()
  v$Dateofprocedure<-as.Date(v$Dateofprocedure,format="\%d/\%m/\%Y")
  v<-EndoscChopperEndoscopist(v,"Endoscopist")
  v$Endoscopist<-gsub("Second","",v$Endoscopist)
- v<-EndoscChopperMeds(v,"Medications")
- v<-EndoscChopperInstrument(v,"Instrument")
- v<-EndoscChopperIndications(v,"Indications")
- v<-EndoscChopperProcPerformed(v,"ProcedurePerformed")
- v<-EndoscChopperFindings(v,"Findings")
  v<-v[grepl("Gastroscopy",v$ProcedurePerformed),]
 }
 \keyword{Withdrawal}

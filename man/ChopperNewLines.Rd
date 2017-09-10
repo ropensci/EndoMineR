@@ -15,7 +15,10 @@ ChopperNewLines(x, y)
 Cleans the long lines to separate them into new lines if necessary
 }
 \examples{
-ChopperNewLines(NewData,'Endo_ResultText')
+v<-Endomerge2(PathDataFrameFinal,OGDReportWhole)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:","Date of procedure:","Endoscopist:","Endoscopist:","Medications","Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:","Endoscopic Diagnosis:")
+v<-ChopperNewLines(v,"Endo_ResultText")
 }
 \keyword{Endoscopy}
 \keyword{Newlines}

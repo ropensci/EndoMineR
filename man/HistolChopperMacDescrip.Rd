@@ -15,6 +15,6 @@ HistolChopperMacDescrip(x, y)
 This extracts numbers from written (spelt) numbers
 }
 \examples{
-x <- HistolChopperMacDescrip(x, y)
+HistolChopperMacDescrip(x, y)
 }
 \keyword{Macroscopic}

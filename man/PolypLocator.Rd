@@ -16,4 +16,14 @@ PolypLocator(x, y)
 Standardises the location of polyps
 This assess the size of the biopies take
 }
+\examples{
+v<-Endomerge(MyColonpath,MyColonendo)
+names(v)<-c("Endo_ResultText","Endo_ResultPerformed","HospNumId","Histo_ResultText","Histo_ResultPerformed","HospNumId2","Days")
+Histoltree<-list("Clinical Details","Nature of specimen","Histology","Diagnosis","")
+v<-ChopperNewLines(v,"Histo_ResultText")
+for(i in 1:(length(Histoltree)-1)) {
+ v<-Extractor(v,"Histo_ResultText",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+}
+f<-PolypLocator(v,"SampleLocation")
+}
 \keyword{Withdrawal}
