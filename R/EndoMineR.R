@@ -4,7 +4,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("b", "PatientID", ".SD",
     "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", "region", "rgb", 
     "setDT"))
 
-########## Surveillance functions ######
+######### Surveillance functions ######
 
 #' SurveillanceTimeByRow
 #'
