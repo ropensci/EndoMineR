@@ -16,6 +16,6 @@ This does a general clean up of whitespace,semi-colons,full stops at the start
 of lines and converts end sentence full stops to new lines
 }
 \examples{
- x[, y] <- ColumnCleanUp(x, y)
+ 
 }
 \keyword{Cleaner}

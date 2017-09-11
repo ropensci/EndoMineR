@@ -9,12 +9,23 @@ HistolChopperMacDescripCleanup(x, y)
 \arguments{
 \item{x}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{y}{column of interest that describes the macroscopic specimen}
 }
 \description{
 This extracts Macroscopic description data from the report
 }
 \examples{
-x <- HistolChopperMacDescripCleanup(x, y)
+Mypath<-PathDataFrameFinalColon
+HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+"Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+for(i in 1:(length(HistolTree)-1)) {
+ Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+ as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+}
+Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+HistolChopperHistol(Mypath,'Histology')
+v<-HistolChopperDx(Mypath,"Diagnosis")
+v<-HistolChopperExtrapolDx(v,"Diagnosis")
+v<-HistolChopperMacDescripCleanup(v,"Macroscopicdescription")
 }
 \keyword{Macroscopic}

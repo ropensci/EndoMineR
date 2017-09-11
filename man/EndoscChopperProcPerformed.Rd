@@ -26,6 +26,6 @@ for(i in 1:(length(EndoscTree)-1)) {
  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
-v<-EndoscChopperProcPerformed(v,'ProcedurePerformed')
+v<-EndoscChopperProcPerformed(Myendo,'ProcedurePerformed')
 }
 \keyword{Procedure}

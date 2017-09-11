@@ -17,9 +17,6 @@ Barretts_LesionRecognitionEMR(EndoSubsetEMR, y, z)
 This looks at the Paris grades of each EMR and then creates a heatmap of pathological grade vs 
 endoscopic Paris grade
 }
-\examples{
-Barretts_LesionRecognitionEMR(EndoSubsetEMR,'FINDINGS','DIAGNOSIS')
-}
 \keyword{Does}
 \keyword{data}
 \keyword{something}

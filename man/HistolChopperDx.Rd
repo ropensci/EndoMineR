@@ -15,7 +15,7 @@ HistolChopperDx(x, y)
 This extracts Diagnosis data from the report
 }
 \examples{
-v<-PathDataFrameFinalColon
+Mypath<-PathDataFrameFinalColon
 Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
 "Date of procedure:","Clinical Details","Nature of specimen",
 "Histology","Diagnosis","")
@@ -23,7 +23,7 @@ for(i in 1:(length(Histoltree)-1)) {
   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
   as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
 }
-v<-HistolChopperDx(v,'Diagnosis')
+v<-HistolChopperDx(Mypath,'Diagnosis')
 }
 \keyword{Diagnosis}
 \keyword{Histology}

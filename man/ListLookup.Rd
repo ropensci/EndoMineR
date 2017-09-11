@@ -18,15 +18,18 @@ Input is a dataframe with x=dataframe name, y=column name you are doing text min
 }
 \examples{
 v<-TheOGDReportFinal
-EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-'Findings','Endoscopic Diagnosis','')
+Myendo<-TheOGDReportFinal
+Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
+"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+"Endoscopic Diagnosis:")
 for(i in 1:(length(EndoscTree)-1)) {
-  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-  as.character(EndoscTree[i]))
+ Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+ as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
-v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
 myNotableWords<-c('arrett','oeliac')
-tt<-ListLookup(v,'Findings',myNotableWords)
+tt<-ListLookup(Myendo,'Findings',myNotableWords)
 }
 \keyword{Lookup}

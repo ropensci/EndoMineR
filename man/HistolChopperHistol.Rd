@@ -15,6 +15,18 @@ HistolChopperHistol(x, y)
 This extracts Histology details data from the report
 }
 \examples{
-HistolChopperHistol(x,'Histo_ResultText')
+Mypath<-PathDataFrameFinalColon
+HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+"Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+for(i in 1:(length(HistolTree)-1)) {
+ Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+ as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+}
+Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+HistolChopperHistol(Mypath,'Histology')
+v<-HistolChopperDx(Mypath,"Diagnosis")
+v<-HistolChopperExtrapolDx(v,"Diagnosis")
+v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+v<-HistolChopperBxSize(v,"Macroscopicdescription")
 }
 \keyword{Histology}

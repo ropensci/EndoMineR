@@ -17,15 +17,20 @@ Specfically it extracts the histopathology worst grade
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
-v<-PathDataFrameFinalColon
-Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Clinical Details","Nature of specimen",
-"Histology","Diagnosis","")
-for(i in 1:(length(Histoltree)-1)) {
-  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-  as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+Mypath<-PathDataFrameFinalColon
+HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+"Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+for(i in 1:(length(HistolTree)-1)) {
+ Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+ as.character(HistolTree[i+1]),as.character(HistolTree[i]))
 }
-b<-BarrettsDataAccord_PathStage(b,'Histology')
+Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")
+v<-HistolChopperDx(v,"Diagnosis")
+v<-HistolChopperExtrapolDx(v,"Diagnosis")
+v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+v<-HistolChopperBxSize(v,"Macroscopicdescription")
+b<-BarrettsDataAccord_PathStage(v,'Histology')
 }
 \keyword{Pathology}
 \keyword{extraction}

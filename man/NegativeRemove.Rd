@@ -14,8 +14,5 @@ NegativeRemove(x, y)
 \description{
 This extracts removes negative diagnoses from the report
 }
-\examples{
-x[, y] <- NegativeRemove(x[, y])
-}
 \keyword{Negative}
 \keyword{Sentences}

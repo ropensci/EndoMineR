@@ -17,13 +17,12 @@ Standardises the location of polyps
 This assess the size of the biopies take
 }
 \examples{
-v<-MyColonpath
+v<-PathDataFrameFinalColon
 Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
-v<-ChopperNewLines(v,'Histo_ResultText')
 for(i in 1:(length(Histoltree)-1)) {
- v<-Extractor(v,'Histo_ResultText',as.character(Histoltree[i]),
+ v<-Extractor(v,'PathReportWhole',as.character(Histoltree[i]),
  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
 }
-f<-PolypTidyUpLocator(v,'SampleLocation')
+f<-TermStandardLocation(v,'Histology')
 }
 \keyword{Withdrawal}

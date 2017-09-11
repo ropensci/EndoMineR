@@ -16,7 +16,7 @@ with the Nature of the specimen or the Macroscopic description in it}
 This extracts numbers from written (spelt) numbers
 }
 \examples{
-#' @examples v<-PathDataFrameFinalColon
+Mypath<-PathDataFrameFinalColon
 Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
 "Date of procedure:","Clinical Details","Nature of specimen",
 "Histology","Diagnosis","")

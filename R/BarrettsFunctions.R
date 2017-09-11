@@ -25,7 +25,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
 #'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
 #'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#'v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+#'v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 
 BarrettsDataAccord_Prague <- function(x, y) {
     x <- data.frame(x)
@@ -46,15 +46,20 @@ BarrettsDataAccord_Prague <- function(x, y) {
 #' @param y column of interest
 #' @keywords Pathology extraction 
 #' @export
-#' @examples v<-PathDataFrameFinalColon
-#' Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Clinical Details","Nature of specimen",
-#' "Histology","Diagnosis","")
-#' for(i in 1:(length(Histoltree)-1)) {
-#'   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-#'   as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
+#' @examples Mypath<-PathDataFrameFinalColon
+#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+#' for(i in 1:(length(HistolTree)-1)) {
+#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
 #' }
-#'b<-BarrettsDataAccord_PathStage(b,'Histology')
+#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' v<-HistolChopperDx(v,"Diagnosis")
+#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
+#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' b<-BarrettsDataAccord_PathStage(v,'Histology')
 
 BarrettsDataAccord_PathStage <- function(x, y) {
     # Get the worst pathology for that sample
@@ -83,14 +88,33 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' @keywords Event extraction
 #' @export
 #' @examples v<-TheOGDReportFinal
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'OGDReportWhole',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#'b<-BarrettsDataAccord_Event(v,'Histo_ResultText','ProcedurePerformed','EndoscopicDiagnosis','Findings')
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+#' Mypath<-PathDataFrameFinalColon
+#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+#' for(i in 1:(length(HistolTree)-1)) {
+#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+#' }
+#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' v<-HistolChopperDx(v,"Diagnosis")
+#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
+#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' b<-BarrettsDataAccord_Event(v,'Histology',
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
 #'
 BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
     x <- data.frame(x)
@@ -114,14 +138,34 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' @keywords Follow-Up
 #' @export
 #' @examples v<-TheOGDReportFinal
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#' b<-BarrettsDataAccord_FUGroup(b,'Findings')
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+#' Mypath<-PathDataFrameFinalColon
+#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+#' for(i in 1:(length(HistolTree)-1)) {
+#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+#' }
+#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
+#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' b<-BarrettsDataAccord_PathStage(v,'Histology')
+#' b2<-BarrettsDataAccord_Event(b,'Histology',
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
 
 BarrettsDataAccord_FUGroup <- function(x, y) {
     x <- data.frame(x)
@@ -161,26 +205,33 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' @importFrom magrittr '%>%'
 #' @export
 #' @examples v<-TheOGDReportFinal
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#' Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(b,'HospitalNumber',
-#' 'Endo_ResultPerformed','Indications')
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+#' Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',
+#' 'Dateofprocedure','Indications')
 
 BarrettsPatientTracking_Enrollment_Surveillance <- function(x, PatientID, Endo_ResultPerformed, 
     IndicationsFroExamination) {
     x <- data.frame(x)
+    PatientIDa <- rlang::sym(PatientID)
+    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    IndicationsFroExaminationa <- rlang::sym(IndicationsFroExamination)
     # So you want all those whose last endoscopy was non surveillance but who have a difftime
     # between now and the last of > 3years So get the last endoscopy for each patient Filter out
     # the endoscopies that were surveillance Get the difftime between now and the last endoscopy
     # Filter for those who have been waiting >3 years post non surveillance endoscopy
     
-    t <- x %>% arrange(Endo_ResultPerformed) %>% group_by_(PatientID) %>% slice(n()) %>% filter(!grepl("Surv|Barr", 
-        IndicationsFroExamination)) %>% mutate(Years = difftime(as.Date(Sys.Date()), Endo_ResultPerformed, 
+    t <- x %>% arrange(as.Date(!!Endo_ResultPerformeda)) %>% group_by(!!PatientIDa) %>% slice(n()) %>% filter(!grepl("Surv|Barr", 
+        !!IndicationsFroExamination)) %>% mutate(Years = difftime(as.Date(Sys.Date()), as.Date(!!Endo_ResultPerformeda), 
         units = "weeks")/52) %>% filter(Years > 3)
     
     return(t)
@@ -196,17 +247,39 @@ BarrettsPatientTracking_Enrollment_Surveillance <- function(x, PatientID, Endo_R
 #' @param PatientID Column containing patient numbers
 #' @keywords Rule
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,TheOGDReportFinal)
-#' names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
-#' 'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' @examples v<-TheOGDReportFinal
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#' Rule<-BarrettsPatientTracking_UniqueHospNum(b,'Rule1','HospNumId')
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+#' Mypath<-PathDataFrameFinalColon
+#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+#' for(i in 1:(length(HistolTree)-1)) {
+#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+#' }
+#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' v<-HistolChopperDx(v,"Diagnosis")
+#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
+#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
 
 BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
     x <- data.frame(x)
@@ -227,18 +300,34 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 #' @import lattice
 #' @keywords Documentation
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,TheOGDReportFinal)
-#' names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
-#' 'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' @examples v<-TheOGDReportFinal
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#' b<-BarrettsDataAccord_PathStage(v,'Histo_ResultText')
-#' BarrettsQuality_AnalysisDocumentation(b,'Findings')
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+#' Mypath<-PathDataFrameFinalColon
+#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+#' for(i in 1:(length(HistolTree)-1)) {
+#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+#' }
+#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
+#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' b<-BarrettsDataAccord_PathStage(v,'Histology')
+#' BarrettsQuality_AnalysisDocumentation(b,"Findings")
+
 
 
 BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
@@ -290,30 +379,54 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @param Endoscopist name of the column with the Endoscopist names
 #' @keywords Does something with data
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,TheOGDReportFinal)
-#' names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
-#' 'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' @examples v<-TheOGDReportFinal
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#' BarrettsQuality_AnalysisBiopsyNumber(b,'Endoscopist','Endo_ResultPerformed','Endoscopist')
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+#' Mypath<-PathDataFrameFinalColon
+#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+#' for(i in 1:(length(HistolTree)-1)) {
+#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+#' }
+#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' v<-HistolChopperDx(v,"Diagnosis")
+#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
+#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' BarrettsQuality_AnalysisBiopsyNumber(b4,'Endoscopist','Dateofprocedure','Endoscopist')
 
 BarrettsQuality_AnalysisBiopsyNumber <- function(x, Endo_ResultPerformed, PatientID, Endoscopist) {
     x <- data.frame(x)
+    PatientIDa <- rlang::sym(PatientID)
+    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    Endoscopista <- rlang::sym(Endoscopist)
     
-    
-    GroupedByEndoscopy <- x %>% dplyr::filter(!is.na(CStage), !is.na(NumbOfBx)) %>% dplyr::group_by_(Endo_ResultPerformed, 
-        PatientID, Endoscopist) %>% dplyr::summarise(Sum = sum(NumbOfBx), AvgC = mean(CStage))
+    GroupedByEndoscopy <- x %>% dplyr::filter(!is.na(CStage), !is.na(NumbOfBx)) %>% dplyr::group_by(as.Date(!!Endo_ResultPerformeda), 
+        !!PatientID, !!Endoscopista) %>% dplyr::summarise(Sum = sum(NumbOfBx), AvgC = mean(CStage))
     
     GroupedByEndoscopy$ExpectedNumber <- (GroupedByEndoscopy$AvgC + 1) * 2
     GroupedByEndoscopy$Difference <- GroupedByEndoscopy$Sum - GroupedByEndoscopy$ExpectedNumber
     
     # Now group the difference by endoscopist
-    BxShortfallPre <- GroupedByEndoscopy %>% dplyr::group_by_(Endoscopist) %>% dplyr::summarise(MeanDiff = mean(Difference))
+    BxShortfallPre <- GroupedByEndoscopy %>% dplyr::group_by(!!Endoscopista) %>% dplyr::summarise(MeanDiff = mean(Difference))
     
     # e) Then show shortfall of number of biopsies on a graph
     t <- ggplot2::ggplot() + geom_point(aes(BxShortfallPre$Endoscopist, BxShortfallPre$MeanDiff), 
@@ -322,7 +435,6 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x, Endo_ResultPerformed, Patien
         xlab("Endoscopist") + ylab("Shortfall(Obs-\nexpec number Bx)") + theme(axis.text.x = element_text(angle = -90, 
         size = 10)) + theme(axis.text.y = element_text(angle = -90, size = 10)) + theme(axis.title = element_text(size = 10)) + 
         theme(title = element_text(size = 10)) + theme(legend.position = "top")
-    
     
     functionResults <- list(BxShortfallPre = BxShortfallPre, t = t)
     return(functionResults)
@@ -343,18 +455,38 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x, Endo_ResultPerformed, Patien
 #' @import ggplot2
 #' @importFrom magrittr '%>%'
 #' @export
-#' @examples v<-Endomerge2(PathDataFrameFinal,TheOGDReportFinal)
-#' names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
-#' 'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' @examples v<-TheOGDReportFinal
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#' b<-BarrettsDataAccord_PathStage(v,'Histo_ResultText')
-#' BarrettsSurveillance_PathDetection(b,'Myplot')
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+#' Mypath<-PathDataFrameFinalColon
+#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+#' for(i in 1:(length(HistolTree)-1)) {
+#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+#' }
+#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
+#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' BarrettsSurveillance_PathDetection(b4,'Myplot')
 
 
 BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
@@ -385,15 +517,37 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 #' @keywords dysplasia detection rate
 #' @export
 #' @examples v<-TheOGDReportFinal
-#' EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-#' 'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-#' 'Findings','Endoscopic Diagnosis','')
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+#' "Endoscopic Diagnosis:")
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'   v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-#'   as.character(EndoscTree[i]))
+#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#' b<-BarrettsDataAccord_PathStage(v,'Histo_ResultText')
-#' BarrettsSurveillanceDDR(b,'Endoscopist','IMorNoIM')
+#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+#' Mypath<-PathDataFrameFinalColon
+#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+#' for(i in 1:(length(HistolTree)-1)) {
+#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+#' }
+#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
+#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
 
 
 
@@ -495,7 +649,7 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
 #' @param z Another endoscopy report field of interest
 #' @keywords RFA, Radiofrequency ablation
 #' @export
-#' @examples BarrettsTherapeuticsRFA_ByCatheter(EndoSubsetRFA,'FINDINGS','DIAGNOSIS')
+#' @examples 
 
 BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
     
@@ -544,7 +698,7 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 #' @keywords Does something with data
 #' @import gplots
 #' @export
-#' @examples Barretts_LesionRecognitionEMR(EndoSubsetEMR,'FINDINGS','DIAGNOSIS')
+#' @examples 
 
 Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
     

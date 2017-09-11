@@ -16,9 +16,6 @@ BarrettsTherapeuticsRFA_ByCatheter(EndoSubsetRFA, y, z)
 \description{
 This looks at the basic numbers of RFA by catheter type used
 }
-\examples{
-BarrettsTherapeuticsRFA_ByCatheter(EndoSubsetRFA,'FINDINGS','DIAGNOSIS')
-}
 \keyword{RFA,}
 \keyword{Radiofrequency}
 \keyword{ablation}

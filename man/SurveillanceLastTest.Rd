@@ -17,15 +17,17 @@ SurveillanceLastTest(x, HospNum_Id, Endo_ResultPerformed)
 Extract the last test only per patient
 }
 \examples{
-v<-TheOGDReportFinal
-EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-'Findings','Endoscopic Diagnosis','')
+Myendo<-TheOGDReportFinal
+Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
+"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+"Endoscopic Diagnosis:")
 for(i in 1:(length(EndoscTree)-1)) {
-  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-  as.character(EndoscTree[i]))
+ Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+ as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
-v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
-em<-SurveillanceLastTest(v,'HospitalNumber','Endo_ResultPerformed')
+Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 }
 \keyword{Surveillance}

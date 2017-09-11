@@ -27,7 +27,7 @@ for(i in 1:(length(EndoscTree)-1)) {
  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
-v<-BarrettsDataAccord_Prague(v,'Endo_ResultText')
+v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 }
 \keyword{Prague}
 \keyword{score}

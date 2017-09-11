@@ -18,13 +18,33 @@ Being the procedure done at the time and the follow-up timings
 }
 \examples{
 v<-TheOGDReportFinal
-EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-'Findings','Endoscopic Diagnosis','')
+Myendo<-TheOGDReportFinal
+Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+"Endoscopic Diagnosis:")
 for(i in 1:(length(EndoscTree)-1)) {
-  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-  as.character(EndoscTree[i]))
+ Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+ as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
-b<-BarrettsDataAccord_FUGroup(b,'Findings')
+Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+Mypath<-PathDataFrameFinalColon
+HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+"Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+for(i in 1:(length(HistolTree)-1)) {
+ Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+ as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+}
+Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+v<-HistolChopperDx(Mypath,"Diagnosis")
+v<-HistolChopperExtrapolDx(v,"Diagnosis")
+v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+v<-HistolChopperBxSize(v,"Macroscopicdescription")
+v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+b<-BarrettsDataAccord_PathStage(v,'Histology')
+b2<-BarrettsDataAccord_Event(b,'Histology',
+'ProcedurePerformed','OGDReportWhole','Findings')
+b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
 }
 \keyword{Follow-Up}

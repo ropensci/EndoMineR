@@ -21,15 +21,19 @@ This function graphs the patients who were not on surveillance programmes and se
 }
 \examples{
 v<-TheOGDReportFinal
-EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-'Findings','Endoscopic Diagnosis','')
+Myendo<-TheOGDReportFinal
+Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+"Endoscopic Diagnosis:")
 for(i in 1:(length(EndoscTree)-1)) {
-  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-  as.character(EndoscTree[i]))
+ Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+ as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
-Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(b,'HospitalNumber',
-'Endo_ResultPerformed','Indications')
+Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',
+'Dateofprocedure','Indications')
 }
 \keyword{Patient}
 \keyword{Tracking}

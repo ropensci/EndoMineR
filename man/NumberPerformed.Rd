@@ -22,17 +22,18 @@ defined)
 }
 \examples{
 v<-TheOGDReportFinal
- EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
- 'Date of procedure:','Endoscopist:','Endoscopist:','Medications','Instrument',
- 'Extent of Exam:','Indications:','Procedure Performed:','Findings:','Endoscopic Diagnosis:')
- for(i in 1:(length(EndoscTree)-1)) {
- v<-Extractor(v,'OGDReportWhole',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
- as.character(EndoscTree[i]))
- }
- v$Dateofprocedure<-as.Date(v$Dateofprocedure,format='\%d/\%m/\%Y')
- v<-EndoscChopperEndoscopist(v,'Endoscopist')
- v$Endoscopist<-gsub('Second','',v$Endoscopist)
- v<-v[grepl('Gastroscopy',v$ProcedurePerformed),]
- NumByEndoscopist(v,'Endoscopist','IndicationFroExamination')
+Myendo<-TheOGDReportFinal
+Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
+"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+"Endoscopic Diagnosis:")
+for(i in 1:(length(EndoscTree)-1)) {
+ Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+ as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
+}
+Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+ Myendo<-Myendo[grepl('Gastroscopy',Myendo$ProcedurePerformed),]
+ NumberPerformed(Myendo,'Endoscopist','Indications')
 }
 \keyword{Withdrawal}

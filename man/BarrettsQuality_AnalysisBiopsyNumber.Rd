@@ -21,17 +21,39 @@ This function gets the biopsies taken per endoscopy and compares to the
 Barrett's length
 }
 \examples{
-v<-Endomerge2(PathDataFrameFinal,TheOGDReportFinal)
-names(v)<-c('Endo_ResultText','Endo_ResultPerformed','HospNumId',
-'Histo_ResultText','Histo_ResultPerformed','HospNumId2','Days')
-EndoscTree<-list('Hospital Number','Patient Name','General Practitioner','Endoscopist',
-'nd Endoscopist','Medications','Instrument','Extent of Exam','Indications','Procedure Performed',
-'Findings','Endoscopic Diagnosis','')
+v<-TheOGDReportFinal
+Myendo<-TheOGDReportFinal
+Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
+EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
+"Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
+"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
+"Endoscopic Diagnosis:")
 for(i in 1:(length(EndoscTree)-1)) {
-  v<-Extractor(v,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),
-  as.character(EndoscTree[i]))
+ Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+ as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
-BarrettsQuality_AnalysisBiopsyNumber(b,'Endoscopist','Endo_ResultPerformed','Endoscopist')
+Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+Mypath<-PathDataFrameFinalColon
+HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
+"Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
+for(i in 1:(length(HistolTree)-1)) {
+ Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
+ as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+}
+Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")
+v<-HistolChopperDx(v,"Diagnosis")
+v<-HistolChopperExtrapolDx(v,"Diagnosis")
+v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
+v<-HistolChopperBxSize(v,"Macroscopicdescription")
+v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+b1<-BarrettsDataAccord_Prague(v,'Findings')
+b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+b3<-BarrettsDataAccord_Event(b2,'Histology',
+'ProcedurePerformed','OGDReportWhole','Findings')
+b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+BarrettsQuality_AnalysisBiopsyNumber(b4,'Endoscopist','Dateofprocedure','Endoscopist')
 }
 \keyword{Does}
 \keyword{data}
