@@ -17,17 +17,6 @@ SurveillanceLastTest(x, HospNum_Id, Endo_ResultPerformed)
 Extract the last test only per patient
 }
 \examples{
-Myendo<-TheOGDReportFinal
-Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-"Endoscopic Diagnosis:")
-for(i in 1:(length(EndoscTree)-1)) {
- Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
- as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-}
-Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
 em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 }
 \keyword{Surveillance}

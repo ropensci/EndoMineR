@@ -16,17 +16,6 @@ This function accordionises the data so we get all the bits extrapolated from wh
 Specfically it extracts the Prague score
 }
 \examples{
-v<-TheOGDReportFinal
-Myendo<-TheOGDReportFinal
-Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-"Endoscopic Diagnosis:")
-for(i in 1:(length(EndoscTree)-1)) {
- Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
- as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-}
 v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 }
 \keyword{Prague}

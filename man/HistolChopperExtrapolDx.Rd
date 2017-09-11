@@ -15,14 +15,6 @@ HistolChopperExtrapolDx(x, y)
 This extracts other specific diagnoses from the report
 }
 \examples{
-Mypath<-PathDataFrameFinalColon
-Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Clinical Details","Nature of specimen",
-"Histology","Diagnosis","")
-for(i in 1:(length(Histoltree)-1)) {
-  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-  as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-}
 v<-HistolChopperExtrapolDx(Mypath,'Diagnosis')
 }
 \keyword{Histology}

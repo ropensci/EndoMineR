@@ -23,25 +23,6 @@ GRS_Type_Assess_By_Unit
 This extracts the polyps types from the data(for colonoscopy and flexible sigmoidosscopy data)
 }
 \examples{
-Myendo<-ColonFinal
-Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-"Endoscopic Diagnosis:")
-for(i in 1:(length(EndoscTree)-1)) {
- Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
- as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-}
-Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-Mypath<-PathDataFrameFinalColon
-HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-"Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-for(i in 1:(length(HistolTree)-1)) {
- Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
- as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-}
-Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
 v<-HistolChopperDx(Mypath,"Diagnosis")
 v<-HistolChopperExtrapolDx(v,"Diagnosis")
 v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")

@@ -15,11 +15,7 @@ ChopperNewLines(x, y)
 Cleans the long lines to separate them into new lines if necessary
 }
 \examples{
-v<-TheOGDReportFinal
-EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
-'Date of procedure:','Endoscopist:','Endoscopist:','Medications','Instrument',
-'Extent of Exam:','Indications:','Procedure Performed:','Findings:','Endoscopic Diagnosis:')
-v<-ChopperNewLines(v,'OGDReportWhole')
+v<-ChopperNewLines(Myendo,'OGDReportWhole')
 }
 \keyword{Endoscopy}
 \keyword{Newlines}

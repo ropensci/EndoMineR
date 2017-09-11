@@ -14,21 +14,8 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
 # histology The date of the histology and endoscopy is likely to be generic for all reports.
 # I also get the Report text which has all of the other information in it.  The scripts
 # assume the endoscopy and histopathology data set is merged already but it can also be used
-# of course with the unmerged datasets The functions for both endoscopy and histology really
-# rely heavily on regular expressions. At the moment I don't know whether these are specific
-# to GSTT or whether they can be used for other Trusts as well. I need to get example reports
-# from other Trusts to find this out.
+# of course with the unmerged datasets 
 
-# There are two stages to improvements in this script to make it more generic:
-
-# 1. Discover the structure of raw information from other trusts so I can determine
-# commonalities in the electronically stored data 2. Improve the regex to make it less
-# repetitive
-
-
-
-
-# ENDOSCOPY CLEAN UP FUNCTION
 #' EndoscChopperNewLines
 #'
 #' Cleans the long lines to separate them into new lines if necessary
@@ -36,11 +23,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
 #' @param y The endoscopy report text column
 #' @keywords Endoscopy Newlines
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
-#' 'Date of procedure:','Endoscopist:','Endoscopist:','Medications','Instrument',
-#' 'Extent of Exam:','Indications:','Procedure Performed:','Findings:','Endoscopic Diagnosis:')
-#' v<-ChopperNewLines(v,'OGDReportWhole')
+#' @examples v<-ChopperNewLines(Myendo,'OGDReportWhole')
 
 
 ChopperNewLines <- function(x, y) {
@@ -76,7 +59,7 @@ ChopperNewLines <- function(x, y) {
 #'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
 #'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
-#' Myendo
+#' res<-Myendo
 
 
 Extractor <- function(x, y, stra, strb, t) {
@@ -111,19 +94,7 @@ Extractor <- function(x, y, stra, strb, t) {
 #' @param y The endoscopy text column
 #' @keywords Endoscopist extraction
 #' @export 
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' v<-EndoscChopperEndoscopist(Myendo,'Endoscopist')
+#' @examples v<-EndoscChopperEndoscopist(Myendo,'Endoscopist')
 
 EndoscChopperEndoscopist <- function(x, y) {
     # Extraction of the Endoscopist
@@ -147,18 +118,7 @@ EndoscChopperEndoscopist <- function(x, y) {
 #' @keywords Endoscopy medications
 #' @import stringr
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#'v<-EndoscChopperMeds(Myendo,'Medications')
+#' @examples v<-EndoscChopperMeds(Myendo,'Medications')
 
 EndoscChopperMeds <- function(x, y) {
     # Extraction of the Medications: Extract the fentanyl:
@@ -183,18 +143,7 @@ EndoscChopperMeds <- function(x, y) {
 #' @param y column of interest
 #' @keywords Instrument
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#'v<-EndoscChopperInstrument(Myendo,'Instrument')
+#' @examples v<-EndoscChopperInstrument(Myendo,'Instrument')
 
 EndoscChopperInstrument <- function(x, y) {
     # Extraction of the Instrument used:
@@ -221,18 +170,7 @@ EndoscChopperInstrument <- function(x, y) {
 #' @param y column of interest
 #' @keywords Indications
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#'v<-EndoscChopperIndications(Myendo,'Indications')
+#' @examples v<-EndoscChopperIndications(Myendo,'Indications')
 
 EndoscChopperIndications <- function(x, y) {
     # Extraction of the Indications for examination eg chest pain/ dysphagia etc.
@@ -250,18 +188,7 @@ EndoscChopperIndications <- function(x, y) {
 #' @param y column of interest
 #' @keywords Procedure 
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#'v<-EndoscChopperProcPerformed(Myendo,'ProcedurePerformed')
+#' @examples v<-EndoscChopperProcPerformed(Myendo,'ProcedurePerformed')
 
 EndoscChopperProcPerformed <- function(x, y) {
     # Extraction of the eg Colonoscopy or gastroscopy etc:
@@ -285,18 +212,7 @@ EndoscChopperProcPerformed <- function(x, y) {
 #' @param y column of interest
 #' @keywords Procedure 
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#'v<-EndoscChopperFindings(Myendo,'Findings')
+#' @examples v<-EndoscChopperFindings(Myendo,'Findings')
 
 EndoscChopperFindings <- function(x, y) {
     # Extraction of the FINDINGS
@@ -376,15 +292,7 @@ ColumnCleanUp <- function(x, y) {
 #' @param y column of interest that describes the macroscopic specimen
 #' @keywords Macroscopic
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' HistolChopperHistol(Mypath,'Histology')
+#' @examples HistolChopperHistol(Mypath,'Histology')
 #' v<-HistolChopperDx(Mypath,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperMacDescripCleanup(v,"Macroscopicdescription")
@@ -405,19 +313,8 @@ HistolChopperMacDescripCleanup <- function(x, y) {
 #' @param y column of interest
 #' @keywords Histology
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' HistolChopperHistol(Mypath,'Histology')
-#' v<-HistolChopperDx(Mypath,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' @examples HistolChopperHistol(Mypath,'Histology')
+
 
 HistolChopperHistol <- function(x, y) {
     # HISTOLOGY
@@ -458,15 +355,7 @@ HistolChopperHistol <- function(x, y) {
 #' @import stringr
 #' @keywords Sample Accession number
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Clinical Details","Nature of specimen",
-#' "Histology","Diagnosis","")
-#' for(i in 1:(length(Histoltree)-1)) {
-#'   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-#'   as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-#' }
-#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 
 HistolChopperAccessionNumber <- function(x, y, stra) {
     x <- data.frame(x)
@@ -482,15 +371,7 @@ HistolChopperAccessionNumber <- function(x, y, stra) {
 #' @param y column containing the Hisopathology report
 #' @keywords Histology Diagnosis
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Clinical Details","Nature of specimen",
-#' "Histology","Diagnosis","")
-#' for(i in 1:(length(Histoltree)-1)) {
-#'   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-#'   as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-#' }
-#' v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
 
 HistolChopperDx <- function(x, y) {
     # Without the negative extractor which needs some improvement. Only Capital D included (not
@@ -518,15 +399,7 @@ HistolChopperDx <- function(x, y) {
 #' @import stringr
 #' @keywords Histology diagnosis
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Clinical Details","Nature of specimen",
-#' "Histology","Diagnosis","")
-#' for(i in 1:(length(Histoltree)-1)) {
-#'   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-#'   as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-#' }
-#' v<-HistolChopperExtrapolDx(Mypath,'Diagnosis')
+#' @examples v<-HistolChopperExtrapolDx(Mypath,'Diagnosis')
 
 HistolChopperExtrapolDx <- function(x, y) {
     # Some further extraction to get commonly searched for data
@@ -548,15 +421,7 @@ HistolChopperExtrapolDx <- function(x, y) {
 #' with the Nature of the specimen or the Macroscopic description in it
 #' @keywords Macroscopic
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Clinical Details","Nature of specimen",
-#' "Histology","Diagnosis","")
-#' for(i in 1:(length(Histoltree)-1)) {
-#'   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-#'   as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-#' }
-#' HistolChopperMacDescrip(Mypath, "Natureofspecimen")
+#' @examples HistolChopperMacDescrip(Mypath, "Macroscopicdescription")
 
 HistolChopperMacDescrip <- function(x, y) {
     x <- data.frame(x)
@@ -583,15 +448,7 @@ HistolChopperMacDescrip <- function(x, y) {
 #' @import stringr
 #' @keywords Biopsy number
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Clinical Details","Nature of specimen",
-#' "Histology","Diagnosis","")
-#' for(i in 1:(length(Histoltree)-1)) {
-#'   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-#'   as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-#' }
-#' v<-HistolChopperNumbOfBx(Mypath,'Natureofspecimen','specimen')
+#' @examples v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 
 HistolChopperNumbOfBx <- function(x, y, z) {
     x <- data.frame(x)
@@ -609,15 +466,7 @@ HistolChopperNumbOfBx <- function(x, y, z) {
 #' @import stringr
 #' @keywords biopsy size
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Clinical Details","Nature of specimen",
-#' "Histology","Diagnosis","")
-#' for(i in 1:(length(Histoltree)-1)) {
-#'   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-#'   as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-#' }
-#' v<-HistolChopperBxSize(Mypath,'Natureofspecimen')
+#' @examples v<-HistolChopperBxSize(Mypath,'Macroscopicdescription')
 
 HistolChopperBxSize <- function(x, y) {
     # What's the average biopsy size this month?

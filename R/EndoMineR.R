@@ -8,7 +8,9 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("b", "PatientID", ".SD",
 
 #' SurveillanceTimeByRow
 #'
-#' This determines the time difference between each test for a patient. x is the dataframe, HospNum_Id is the Patient identifier,Endo_ResultEntered is the date the endoscopy was performed
+#' This determines the time difference between each test for a patient. 
+#' x is the dataframe, HospNum_Id is the Patient identifier,Endo_ResultEntered 
+#' is the date the endoscopy was performed
 #' @param x dataframe,
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
@@ -16,18 +18,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("b", "PatientID", ".SD",
 #' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
-#' @examples Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#'em<-SurveillanceTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
+#' @examples em<-SurveillanceTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
 
 SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 
@@ -49,18 +40,7 @@ SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
-#' @examples Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#'em<-SurveillanceLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
+#' @examples em<-SurveillanceLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
 
 SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
   HospNum_Ida <- rlang::sym(HospNum_Id)
@@ -81,18 +61,7 @@ SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
-#' @examples Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#'em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+#' @examples em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 
 
 
@@ -114,18 +83,7 @@ SurveillanceLastTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
-#' @examples Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' em<-SurveillanceFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
+#' @examples em<-SurveillanceFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
 
 
 SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
@@ -146,18 +104,7 @@ SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr '%>%'
 #' @keywords cats
 #' @export
-#' @examples Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' em<-SurveillanceCapacity(Myendo,"Dateofprocedure)
+#' @examples em<-SurveillanceCapacity(Myendo,"Dateofprocedure)
 
 
 SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
@@ -177,19 +124,7 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @import lubridate
 #' @keywords Tests number
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+#' @examples HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 
 
 HowManyTests <- function(x, Indication, Endo_ResultPerformed, StringToSearch) {
@@ -288,27 +223,7 @@ SurveySankey <- function(dfw, y) {
 #' @importFrom magrittr '%>%'
 #' @keywords Circos
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
 #' v<-HistolChopperBxSize(v,"Macroscopicdescription")
@@ -379,19 +294,7 @@ PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed, HospNum_Id, ProcPer
 #' @import tm
 #' @keywords Lookup
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' myNotableWords<-c('arrett','oeliac')
+#' @examples myNotableWords<-c('arrett','oeliac')
 #' tt<-ListLookup(Myendo,'Findings',myNotableWords)
 
 ListLookup <- function(theframe, y, myNotableWords) {
@@ -428,18 +331,7 @@ ListLookup <- function(theframe, y, myNotableWords) {
 #' @import tidyr
 #' @keywords Endoscopist
 #' @export
-#' @examples Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Myendo<-EndoscChopperMeds(Myendo,'Medications')
+#' @examples Myendo<-EndoscChopperMeds(Myendo,'Medications')
 #' Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 
 
@@ -466,13 +358,7 @@ MetricByEndoscopist <- function(x, y, z) {
 #' @param SampleLocation Column describing the Macroscopic sample from histology
 #' @keywords Withdrawal
 #' @export
-#' @examples v<-PathDataFrameFinalColon
-#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
-#' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,'PathReportWhole',as.character(Histoltree[i]),
-#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
-#' }
-#' f<-TermStandardLocation(v,'Histology')
+#' @examples f<-TermStandardLocation(Mypath,'Histology')
 
 
 
@@ -535,13 +421,7 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' @import stringr
 #' @keywords Sample location
 #' @export
-#' @examples v<-PathDataFrameFinalColon
-#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
-#' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,'PathReportWhole',as.character(Histoltree[i]),
-#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
-#' }
-#' f<-TermStandardLocation(v,'Histology')
+#' @examples f<-TermStandardLocation(Mypath,'Histology')
 #' f<-SampleLocator(f,'SampleLocation')
 
 SampleLocator <- function(x, y) {
@@ -563,13 +443,7 @@ SampleLocator <- function(x, y) {
 #' @keywords Withdrawal
 #' @import stringr
 #' @export
-#' @examples v<-PathDataFrameFinalColon
-#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
-#' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,'PathReportWhole',as.character(Histoltree[i]),
-#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
-#' }
-#' f<-TermStandardLocation(v,'Histology')
+#' @examples f<-TermStandardLocation(Mypath,'Histology')
 #' f<-PolypLocator(f,'SampleLocation')
 
 
@@ -594,13 +468,7 @@ PolypLocator <- function(x, y) {
 #' @param SampleLocation The column containing the SampleLocation from the Term Standardizer
 #' @keywords Withdrawal
 #' @export
-#' @examples v<-PathDataFrameFinalColon
-#' Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
-#' for(i in 1:(length(Histoltree)-1)) {
-#'  v<-Extractor(v,'PathReportWhole',as.character(Histoltree[i]),
-#'  as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
-#' }
-#' f<-TermStandardLocation(v,'Histology')
+#' @examples f<-TermStandardLocation(Mypath,'Histology')
 
 PolypTidyUpLocator <- function(x, SampleLocation) {
     # Get all the polyps and tidy up the polyp data- Function 5
@@ -621,26 +489,7 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #' @param Histol The column with the Histology text in it
 #' @keywords Withdrawal
 #' @export
-#' @examples Myendo<-ColonFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
 #' v<-HistolChopperBxSize(v,"Macroscopicdescription")
@@ -739,19 +588,7 @@ GRS_Type_Assess_By_Unit <- function(x, ProcPerformed, Endo_Endoscopist, Dx, Hist
 #' @param z The column containing the Indication for the examination
 #' @keywords Withdrawal
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#'  Myendo<-Myendo[grepl('Gastroscopy',Myendo$ProcedurePerformed),]
+#' @examples Myendo<-Myendo[grepl('Gastroscopy',Myendo$ProcedurePerformed),]
 #'  NumberPerformed(Myendo,'Endoscopist','Indications')
 
 NumberPerformed <- function(x, y, z) {

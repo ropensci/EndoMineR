@@ -21,13 +21,7 @@ although you could just run it after the term stanardiser to get an overview of 
 sites sampled without duplication
 }
 \examples{
-v<-PathDataFrameFinalColon
-Histoltree<-list('Clinical Details','Nature of specimen','Histology','Diagnosis','')
-for(i in 1:(length(Histoltree)-1)) {
- v<-Extractor(v,'PathReportWhole',as.character(Histoltree[i]),
- as.character(Histoltree[i+1]),gsub(' ','',as.character(Histoltree[i])))
-}
-f<-TermStandardLocation(v,'Histology')
+f<-TermStandardLocation(Mypath,'Histology')
 f<-SampleLocator(f,'SampleLocation')
 }
 \keyword{Sample}

@@ -18,15 +18,7 @@ This extracts the number of biopsies taken from the pathology report. This is us
 It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is (z)
 }
 \examples{
-Mypath<-PathDataFrameFinalColon
-Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Clinical Details","Nature of specimen",
-"Histology","Diagnosis","")
-for(i in 1:(length(Histoltree)-1)) {
-  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-  as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-}
-v<-HistolChopperNumbOfBx(Mypath,'Natureofspecimen','specimen')
+v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 }
 \keyword{Biopsy}
 \keyword{number}

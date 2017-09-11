@@ -14,20 +14,9 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
 #' @import stringr
 #' @keywords  Prague score
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#'v<-BarrettsDataAccord_Prague(Myendo,'Findings')
+#' @examples v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 
-BarrettsDataAccord_Prague <- function(x, y) {
+BarrettsDataAccord_Prague <- function(x, y) {  
     x <- data.frame(x)
     x$CStage <- stringr::str_extract(x[, y], "(C(\\s|=)*\\d+)")
     x$CStage <- as.numeric(gsub("C", "", x$CStage))
@@ -46,15 +35,7 @@ BarrettsDataAccord_Prague <- function(x, y) {
 #' @param y column of interest
 #' @keywords Pathology extraction 
 #' @export
-#' @examples Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 #' v<-HistolChopperDx(v,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
@@ -87,27 +68,7 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' @param bb The endoscopic findings column if different to the Diagnosis column
 #' @keywords Event extraction
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 #' v<-HistolChopperDx(v,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
@@ -137,27 +98,7 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' @param y The field to search (endoscopic findings)
 #' @keywords Follow-Up
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
 #' v<-HistolChopperBxSize(v,"Macroscopicdescription")
@@ -186,10 +127,6 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 
 
 
-
-
-
-
 ############## Surveillance functions ########
 
 
@@ -204,19 +141,7 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' @import dplyr
 #' @importFrom magrittr '%>%'
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',
+#' @examples Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',
 #' 'Dateofprocedure','Indications')
 
 BarrettsPatientTracking_Enrollment_Surveillance <- function(x, PatientID, Endo_ResultPerformed, 
@@ -247,27 +172,7 @@ BarrettsPatientTracking_Enrollment_Surveillance <- function(x, PatientID, Endo_R
 #' @param PatientID Column containing patient numbers
 #' @keywords Rule
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 #' v<-HistolChopperDx(v,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
@@ -300,27 +205,7 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 #' @import lattice
 #' @keywords Documentation
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
 #' v<-HistolChopperBxSize(v,"Macroscopicdescription")
@@ -379,27 +264,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @param Endoscopist name of the column with the Endoscopist names
 #' @keywords Does something with data
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 #' v<-HistolChopperDx(v,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
@@ -455,27 +320,7 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x, Endo_ResultPerformed, Patien
 #' @import ggplot2
 #' @importFrom magrittr '%>%'
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
 #' v<-HistolChopperBxSize(v,"Macroscopicdescription")
@@ -516,27 +361,7 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 #' @param IMorNoIM extracted with the function BarrettsDataAccord_PathStage()
 #' @keywords dysplasia detection rate
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-#' Mypath<-PathDataFrameFinalColon
-#' HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#' "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#' for(i in 1:(length(HistolTree)-1)) {
-#'  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#'  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#' }
-#' Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-#' v<-HistolChopperDx(Mypath,"Diagnosis")
+#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
 #' v<-HistolChopperExtrapolDx(v,"Diagnosis")
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
 #' v<-HistolChopperBxSize(v,"Macroscopicdescription")

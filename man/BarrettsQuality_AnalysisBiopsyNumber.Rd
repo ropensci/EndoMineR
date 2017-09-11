@@ -21,26 +21,6 @@ This function gets the biopsies taken per endoscopy and compares to the
 Barrett's length
 }
 \examples{
-v<-TheOGDReportFinal
-Myendo<-TheOGDReportFinal
-Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-"Endoscopic Diagnosis:")
-for(i in 1:(length(EndoscTree)-1)) {
- Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
- as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-}
-Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-Mypath<-PathDataFrameFinalColon
-HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-"Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-for(i in 1:(length(HistolTree)-1)) {
- Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
- as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-}
-Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
 v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")
 v<-HistolChopperDx(v,"Diagnosis")
 v<-HistolChopperExtrapolDx(v,"Diagnosis")

@@ -19,17 +19,6 @@ SurveillanceLastToNow
 This determines the last test done by that patient and the time between now and that last test.x is the dataframe, HospNum_Id is the Patient identifier,Endo_ResultEntered is the date the endoscopy was performed
 }
 \examples{
-Myendo<-TheOGDReportFinal
-Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-"Endoscopic Diagnosis:")
-for(i in 1:(length(EndoscTree)-1)) {
- Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
- as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-}
-Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
 em<-SurveillanceLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
 }
 \keyword{Surveillance}

@@ -17,14 +17,6 @@ HistolChopperAccessionNumber(x, y, stra)
 This extracts Accession Number data data from the report
 }
 \examples{
-Mypath<-PathDataFrameFinalColon
-Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Clinical Details","Nature of specimen",
-"Histology","Diagnosis","")
-for(i in 1:(length(Histoltree)-1)) {
-  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),
-  as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
-}
 v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")
 }
 \keyword{Accession}

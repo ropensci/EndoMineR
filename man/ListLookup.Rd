@@ -17,18 +17,6 @@ ListLookup(theframe, y, myNotableWords)
 Input is a dataframe with x=dataframe name, y=column name you are doing text mining from and PropThreshold= the number of rows that have the terms you are interested in. theframe is the dataframe, y is the columnn of interest and PropThreshold is the Proportion of reports Threshold for the graph. The aim here is simply to produce a document term matrix to get the frequency of all the words, then extract the words you are interested in with tofind (I think) then find which reports have those words. Then find what proportion of the reports have those terms
 }
 \examples{
-v<-TheOGDReportFinal
-Myendo<-TheOGDReportFinal
-Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-"Endoscopic Diagnosis:")
-for(i in 1:(length(EndoscTree)-1)) {
- Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
- as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-}
-Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
 myNotableWords<-c('arrett','oeliac')
 tt<-ListLookup(Myendo,'Findings',myNotableWords)
 }
