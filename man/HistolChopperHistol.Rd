@@ -18,6 +18,6 @@ negative remover and also adds further negative removing regexes. This may be re
 in further iterations.
 }
 \examples{
-HistolChopperHistol(Mypath,'Histology')
+t<-HistolChopperHistol(Mypath,'Histology')
 }
 \keyword{Histology}

@@ -16,5 +16,6 @@ This cleans up the polyps from the TermStandardLocation function
 }
 \examples{
 f<-TermStandardLocation(Mypath,'Histology')
+f<-PolypTidyUpLocator(f,'SampleLocation')
 }
 \keyword{Withdrawal}
