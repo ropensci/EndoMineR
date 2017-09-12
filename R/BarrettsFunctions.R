@@ -67,9 +67,8 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' 
 #' This function extracts the Event- usually a therapeutic event, from the text eg endoscopic
 #' mucosal resection, radiofrequency ablation etc. It does not currently include stricture
-#' dilatation.
-#' Specfically it extracts the event
-#' Being the procedure done at the time and the follow-up timings
+#' dilatation.Specfically it extracts the event
+#' 
 #' @param x the dataframe
 #' @param y The histology main text
 #' @param z The Procedure Performed column

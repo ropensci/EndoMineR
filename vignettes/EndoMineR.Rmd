@@ -358,5 +358,59 @@ The functions above really act as building blocks for the further, more complex 
 
 One particular disease, the premalignant oesophageal condition Barrett's oesophagus, requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 guidelines, means the presence or absence of intestinal metaplasia)
 
-Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett's oesophagus itself.
+Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett's oesophagus itself. Firstly we need to extract the length of the Barrett's segment. After filtering for indication (eg "Surveillance-Barrett's") the aim of the following function is to extract a C and M stage (Prague score) for Barrett's samples. This is done using a regex where C and M stages are explicitly mentioned in the free text. Specfically it extracts the Prague score.
+
+```{r exampleBarrettsDataAccord_Prague, eval = FALSE}
+v<-BarrettsDataAccord_Prague(Myendo,'Findings')
+```
+
+
+We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using 'degradation' so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports tocontain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade. 
+
+```{r exampleBarrettsDataAccord_PathStage, eval = FALSE}
+b<-BarrettsDataAccord_PathStage(v,'Histology')
+```
+
+We also need to process any endoscopies where an event other than surveillance happened (unless filtered specifically for surveillance. This function extracts the Event- usually a therapeutic event, from the text eg endoscopic mucosal resection, radiofrequency ablation etc. It does not currently include stricture dilatation.Specfically it extracts the event. At the moment the event is extracted from the endoscopy only but for specimen extraction eg endoscopic mucosal resection future iterations may also examine the pathology data as it is likely to describe the presence of EMR more robustly. 
+
+```{r exampleBarrettsDataAccord_Event, eval = FALSE}
+v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
+b<-BarrettsDataAccord_Event(v,'Histology', 'ProcedurePerformed','OGDReportWhole','Findings')
+```
+
+
+Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett's segment length and therefore their follow-up timing, may fluctuate over time) can be determined.
+
+```{r exampleBarrettsDataAccord_FUGroup, eval = FALSE}
+v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
+b<-BarrettsDataAccord_PathStage(v,'Histology')
+b2<-BarrettsDataAccord_Event(b,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
+b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
+```
+
+
+So now this has been determined we can continue to some more advanced analyses. We can determine how many patients who underwent endoscopy for reasons that was not Barrett's surveillance, and in whom Barrett's oesophagus was found, have had further follow-up endoscopies ie what the enrollment to surveillance rate is:
+
+This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy. This should be run after the BarrettsDataAccord_Prague and BarrettsDataAccord_PathStage.
+
+```{r exampleBarrettsPatientTracking_Enrollment_Surveillance, eval = FALSE}
+Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber','Dateofprocedure','Indications')
+```
+
+
+Perhaps we are also interested in how many patients fall under each follow-up category so we can plan how many Barrett's surveillance endoscopies we are going to have to do. The function to do this gets the unique patient ID's for each patient, for each rule. It lists the unique PatientIDs assocaited with a rule ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many patients will need follow up at specific time intervals. This should be run after the BarrettsDataAccord_Prague and BarrettsDataAccord_PathStage.
+
+```{r exampleBarrettsPatientTracking_UniqueHospNum, eval = FALSE}
+v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+b1<-BarrettsDataAccord_Prague(v,'Findings')
+b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
+b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
+```
+
+
+
+
 
