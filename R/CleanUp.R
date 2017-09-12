@@ -9,7 +9,10 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
 
 #' EndoscChopperNewLines
 #'
-#' Cleans the long lines to separate them into new lines if necessary
+#' Cleans the long lines to separate them into new lines if necessary. This helps further
+#' down the line in the tokenisation of the text. It is optional depending on the format of 
+#' your text. It should be used after the Extractor has separated out the different
+#' parts of the text according to the user's requirements
 #' @param x dataframe
 #' @param y The endoscopy report text column
 #' @keywords Endoscopy Newlines
@@ -30,7 +33,14 @@ ChopperNewLines <- function(x, y) {
 
 #' Extractor
 #'
-#' This is the main extractor for the Endoscopy and Histology report
+#' This is the main extractor for the Endoscopy and Histology report.
+#' This depends on the user creating a list of words or characters that act as the 
+#' words that should be split against. The list is then fed to the Extractor in a 
+#' loop so that it acts as the beginning and the end of the regex used to split the 
+#' text. Whatever has been specified in the list is used as a column header. Column 
+#' headers don't tolerate special characters like : or ? and / and don't allow numbers
+#' as the start character so these have to be dealt with in the text before processing
+#' 
 #' @param x the dataframe 
 #' @param y the column to extract from
 #' @param stra the start of the boundary to extract
@@ -80,7 +90,10 @@ Extractor <- function(x, y, stra, strb, t) {
 
 #' EndoscChopperEndoscopist
 #'
-#' This extracts the endoscopist from the report
+#' This cleans endoscopist column from the report assuming such a column exists. 
+#' It gets rid of common entries that are not needed. 
+#' It should be used after the Extractor and the optional ChopperNewLines has been used.
+#' 
 #' @param x dataframe 
 #' @param y The endoscopy text column
 #' @keywords Endoscopist extraction
@@ -103,7 +116,10 @@ EndoscChopperEndoscopist <- function(x, y) {
 
 #' EndoscChopperMeds
 #'
-#' This cleans the medications from the report
+#' This cleans medication column from the report assuming such a column exists. It gets rid
+#' of common entries that are not needed. It also splits the medication into fentanyl and
+#' midazolam doses for use in the global rating scale tables later. 
+#' It should be used after the Extractor and the optional ChopperNewLines has been used.
 #' @param x dataframe with column of interest 
 #' @param y column of interest
 #' @keywords Endoscopy medications
@@ -129,7 +145,10 @@ EndoscChopperMeds <- function(x, y) {
 
 #' EndoscChopperInstrument
 #'
-#' This cleans the Instrument from the report
+#' This cleans Instument column from the report assuming such a column exists (where 
+#' instrument usually refers to the endoscope number being used. It gets rid
+#' of common entries that are not needed.
+#' It should be used after the Extractor and the optional ChopperNewLines has been used.
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Instrument
@@ -156,7 +175,10 @@ EndoscChopperInstrument <- function(x, y) {
 
 #' EndoscChopperIndications
 #'
-#' This cleans the Indication from the report
+#' This cleans the Indication from the report assuming such a column exists. 
+#' It largely gets rid of carriage returns especially if used after the ChopperNewLines
+#' function. There may be multiple indications.
+#' It should be used after the Extractor and the optional ChopperNewLines has been used.
 #' @param x dataframe with column of interest 
 #' @param y column of interest
 #' @keywords Indications
@@ -174,7 +196,11 @@ EndoscChopperIndications <- function(x, y) {
 
 #' EndoscChopperProcPerformed
 #'
-#' This cleans the procedure performed from the report
+#' This cleans the Procedure Performed column from the report assuming 
+#' such a column exists. Procedure Performed relates to whether this was a 
+#' Gastroscopy or Colonoscopy etc.
+#' It gets rid of common entries that are not needed.
+#' It should be used after the Extractor and the optional ChopperNewLines has been used.
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Procedure 
@@ -198,7 +224,12 @@ EndoscChopperProcPerformed <- function(x, y) {
 
 #' EndoscChopperFindings
 #'
-#' This cleans the Findings performed from the report
+#' This cleans the Procedure Performed column from the report assuming 
+#' such a column exists. Findings relates to what was found at the endoscopy
+#' This is usually a separate entry to the overall 'Diagnosis' but any
+#' are in which the description of the endoscopic findings, including 
+#' overall diagnosis or not, can be used.
+#' It should be used after the Extractor and the optional ChopperNewLines has been used.
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Procedure 
@@ -213,14 +244,16 @@ EndoscChopperFindings <- function(x, y) {
 
 ####### General Clean-Up functions #####
 
-
-# Extraction of the Negative sentences so that normal findings can be removed and not counted
-# when searching for true diseases. eg remove No evidence of candidal infection so it doesn't
-# get included if looking for candidal infections.
-
 #' NegativeRemove
 #'
-#' This extracts removes negative diagnoses from the report
+#' Extraction of the Negative sentences so that normal findings can be 
+#' removed and not counted when searching for true diseases. eg remove 
+#' No evidence of candidal infection so it doesn't get included if 
+#' looking for candidal infections.
+#' It should be used after the Extractor and the optional 
+#' ChopperNewLines has been used. It can be used as part of the other functions
+#' or as a way of providing a 'positive diagnosis only' type output (see
+#' HistolChopperDx)
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Negative Sentences
@@ -256,8 +289,13 @@ NegativeRemove <- function(x, y) {
 
 #' ColumnCleanUp
 #'
-#' This does a general clean up of whitespace,semi-colons,full stops at the start
-#' of lines and converts end sentence full stops to new lines
+#' This does a general clean up of whitespace,
+#' semi-colons,full stops at the start
+#' of lines and converts end sentence full stops to new lines.
+#' It should be used after the Extractor and the optional 
+#' ChopperNewLines has been used. It can be used as part of the other functions
+#' or as a way of providing a 'positive diagnosis only' type output (see
+#' HistolChopperDx)
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Cleaner
@@ -278,15 +316,16 @@ ColumnCleanUp <- function(x, y) {
 
 #' HistolChopperMacDescripCleanup
 #'
-#' This extracts Macroscopic description data from the report
+#' This extracts Macroscopic description data from the pathology report.
+#' Macroscopic description usually relates to the number of specimens
+#' retrieved, the size of each specimen and the location it was taken from.
+#' The cleanup usually relates to the removal of top and tail characters such
+#' as who reported the specimens etc. 
 #' @param x dataframe with column of interest
 #' @param y column of interest that describes the macroscopic specimen
 #' @keywords Macroscopic
 #' @export
-#' @examples HistolChopperHistol(Mypath,'Histology')
-#' v<-HistolChopperDx(Mypath,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperMacDescripCleanup(v,"Macroscopicdescription")
+#' @examples v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
 
 
 HistolChopperMacDescripCleanup <- function(x, y) {
@@ -299,7 +338,10 @@ HistolChopperMacDescripCleanup <- function(x, y) {
 
 #' HistolChopperHistol
 #'
-#' This extracts Histology details data from the report
+#' This extracts Histology details data from the report. The Histology details
+#' usually relate to the description of the histological report. This implements the 
+#' negative remover and also adds further negative removing regexes. This may be refined
+#' in further iterations.
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Histology
@@ -339,7 +381,9 @@ HistolChopperHistol <- function(x, y) {
 
 #' HistolChopperAccessionNumber
 #'
-#' This extracts Accession Number data data from the report
+#' This extracts Accession Number data data from the report where one is present.
+#' The Accession number relates to the actual specimen number as ascribed by the 
+#' pathology service.
 #' @param x the dataframe name and 
 #' @param  y the column name as a string. 
 #' @param  stra regular expression needed as a string
@@ -357,7 +401,12 @@ HistolChopperAccessionNumber <- function(x, y, stra) {
 
 #' HistolChopperDx
 #'
-#' This extracts Diagnosis data from the report
+#' This extracts Diagnosis data from the report. The Diagnosis is the overall impression
+#' of the pathologist for that specimen. At the moment, Only Capital D included (not
+#' lower case d) to make sure picks up subtitle header as opposed to 
+#' mentioning 'diagnosis' as part of a sentence.  Column specific cleanup and negative 
+#' remover have also been implemented here.
+#' 
 #' @param x the dataframe
 #' @param y column containing the Hisopathology report
 #' @keywords Histology Diagnosis
@@ -365,9 +414,8 @@ HistolChopperAccessionNumber <- function(x, y, stra) {
 #' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
 
 HistolChopperDx <- function(x, y) {
-    # Without the negative extractor which needs some improvement. Only Capital D included (not
-    # lower case d) to make sure picks up subtitle header as opposed to mentioning 'diagnosis' as
-    # part of a sentence.  Column specific cleanup
+  
+    # 
     x[, y] <- gsub("Dr.*", "", x[, y], perl = T)
     x[, y] <- gsub("[Rr]eported.*", "", x[, y])
     # Column-generic cleanup
@@ -384,7 +432,9 @@ HistolChopperDx <- function(x, y) {
 
 #' HistolChopperExtrapolDx
 #'
-#' This extracts other specific diagnoses from the report
+#' This extracts other specific diagnoses from the report. These have been hard coded to 
+#' look for dysplasia cancer and GIST. Optional use.
+#' 
 #' @param x the dataframe containing histology results, 
 #' @param y the column to extract dysplasia, cancer, and GIST from- often the Histology diagnosis column
 #' @import stringr
@@ -405,7 +455,10 @@ HistolChopperExtrapolDx <- function(x, y) {
 
 #' HistolChopperMacDescrip
 #' 
-#' This extracts numbers from written (spelt) numbers
+#' This extracts numbers from written (spelt) numbers in the Macroscopic description
+#' text. This means the text can then be used to extract the number and size of biopsies.
+#' This is used as part of the HistolChopperNumOfBx function below and normally not used
+#' as a stand alone function.
 #' 
 #' @param x dataframe
 #' @param y column to extract the numbers from. Usually the column
@@ -431,8 +484,11 @@ HistolChopperMacDescrip <- function(x, y) {
 
 #' HistolChopperNumbOfBx
 #'
-#' This extracts the number of biopsies taken from the pathology report. This is usually from the Macroscopic description column.
-#' It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is (z)
+#' This extracts the number of biopsies taken from the pathology report. 
+#' This is usually from the Macroscopic description column.
+#' It collects everything from the regex [0-9]{1,2}.{0,3} 
+#' to whatever the string boundary is (z).
+#' 
 #' @param x the dataframe
 #' @param y Column containing the Macroscopic description text
 #' @param z The keyword to remove and to stop at in the regex
@@ -451,7 +507,11 @@ HistolChopperNumbOfBx <- function(x, y, z) {
 
 #' HistolChopperBxSize
 #'
-#' This extracts the biopsy size from the report.
+#' This extracts the biopsy size from the report. If there are multiple 
+#' biopsies it will extract the overall size of each one (size is calculated 
+#' usually in cubic mm from the three dimensions provided). This will result
+#' in row duplication.
+#' 
 #' This is usually from the Macroscopic description column.
 #' @param x the dataframe
 #' @param y Macdescrip

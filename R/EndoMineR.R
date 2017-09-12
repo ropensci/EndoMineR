@@ -13,7 +13,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("b", "PatientID", ".SD",
 #' @param x dataframe,
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
-#' @import dplyr
+#' @importFrom dplyr arrange group_by mutate lead
 #' @importFrom magrittr '%>%'
 #' @keywords Surveillance
 #' @export
@@ -37,8 +37,8 @@ SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @param x dataframe
 #' @param  HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
-#' @import dplyr
 #' @importFrom magrittr '%>%'
+#' @importFrom dplyr arrange group_by mutate lead
 #' @keywords Surveillance
 #' @export
 #' @examples em<-SurveillanceLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
@@ -58,8 +58,8 @@ SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @param x dataframe
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
-#' @import dplyr
 #' @importFrom magrittr '%>%'
+#' @importFrom dplyr arrange group_by filter row_number
 #' @keywords Surveillance
 #' @export
 #' @examples em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
@@ -101,7 +101,7 @@ SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' This determines the number of tests done per month
 #' @param x dataframe
 #' @param Endo_ResultPerformed Column with the date the Endoscopy was performed
-#' @import dplyr
+#' @importFrom dplyr group_by summarise
 #' @importFrom magrittr '%>%'
 #' @keywords cats
 #' @export
@@ -124,9 +124,11 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @param Indication Indication column
 #' @param Endo_ResultPerformed column containing date the Endoscopy was performed
 #' @param StringToSearch The string in the Indication to search for
-#' @import dplyr
 #' @importFrom magrittr '%>%'
-#' @import lubridate
+#' @importFrom dplyr arrange group_by mutate lead
+#' @importFrom lubridate week year month dmy
+#' @importFrom magrittr '%>%'
+#' @importFrom stringr str_detect
 #' @keywords Tests number
 #' @export
 #' @examples HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
@@ -168,7 +170,7 @@ HowManyTests <- function(x, Indication, Endo_ResultPerformed, StringToSearch) {
 #' @import dplyr
 #' @importFrom magrittr '%>%'
 #' @importfrom data.table setDT rowid 
-#' @importfrom reshape2 'dcast'
+#' @importfrom reshape2 dcast
 #' @keywords Sankey
 #' @export
 #' @examples 
@@ -339,7 +341,8 @@ ListLookup <- function(theframe, y, myNotableWords) {
 #' @param z The endoscopist column
 #' @import ggplot2
 #' @import rlang
-#' @import tidyr
+#' @importFrom tidyr drop_na
+#' @importFrom dplyr group_by summarise
 #' @keywords Endoscopist
 #' @export
 #' @examples Myendo<-EndoscChopperMeds(Myendo,'Medications')
@@ -434,7 +437,7 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' It will tell you the sites sampled without duplication
 #' @param x The dataframe 
 #' @param y SampleLocation from the TermStandardizer
-#' @import stringr
+#' @importFrom stringr str_match_all
 #' @keywords Sample location
 #' @export
 #' @examples f<-TermStandardLocation(Mypath,'Histology')
@@ -460,7 +463,7 @@ SampleLocator <- function(x, y) {
 #' @param x The dataframe 
 #' @param y The column containing the SampleLocation from the TermStandardLocation
 #' @keywords Withdrawal
-#' @import stringr
+#' @importFrom stringr str_match_all
 #' @export
 #' @examples f<-TermStandardLocation(Mypath,'Histology')
 #' f<-PolypLocator(f,'SampleLocation')
