@@ -1,5 +1,5 @@
-load(file="/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
-load(file="/home/rstudio/EndoMineR/data/TheOGDReportFinal.rda")
+#load(file="/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
+#load(file="/home/rstudio/EndoMineR/data/TheOGDReportFinal.rda")
 ##### CleanUp test functions ####
 Mypath<-PathDataFrameFinal
 Myendo<-TheOGDReportFinal
