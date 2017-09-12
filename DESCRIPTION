@@ -30,7 +30,7 @@ Imports:
         stringr,
         rlang,
         dplyr
-License: What license is it under? Its under my license
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1.9000

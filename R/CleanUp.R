@@ -258,7 +258,7 @@ EndoscChopperFindings <- function(x, y) {
 #' @param y column of interest
 #' @keywords Negative Sentences
 #' @export
-#' @examples 
+#' @examples
 
 NegativeRemove <- function(x, y) {
     
@@ -300,7 +300,7 @@ NegativeRemove <- function(x, y) {
 #' @param y column of interest
 #' @keywords Cleaner
 #' @export
-#' @examples  
+#' @examples
 
 ColumnCleanUp <- function(x, y) {
     x <- (data.frame(x))
