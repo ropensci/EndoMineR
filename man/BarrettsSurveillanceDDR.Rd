@@ -14,7 +14,7 @@ BarrettsSurveillanceDDR(x, y, IMorNoIM)
 \item{IMorNoIM}{extracted with the function BarrettsDataAccord_PathStage()}
 }
 \description{
-This function assesses the dysplasia detection rate per endoscopist
+This function assesses the dysplasia detection rate per endoscopist.
 }
 \examples{
 v<-HistolChopperDx(Mypath,"Diagnosis")

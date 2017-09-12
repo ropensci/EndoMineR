@@ -14,7 +14,8 @@ BarrettsTherapeuticsRFA_ByCatheter(EndoSubsetRFA, y, z)
 \item{z}{Another endoscopy report field of interest}
 }
 \description{
-This looks at the basic numbers of RFA by catheter type used
+This looks at the basic numbers of RFA by catheter type used.
+This should only be run after all the BarrettsDataAccord functions.
 }
 \keyword{RFA,}
 \keyword{Radiofrequency}

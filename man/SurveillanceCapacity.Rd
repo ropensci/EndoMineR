@@ -12,6 +12,6 @@ SurveillanceCapacity(x, Endo_ResultPerformed)
 \item{Endo_ResultPerformed}{Column with the date the Endoscopy was performed}
 }
 \description{
-This determines the last test done by that patient and the time between now and that last test
+This determines the number of tests done per month
 }
 \keyword{cats}

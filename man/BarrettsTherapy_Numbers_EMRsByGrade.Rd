@@ -7,11 +7,11 @@
 BarrettsTherapy_Numbers_EMRsByGrade(EndoSubsetEMR)
 }
 \arguments{
-\item{EndoSubsetEMR}{The dataset. Need to have run BarettsDataAccord_Event() 
-and BarettsDataAccord_PathStage() first}
+\item{EndoSubsetEMR}{The dataset.}
 }
 \description{
-Plots all the pathological grades of the EMRs
+Plots all the pathological grades of the EMRs.This should only be run after all the 
+BarrettsDataAccord functions.
 }
 \keyword{EMR}
 \keyword{chart}

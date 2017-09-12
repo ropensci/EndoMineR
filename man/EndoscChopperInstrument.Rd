@@ -12,7 +12,10 @@ EndoscChopperInstrument(x, y)
 \item{y}{column of interest}
 }
 \description{
-This cleans the Instrument from the report
+This cleans Instument column from the report assuming such a column exists (where 
+instrument usually refers to the endoscope number being used. It gets rid
+of common entries that are not needed.
+It should be used after the Extractor and the optional ChopperNewLines has been used.
 }
 \examples{
 v<-EndoscChopperInstrument(Myendo,'Instrument')

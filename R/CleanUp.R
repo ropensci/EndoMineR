@@ -7,15 +7,6 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
 
 ############## Endoscopy Clean-up functions##############
 
-# Title:CleanUp Aim: This script comprises the functions that I use to clean up endoscopic
-# reports and pathology reports.  At the moment the script assumes that I am provided with
-# the following column headings: EndoResultPerformed (the date of the endoscopy). I usually
-# get another date called EndoResultEntered but this can be ignored. This is also true of
-# histology The date of the histology and endoscopy is likely to be generic for all reports.
-# I also get the Report text which has all of the other information in it.  The scripts
-# assume the endoscopy and histopathology data set is merged already but it can also be used
-# of course with the unmerged datasets 
-
 #' EndoscChopperNewLines
 #'
 #' Cleans the long lines to separate them into new lines if necessary
@@ -460,7 +451,8 @@ HistolChopperNumbOfBx <- function(x, y, z) {
 
 #' HistolChopperBxSize
 #'
-#' This extracts the biopsy size from the report.This is usually from the Macroscopic description column.
+#' This extracts the biopsy size from the report.
+#' This is usually from the Macroscopic description column.
 #' @param x the dataframe
 #' @param y Macdescrip
 #' @import stringr

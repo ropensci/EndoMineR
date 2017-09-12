@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{ListLookup}
 \alias{ListLookup}
-\title{ListLookup functions:}
+\title{ListLookup}
 \usage{
 ListLookup(theframe, y, myNotableWords)
 }
@@ -14,7 +14,12 @@ ListLookup(theframe, y, myNotableWords)
 \item{myNotableWords}{list of words you are interested in}
 }
 \description{
-Input is a dataframe with x=dataframe name, y=column name you are doing text mining from and PropThreshold= the number of rows that have the terms you are interested in. theframe is the dataframe, y is the columnn of interest and PropThreshold is the Proportion of reports Threshold for the graph. The aim here is simply to produce a document term matrix to get the frequency of all the words, then extract the words you are interested in with tofind (I think) then find which reports have those words. Then find what proportion of the reports have those terms
+The aim here is simply to 
+produce a document term matrix to get the frequency 
+of all the words, then extract the words you are 
+interested in with tofind then find which reports 
+have those words. Then find what proportion of the reports 
+have those terms.
 }
 \examples{
 myNotableWords<-c('arrett','oeliac')

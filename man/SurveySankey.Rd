@@ -13,9 +13,9 @@ SurveySankey(dfw, y)
 }
 \description{
 This creates a Sankey plot to see the order of tests for all patients: 
-dfw is the dataframe, 
-y is the value of in this case the procedure type (eg EMR,
+dfw is the dataframe, y is the value of in this case 
+the procedure type (eg EMR,
  radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)
- Note the Hospital Number column MUST be called PatientID
+ Note the Hospital Number column MUST be called PatientID.
 }
 \keyword{Sankey}

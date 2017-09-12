@@ -18,7 +18,9 @@ BarrettsDataAccord_Event(x, y, z, aa, bb)
 \item{bb}{The endoscopic findings column if different to the Diagnosis column}
 }
 \description{
-This function accordionises the data so we get all the bits extrapolated from what's available
+This function extracts the Event- usually a therapeutic event, from the text eg endoscopic
+mucosal resection, radiofrequency ablation etc. It does not currently include stricture
+dilatation.
 Specfically it extracts the event
 Being the procedure done at the time and the follow-up timings
 }

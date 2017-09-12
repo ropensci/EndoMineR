@@ -2,8 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{PolypTidyUpLocator}
 \alias{PolypTidyUpLocator}
-\title{Standardises the location of polyps
-This assess the size of the biopies take}
+\title{PolypTidyUpLocator}
 \usage{
 PolypTidyUpLocator(x, SampleLocation)
 }
@@ -13,8 +12,7 @@ PolypTidyUpLocator(x, SampleLocation)
 \item{SampleLocation}{The column containing the SampleLocation from the Term Standardizer}
 }
 \description{
-Standardises the location of polyps
-This assess the size of the biopies take
+This cleans up the polyps from the TermStandardLocation function
 }
 \examples{
 f<-TermStandardLocation(Mypath,'Histology')

@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{PatientFlow_CircosPlots}
 \alias{PatientFlow_CircosPlots}
-\title{Circos plot functions:}
+\title{PatientFlow_CircosPlots}
 \usage{
 PatientFlow_CircosPlots(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed)
 }
@@ -18,6 +18,6 @@ PatientFlow_CircosPlots(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed)
 radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)}
 }
 \description{
-This allows us to look at the overall flow from one type of procedure to another using circos plots
+This allows us to look at the overall flow from one type of procedure to another using circos plots.
 }
 \keyword{Circos}

@@ -14,7 +14,7 @@ SurveillanceLastTest(x, HospNum_Id, Endo_ResultPerformed)
 \item{Endo_ResultPerformed}{Date of the Endoscopy}
 }
 \description{
-Extract the last test only per patient
+Extracts the last test only per patient
 }
 \examples{
 em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')

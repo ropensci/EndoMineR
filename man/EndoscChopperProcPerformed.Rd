@@ -12,7 +12,11 @@ EndoscChopperProcPerformed(x, y)
 \item{y}{column of interest}
 }
 \description{
-This cleans the procedure performed from the report
+This cleans the Procedure Performed column from the report assuming 
+such a column exists. Procedure Performed relates to whether this was a 
+Gastroscopy or Colonoscopy etc.
+It gets rid of common entries that are not needed.
+It should be used after the Extractor and the optional ChopperNewLines has been used.
 }
 \examples{
 v<-EndoscChopperProcPerformed(Myendo,'ProcedurePerformed')

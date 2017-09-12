@@ -12,8 +12,8 @@ BarrettsBasicNumbers(x, Endo_ResultPerformed)
 \item{Endo_ResultPerformed}{the date the endoscopy was performed}
 }
 \description{
-This looks at the basic numbers of all the therapeutic endoscopies over time.Need to have run
-BarettsDataAccord_Event() first
+This looks at the basic numbers of all the therapeutic endoscopies over time. 
+This should only be run after all the BarrettsDataAccord functions.
 }
 \keyword{Number}
 \keyword{of}

@@ -14,7 +14,9 @@ HistolChopperAccessionNumber(x, y, stra)
 \item{stra}{regular expression needed as a string}
 }
 \description{
-This extracts Accession Number data data from the report
+This extracts Accession Number data data from the report where one is present.
+The Accession number relates to the actual specimen number as ascribed by the 
+pathology service.
 }
 \examples{
 v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")

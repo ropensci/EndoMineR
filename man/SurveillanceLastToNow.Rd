@@ -3,7 +3,8 @@
 \name{SurveillanceLastToNow}
 \alias{SurveillanceLastToNow}
 \title{SurveillanceLastToNow
-This determines the last test done by that patient and the time between now and that last test.x is the dataframe, HospNum_Id is the Patient identifier,Endo_ResultEntered is the date the endoscopy was performed}
+This determines the last test done by that patient and the time 
+between now and that last test in days}
 \usage{
 SurveillanceLastToNow(x, HospNum_Id, Endo_ResultPerformed)
 }
@@ -16,7 +17,8 @@ SurveillanceLastToNow(x, HospNum_Id, Endo_ResultPerformed)
 }
 \description{
 SurveillanceLastToNow
-This determines the last test done by that patient and the time between now and that last test.x is the dataframe, HospNum_Id is the Patient identifier,Endo_ResultEntered is the date the endoscopy was performed
+This determines the last test done by that patient and the time 
+between now and that last test in days
 }
 \examples{
 em<-SurveillanceLastToNow(Myendo,'HospitalNumber','Dateofprocedure')

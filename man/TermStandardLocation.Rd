@@ -2,8 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{TermStandardLocation}
 \alias{TermStandardLocation}
-\title{Standardises the location of biopsies
-This assess the location of the biopies taken from the histopathology specimens.}
+\title{TermStandardLocation}
 \usage{
 TermStandardLocation(x, SampleLocation)
 }
@@ -13,8 +12,8 @@ TermStandardLocation(x, SampleLocation)
 \item{SampleLocation}{Column describing the Macroscopic sample from histology}
 }
 \description{
-Standardises the location of biopsies
-This assess the location of the biopies taken from the histopathology specimens.
+Standardises the location of biopsies by cleaning up the common typos and 
+abbreviations that are commonly used in free text of pathology reports
 }
 \examples{
 f<-TermStandardLocation(Mypath,'Histology')

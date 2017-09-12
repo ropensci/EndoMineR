@@ -2,8 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{GRS_Type_Assess_By_Unit}
 \alias{GRS_Type_Assess_By_Unit}
-\title{GRS_Type_Assess_By_Unit
-This extracts the polyps types from the data(for colonoscopy and flexible sigmoidosscopy data)}
+\title{GRS_Type_Assess_By_Unit}
 \usage{
 GRS_Type_Assess_By_Unit(x, ProcPerformed, Endo_Endoscopist, Dx, Histol)
 }
@@ -19,8 +18,10 @@ GRS_Type_Assess_By_Unit(x, ProcPerformed, Endo_Endoscopist, Dx, Histol)
 \item{Histol}{The column with the Histology text in it}
 }
 \description{
-GRS_Type_Assess_By_Unit
-This extracts the polyps types from the data(for colonoscopy and flexible sigmoidosscopy data)
+This extracts the polyps types from the data (for colonoscopy and flexible sigmoidosscopy data)
+and output the adenoma,adenocarcinoma and hyperplastic detection rate by endoscopist as well
+as overall number of colonoscopies.
+This will be extended to other GRS outputs in the future.
 }
 \examples{
 v<-HistolChopperDx(Mypath,"Diagnosis")

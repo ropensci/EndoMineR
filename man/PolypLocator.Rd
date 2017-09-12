@@ -2,19 +2,19 @@
 % Please edit documentation in R/EndoMineR.R
 \name{PolypLocator}
 \alias{PolypLocator}
-\title{Standardises the location of polyps
-This assess the size of the biopies take}
+\title{PolypLocator}
 \usage{
 PolypLocator(x, y)
 }
 \arguments{
 \item{x}{The dataframe}
 
-\item{y}{The column containing the SampleLocation from the Term Standardizer}
+\item{y}{The column containing the SampleLocation from the TermStandardLocation}
 }
 \description{
-Standardises the location of polyps
-This assess the size of the biopies take
+This should be used after the TermStandardizer 
+as it relies on the presence of a SampleLocation column
+which the TermStandardLocation produces. It should be used after the PolypTidyUpLocator
 }
 \examples{
 f<-TermStandardLocation(Mypath,'Histology')

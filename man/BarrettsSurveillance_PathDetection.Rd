@@ -12,7 +12,9 @@ BarrettsSurveillance_PathDetection(x, titlePlot)
 \item{titlePlot}{The plot title}
 }
 \description{
-This function assesses pathology of specimens taken at surveillance per year
+This function assesses pathology of specimens taken at surveillance per year.
+It outputs a plot which determines the the overall number of pathologies (
+low/high grade dysplasia and cancer) for patients on surveillance
 }
 \examples{
 v<-HistolChopperDx(Mypath,"Diagnosis")
@@ -28,7 +30,7 @@ b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 BarrettsSurveillance_PathDetection(b4,'Myplot')
 }
-\keyword{Does}
-\keyword{data}
-\keyword{something}
-\keyword{with}
+\keyword{and}
+\keyword{cancer}
+\keyword{detection}
+\keyword{dysplasia}

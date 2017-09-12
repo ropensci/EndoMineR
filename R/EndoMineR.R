@@ -8,9 +8,8 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("b", "PatientID", ".SD",
 
 #' SurveillanceTimeByRow
 #'
-#' This determines the time difference between each test for a patient. 
-#' x is the dataframe, HospNum_Id is the Patient identifier,Endo_ResultEntered 
-#' is the date the endoscopy was performed
+#' This determines the time difference between each test for a patient in days.
+#' 
 #' @param x dataframe,
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
@@ -32,7 +31,9 @@ SurveillanceTimeByRow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 
 
 #' SurveillanceLastToNow
-#' This determines the last test done by that patient and the time between now and that last test.x is the dataframe, HospNum_Id is the Patient identifier,Endo_ResultEntered is the date the endoscopy was performed
+#' This determines the last test done by that patient and the time 
+#' between now and that last test in days
+#' 
 #' @param x dataframe
 #' @param  HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
@@ -53,7 +54,7 @@ SurveillanceLastToNow <- function(x, HospNum_Id, Endo_ResultPerformed) {
 
 #' SurveillanceLastTest
 #'
-#' Extract the last test only per patient
+#' Extracts the last test only per patient
 #' @param x dataframe
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
@@ -75,7 +76,7 @@ SurveillanceLastTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 
 #' SurveillanceFirstTest
 #'
-#' Extract the first test only per patient
+#' Extracts the first test only per patient
 #' @param x dataframe
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
@@ -97,7 +98,7 @@ SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 
 #' SurveillanceCapacity
 #'
-#' This determines the last test done by that patient and the time between now and that last test
+#' This determines the number of tests done per month
 #' @param x dataframe
 #' @param Endo_ResultPerformed Column with the date the Endoscopy was performed
 #' @import dplyr
@@ -114,7 +115,11 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 
 #' HowManyTests
 #'
-#' Get an overall idea of how many endoscopies have been done for an indication by year and month
+#' Get an overall idea of how many endoscopies have been done for an indication by year and month. This is a 
+#' more involved version of SurveillanceCapacity function. It takes string for the Indication for the test
+#' 
+#' This returns a list which contains a plot (number of tests for that indication over time
+#' and a table with the same information broken down by month and year).
 #' @param x dataframe
 #' @param Indication Indication column
 #' @param Endo_ResultPerformed column containing date the Endoscopy was performed
@@ -154,10 +159,10 @@ HowManyTests <- function(x, Indication, Endo_ResultPerformed, StringToSearch) {
 #' SurveySankey
 #'
 #' This creates a Sankey plot to see the order of tests for all patients: 
-#' dfw is the dataframe, 
-#' y is the value of in this case the procedure type (eg EMR,
+#' dfw is the dataframe, y is the value of in this case 
+#' the procedure type (eg EMR,
 #'  radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)
-#'  Note the Hospital Number column MUST be called PatientID
+#'  Note the Hospital Number column MUST be called PatientID.
 #' @param dfw the dataframe extracted using the standard cleanup scripts
 #' @param y the column containing the test like ProcPerformed for example
 #' @import dplyr
@@ -210,9 +215,9 @@ SurveySankey <- function(dfw, y) {
 }
 
 
-#' Circos plot functions:
+#' PatientFlow_CircosPlots
 #'
-#' This allows us to look at the overall flow from one type of procedure to another using circos plots
+#' This allows us to look at the overall flow from one type of procedure to another using circos plots.
 #' @param x dataframe 
 #' @param Endo_ResultPerformed the column containing the date of the procedure 
 #' @param ProcPerformed The procedure that you want to plot (eg EMR,
@@ -282,12 +287,16 @@ PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed, HospNum_Id, ProcPer
 }
 
 
-################################## Endoscopic Performance Quality- documentation.###### This relies on defining terms of
-################################## interest and then performing a lookup of all the reports with these terms
+##### Endoscopic Performance Quality- documentation.###### 
 
-#' ListLookup functions:
-#'
-#' Input is a dataframe with x=dataframe name, y=column name you are doing text mining from and PropThreshold= the number of rows that have the terms you are interested in. theframe is the dataframe, y is the columnn of interest and PropThreshold is the Proportion of reports Threshold for the graph. The aim here is simply to produce a document term matrix to get the frequency of all the words, then extract the words you are interested in with tofind (I think) then find which reports have those words. Then find what proportion of the reports have those terms
+#' ListLookup
+#' 
+#' The aim here is simply to 
+#' produce a document term matrix to get the frequency 
+#' of all the words, then extract the words you are 
+#' interested in with tofind then find which reports 
+#' have those words. Then find what proportion of the reports 
+#' have those terms.
 #' @param theframe the dataframe, 
 #' @param y the column of interest, 
 #' @param myNotableWords list of words you are interested in
@@ -321,8 +330,10 @@ ListLookup <- function(theframe, y, myNotableWords) {
 # Groups anything by Endoscopist and returns the table and a ggplot
 
 
-#' Number of biopsies
-#' This assess how many biopsies have been taken
+#' MetricByEndoscopist
+#' 
+#' This takes any numerical metric in the dataset and plots it by endoscopist.
+#' It of course relies on a Endoscopist column being present
 #' @param x The dataframe
 #' @param y The column (numeric data) of interest
 #' @param z The endoscopist column
@@ -350,10 +361,11 @@ MetricByEndoscopist <- function(x, y, z) {
 
 
 
-# Determine the location of biopsies
-
-#' Standardises the location of biopsies
-#' This assess the location of the biopies taken from the histopathology specimens.
+#' TermStandardLocation
+#' 
+#' Standardises the location of biopsies by cleaning up the common typos and 
+#' abbreviations that are commonly used in free text of pathology reports
+#' 
 #' @param x The dataframe 
 #' @param SampleLocation Column describing the Macroscopic sample from histology
 #' @keywords Withdrawal
@@ -412,10 +424,14 @@ TermStandardLocation <- function(x, SampleLocation) {
 }
 
 
-#' Determines the site of samples
-#' This assess where samples are taken from. This should be used after the TermStandardizer and can be used after the PolypTidyUpLocator 
-#' although you could just run it after the term stanardiser to get an overview of where samples were taken from. It will tell you the
-#' sites sampled without duplication
+#' SampleLocator
+#' 
+#' This assess where samples are taken from. This should be used after the TermStandardLocation 
+#' as it relies on the presence of a SampleLocation column
+#' which the TermStandardLocation produces. It can be used after the PolypTidyUpLocator 
+#' although you could just run it after the TermStandardLocation 
+#' to get an overview of where samples were taken from. 
+#' It will tell you the sites sampled without duplication
 #' @param x The dataframe 
 #' @param y SampleLocation from the TermStandardizer
 #' @import stringr
@@ -436,10 +452,13 @@ SampleLocator <- function(x, y) {
 }
 
 
-#' Standardises the location of polyps
-#' This assess the size of the biopies take
+#' PolypLocator
+#' 
+#' This should be used after the TermStandardizer 
+#' as it relies on the presence of a SampleLocation column
+#' which the TermStandardLocation produces. It should be used after the PolypTidyUpLocator 
 #' @param x The dataframe 
-#' @param y The column containing the SampleLocation from the Term Standardizer
+#' @param y The column containing the SampleLocation from the TermStandardLocation
 #' @keywords Withdrawal
 #' @import stringr
 #' @export
@@ -460,10 +479,10 @@ PolypLocator <- function(x, y) {
 
 
 
-# Determine the location of biopsies
 
-#' Standardises the location of polyps
-#' This assess the size of the biopies take
+#' PolypTidyUpLocator
+#' 
+#' This cleans up the polyps from the TermStandardLocation function
 #' @param x The dataframe 
 #' @param SampleLocation The column containing the SampleLocation from the Term Standardizer
 #' @keywords Withdrawal
@@ -481,7 +500,11 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 ########################### Diagnostic yield functions #######
 
 #' GRS_Type_Assess_By_Unit
-#' This extracts the polyps types from the data(for colonoscopy and flexible sigmoidosscopy data)
+#' 
+#' This extracts the polyps types from the data (for colonoscopy and flexible sigmoidosscopy data)
+#' and output the adenoma,adenocarcinoma and hyperplastic detection rate by endoscopist as well
+#' as overall number of colonoscopies.
+#' This will be extended to other GRS outputs in the future.
 #' @param x The dataframe 
 #' @param ProcPerformed The column containing the Procedure type performed
 #' @param Endo_Endoscopist column containing the Endoscopist name
@@ -580,8 +603,12 @@ GRS_Type_Assess_By_Unit <- function(x, ProcPerformed, Endo_Endoscopist, Dx, Hist
 
 ############# Endoscopist Quality ######
 
-#' Determines the number of endoscopies done by an endoscopist by type of endosopy and indication for a given timeframe
-#' As per BSG recommendations for Upper GI minimum number of gastroscopies in a year (although here the time frame is user
+#'NumberPerformed
+#'
+#' Determines the number of endoscopies done by an endoscopist 
+#' by type of endosopy and indication for a given timeframe
+#' As per BSG recommendations for Upper GI minimum number of 
+#' gastroscopies in a year (although here the time frame is user
 #' defined)
 #' @param x The dataframe 
 #' @param y The column containing the Endoscopists names

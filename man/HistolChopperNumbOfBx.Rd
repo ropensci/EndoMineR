@@ -14,8 +14,10 @@ HistolChopperNumbOfBx(x, y, z)
 \item{z}{The keyword to remove and to stop at in the regex}
 }
 \description{
-This extracts the number of biopsies taken from the pathology report. This is usually from the Macroscopic description column.
-It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is (z)
+This extracts the number of biopsies taken from the pathology report. 
+This is usually from the Macroscopic description column.
+It collects everything from the regex [0-9]{1,2}.{0,3} 
+to whatever the string boundary is (z).
 }
 \examples{
 v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription','specimen')

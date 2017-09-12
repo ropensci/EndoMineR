@@ -18,6 +18,8 @@ BarrettsPatientTracking_Enrollment_Surveillance(x, PatientID,
 }
 \description{
 This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy.
+This allows us to determine how many index Barrett's detections went on to undergo surveillance.
+This should be run after the BarrettsDataAccord_Prague and BarrettsDataAccord_PathStage.
 }
 \examples{
 Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',

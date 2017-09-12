@@ -12,8 +12,13 @@ BarrettsDataAccord_FUGroup(x, y)
 \item{y}{The field to search (endoscopic findings)}
 }
 \description{
-This function accordionises the data so we get all the bits extrapolated from what's available
-Specfically it combines the presence of intestinal metaplasia with Prague score so the follow-up group can be determined
+This determines the follow up rule a patient should fit in to (according to the 
+British Society for Gastroenterology guidance on Barrett's oesophagus)
+Specfically it combines the presence of intestinal metaplasia with 
+Prague score so the follow-up group can be determined. It relies on the presence of a Prague
+score. It should be run after BarrettsDAtaAccord_PathStage which looks for the worst stage of a 
+specimen and which will determine the presence or absence of intestinal metaplasia
+if the sample is non-dysplastic.
 Being the procedure done at the time and the follow-up timings
 }
 \examples{

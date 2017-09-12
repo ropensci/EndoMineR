@@ -17,8 +17,8 @@ BarrettsQuality_AnalysisBiopsyNumber(x, Endo_ResultPerformed, PatientID,
 \item{Endoscopist}{name of the column with the Endoscopist names}
 }
 \description{
-This function gets the biopsies taken per endoscopy and compares to the
-Barrett's length
+This function gets the biopsies taken per endoscopy and compares to the Prague score 
+for that endoscopy.
 }
 \examples{
 v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")

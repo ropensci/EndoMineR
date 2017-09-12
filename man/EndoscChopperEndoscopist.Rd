@@ -12,7 +12,9 @@ EndoscChopperEndoscopist(x, y)
 \item{y}{The endoscopy text column}
 }
 \description{
-This extracts the endoscopist from the report
+This cleans endoscopist column from the report assuming such a column exists. 
+It gets rid of common entries that are not needed. 
+It should be used after the Extractor and the optional ChopperNewLines has been used.
 }
 \examples{
 v<-EndoscChopperEndoscopist(Myendo,'Endoscopist')

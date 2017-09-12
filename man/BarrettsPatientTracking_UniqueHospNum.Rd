@@ -14,7 +14,11 @@ BarrettsPatientTracking_UniqueHospNum(x, rule, PatientID)
 \item{PatientID}{Column containing patient numbers}
 }
 \description{
-This function gets the unique patient ID's for each patient, for each rule. It lists the unique PatientIDs assocaited with a rule ('Rule1','Rule2','Rule3','NoRules')
+This function gets the unique patient ID's for each patient, 
+for each rule. It lists the unique PatientIDs assocaited with a rule 
+('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many patients will need 
+follow up at specific time intervals. This should be run after the BarrettsDataAccord_Prague 
+and BarrettsDataAccord_PathStage.
 }
 \examples{
 v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")

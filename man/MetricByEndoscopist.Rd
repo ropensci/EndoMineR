@@ -2,8 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{MetricByEndoscopist}
 \alias{MetricByEndoscopist}
-\title{Number of biopsies
-This assess how many biopsies have been taken}
+\title{MetricByEndoscopist}
 \usage{
 MetricByEndoscopist(x, y, z)
 }
@@ -15,8 +14,8 @@ MetricByEndoscopist(x, y, z)
 \item{z}{The endoscopist column}
 }
 \description{
-Number of biopsies
-This assess how many biopsies have been taken
+This takes any numerical metric in the dataset and plots it by endoscopist.
+It of course relies on a Endoscopist column being present
 }
 \examples{
 Myendo<-EndoscChopperMeds(Myendo,'Medications')

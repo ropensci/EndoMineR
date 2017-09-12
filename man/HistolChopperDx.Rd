@@ -12,7 +12,11 @@ HistolChopperDx(x, y)
 \item{y}{column containing the Hisopathology report}
 }
 \description{
-This extracts Diagnosis data from the report
+This extracts Diagnosis data from the report. The Diagnosis is the overall impression
+of the pathologist for that specimen. At the moment, Only Capital D included (not
+lower case d) to make sure picks up subtitle header as opposed to 
+mentioning 'diagnosis' as part of a sentence.  Column specific cleanup and negative 
+remover have also been implemented here.
 }
 \examples{
 v<-HistolChopperDx(Mypath,'Diagnosis')

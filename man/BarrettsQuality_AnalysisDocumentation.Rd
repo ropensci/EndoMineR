@@ -12,7 +12,9 @@ BarrettsQuality_AnalysisDocumentation(x, Findings)
 \item{Findings}{column of interest- usually the main body of the endoscopic report}
 }
 \description{
-This function assesses the Barrett's documentation. Need to have run the BarrettsDataAccord_Prague first
+This function assesses the Barrett's documentation. This notes how many reports contain
+the mandatory report fields as specified in the BSG standards on 
+Barrett's endoscopic reporting. This should be run after the BarrettsDataAccord_Prague.
 }
 \examples{
 v<-HistolChopperDx(Mypath,"Diagnosis")

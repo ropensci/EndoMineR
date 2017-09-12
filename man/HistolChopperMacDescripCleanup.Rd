@@ -12,12 +12,13 @@ HistolChopperMacDescripCleanup(x, y)
 \item{y}{column of interest that describes the macroscopic specimen}
 }
 \description{
-This extracts Macroscopic description data from the report
+This extracts Macroscopic description data from the pathology report.
+Macroscopic description usually relates to the number of specimens
+retrieved, the size of each specimen and the location it was taken from.
+The cleanup usually relates to the removal of top and tail characters such
+as who reported the specimens etc.
 }
 \examples{
-HistolChopperHistol(Mypath,'Histology')
-v<-HistolChopperDx(Mypath,"Diagnosis")
-v<-HistolChopperExtrapolDx(v,"Diagnosis")
-v<-HistolChopperMacDescripCleanup(v,"Macroscopicdescription")
+v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
 }
 \keyword{Macroscopic}

@@ -2,10 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SampleLocator}
 \alias{SampleLocator}
-\title{Determines the site of samples
-This assess where samples are taken from. This should be used after the TermStandardizer and can be used after the PolypTidyUpLocator 
-although you could just run it after the term stanardiser to get an overview of where samples were taken from. It will tell you the
-sites sampled without duplication}
+\title{SampleLocator}
 \usage{
 SampleLocator(x, y)
 }
@@ -15,10 +12,12 @@ SampleLocator(x, y)
 \item{y}{SampleLocation from the TermStandardizer}
 }
 \description{
-Determines the site of samples
-This assess where samples are taken from. This should be used after the TermStandardizer and can be used after the PolypTidyUpLocator 
-although you could just run it after the term stanardiser to get an overview of where samples were taken from. It will tell you the
-sites sampled without duplication
+This assess where samples are taken from. This should be used after the TermStandardLocation 
+as it relies on the presence of a SampleLocation column
+which the TermStandardLocation produces. It can be used after the PolypTidyUpLocator 
+although you could just run it after the TermStandardLocation 
+to get an overview of where samples were taken from. 
+It will tell you the sites sampled without duplication
 }
 \examples{
 f<-TermStandardLocation(Mypath,'Histology')

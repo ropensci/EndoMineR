@@ -14,7 +14,7 @@ SurveillanceFirstTest(x, HospNum_Id, Endo_ResultPerformed)
 \item{Endo_ResultPerformed}{Date of the Endoscopy}
 }
 \description{
-Extract the first test only per patient
+Extracts the first test only per patient
 }
 \examples{
 em<-SurveillanceFirstTest(Myendo,'HospitalNumber','Dateofprocedure')

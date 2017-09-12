@@ -12,7 +12,13 @@ HistolChopperBxSize(x, y)
 \item{y}{Macdescrip}
 }
 \description{
-This extracts the biopsy size from the report.This is usually from the Macroscopic description column.
+This extracts the biopsy size from the report. If there are multiple 
+biopsies it will extract the overall size of each one (size is calculated 
+usually in cubic mm from the three dimensions provided). This will result
+in row duplication.
+}
+\details{
+This is usually from the Macroscopic description column.
 }
 \examples{
 v<-HistolChopperBxSize(Mypath,'Macroscopicdescription')

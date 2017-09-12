@@ -12,7 +12,12 @@ BarrettsDataAccord_PathStage(x, y)
 \item{y}{column of interest}
 }
 \description{
-This function accordionises the data so we get all the bits extrapolated from what's available
+This extracts the pathological stage from the histopathology specimen. It is 
+done using 'degradation' so that it will look for the worst overall grade 
+in the histology specimen and if not found it will look for the next worst
+and so on. It looks per report not per biopsy (it is more common
+for histopathology reports tocontain the worst overall grade 
+rather than individual biopsy grades).
 Specfically it extracts the histopathology worst grade
 Being the procedure done at the time and the follow-up timings
 }
