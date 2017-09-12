@@ -346,7 +346,7 @@ HistolChopperMacDescripCleanup <- function(x, y) {
 #' @param y column of interest
 #' @keywords Histology
 #' @export
-#' @examples HistolChopperHistol(Mypath,'Histology')
+#' @examples t<-HistolChopperHistol(Mypath,'Histology')
 
 
 HistolChopperHistol <- function(x, y) {
@@ -465,7 +465,7 @@ HistolChopperExtrapolDx <- function(x, y) {
 #' with the Nature of the specimen or the Macroscopic description in it
 #' @keywords Macroscopic
 #' @export
-#' @examples HistolChopperMacDescrip(Mypath, "Macroscopicdescription")
+#' @examples t<-HistolChopperMacDescrip(Mypath, "Macroscopicdescription")
 
 HistolChopperMacDescrip <- function(x, y) {
     x <- data.frame(x)

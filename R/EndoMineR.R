@@ -131,7 +131,7 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @importFrom stringr str_detect
 #' @keywords Tests number
 #' @export
-#' @examples HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+#' @examples how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 
 
 HowManyTests <- function(x, Indication, Endo_ResultPerformed, StringToSearch) {
@@ -237,7 +237,7 @@ SurveySankey <- function(dfw, y) {
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
 #' v<-HistolChopperBxSize(v,"Macroscopicdescription")
 #' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-#' PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed)
+#' flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed)
 
 PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed) {
    
@@ -493,6 +493,7 @@ PolypLocator <- function(x, y) {
 #' @keywords Withdrawal
 #' @export
 #' @examples f<-TermStandardLocation(Mypath,'Histology')
+#' f<-PolypTidyUpLocator(f,'SampleLocation')
 
 PolypTidyUpLocator <- function(x, SampleLocation) {
     # Get all the polyps and tidy up the polyp data- Function 5
