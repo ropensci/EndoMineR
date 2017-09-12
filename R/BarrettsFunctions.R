@@ -13,7 +13,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
 #' Specfically it extracts the Prague score
 #' @param x dataframe with column of interest
 #' @param y column of interest
-#' @import stringr
+#' @importFrom stringr str_extract
 #' @keywords  Prague score
 #' @export
 #' @examples v<-BarrettsDataAccord_Prague(Myendo,'Findings')
@@ -154,7 +154,7 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' @param Endo_ResultPerformed column of interest with date endiscopy performed in it
 #' @param IndicationsFroExamination column of interest with indications in it (usually 'Surveillance' or similar)
 #' @keywords Patient Tracking
-#' @import dplyr
+#' @importFrom dplyr group_by slice mutate filter
 #' @importFrom magrittr '%>%'
 #' @export
 #' @examples Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',
@@ -284,6 +284,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @param Endo_ResultPerformed Date of the Endocscopy
 #' @param PatientID Patient's unique identifier
 #' @param Endoscopist name of the column with the Endoscopist names
+#' @importFrom dplyr summarise group_by filter
 #' @keywords Does something with data
 #' @export
 #' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
@@ -474,7 +475,7 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' @param x the dataframe
 #' @param Endo_ResultPerformed the date the endoscopy was performed
 #' @keywords Number of therapies
-#' @import dplyr
+#' @importFrom dplyr group_by mutate summarise
 #' @importFrom magrittr '%>%'
 #' @import ggplot2
 #' @export

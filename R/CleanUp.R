@@ -46,7 +46,7 @@ ChopperNewLines <- function(x, y) {
 #' @param stra the start of the boundary to extract
 #' @param strb the end of the boundary to extract
 #' @param t the column name to create
-#' @import stringr
+#' @importFrom stringr str_extract
 #' @keywords Extraction
 #' @export
 #' @examples v<-TheOGDReportFinal
@@ -123,7 +123,7 @@ EndoscChopperEndoscopist <- function(x, y) {
 #' @param x dataframe with column of interest 
 #' @param y column of interest
 #' @keywords Endoscopy medications
-#' @import stringr
+#' @importFrom stringr str_extract
 #' @export
 #' @examples v<-EndoscChopperMeds(Myendo,'Medications')
 
@@ -387,7 +387,7 @@ HistolChopperHistol <- function(x, y) {
 #' @param x the dataframe name and 
 #' @param  y the column name as a string. 
 #' @param  stra regular expression needed as a string
-#' @import stringr
+#' @importFrom stringr str_extract
 #' @keywords Sample Accession number
 #' @export
 #' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
@@ -437,7 +437,7 @@ HistolChopperDx <- function(x, y) {
 #' 
 #' @param x the dataframe containing histology results, 
 #' @param y the column to extract dysplasia, cancer, and GIST from- often the Histology diagnosis column
-#' @import stringr
+#' @importFrom stringr str_extract
 #' @keywords Histology diagnosis
 #' @export
 #' @examples v<-HistolChopperExtrapolDx(Mypath,'Diagnosis')
@@ -492,7 +492,7 @@ HistolChopperMacDescrip <- function(x, y) {
 #' @param x the dataframe
 #' @param y Column containing the Macroscopic description text
 #' @param z The keyword to remove and to stop at in the regex
-#' @import stringr
+#' @importFrom stringr str_match_all
 #' @keywords Biopsy number
 #' @export
 #' @examples v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription','specimen')
@@ -515,7 +515,7 @@ HistolChopperNumbOfBx <- function(x, y, z) {
 #' This is usually from the Macroscopic description column.
 #' @param x the dataframe
 #' @param y Macdescrip
-#' @import stringr
+#' @importFrom stringr str_extract
 #' @keywords biopsy size
 #' @export
 #' @examples v<-HistolChopperBxSize(Mypath,'Macroscopicdescription')

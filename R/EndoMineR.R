@@ -102,6 +102,7 @@ SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @param x dataframe
 #' @param Endo_ResultPerformed Column with the date the Endoscopy was performed
 #' @importFrom dplyr group_by summarise
+#' @importFrom lubridate dmy month
 #' @importFrom magrittr '%>%'
 #' @keywords cats
 #' @export
@@ -114,7 +115,6 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 }
 
 #' HowManyTests
-#'
 #' Get an overall idea of how many endoscopies have been done for an indication by year and month. This is a 
 #' more involved version of SurveillanceCapacity function. It takes string for the Indication for the test
 #' 
@@ -125,7 +125,7 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @param Endo_ResultPerformed column containing date the Endoscopy was performed
 #' @param StringToSearch The string in the Indication to search for
 #' @importFrom magrittr '%>%'
-#' @importFrom dplyr arrange group_by mutate lead
+#' @importFrom dplyr arrange group_by mutate lead filter
 #' @importFrom lubridate week year month dmy
 #' @importFrom magrittr '%>%'
 #' @importFrom stringr str_detect
@@ -167,9 +167,9 @@ HowManyTests <- function(x, Indication, Endo_ResultPerformed, StringToSearch) {
 #'  Note the Hospital Number column MUST be called PatientID.
 #' @param dfw the dataframe extracted using the standard cleanup scripts
 #' @param y the column containing the test like ProcPerformed for example
-#' @import dplyr
+#' @importFrom dplyr group_by
 #' @importFrom magrittr '%>%'
-#' @importfrom data.table setDT rowid 
+#' @importfrom data.table setDT rowid
 #' @importfrom reshape2 dcast
 #' @keywords Sankey
 #' @export
@@ -225,7 +225,9 @@ SurveySankey <- function(dfw, y) {
 #' @param ProcPerformed The procedure that you want to plot (eg EMR,
 #'  radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)
 #' @param HospNum_Id Column with the patient's unique hospital number
-#' #' @import dplyr
+#' @import dplyr
+#' @importFrom reshape2 'dcast'
+#' @importFrom tidyr separate
 #' @import circlize
 #' @importFrom magrittr '%>%'
 #' @keywords Circos
@@ -238,8 +240,8 @@ SurveySankey <- function(dfw, y) {
 #' PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed)
 
 PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed) {
-    # library(dplyr) library(reshape2)
-    
+   
+  
     mydf <- x %>% arrange_(Endo_ResultPerformed) %>% group_by_(HospNum_Id) %>% mutate_(origin = lag(ProcPerformed, 
         1), destination = ProcPerformed) %>% select(origin, destination) %>% group_by(origin, 
         destination) %>% summarise(n = n()) %>% ungroup()
@@ -513,6 +515,7 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #' @param Endo_Endoscopist column containing the Endoscopist name
 #' @param Dx The column with the Histological diagnosis
 #' @param Histol The column with the Histology text in it
+#' @importFrom dplyr group_by_
 #' @keywords Withdrawal
 #' @export
 #' @examples v<-HistolChopperDx(Mypath,"Diagnosis")

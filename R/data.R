@@ -146,6 +146,6 @@
 #'   \item{ClinicalDetails}{Clinical Details, in text}
 #'   \item{Macroscopicdescription}{Macroscopic description of the report, in text}
 #'   \item{Histology}{Histology, in text}
-#'   \item{iagnosis}{iagnosis, in text}
+#'   \item{Diagnosis}{Diagnosis, in text}
 #' }
 "Mypath"

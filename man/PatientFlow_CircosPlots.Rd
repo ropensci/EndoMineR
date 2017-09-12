@@ -11,8 +11,7 @@ PatientFlow_CircosPlots(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed)
 
 \item{Endo_ResultPerformed}{the column containing the date of the procedure}
 
-\item{HospNum_Id}{Column with the patient's unique hospital number
-#' @import dplyr}
+\item{HospNum_Id}{Column with the patient's unique hospital number}
 
 \item{ProcPerformed}{The procedure that you want to plot (eg EMR,
 radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)}
