@@ -20,34 +20,8 @@ The goal of EndoMineR is to extract as much information as possible from endosco
 ##Introduction 
 
 Gastroenterological data can be organised in a manner that allows several questions to be answered with the same data structure. The structure itself is straightforward. It simply rests on the basis that we mainly describe patient episodes so that each row of a dataframe pertains to the data collected at that episode and the index of the row is based on a combination of date and a patient's unique identifier
-
 The following described an overview of how data should be structured using both and endoscopic dataset and a pathological dataset which we will merge.
 
-###**Medical data is electronic**
-
-Medical data is increasingly kept in an electronic format worldwide. This serves many purposes including more efficient storage, distribution and accessibility of patient-focussed data. As important is the ability to analyse healthcare data for to optimize resource deployment and usage.  The tools for the analysis are often statistical and rely on the provision of ‘clean’ datasets before this can be done. ‘Cleaning’ a dataset is often the most difficult aspect of any data analysis and involves the provision of meaningful and well-formatted data so that the interpretation of the analysis is not subject to the doubts of the data quality.
-
-###**Analyses of electronic data should also be electronic**
-
-The analysis itself, especially analysis that involves optimization or monitoring of regularly utilized services, is likely to be re-used so that a reproduced analysis needs to be done with the same tools as the original analysis- the principle of reproducible research and an essential part of auditing and governance so that perceived improvements in practice are not simply a function of a change in the analytic methodology.
-
-
-The British Society of Gastroenterology recommends that all endoscopic data is kept in an electronic format particularly to facilitate audit and maintain standards through the Global Rating Scale (GRS), a fundamental aspect of improving and maintaining high quality endoscopic performance. The endoscopic dataset is however only part of the patient’s story as many aspects of a patient’s gastroenterological care depend on the results of histopathological analysis of tissue taken during the examination. Pathology results are usually  available many days after the endoscopic result and usually stored in a separate data repository, although this may change with the arrival of a more encompassing electronic patient records. 
-
-###**Medical data should be organised**
-
-Regardless of the method of storage, it is often difficult to associate the particular histopathological result with an endoscopic result because data is often stored at a departmental level in different repositories. Further, even if the two data sets can be merged, a problem occurs in the isolation of various parts of each report such that each part can be individually analysed.  Examples include the isolation of who the endoscopist was or the presence of dysplasia within a histopathology report. This is all the more difficult if the report is unstructured or partially structured free text. 
-
-###**Electronic analyses can only be done with organised data**
-
-However if this can be done then many downstream analyses which benefit individual patients as well as the department, can be automated and include more complex analyses to determine follow-up regimes or endoscopic –pathologic lesion recognition performance. It is the purpose of this paper to demonstrate a methodology to merge endoscopy with pathology reports and extract units of data from both. The paper also demonstrates how crucial questions that are asked of datasets repeatedly in endoscopy can be answered in an automated way as long as the dataset is prepared well. Finally the paper validates the methodology using an actual dataset from a single trust. The methodology is available in scripted format using the statistical programming tool, R (ref) as a package (EndoMiner).
-
-###**Reproducible research is a corenerstone of good day to day govenernance**
-
-From a day to day point of view, reproducibility of research is integral to the principle of audit. To be able to perform exactly the same method of analysis on multiple datasets allows a fair result comparison that is removed from criticism of the difference in methodologies. Electronic data allows us to specify in code, the analysis that needs to be done and of course re-run that code with a new dataset.
-
-All data needs to be prepared. This is extremely time consuming. Below illustrates the process of preparation for data in gastroenterology with a focus on endoscopic- pathological data sets.
-<br><br><br>
 
 ##Overview of steps for any analysis:
 
@@ -191,7 +165,7 @@ v<-ChopperNewLines(Myendo,'OGDReportWhole')
 
 ## The cleaning functions
 
-## Endoscopic cleaning
+### Endoscopic cleaning
 
 Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscChopperEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up
 ```{r exampleEndoscChopperEndoscopist, eval = FALSE}
@@ -230,7 +204,7 @@ v<-EndoscChopperProcPerformed(Myendo,'ProcedurePerformed')
 
 Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases
 
-## Histological cleaning
+### Histological cleaning
 
 The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting.
 In general, each histology reports can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis
@@ -279,38 +253,110 @@ v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 ```
 v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
 
-## Styles
+## The Analysis Functions
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+As per the introduction the analysis functions are split according to the cornerstone questions in day to day gastroenterological practice
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+###Surveillance functions
 
-## Figures
+Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a load of pre-processing steps
 
-The figure sizes have been customised so that you can easily put two images side-by-side. 
 
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
+```{r exampleSurveillanceTimeByRow, eval = FALSE}
+em<-SurveillanceTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
+em<-SurveillanceLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
+em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+em<-SurveillanceFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+Of course we also want to know how many tests have been done over a time period and this is provided by two functions
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+```{r exampleSurveillanceCapacity, eval = FALSE}
+em<-SurveillanceCapacity(Myendo,"Dateofprocedure)
 ```
 
-Also a quote using `>`:
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+This function will return the number of tests by month. The more detailed function is:
+
+```{r exampleHowManyTests, eval = FALSE}
+how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+```
+
+
+This will provide the number of tests by month and year as a table as well as a ggplot. It returns aa list so this can be accessed with how[1] and how[2]
+
+###Patient flow functions
+
+We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. 
+For example, if we have a dataset with events such as 'radiofrequency ablation' and 'endoscopic mucosal resection' or 'nothing' we can use the Sankey plot to determine the order of events over a large patient population:
+
+
+```{r exampleSurveySankey, eval = FALSE}
+how<-SurveySankey(Myendo,"ProcPerformed")
+```
+
+We may was something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
+
+```{r examplePatientFlow_CircosPlots, eval = FALSE}
+flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed")
+```
+
+###Assessment of quality functions
+
+Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to standards for endoscopic documentation as well as detection of certain pathological conditions such as dysplasia.
+
+
+####Documentation Quality
+As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised on terms that should be mentioned in a report.
+
+```{r exampleListLookup, eval = FALSE}
+tt<-ListLookup(Myendo,'Findings',myNotableWords)
+```
+
+####Endoscopic Quality
+Another measure of quality is by looking at those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table
+
+```{r exampleEndoscChopperMeds, eval = FALSE}
+Myendo<-EndoscChopperMeds(Myendo,'Medications')
+Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+```
+
+
+Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.
+
+To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings.
+
+```{r exampleTermStandardLocation, eval = FALSE}
+f<-TermStandardLocation(Mypath,'Histology')
+```
+
+Once this is done, a column called SampleLocation is appended to the existing dataset. If polyps need to be located then the PolypLocator function can be used. Alternatively the SampleLocator can be used. As they append differently named columns to the existing dataset, both can be used together. The polyps text often need a bit of tidying up and this can be done with the function PolypTidyUpLocator prior to using PolypLocator
+
+```{r examplePolypTidyUpLocator, eval = FALSE}
+
+f<-PolypTidyUpLocator(f,'SampleLocation')
+f<-PolypLocator(f,'SampleLocation') 
+f<-SampleLocator(f,'SampleLocation')
+```
+
+
+
+A further difficult area is the assessment of endoscopic quality by looking at the pathology processed from an endoscopy. This package is excellent at dealing with this kind of question because of its ability to merge the datasets together:
+
+A particularly well developed area to look at is that of the Global Rating Scale for assessing the quality of colonoscopy. One of the metrics- the adenoma detection rate assesses the number of colonoscopies where at least one adenoma was detected.
+
+One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS reqquirement for the ADR as well as provding further metrics alongside
+
+```{r exampleGRS_Type_Assess_By_Unit, eval = FALSE}
+GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed','Endoscopist','Diagnosis','Histology')
+```
+
+
+##Application to specific disease entities- Barrett's oesophagus
+
+The functions above really act as building blocks for the further, more complex analyses we can do for specific Endoscopic-pathological disease sets
+
+One particular disease, the premalignant oesophageal condition Barrett's oesophagus, requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 guidelines, means the presence or absence of intestinal metaplasia)
+
+Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett's oesophagus itself.
+
