@@ -1,8 +1,9 @@
 ---
 title: "EndoMineR"
 author: "Sebastian Zeki `r Sys.Date()`"
-date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{EndoMineR}
   %\VignetteEngine{knitr::rmarkdown}
@@ -10,8 +11,7 @@ vignette: >
 ---
 
 
-
-## Vignette Info
+## Aims of EndoMineR
 
 The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens. Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.
 
@@ -443,7 +443,7 @@ Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
 
 As we have done above, we can also assess the documentation used in Barrett's endoscopies. There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett's documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on  Barrett's endoscopic reporting. This should be run after the BarrettsDataAccord_Prague as assessment of the Prague score is a part of this assessment:
 
-```{r exampleBarrettsPatientTracking_UniqueHospNum, eval = FALSE}
+```{r exampleBarrettsQuality_AnalysisDocumentation, eval = FALSE}
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
 b<-BarrettsDataAccord_PathStage(v,'Histology')
 BarrettsQuality_AnalysisDocumentation(b,"Findings")
@@ -453,7 +453,7 @@ BarrettsQuality_AnalysisDocumentation(b,"Findings")
 
 One of the essential requirements to demonstrate adequate sampling of Barrett's oesophagus during endoscopy is that the endoscopist should adhere to the 'Seattle protocol' for biopsies which is to take  4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett's samples is pre-requisite.
 
-```{r exampleBarrettsPatientTracking_UniqueHospNum, eval = FALSE}
+```{r exampleBarrettsQuality_AnalysisBiopsyNumber, eval = FALSE}
 Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
 b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
@@ -482,7 +482,7 @@ BarrettsSurveillance_PathDetection(b4,'Myplot')
  
  This function provides a plot with absolute numbers of pathology detected. This of course doesn't tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist.
 
-```{r exampleBarrettsSurveillance_PathDetection, eval = FALSE} 
+```{r exampleBarrettsSurveillanceDDR, eval = FALSE} 
  v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
 b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
@@ -496,5 +496,15 @@ BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
 
 Barrett's patients also undergo therapeutic procedures and there are various metrics to analyse the performance of the therapy by endoscopist, as well which catheters are being used etc. To start with we can do simple things like plotting all the pathological grades of the EMRs.This should only be run after all the BarrettsDataAccord functions so that the column event is present in the dataframe.
 
-These functions can be founs documented in the help functions
+To separate out the endscopies where no therapeutic procedure was performed (assuming the Barrett's preprocessing scripts have been run) you can use:
 
+
+```{r exampleBarrettsTherapeuticsOnly, eval = FALSE} 
+BarrettsTherapeuticsOnly(dataframe)
+``` 
+ 
+ and then the rest of the therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function Barretts_LesionRecognitionEMR.
+ 
+ In order to determine the basic number of EMR, RFA and APC a function called BarrettsBasicNumbers is provided which outputs a geom_line plot with the information on it.
+ 
+ Finally, to assess the number of different catheter types used (for renumeration purposes) the function BarrettsTherapeuticsRFA_ByCatheter can be used.
