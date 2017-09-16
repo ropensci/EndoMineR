@@ -503,8 +503,26 @@ To separate out the endscopies where no therapeutic procedure was performed (ass
 BarrettsTherapeuticsOnly(dataframe)
 ``` 
  
- and then the rest of the therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function Barretts_LesionRecognitionEMR.
+ and then the rest of the therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function:
+ 
+```{r exampleBarretts_LesionRecognitionEMR, eval = FALSE} 
+Barretts_LesionRecognitionEMR(dataframe,y,z)
+``` 
  
  In order to determine the basic number of EMR, RFA and APC a function called BarrettsBasicNumbers is provided which outputs a geom_line plot with the information on it.
  
- Finally, to assess the number of different catheter types used (for renumeration purposes) the function BarrettsTherapeuticsRFA_ByCatheter can be used.
+```{r exampleBarrettsBasicNumbers, eval = FALSE} 
+BarrettsBasicNumbers(dataframe)
+``` 
+ 
+ To assess the number of different catheter types used (for renumeration purposes) the following function can be used:
+ 
+```{r exampleBarrettsTherapeuticsRFA_ByCatheter, eval = FALSE} 
+BarrettsTherapeuticsRFA_ByCatheter(dataframe)
+``` 
+
+One of the most important aspects of therapeutics is the assessment of outcome which is defined as clearance of intestinal metaplasia (CRIM), usually on at least two endoscopies. As most patients undergoing Barrett's ablation will require radiofrequency ablation after the initial endoscopic mucosal resection, we can define CRIM as being an endoscopy where the therapeutic procedure is listed as 'nothing' in the EVENT column (this will only work if the Barrett's pre-processing functions have been used)
+
+```{r exampleBarrettsCRIM, eval = FALSE} 
+BarrettsCRIM(dataframe,HospNum,EVENT)
+``` 

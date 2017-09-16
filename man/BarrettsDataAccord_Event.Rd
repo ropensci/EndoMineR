@@ -20,9 +20,7 @@ BarrettsDataAccord_Event(x, y, z, aa, bb)
 \description{
 This function extracts the Event- usually a therapeutic event, from the text eg endoscopic
 mucosal resection, radiofrequency ablation etc. It does not currently include stricture
-dilatation.
-Specfically it extracts the event
-Being the procedure done at the time and the follow-up timings
+dilatation.Specfically it extracts the event
 }
 \examples{
 v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")

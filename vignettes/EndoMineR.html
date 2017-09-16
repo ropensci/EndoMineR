@@ -10,11 +10,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="author" content="Vignette Author" />
+<meta name="author" content="Sebastian Zeki 2017-09-16" />
 
-<meta name="date" content="2017-09-09" />
 
-<title>Vignette Title</title>
+<title>EndoMineR</title>
 
 
 
@@ -68,214 +67,365 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">Vignette Title</h1>
-<h4 class="author"><em>Vignette Author</em></h4>
-<h4 class="date"><em>2017-09-09</em></h4>
+<h1 class="title toc-ignore">EndoMineR</h1>
+<h4 class="author"><em>Sebastian Zeki 2017-09-16</em></h4>
 
 
-
-<p>Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The <code>html_vignette</code> output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The <code>html_vignette</code> format:</p>
+<div id="TOC">
 <ul>
-<li>Never uses retina figures</li>
-<li>Has a smaller default figure size</li>
-<li>Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style</li>
+<li><a href="#aims-of-endominer">Aims of EndoMineR</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#overview-of-steps-for-any-analysis">Overview of steps for any analysis:</a><ul>
+<li><a href="#data-acquisition-">1. Data acquisition-</a></li>
+<li><a href="#data-cleaning-">2. Data cleaning-</a></li>
+<li><a href="#data-accordionisation-">4. Data accordionisation-</a></li>
+<li><a href="#data-merging-">3. Data merging-</a></li>
+<li><a href="#data-analysis">5. Data analysis</a></li>
+<li><a href="#results-visualisation">6. Results visualisation</a></li>
+</ul></li>
+<li><a href="#assumptions-for-practical-gastroenterological-datasets">Assumptions for practical gastroenterological datasets</a></li>
+<li><a href="#so-what-generic-questions-can-we-answer-in-gastroenterology">So what generic questions can we answer in gastroenterology?</a></li>
+<li><a href="#how-is-the-package-divided">How is the package divided?</a></li>
+<li><a href="#the-extractor-function">The extractor function</a></li>
+<li><a href="#the-cleaning-functions">The cleaning functions</a><ul>
+<li><a href="#endoscopic-cleaning">Endoscopic cleaning</a></li>
+<li><a href="#histological-cleaning">Histological cleaning</a></li>
+</ul></li>
+<li><a href="#the-analysis-functions">The Analysis Functions</a><ul>
+<li><a href="#surveillance-functions">Surveillance functions</a></li>
+<li><a href="#patient-flow-functions">Patient flow functions</a></li>
+<li><a href="#assessment-of-quality-functions">Assessment of quality functions</a></li>
+</ul></li>
+<li><a href="#application-to-specific-disease-entities--barretts-oesophagus">Application to specific disease entities- Barrett’s oesophagus</a><ul>
+<li><a href="#pre-processing-barretts-samples">Pre-processing Barrett’s samples</a></li>
+<li><a href="#basic-surveillance-questions--who-is-undergoing-endoscopic-surveillance-and-who-should-we-be-surveying">Basic surveillance questions- who is undergoing endoscopic surveillance and who should we be surveying?</a></li>
+<li><a href="#quality-assessment-in-barretts-surveillance">Quality assessment in Barrett’s surveillance</a></li>
+<li><a href="#assessment-of-barretts-therapeutics">Assessment of Barrett’s therapeutics</a></li>
+</ul></li>
 </ul>
-<div id="vignette-info" class="section level2">
-<h2>Vignette Info</h2>
-<p>Note the various macros within the <code>vignette</code> section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the <code>title</code> field and the <code>\VignetteIndexEntry</code> to match the title of your vignette.</p>
 </div>
-<div id="styles" class="section level2">
-<h2>Styles</h2>
-<p>The <code>html_vignette</code> template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:</p>
-<pre><code>output: 
-  rmarkdown::html_vignette:
-    css: mystyles.css</code></pre>
+
+<div id="aims-of-endominer" class="section level2">
+<h2>Aims of EndoMineR</h2>
+<p>The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens. Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.</p>
 </div>
-<div id="figures" class="section level2">
-<h2>Figures</h2>
-<p>The figure sizes have been customised so that you can easily put two images side-by-side.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="dv">1</span>:<span class="dv">10</span>)
-<span class="kw">plot</span>(<span class="dv">10</span>:<span class="dv">1</span>)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><img src="data:image/png;base64,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" /></p>
-<p>You can enable figure captions by <code>fig_caption: yes</code> in YAML:</p>
-<pre><code>output:
-  rmarkdown::html_vignette:
-    fig_caption: yes</code></pre>
-<p>Then you can use the chunk option <code>fig.cap = &quot;Your figure caption.&quot;</code> in <strong>knitr</strong>.</p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Gastroenterological data can be organised in a manner that allows several questions to be answered with the same data structure. The structure itself is straightforward. It simply rests on the basis that we mainly describe patient episodes so that each row of a dataframe pertains to the data collected at that episode and the index of the row is based on a combination of date and a patient’s unique identifier The following described an overview of how data should be structured using both and endoscopic dataset and a pathological dataset which we will merge.</p>
 </div>
-<div id="more-examples" class="section level2">
-<h2>More Examples</h2>
-<p>You can write math expressions, e.g. <span class="math inline">\(Y = X\beta + \epsilon\)</span>, footnotes<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, and tables, e.g. using <code>knitr::kable()</code>.</p>
-<table>
-<thead>
-<tr class="header">
-<th></th>
-<th align="right">mpg</th>
-<th align="right">cyl</th>
-<th align="right">disp</th>
-<th align="right">hp</th>
-<th align="right">drat</th>
-<th align="right">wt</th>
-<th align="right">qsec</th>
-<th align="right">vs</th>
-<th align="right">am</th>
-<th align="right">gear</th>
-<th align="right">carb</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Mazda RX4</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.620</td>
-<td align="right">16.46</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td>Mazda RX4 Wag</td>
-<td align="right">21.0</td>
-<td align="right">6</td>
-<td align="right">160.0</td>
-<td align="right">110</td>
-<td align="right">3.90</td>
-<td align="right">2.875</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-<tr class="odd">
-<td>Datsun 710</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">108.0</td>
-<td align="right">93</td>
-<td align="right">3.85</td>
-<td align="right">2.320</td>
-<td align="right">18.61</td>
-<td align="right">1</td>
-<td align="right">1</td>
-<td align="right">4</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td>Hornet 4 Drive</td>
-<td align="right">21.4</td>
-<td align="right">6</td>
-<td align="right">258.0</td>
-<td align="right">110</td>
-<td align="right">3.08</td>
-<td align="right">3.215</td>
-<td align="right">19.44</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td>Hornet Sportabout</td>
-<td align="right">18.7</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">175</td>
-<td align="right">3.15</td>
-<td align="right">3.440</td>
-<td align="right">17.02</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td>Valiant</td>
-<td align="right">18.1</td>
-<td align="right">6</td>
-<td align="right">225.0</td>
-<td align="right">105</td>
-<td align="right">2.76</td>
-<td align="right">3.460</td>
-<td align="right">20.22</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td>Duster 360</td>
-<td align="right">14.3</td>
-<td align="right">8</td>
-<td align="right">360.0</td>
-<td align="right">245</td>
-<td align="right">3.21</td>
-<td align="right">3.570</td>
-<td align="right">15.84</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">3</td>
-<td align="right">4</td>
-</tr>
-<tr class="even">
-<td>Merc 240D</td>
-<td align="right">24.4</td>
-<td align="right">4</td>
-<td align="right">146.7</td>
-<td align="right">62</td>
-<td align="right">3.69</td>
-<td align="right">3.190</td>
-<td align="right">20.00</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="odd">
-<td>Merc 230</td>
-<td align="right">22.8</td>
-<td align="right">4</td>
-<td align="right">140.8</td>
-<td align="right">95</td>
-<td align="right">3.92</td>
-<td align="right">3.150</td>
-<td align="right">22.90</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td>Merc 280</td>
-<td align="right">19.2</td>
-<td align="right">6</td>
-<td align="right">167.6</td>
-<td align="right">123</td>
-<td align="right">3.92</td>
-<td align="right">3.440</td>
-<td align="right">18.30</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">4</td>
-<td align="right">4</td>
-</tr>
-</tbody>
-</table>
-<p>Also a quote using <code>&gt;</code>:</p>
-<blockquote>
-<p>“He who gives up [code] safety for [code] speed deserves neither.” (<a href="https://twitter.com/hadleywickham/status/504368538874703872">via</a>)</p>
-</blockquote>
+<div id="overview-of-steps-for-any-analysis" class="section level2">
+<h2>Overview of steps for any analysis:</h2>
+<p>The steps for the preparation of a full dataset incorporating both endoscopic and associated pathological data are as follows:</p>
+<div id="data-acquisition-" class="section level3">
+<h3>1. Data acquisition-</h3>
+<p>Usually Pathology results and endoscopic results are stored separately. Unless you are fortunate, many hospitals are unable to give you all the results you want aggregated for example on a spreadsheet. Given the data is stored electronically I find this incredible but it happens. You may find yourself extracting data, for example, from a folder full of word documents or pdf’s. This kind of data acquisition is beyond this site, but there are many tools in R that can extract data for you and collate it into a dataframe.</p>
 </div>
-<div class="footnotes">
-<hr />
-<ol>
-<li id="fn1"><p>A footnote here.<a href="#fnref1">↩</a></p></li>
+<div id="data-cleaning-" class="section level3">
+<h3>2. Data cleaning-</h3>
+<p>Data cleaning is the most difficult challenge any data analyst faces. It involves preparing the data intelligently so that analyses can be performed. There are many steps to cleaning data. This includes ensuring completeness of the dataset, validating it, removing data (or not) with missing entries, correcting spelling mistakes,removing duplicates and so on. One of the most difficult cleaning jobs is text, and especially unstructured or semi-structured text. Overall data cleaning should ensure <em>data integrity</em>. Never forget that this should take up 80% of an analyst’s time because, as the simple aphorism says<strong>“Rubbish in =Rubbish out”</strong></p>
+</div>
+<div id="data-accordionisation-" class="section level3">
+<h3>4. Data accordionisation-</h3>
+<p>The data has to be extracted into uniform meaningful categories (a column of a dataframe) and then formatted so that the data is well described (eg dates as date objects rather than characters etc). This is really for ease of analysis. For example, determining the maximal extent of a Barrett’s oesophagus segment can be calculated from the report text and entered into its own numeric column. This is very much dependent on the aim of the analysis.</p>
+</div>
+<div id="data-merging-" class="section level3">
+<h3>3. Data merging-</h3>
+<p>The merging of datasets is a very common tasks because if you want meaningful analyses you often need multiple sources. In hospital level data the most important thing to understand is that data is organised around the dual index of a unique patient identifier and an episode date. Therefore if you want to merge datasets you need to have these columns organised and similarly formatted. Furthermore because you may want to associate episodes that do not have exactly the same dates, this needs to be accomodated into the merging algorithm.</p>
+</div>
+<div id="data-analysis" class="section level3">
+<h3>5. Data analysis</h3>
+<p>This should be straightforward if the data is properly prepared. Given R is a statistical language, there are a wealth of packages available to do whatever you want. You are only limited by your question. But of course the analysis is not quite the final step</p>
+</div>
+<div id="results-visualisation" class="section level3">
+<h3>6. Results visualisation</h3>
+<p>The communication of results is really what convinces people to make changes. Florence Nightingale is often labelled as an influential statistician but in fact her ability was in the communication of results and her graphics depicting the disease burden in soldiers in the Crimean war is really what influenced Parliament. Most people are not statisticians but everyone can understand a well crafted picture.</p>
+<p><br><br><br></p>
+</div>
+</div>
+<div id="assumptions-for-practical-gastroenterological-datasets" class="section level2">
+<h2>Assumptions for practical gastroenterological datasets</h2>
+<p><br></p>
+<div id="assumption-1-mandatory" class="section level4">
+<h4>Assumption 1 (Mandatory):</h4>
+<p>A fundamental assumption is that all patient related data at the departmental level can be viewed as pertaining to a clinical episode recorded as a single timepoint (usually as the day of the episode. A single patient is related to patient timed episodes in a one to many relationship (one patient can have many endoscopies).</p>
+</div>
+<div id="assumption-2-mandatory" class="section level4">
+<h4>Assumption 2 (Mandatory):</h4>
+<p>All patients have a unique identifier. At the departmental level this is likely to be a Trust specific hospital number.</p>
+</div>
+<div id="assumption-3-optional" class="section level4">
+<h4>Assumption 3 (Optional):</h4>
+<p>A patient episode should have an outcome. In the case of an endoscopy for example, the outcome may be the histopathological diagnosis, or if no biopsies were taken, then the endoscopic diagnosis. The origin of the outcome is not important: it can be a derivative of the dataset itself or can be from a distinct dataset merged into the current one depending on the analysis. What is important is that the outcome relates to the patient episode: if biopsy result is the outcome it should be biopsies taken at the recorded endoscopy. In other words the outcome should be that which is related to the same timepoint as the event.</p>
+</div>
+<div id="assumption-4-optional" class="section level4">
+<h4>Assumption 4 (Optional):</h4>
+<p>A patient episode should have a reason. The indication for the patient episode should be recorded for the same time point as the episode. This is very commonly found in report text of both an endoscopy and histopathology reports. This is optional as other analyses can still be carried out without this being available.</p>
+</div>
+<div id="assumption-5-optional" class="section level4">
+<h4>Assumption 5 (Optional):</h4>
+<p>A patient episode should have recordable variables. Examples of this for endoscopic data may be who performed the procedure, the length of time a procedure took and other variables derived from an endoscopy report. A histopathology report may contain information about the number of biopsies taken, their location and size as well as diagnoses among other aspects.</p>
+</div>
+<div id="assumption-6-optional" class="section level4">
+<h4>Assumption 6 (Optional):</h4>
+<p>The data is semi-structured. Structured data is easier to analyse but because it is more cumbersome to input and often lacks flexibility most endoscopic and histopathology data remains semi-structured. This means that although the text extraction techniques outlined here are the same, the boundaries for extracting each section may differ. For example in our trust a pathology report may contain the subsections ‘Macroscopic specimen’ and ‘Diagnosis’ whereas these sections may have alternative labels in another hospital’s report.</p>
+<p>Semi-structured data requires specific language processing techniques depending on what is being extracted. For our purposes the extractible data is likely to be either diagnoses or aspects of the test being performed. The diagnostic data is traditionally the most difficult to extract but this is often because the object to be extracted is from a large set eg for the purposes of coding for financial remuneration. Because the target set is much smaller for endoscopic-pathological diagnoses language extraction can be more focused whilst being more flexible to accommodate edge cases such as misspellings, plurals.</p>
+</div>
+</div>
+<div id="so-what-generic-questions-can-we-answer-in-gastroenterology" class="section level2">
+<h2>So what generic questions can we answer in gastroenterology?</h2>
+<p>The answer to this is really applicable to most areas in medicine. Many fields share the same practical, day to day questions. Although we may focus on specific questions for a specific field, the strcuture of many questions in medicine is the same. Based on observation and experience I think the main questions are:</p>
+<p><strong><a href="http://gastrodatascience.com/DataAnalysisEventingsSankey.html">1. Analysis patient flow</a> </strong></p>
+<p>If we understand the fact that patient’s flow through a system, and the way to characterise that flow is by organising data according to the patient’s unique identifier and episode date as a combined index, then there are a huge number of questions that can be ansered under this generic question. For example, at a population level analysis, how many patients will need to undergo further colonoscopy surveillance in 5 years based on the procedures already performed. On an individual patient level perhaps you need to know who is due to have further endoscopic follow up based on previous procedure, or which patients have been lost to follow-up. Once data is prepared in a manner that satisfies surveillance tasks, the data structure can be used for many other questions <br><br></p>
+<p><strong><a href="http://gastrodatascience.com/Cornersteon_EndoPath.html">2. Diagnostic yields</a></strong></p>
+<p>This relates to commonly held performance measures such as the adenoma detection rate or the pathological diagnoses per indication</p>
+<p><strong><a href="http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html">3. Analysis of quality</a> </strong></p>
+<p>This relates to measures such as the adequacy of sampling and documentation, adherence to minimum standards including lesion recognition performance).</p>
+<p>Having structured our datasets as per the previous pages, we can extract this easily as follows:</p>
+<p>The figure above is a summary figure of how different aspects of one well constructed dataset can be used to answer questions within the spheres mentioned above</p>
+<p>The central issue is that data is organised according to time so that the data structure is indexed by a combination of the date and the unique patient identifier. Merging with external datasets can then be done according to either the patient identifier and date or just the patient identifier if there is no need to relate the time of an episode in one data set to another.</p>
+<p><strong><a href="http://gastrodatascience.com/Cornerstone_Surveillance.html">Surveillance</a></strong></p>
+<p>Surveillance programmes rely heavily on the timing of individual tests to find out when a patient is next due to undergo an investigation or to determine whether they have been lost to follow up. Analyses therefore rely on assessment of times for a patient</p>
+<p><strong><a href="http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html">Performance metrics</a></strong></p>
+<p>Performance metrics depend on what is being assessed. There is a natural weighting towards endoscopy on these pages and therefore we often assess endoscopists based on their within procedure performance (how much sedation was given, the patient’s comfort score etc.), as well as cross-referenceing with the results of tissue taken at the time of the procedure to assess how good we are at recognising lesions (such as the adenoma detection rate). The following pages assess these areas and given te practical recipes for resolving them in code.</p>
+</div>
+<div id="how-is-the-package-divided" class="section level2">
+<h2>How is the package divided?</h2>
+<p>The package is basically in three parts</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>The extraction</strong>- This is really when the data is provided as full text reports. You may already have the data in a spreadsheet in which case this part isn’t necessary</p></li>
+<li><p><strong>Cleaning</strong>- These are a group of functions that allow the user to extract and clean data commonly found in endoscopic and pathology reports. The cleaning functions usually remove common typos or extraneous information and do some reformatting</p></li>
+<li><p><strong>Analyses</strong>- The analyses provide graphing function as well as analyses according to the cornerstone questions in gastroenterology- namely surveillance, patient tracking, quality of endoscopy and pathology reporting and diagnostic yield questions.</p></li>
 </ol>
+</div>
+<div id="the-extractor-function" class="section level2">
+<h2>The extractor function</h2>
+<p>Endoscopic and pathological data will come in one of two forms- either as a collection of the whole text report or as spreadsheets with some degree of separation into different columns of the various aspects of that report eg who the Endoscopist was, the patient’s unique identifier etc. For the latter, the package user will not need to Extract information as it is already extracted and so can go stratight to cleaning the data. For the former the Extractor function has been provided:</p>
+<p>One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. A list of keywords is constructed. This list is made up of the words that will be used to split the document. The Extractor then does the splitting for each pair of words, with some cleaning up and then returns the split dataframe:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath&lt;-<span class="kw">data</span>(PathDataFrameFinalColon)
+HistolTree&lt;-<span class="kw">list</span>(<span class="st">&quot;Hospital Number&quot;</span>,<span class="st">&quot;Patient Name&quot;</span>,<span class="st">&quot;DOB:&quot;</span>,<span class="st">&quot;General Practitioner:&quot;</span>,
+<span class="st">&quot;Date of procedure:&quot;</span>,<span class="st">&quot;Clinical Details:&quot;</span>,<span class="st">&quot;Macroscopic description:&quot;</span>,<span class="st">&quot;Histology:&quot;</span>,<span class="st">&quot;Diagnosis:&quot;</span>,<span class="st">&quot;&quot;</span>)
+for(i in <span class="dv">1</span>:(<span class="kw">length</span>(HistolTree)-<span class="dv">1</span>)) {
+Mypath&lt;-<span class="kw">Extractor</span>(Mypath,<span class="st">&quot;PathReportWhole&quot;</span>,<span class="kw">as.character</span>(HistolTree[i]),
+<span class="kw">as.character</span>(HistolTree[i<span class="dv">+1</span>]),<span class="kw">as.character</span>(HistolTree[i]))
+}</code></pre></div>
+<p>Various other functions exist to do cleaning up of the columns after this, such as the ChopperNewLines function which gets rid of new lines in the text (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">ChopperNewLines</span>(Myendo,<span class="st">'OGDReportWhole'</span>)</code></pre></div>
+</div>
+<div id="the-cleaning-functions" class="section level2">
+<h2>The cleaning functions</h2>
+<div id="endoscopic-cleaning" class="section level3">
+<h3>Endoscopic cleaning</h3>
+<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscChopperEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">EndoscChopperEndoscopist</span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
+<p>This function performs the cleaning of common things found in the text that may cause confusion. The function itself is shown below:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">EndoscChopperEndoscopist &lt;-<span class="st"> </span>function(x, y) {
+    <span class="co"># Extraction of the Endoscopist</span>
+    x &lt;-<span class="st"> </span><span class="kw">data.frame</span>(x)
+    x[, y] &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;Dr&quot;</span>, <span class="st">&quot;&quot;</span>, x[, y], <span class="dt">fixed =</span> <span class="ot">TRUE</span>)
+    x[, y] &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;Mr&quot;</span>, <span class="st">&quot;&quot;</span>, x[, y], <span class="dt">fixed =</span> <span class="ot">TRUE</span>)
+    x[, y] &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;[^[:alnum:],]&quot;</span>, <span class="st">&quot;&quot;</span>, x[, y])
+    <span class="co"># Put gaps between names</span>
+    x[, y] &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;([a-z])([A-Z])&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1 </span><span class="ch">\\</span><span class="st">2&quot;</span>, x[, y])
+    x[, y] &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;2nd.*&quot;</span>, <span class="st">&quot;&quot;</span>, x[, y])
+    x[, y] &lt;-<span class="st"> </span><span class="kw">trimws</span>(x[, y], <span class="dt">which =</span> <span class="kw">c</span>(<span class="st">&quot;both&quot;</span>))
+    
+    <span class="kw">return</span>(x)
+}</code></pre></div>
+<p>The EndoscChopperMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted.</p>
+<p>Several other similar clean up functions are available for Endoscopy as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">EndoscChopperMeds</span>(Myendo,<span class="st">'Medications'</span>)
+v&lt;-<span class="kw">EndoscChopperInstrument</span>(Myendo,<span class="st">'Instrument'</span>)
+v&lt;-<span class="kw">EndoscChopperIndications</span>(Myendo,<span class="st">'Indications'</span>)
+v&lt;-<span class="kw">EndoscChopperProcPerformed</span>(Myendo,<span class="st">'ProcedurePerformed'</span>)</code></pre></div>
+<p>Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases</p>
+</div>
+<div id="histological-cleaning" class="section level3">
+<h3>Histological cleaning</h3>
+<p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology reports can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis</p>
+<p>The histology cleaning functions are based around this. For example, the HistolChopperHistol cleans the Histology text if present. In addition it removes Negative diagnoses using the Negativeremove function. This function is designed to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage.</p>
+<p>This NegativeRemove function has also been applied to the HistolChopperDx</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw">HistolChopperHistol</span>(Mypath,<span class="st">'Histology'</span>)</code></pre></div>
+<p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolChopperNumOfBx which extracts the number of biopsies taken:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">HistolChopperNumbOfBx &lt;-<span class="st"> </span>function(x, y, z) {
+    x &lt;-<span class="st"> </span><span class="kw">data.frame</span>(x)
+    x &lt;-<span class="st"> </span><span class="kw">HistolChopperMacDescrip</span>(x, y)
+    mylist &lt;-<span class="st"> </span><span class="kw">str_match_all</span>(x[, y], <span class="kw">paste</span>(<span class="st">&quot;[0-9]{1,2}.{0,3}&quot;</span>, z, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>))
+    x$NumbOfBx &lt;-<span class="st"> </span><span class="kw">sapply</span>(mylist, function(p) <span class="kw">sum</span>(<span class="kw">as.numeric</span>(<span class="kw">gsub</span>(z, <span class="st">&quot;&quot;</span>, p))))
+    <span class="kw">return</span>(x)
+}</code></pre></div>
+<p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">HistolChopperNumbOfBx</span>(Mypath,<span class="st">'Macroscopicdescription'</span>,<span class="st">'specimen'</span>)</code></pre></div>
+<p>Other less useful functions include:</p>
+<ol style="list-style-type: decimal">
+<li><p>HistolChopperAccessionNumber which extracts Accession Number data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.</p></li>
+<li><p>HistolChopperExtrapolDx which extracts other specific diagnoses from the report. These have been hard coded to look for dysplasia cancer and GIST.</p></li>
+<li><p>HistolChopperMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc.</p></li>
+</ol>
+<p>These are all called in the same way:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">HistolChopperMacDescripCleanup</span>(Mypath,<span class="st">&quot;Macroscopicdescription&quot;</span>)
+v&lt;-<span class="kw">HistolChopperExtrapolDx</span>(Mypath,<span class="st">&quot;Diagnosis&quot;</span>)
+v&lt;-<span class="kw">HistolChopperAccessionNumber</span>(Mypath,<span class="st">&quot;Histology&quot;</span>,<span class="st">&quot;SP-</span><span class="ch">\\</span><span class="st">d{2}-</span><span class="ch">\\</span><span class="st">d{7}&quot;</span>)</code></pre></div>
+<p>v&lt;-HistolChopperMacDescripCleanup(Mypath,“Macroscopicdescription”)</p>
+</div>
+</div>
+<div id="the-analysis-functions" class="section level2">
+<h2>The Analysis Functions</h2>
+<p>As per the introduction the analysis functions are split according to the cornerstone questions in day to day gastroenterological practice</p>
+<div id="surveillance-functions" class="section level3">
+<h3>Surveillance functions</h3>
+<p>Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a load of pre-processing steps</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em&lt;-<span class="kw">SurveillanceTimeByRow</span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
+em&lt;-<span class="kw">SurveillanceLastToNow</span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
+em&lt;-<span class="kw">SurveillanceLastTest</span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
+em&lt;-<span class="kw">SurveillanceFirstTest</span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</code></pre></div>
+<p>Of course we also want to know how many tests have been done over a time period and this is provided by two functions</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em&lt;-<span class="kw">SurveillanceCapacity</span>(Myendo,<span class="st">&quot;Dateofprocedure)</span></code></pre></div>
+<p>This function will return the number of tests by month. The more detailed function is:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw">HowManyTests</span>(Myendo,<span class="st">'Indications'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Surv'</span>)</code></pre></div>
+<p>This will provide the number of tests by month and year as a table as well as a ggplot. It returns aa list so this can be accessed with how[1] and how[2]</p>
+</div>
+<div id="patient-flow-functions" class="section level3">
+<h3>Patient flow functions</h3>
+<p>We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. For example, if we have a dataset with events such as ‘radiofrequency ablation’ and ‘endoscopic mucosal resection’ or ‘nothing’ we can use the Sankey plot to determine the order of events over a large patient population:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw">SurveySankey</span>(Myendo,<span class="st">&quot;ProcPerformed&quot;</span>)</code></pre></div>
+<p>We may was something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flow&lt;-<span class="kw">PatientFlow_CircosPlots</span>(v,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>,<span class="st">&quot;ProcedurePerformed&quot;</span>)</code></pre></div>
+</div>
+<div id="assessment-of-quality-functions" class="section level3">
+<h3>Assessment of quality functions</h3>
+<p>Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to standards for endoscopic documentation as well as detection of certain pathological conditions such as dysplasia.</p>
+<div id="documentation-quality" class="section level4">
+<h4>Documentation Quality</h4>
+<p>As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised on terms that should be mentioned in a report.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tt&lt;-<span class="kw">ListLookup</span>(Myendo,<span class="st">'Findings'</span>,myNotableWords)</code></pre></div>
+</div>
+<div id="endoscopic-quality" class="section level4">
+<h4>Endoscopic Quality</h4>
+<p>Another measure of quality is by looking at those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo&lt;-<span class="kw">EndoscChopperMeds</span>(Myendo,<span class="st">'Medications'</span>)
+Fent&lt;-<span class="kw">MetricByEndoscopist</span>(Myendo,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)</code></pre></div>
+<p>Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.</p>
+<p>To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f&lt;-<span class="kw">TermStandardLocation</span>(Mypath,<span class="st">'Histology'</span>)</code></pre></div>
+<p>Once this is done, a column called SampleLocation is appended to the existing dataset. If polyps need to be located then the PolypLocator function can be used. Alternatively the SampleLocator can be used. As they append differently named columns to the existing dataset, both can be used together. The polyps text often need a bit of tidying up and this can be done with the function PolypTidyUpLocator prior to using PolypLocator</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f&lt;-<span class="kw">PolypTidyUpLocator</span>(f,<span class="st">'SampleLocation'</span>)
+f&lt;-<span class="kw">PolypLocator</span>(f,<span class="st">'SampleLocation'</span>) 
+f&lt;-<span class="kw">SampleLocator</span>(f,<span class="st">'SampleLocation'</span>)</code></pre></div>
+<p>A further difficult area is the assessment of endoscopic quality by looking at the pathology processed from an endoscopy. This package is excellent at dealing with this kind of question because of its ability to merge the datasets together:</p>
+<p>A particularly well developed area to look at is that of the Global Rating Scale for assessing the quality of colonoscopy. One of the metrics- the adenoma detection rate assesses the number of colonoscopies where at least one adenoma was detected.</p>
+<p>One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS reqquirement for the ADR as well as provding further metrics alongside</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">GRSTable&lt;-<span class="kw">GRS_Type_Assess_By_Unit</span>(v,<span class="st">'ProcedurePerformed'</span>,<span class="st">'Endoscopist'</span>,<span class="st">'Diagnosis'</span>,<span class="st">'Histology'</span>)</code></pre></div>
+</div>
+</div>
+</div>
+<div id="application-to-specific-disease-entities--barretts-oesophagus" class="section level2">
+<h2>Application to specific disease entities- Barrett’s oesophagus</h2>
+<p>The functions above really act as building blocks for the further, more complex analyses we can do for specific Endoscopic-pathological disease sets</p>
+<p>One particular disease, the premalignant oesophageal condition Barrett’s oesophagus, requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 guidelines, means the presence or absence of intestinal metaplasia)</p>
+<p><br></p>
+<div id="pre-processing-barretts-samples" class="section level3">
+<h3>Pre-processing Barrett’s samples</h3>
+<p>Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett’s oesophagus itself.</p>
+<div id="prague-score" class="section level4">
+<h4>Prague score</h4>
+<p>Firstly we need to extract the length of the Barrett’s segment. After filtering for indication (eg “Surveillance-Barrett’s”) the aim of the following function is to extract a C and M stage (Prague score) for Barrett’s samples. This is done using a regex where C and M stages are explicitly mentioned in the free text. Specfically it extracts the Prague score.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">BarrettsDataAccord_Prague</span>(Myendo,<span class="st">'Findings'</span>)</code></pre></div>
+</div>
+<div id="worst-pathological-stage" class="section level4">
+<h4>Worst pathological stage</h4>
+<p>We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using ‘degradation’ so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports tocontain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b&lt;-<span class="kw">BarrettsDataAccord_PathStage</span>(v,<span class="st">'Histology'</span>)</code></pre></div>
+</div>
+<div id="therapeutic-events" class="section level4">
+<h4>Therapeutic events</h4>
+<p>We also need to process any endoscopies where an event other than surveillance happened (unless filtered specifically for surveillance. This function extracts the Event- usually a therapeutic event, from the text eg endoscopic mucosal resection, radiofrequency ablation etc. It does not currently include stricture dilatation.Specfically it extracts the event. At the moment the event is extracted from the endoscopy only but for specimen extraction eg endoscopic mucosal resection future iterations may also examine the pathology data as it is likely to describe the presence of EMR more robustly.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">Endomerge2</span>(Myendo,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>,Mypath,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>)
+b&lt;-<span class="kw">BarrettsDataAccord_Event</span>(v,<span class="st">'Histology'</span>, <span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)</code></pre></div>
+</div>
+<div id="follow-up-groups" class="section level4">
+<h4>Follow-up groups</h4>
+<p>Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett’s segment length and therefore their follow-up timing, may fluctuate over time) can be determined.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">Endomerge2</span>(Myendo,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>,Mypath,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>)
+b&lt;-<span class="kw">BarrettsDataAccord_PathStage</span>(v,<span class="st">'Histology'</span>)
+b2&lt;-<span class="kw">BarrettsDataAccord_Event</span>(b,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
+b3&lt;-<span class="kw">BarrettsDataAccord_FUGroup</span>(b2,<span class="st">'Findings'</span>)</code></pre></div>
+</div>
+</div>
+<div id="basic-surveillance-questions--who-is-undergoing-endoscopic-surveillance-and-who-should-we-be-surveying" class="section level3">
+<h3>Basic surveillance questions- who is undergoing endoscopic surveillance and who should we be surveying?</h3>
+<div id="enrollment-rates-to-surveillance-programme" class="section level4">
+<h4>Enrollment rates to surveillance programme</h4>
+<p>So now this has been determined we can continue to some more advanced analyses. We can determine how many patients who underwent endoscopy for reasons that was not Barrett’s surveillance, and in whom Barrett’s oesophagus was found, have had further follow-up endoscopies ie what the enrollment to surveillance rate is in those who weren’t known to have Barrett’s when their endoscopy was performed.</p>
+<p>This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy. This should be run after the BarrettsDataAccord_Prague and BarrettsDataAccord_PathStage.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Enroll&lt;-<span class="kw">BarrettsPatientTracking_Enrollment_Surveillance</span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Indications'</span>)</code></pre></div>
+</div>
+<div id="patients-undergoing-surveillance" class="section level4">
+<h4>Patients undergoing surveillance</h4>
+<p>Perhaps we are also interested in how many patients fall under each follow-up category so we can plan how many Barrett’s surveillance endoscopies we are going to have to do. The function to do this gets the unique patient ID’s for each patient, for each rule. It lists the unique PatientIDs assocaited with a rule (‘Rule1’,‘Rule2’,‘Rule3’,‘NoRules’). This allows us to determine how many patients will need follow up at specific time intervals. This should be run after the BarrettsDataAccord_Prague and BarrettsDataAccord_PathStage.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">Endomerge2</span>(Myendo,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>,v,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>)
+b1&lt;-<span class="kw">BarrettsDataAccord_Prague</span>(v,<span class="st">'Findings'</span>)
+b2&lt;-<span class="kw">BarrettsDataAccord_PathStage</span>(b1,<span class="st">'Histology'</span>)
+b3&lt;-<span class="kw">BarrettsDataAccord_Event</span>(b2,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
+b4&lt;-<span class="kw">BarrettsDataAccord_FUGroup</span>(b3,<span class="st">'Findings'</span>)
+<span class="kw">colnames</span>(b4)[<span class="kw">colnames</span>(b4) ==<span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
+Rule&lt;-<span class="kw">BarrettsPatientTracking_UniqueHospNum</span>(b4,<span class="st">'Rule1'</span>,<span class="st">'HospitalNumber'</span>)</code></pre></div>
+</div>
+</div>
+<div id="quality-assessment-in-barretts-surveillance" class="section level3">
+<h3>Quality assessment in Barrett’s surveillance</h3>
+<div id="quality-of-documentation-for-barretts-surveillance-endoscopies" class="section level4">
+<h4>Quality of documentation for Barrett’s surveillance endoscopies</h4>
+<p>As we have done above, we can also assess the documentation used in Barrett’s endoscopies. There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett’s documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on Barrett’s endoscopic reporting. This should be run after the BarrettsDataAccord_Prague as assessment of the Prague score is a part of this assessment:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">Endomerge2</span>(Myendo,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>,v,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>)
+b&lt;-<span class="kw">BarrettsDataAccord_PathStage</span>(v,<span class="st">'Histology'</span>)
+<span class="kw">BarrettsQuality_AnalysisDocumentation</span>(b,<span class="st">&quot;Findings&quot;</span>)</code></pre></div>
+</div>
+<div id="quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="section level4">
+<h4>Quality of perfomance of Barrett’s surveillance endoscopies as just by tissue sampling</h4>
+<p>One of the essential requirements to demonstrate adequate sampling of Barrett’s oesophagus during endoscopy is that the endoscopist should adhere to the ‘Seattle protocol’ for biopsies which is to take 4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett’s samples is pre-requisite.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Endomerge2</span>(Myendo,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>,v,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>)
+b1&lt;-<span class="kw">BarrettsDataAccord_Prague</span>(v,<span class="st">'Findings'</span>)
+b2&lt;-<span class="kw">BarrettsDataAccord_PathStage</span>(b1,<span class="st">'Histology'</span>)
+b3&lt;-<span class="kw">BarrettsDataAccord_Event</span>(b2,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
+b4&lt;-<span class="kw">BarrettsDataAccord_FUGroup</span>(b3,<span class="st">'Findings'</span>)
+<span class="kw">colnames</span>(b4)[<span class="kw">colnames</span>(b4) ==<span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
+<span class="kw">BarrettsQuality_AnalysisBiopsyNumber</span>(b4,<span class="st">'Endoscopist'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Endoscopist'</span>)</code></pre></div>
+<p>This function will again return a list with a ggplot showing the shortfall per endoscopist as well as a table with the same values</p>
+</div>
+<div id="quality-of-perfomance-of-barretts-surveillance-endoscopies" class="section level4">
+<h4>Quality of perfomance of Barrett’s surveillance endoscopies</h4>
+<p>As we discovered with some of the generic functions above, one way to determine quality of endoscopy is to assess the pathology of specimens taken at surveillance per year. This function outputs a plot which determines the the overall number of pathologies (low/high grade dysplasia and cancer) for patients on surveillance.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Endomerge2</span>(Myendo,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>,v,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>)
+b1&lt;-<span class="kw">BarrettsDataAccord_Prague</span>(v,<span class="st">'Findings'</span>)
+b2&lt;-<span class="kw">BarrettsDataAccord_PathStage</span>(b1,<span class="st">'Histology'</span>)
+b3&lt;-<span class="kw">BarrettsDataAccord_Event</span>(b2,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
+b4&lt;-<span class="kw">BarrettsDataAccord_FUGroup</span>(b3,<span class="st">'Findings'</span>)
+<span class="kw">colnames</span>(b4)[<span class="kw">colnames</span>(b4) ==<span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
+<span class="kw">BarrettsSurveillance_PathDetection</span>(b4,<span class="st">'Myplot'</span>)</code></pre></div>
+<p>This function provides a plot with absolute numbers of pathology detected. This of course doesn’t tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> v&lt;-<span class="kw">Endomerge2</span>(Myendo,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>,v,<span class="st">&quot;Dateofprocedure&quot;</span>,<span class="st">&quot;HospitalNumber&quot;</span>)
+b1&lt;-<span class="kw">BarrettsDataAccord_Prague</span>(v,<span class="st">'Findings'</span>)
+b2&lt;-<span class="kw">BarrettsDataAccord_PathStage</span>(b1,<span class="st">'Histology'</span>)
+b3&lt;-<span class="kw">BarrettsDataAccord_Event</span>(b2,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
+b4&lt;-<span class="kw">BarrettsDataAccord_FUGroup</span>(b3,<span class="st">'Findings'</span>)
+<span class="kw">colnames</span>(b4)[<span class="kw">colnames</span>(b4) ==<span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
+<span class="kw">BarrettsSurveillanceDDR</span>(b4,<span class="st">'Endoscopist'</span>,<span class="st">'IMorNoIM'</span>)</code></pre></div>
+</div>
+</div>
+<div id="assessment-of-barretts-therapeutics" class="section level3">
+<h3>Assessment of Barrett’s therapeutics</h3>
+<p>Barrett’s patients also undergo therapeutic procedures and there are various metrics to analyse the performance of the therapy by endoscopist, as well which catheters are being used etc. To start with we can do simple things like plotting all the pathological grades of the EMRs.This should only be run after all the BarrettsDataAccord functions so that the column event is present in the dataframe.</p>
+<p>To separate out the endscopies where no therapeutic procedure was performed (assuming the Barrett’s preprocessing scripts have been run) you can use:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">BarrettsTherapeuticsOnly</span>(dataframe)</code></pre></div>
+<p>and then the rest of the therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">Barretts_LesionRecognitionEMR</span>(dataframe,y,z)</code></pre></div>
+<p>In order to determine the basic number of EMR, RFA and APC a function called BarrettsBasicNumbers is provided which outputs a geom_line plot with the information on it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">BarrettsBasicNumbers</span>(dataframe)</code></pre></div>
+<p>To assess the number of different catheter types used (for renumeration purposes) the following function can be used:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">BarrettsTherapeuticsRFA_ByCatheter</span>(dataframe)</code></pre></div>
+<p>One of the most important aspects of therapeutics is the assessment of outcome which is defined as clearance of intestinal metaplasia (CRIM), usually on at least two endoscopies. As most patients undergoing Barrett’s ablation will require radiofrequency ablation after the initial endoscopic mucosal resection, we can define CRIM as being an endoscopy where the therapeutic procedure is listed as ‘nothing’ in the EVENT column (this will only work if the Barrett’s pre-processing functions have been used)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">BarrettsCRIM</span>(dataframe,HospNum,EVENT)</code></pre></div>
+</div>
 </div>
 
 

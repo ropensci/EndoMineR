@@ -106,8 +106,7 @@ SurveillanceFirstTest <- function(x, HospNum_Id, Endo_ResultPerformed) {
 #' @importFrom magrittr '%>%'
 #' @keywords cats
 #' @export
-#' @examples em<-SurveillanceCapacity(Myendo,"Dateofprocedure)
-
+#' @examples em<-SurveillanceCapacity(Myendo,"Dateofprocedure")
 
 SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
@@ -170,7 +169,7 @@ HowManyTests <- function(x, Indication, Endo_ResultPerformed, StringToSearch) {
 #' @importFrom dplyr group_by
 #' @importFrom magrittr '%>%'
 #' @importfrom data.table setDT rowid
-#' @importfrom reshape2 dcast
+#' @importfrom reshape2 'dcast'
 #' @keywords Sankey
 #' @export
 #' @examples 
@@ -237,7 +236,7 @@ SurveySankey <- function(dfw, y) {
 #' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
 #' v<-HistolChopperBxSize(v,"Macroscopicdescription")
 #' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-#' flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed)
+#' flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed")
 
 PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed) {
    

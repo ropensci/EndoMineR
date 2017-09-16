@@ -582,3 +582,29 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
         Rowv = FALSE, Colv = FALSE, cexRow = 3.5, cexCol = 1.5)
     
 }
+
+#' Barretts_CRIM
+#' 
+#' This collects the patients in whom it is assumed that complete clearance of intestinal
+#' metasplasia has occurred (CRIM) after ablation therapy. This is done by collecting those
+#' endoscopies where the last EVENT was equal to "nothing when the patient had undergone 
+#' radiofrequency ablation at some point
+#' @param x The dataframe
+#' @param HospNum The Hospital Number column
+#' @param EVENT The column  called EVENT that determines what procedure the 
+#' patient had at that endoscopy
+#' @keywords CRIM
+#' @importFrom dplyr group_by slice mutate lead
+#' @export
+#' @examples 
+
+Barretts_CRIM<-function(x,HospNum,EVENT){
+  x <- data.frame(x)
+  HospNuma <- rlang::sym(HospNum)
+  EVENTa <- rlang::sym(EVENT)
+  
+  CRIM<-EndoSubset %>%
+  group_by(!!HospNuma) %>% 
+  mutate(ind = (!!EVENTa)=="RFA" & lead(!!EVENTa)=="nothing") %>% 
+  slice(sort(c(which(ind),which(ind)+1)))
+}
