@@ -9,15 +9,15 @@ Barretts_CRIM(x, HospNum, EVENT)
 \arguments{
 \item{x}{The dataframe}
 
+\item{HospNum}{The Hospital Number column}
+
 \item{EVENT}{The column  called EVENT that determines what procedure the 
 patient had at that endoscopy}
-
-\item{y}{The Hospital Number column}
 }
 \description{
 This collects the patients in whom it is assumed that complete clearance of intestinal
 metasplasia has occurred (CRIM) after ablation therapy. This is done by collecting those
-endoscopies where the last EVENT was equal to "nothing when the patient had undergone 
+endoscopies where the last EVENT was equal to "nothing" when the patient had undergone 
 radiofrequency ablation at some point
 }
 \keyword{CRIM}

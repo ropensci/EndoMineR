@@ -2,7 +2,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
     "Years", "Difference", "barplot", "head", "read.table", "eHospitalNum", "pHospitalNum", ".", 
     "EVENT", "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", "dcast", "complete.cases", 
     "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", "region", "rgb", 
-    "setDT"))
+    "setDT","ind"))
 ###### Barretts Surveillance and Therapeutic Functions ######
 
 #' BarrettsDataAccord_Prague
@@ -587,7 +587,7 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' 
 #' This collects the patients in whom it is assumed that complete clearance of intestinal
 #' metasplasia has occurred (CRIM) after ablation therapy. This is done by collecting those
-#' endoscopies where the last EVENT was equal to "nothing when the patient had undergone 
+#' endoscopies where the last EVENT was equal to "nothing" when the patient had undergone 
 #' radiofrequency ablation at some point
 #' @param x The dataframe
 #' @param HospNum The Hospital Number column
@@ -603,8 +603,8 @@ Barretts_CRIM<-function(x,HospNum,EVENT){
   HospNuma <- rlang::sym(HospNum)
   EVENTa <- rlang::sym(EVENT)
   
-  CRIM<-EndoSubset %>%
-  group_by(!!HospNuma) %>% 
-  mutate(ind = (!!EVENTa)=="RFA" & lead(!!EVENTa)=="nothing") %>% 
-  slice(sort(c(which(ind),which(ind)+1)))
+  CRIM<-x %>%
+    group_by(!!HospNuma) %>% 
+    mutate(ind = (!!EVENTa)=="RFA" & lead(!!EVENTa)=="nothing") %>% 
+    slice(sort(c(which(ind),which(ind)+1)))
 }

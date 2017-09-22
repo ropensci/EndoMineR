@@ -2,7 +2,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("b", "PatientID", ".SD",
     "Years", "Difference", "barplot", "head", "read.table", "eHospitalNum", "pHospitalNum", ".", 
     "EVENT", "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", "dcast", "complete.cases", 
     "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", "region", "rgb", 
-    "setDT"))
+    "setDT","origin"))
 
 ######## Surveillance functions ######
 
@@ -231,12 +231,7 @@ SurveySankey <- function(dfw, y) {
 #' @importFrom magrittr '%>%'
 #' @keywords Circos
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-#' flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed")
+
 
 PatientFlow_CircosPlots <- function(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed) {
    
