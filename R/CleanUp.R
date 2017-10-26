@@ -257,34 +257,51 @@ EndoscChopperFindings <- function(x, y) {
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Negative Sentences
+#' @importFrom stringr str_replace
 #' @export
 #' @examples
 
 NegativeRemove <- function(x, y) {
-    
     x <- (data.frame(x))
-    x[, y] <- gsub("No .*?(\\.|:)", "", x[, y])
-    x[, y] <- gsub("[Nn]o .*\n", "", x[, y], perl = T)
-    x[, y] <- gsub("[Nn]o [Dd]ysplasia.*?\\.", "", x[, y], perl = T)
-    x[, y] <- gsub(".*[Nn]ormal.*?\\.|:", "", x[, y])
-    x[, y] <- gsub(".*[Nn]ormal.*\n", "", x[, y], perl = T)
-    x[, y] <- gsub("^[Nn]ormal.*\n", "", x[, y], perl = T)
-    x[, y] <- gsub(".*[Nn]either .*?(\\.|:)", "", x[, y])
-    x[, y] <- gsub(".*[Tt]here is no .*?(\\.|:)", "", x[, y])
-    x[, y] <- gsub(".*[Tt]here are no .*?(\\.|:)", "", x[, y])
-    x[, y] <- gsub(".*[Nn]egative.*?(\\.|:)", "", x[, y])
-    x[, y] <- gsub("[Nn]egative for.*\n", "", x[, y], perl = T)
-    x[, y] <- gsub("[Nn]egative for [Dd]ysplasia", "", x[, y], perl = T)
-    x[, y] <- gsub("[Nn]egative.*\n", "", x[, y], perl = T)
-    x[, y] <- gsub("[Nn]egative for.*?\\.", "", x[, y], perl = T)
-    x[, y] <- gsub(".*[Ww]ithin normal .*?(\\.|:)", "", x[, y])
-    x[, y] <- gsub("[Ww]ithin normal histol.*\n", "", x[, y], perl = T)
-    x[, y] <- gsub("[Ww]ithin normal .*\n", "", x[, y], perl = T)
-    x[, y] <- gsub(".*with no.*?(\\.|:)", "", x[, y])
-    x[, y] <- gsub(".*[Nn]o significant.*?(\\.|:)", "", x[, y])
-    x[, y] <- gsub("Neither dysplasia.*?\\.", "", x[, y], perl = T)
-    x[, y] <- gsub("Neither dysplasia nor malignancy is seen", "", x[, y], perl = T)
-}
+    #Conjunctions
+    x[, y] <- gsub("(but|although|however|though|apart|otherwise|unremarkable) .*(no|negative|unremarkable|-ve| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
+    x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?([Bb]ut| [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise| [Uu]nremarkable)", "", x[, y])
+    # #x[, y] <- gsub("[Aa]lthough .*(no|negative|unremarkable|normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
+    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Aa]lthough", "", x[, y])
+    # #x[, y] <- gsub("[Hh]owever .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
+    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Hh]owever", "", x[, y])
+    # #x[, y] <- gsub("[Tt]hough .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
+    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Tt]hough", "", x[, y])
+    # #x[, y] <- gsub("[Aa]part .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
+    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Aa]part", "", x[, y])
+    # #x[, y] <- gsub("[Oo]therwise .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
+    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Oo]therwise", "", x[, y])
+    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Uu]nremarkable", "", x[, y])
+    # #x[, y] <- gsub("[Uu]nremarkable .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
+    
+    
+    #Nots
+    x[, y] <- gsub(".*was not.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = T,ignore.case=TRUE)
+    x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = T,ignore.case=TRUE)
+    #Nos
+    x[, y] <- gsub(".*(?:\\bno\\b(?![?:A-Za-z])|([?:]\\s*N?![A-Za-z])).*\\R*", "", x[, y], perl=TRUE, ignore.case=TRUE)
+    x[, y] <- gsub(".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub(".*negative.*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    #Keep abnormal in- don't ignore case as it messes it up
+    x[, y] <- gsub(".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "", x[, y],perl=T)
+    #Other negatives
+    x[, y] <- gsub(".*neither .*?(\\.|\n|:)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub(".*there (is|are) \\bno\\b .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub("within normal .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub("with normal .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub("with \\bno\\b.*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    #Specific cases
+    x[, y] <- gsub(".*duct.*clear.*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    #Unanswered prompt lines
+    x[, y] <- gsub(".*:(\\.|\n)\\R*", "", x[, y],perl=T,ignore.case=T)
+    return(x)
+  }
+
 
 
 #' ColumnCleanUp
@@ -310,6 +327,7 @@ ColumnCleanUp <- function(x, y) {
     x[, y] <- gsub("\\s{5}", "", x[, y])
     x[, y] <- gsub("^\\.", "", x[, y])
     x[, y] <- gsub("$\\.", "", x[, y])
+    return(x)
 }
 
 ####### Histology Clean Up functions #######
