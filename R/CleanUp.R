@@ -264,27 +264,14 @@ EndoscChopperFindings <- function(x, y) {
 NegativeRemove <- function(x, y) {
     x <- (data.frame(x))
     #Conjunctions
-    x[, y] <- gsub("(but|although|however|though|apart|otherwise|unremarkable|,) .*(no |negative|unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
+    x[, y] <- gsub("(but|although|however|though|apart|otherwise|unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
     x[, y] <- gsub("(no |negative|unremarkable|-ve| normal) .*?([Bb]ut| [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise| [Uu]nremarkable)\\R*", "", x[, y],perl=T,ignore.case=TRUE)
-    # #x[, y] <- gsub("[Aa]lthough .*(no|negative|unremarkable|normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
-    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Aa]lthough", "", x[, y])
-    # #x[, y] <- gsub("[Hh]owever .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
-    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Hh]owever", "", x[, y])
-    # #x[, y] <- gsub("[Tt]hough .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
-    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Tt]hough", "", x[, y])
-    # #x[, y] <- gsub("[Aa]part .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
-    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Aa]part", "", x[, y])
-    # #x[, y] <- gsub("[Oo]therwise .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
-    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Oo]therwise", "", x[, y])
-    # x[, y] <- gsub("(?n).*(no|negative|unremarkable|-ve| normal) ?[Uu]nremarkable", "", x[, y])
-    # #x[, y] <- gsub("[Uu]nremarkable .*(no|negative|unremarkable| normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
-    
-    #x[, y] <- gsub("with \\bno\\b.*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+   
     #Nots
     x[, y] <- gsub(".*(was|were) not.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = T,ignore.case=TRUE)
     x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = T,ignore.case=TRUE)
     #Nos
-    x[, y] <- gsub(".*(?:\\bno\\b(?![?:A-Za-z])|([?:]\\s*N?![A-Za-z])).*\\R*", "", x[, y], perl=TRUE, ignore.case=TRUE)
+    x[, y] <- gsub(".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b(?![?:A-Za-z])|([?:]\\s*N?![A-Za-z])).*\\R*", "", x[, y], perl=TRUE, ignore.case=TRUE)
     x[, y] <- gsub(".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
     x[, y] <- gsub(".*(negative|neither).*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
     #Keep abnormal in- don't ignore case as it messes it up
