@@ -66,14 +66,14 @@ ChopperNewLines <- function(x, y) {
 Extractor <- function(x, y, stra, strb, t) {
     x <- data.frame(x)
     t <- gsub("[^[:alnum:],]", " ", t)
-    t <- gsub(" ", "", t, fixed = T)
+    t <- gsub(" ", "", t, fixed = TRUE)
     x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra, "(.*)", strb, sep = ""), 
         dotall = TRUE))
     
     
     x[, t] <- gsub("\\\\.*", "", x[, t])
     
-    names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = T)
+    names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
     x[, t] <- gsub("       ", "", x[, t])
     x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
     if (strb != "") {
@@ -264,24 +264,24 @@ EndoscChopperFindings <- function(x, y) {
 NegativeRemove <- function(x, y) {
     x <- (data.frame(x))
     #Conjunctions
-    x[, y] <- gsub("(but|although|however|though|apart|otherwise|unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
-    x[, y] <- gsub("(no |negative|unremarkable|-ve| normal) .*?([Bb]ut| [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise| [Uu]nremarkable)\\R*", "", x[, y],perl=T,ignore.case=TRUE)
+    x[, y] <- gsub("(but|although|however|though|apart|otherwise|unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=TRUE,ignore.case=TRUE)
+    x[, y] <- gsub("(no |negative|unremarkable|-ve| normal) .*?([Bb]ut| [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise| [Uu]nremarkable)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
     #Nots
-    x[, y] <- gsub(".*(was|were) not.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = T,ignore.case=TRUE)
-    x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = T,ignore.case=TRUE)
+    x[, y] <- gsub(".*(was|were) not.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE,ignore.case=TRUE)
+    x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE,ignore.case=TRUE)
     #Nos
     x[, y] <- gsub(".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b(?![?:A-Za-z])|([?:]\\s*N?![A-Za-z])).*\\R*", "", x[, y], perl=TRUE, ignore.case=TRUE)
-    x[, y] <- gsub(".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
-    x[, y] <- gsub(".*(negative|neither).*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub(".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
+    x[, y] <- gsub(".*(negative|neither).*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
     #Keep abnormal in- don't ignore case as it messes it up
-    x[, y] <- gsub(".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "", x[, y],perl=T)
+    x[, y] <- gsub(".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "", x[, y],perl=TRUE)
     #Other negatives
-    x[, y] <- gsub(".*there (is|are) \\bno\\b .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
-    x[, y] <- gsub("(within|with) (normal|\\bno\\b) .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub(".*there (is|are) \\bno\\b .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
+    x[, y] <- gsub("(within|with) (normal|\\bno\\b) .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
     #Specific cases
-    x[, y] <- gsub(".*duct.*clear.*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub(".*duct.*clear.*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
     #Unanswered prompt lines
-    x[, y] <- gsub(".*:(\\.|\n)\\R*", "", x[, y],perl=T,ignore.case=T)
+    x[, y] <- gsub(".*:(\\.|\n)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
     return(x)
   }
 
@@ -359,22 +359,22 @@ HistolChopperHistol <- function(x, y) {
     # the phrases below could undoubetdly be simplified with more intelligent regex
     x$Histol_Simplified <- gsub("- ", "\n", x$Histol_Simplified, fixed = TRUE)
     x$Histol_Simplified <- gsub("-[A-Z]", "\n", x$Histol_Simplified, fixed = TRUE)
-    x$Histol_Simplified <- gsub(".*biopsies.*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub(".*biopsy.*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub(":", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("[Nn]egative.*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("[Ww]ithin normal .*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("[Nn]o .*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub(".*[Nn]ormal.*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("^[Nn]ormal.*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("[Ww]ithin normal histol.*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("[Nn]egative for.*\n", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("[Nn]egative for [Dd]ysplasia", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("[Nn]o [Dd]ysplasia.*?\\.", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("[Nn]egative for.*?\\.", "", x$Histol_Simplified, perl = T)
-    x$Histol_Simplified <- gsub("Neither dysplasia.*?\\.", "", x$Histol_Simplified, perl = T)
+    x$Histol_Simplified <- gsub(".*biopsies.*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub(".*biopsy.*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub(":", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]egative.*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Ww]ithin normal .*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]o .*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub(".*[Nn]ormal.*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("^[Nn]ormal.*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Ww]ithin normal histol.*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]egative for.*\n", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]egative for [Dd]ysplasia", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]o [Dd]ysplasia.*?\\.", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]egative for.*?\\.", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("Neither dysplasia.*?\\.", "", x$Histol_Simplified, perl = TRUE)
     x$Histol_Simplified <- gsub("Neither dysplasia nor malignancy is seen", "", x$Histol_Simplified, 
-        perl = T)
+        perl = TRUE)
     return(x)
 }
 
@@ -415,7 +415,7 @@ HistolChopperAccessionNumber <- function(x, y, stra) {
 #' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
 
 HistolChopperDx <- function(x, y) {
-    x[, y] <- gsub("Dr.*", "", x[, y], perl = T)
+    x[, y] <- gsub("Dr.*", "", x[, y], perl = TRUE)
     x[, y] <- gsub("[Rr]eported.*", "", x[, y])
     # Column-generic cleanup
     x[, y] <- ColumnCleanUp(x, y)
@@ -423,8 +423,8 @@ HistolChopperDx <- function(x, y) {
     x$Dx_Simplified <- x[, y]
     x$Dx_Simplified <- gsub("- ", "\n", x$Dx_Simplified, fixed = TRUE)
     x$Dx_Simplified <- gsub("-[A-Z]", "\n", x$Dx_Simplified, fixed = TRUE)
-    x$Dx_Simplified <- gsub(".*biopsies.*\n", "", x$Dx_Simplified, perl = T)
-    x$Dx_Simplified <- gsub(".*biopsy.*\n", "", x$Dx_Simplified, perl = T)
+    x$Dx_Simplified <- gsub(".*biopsies.*\n", "", x$Dx_Simplified, perl = TRUE)
+    x$Dx_Simplified <- gsub(".*biopsy.*\n", "", x$Dx_Simplified, perl = TRUE)
     return(x)
     
 }

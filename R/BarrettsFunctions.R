@@ -1,7 +1,11 @@
-if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CStage", "NumbOfBx", 
-    "Years", "Difference", "barplot", "head", "read.table", "eHospitalNum", "pHospitalNum", ".", 
-    "EVENT", "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", "dcast", "complete.cases", 
-    "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", "region", "rgb", 
+if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CStage",
+                                                        "NumbOfBx", 
+    "Years", "Difference", "barplot", "head", "read.table", "eHospitalNum",
+    "pHospitalNum", ".", 
+    "EVENT", "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", 
+    "dcast", "complete.cases", 
+    "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", 
+    "region", "rgb", 
     "setDT","ind"))
 ###### Barretts Surveillance and Therapeutic Functions ######
 
@@ -56,9 +60,12 @@ BarrettsDataAccord_PathStage <- function(x, y) {
         x[, y], perl = TRUE), "SM1", ifelse(grepl("T1b", x[, y], perl = TRUE), "T1b_Unspec", 
         ifelse(grepl("T1a|ntramucosal", x[, y], perl = TRUE), "T1a", ifelse(grepl("[Hh]igh grade ", 
             x[, y], perl = TRUE), "HGD", ifelse(grepl("[Ll]ow grade", x[, y], perl = TRUE), "LGD", 
-            ifelse(grepl("[Ii]ndef", x[, y], perl = TRUE), "IGD", ifelse(grepl("(?<!egative for |No evidence of |[Nn]o |either |or |and )[Ii]ntestinal [Mm]etaplasia", 
-                x[, y], perl = TRUE), "IM", ifelse(grepl("(?<!egative for |No evidence of |[Nn]o |either |or |and )[Ii]ntestinal [Mm]etaplasia", 
-                x[, y], perl = TRUE), "IM", ifelse(is.na(x[, y]), "No tissue", "No_IM"))))))))))
+            ifelse(grepl("[Ii]ndef", x[, y], perl = TRUE), "IGD", 
+                   ifelse(grepl("(?<!egative for |No evidence of |[Nn]o |either |or |and )[Ii]ntestinal [Mm]etaplasia", 
+                x[, y], perl = TRUE), "IM", 
+                ifelse(grepl("(?<!egative for |No evidence of |[Nn]o |either |or |and )[Ii]ntestinal [Mm]etaplasia", 
+                x[, y], perl = TRUE), "IM", 
+                ifelse(is.na(x[, y]), "No tissue", "No_IM"))))))))))
     return(x)
 }
 
@@ -88,10 +95,13 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
     x <- data.frame(x)
     # Get all the EVENTS in:
-    x$EVENT <- ifelse(grepl("[Ee][Mm][Rr]", x[, y], perl = TRUE), "EMR", ifelse(grepl("[Ee]ndoscopic [Mm]ucosal [Rr]esection", 
+    x$EVENT <- ifelse(grepl("[Ee][Mm][Rr]", x[, y], perl = TRUE), "EMR",
+                      ifelse(grepl("[Ee]ndoscopic [Mm]ucosal [Rr]esection", 
         x[, y], perl = TRUE), "EMR", ifelse(grepl("ndomucosal", x[, y], perl = TRUE), "EMR", 
-        ifelse(grepl("HALO|RFA", x[, z], perl = TRUE), "RFA", ifelse(grepl("APC", x[, z], perl = TRUE), 
-            "APC", ifelse(grepl("HALO|RFA", x[, aa], perl = TRUE), "RFA", ifelse(grepl("APC", 
+        ifelse(grepl("HALO|RFA", x[, z], perl = TRUE), "RFA", 
+               ifelse(grepl("APC", x[, z], perl = TRUE), 
+            "APC", ifelse(grepl("HALO|RFA", x[, aa], perl = TRUE), "RFA", 
+                          ifelse(grepl("APC", 
                 x[, aa], perl = TRUE), "RFA", ifelse(grepl("HALO|RFA", x[, bb], perl = TRUE), 
                 "RFA", ifelse(grepl("APC", x[, bb], perl = TRUE), "APC", "nothing")))))))))
     return(x)

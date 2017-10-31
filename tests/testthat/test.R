@@ -28,56 +28,55 @@ test_that("Extractor", {
                                 "ProcedurePerformed","Findings","PathReportWhole","eHospitalNum","PatientName.y",
                                 "GeneralPractitioner.y","Date.y","ClinicalDetails","Natureofspecimen",
                                 "Histology","Diagnosis","Days")))
-  expect_that(all(!is.na(v$OGDReportWhole)),equals(TRUE))
-  expect_that(all(!is.na(v$pHospitalNum)),equals(TRUE))
-  expect_that(all(!is.na(v$PatientName.x)),equals(TRUE))
-  expect_that(all(!is.na(v$GeneralPractitioner.x)),equals(TRUE))
-  expect_that(all(!is.na(v$Date.x)),equals(TRUE))
-  expect_that(all(!is.na(v$Endoscopist)),equals(TRUE))
-  expect_that(all(!is.na(v$Secondendoscopist)),equals(TRUE))
-  expect_that(all(!is.na(v$Medications)),equals(TRUE))
-  expect_that(all(!is.na(v$Instrument)),equals(TRUE))
-  expect_that(all(!is.na(v$ExtentofExam)),equals(TRUE))
-  expect_that(all(!is.na(v$Indications)),equals(TRUE))
-  expect_that(all(!is.na(v$GeneralPractitioner.y)),equals(TRUE))
-  expect_that(all(!is.na(v$Date.y)),equals(TRUE))
-  expect_that(all(!is.na(v$ClinicalDetails)),equals(TRUE))
-  expect_that(all(!is.na(v$Natureofspecimen)),equals(TRUE))
-  expect_that(all(!is.na(v$Histology)),equals(TRUE))
-  expect_that(all(!is.na(v$Diagnosis)),equals(TRUE))
-  expect_that(all(!is.na(v$Days)),equals(TRUE))
+  expect_true(all(!is.na(v$OGDReportWhole)))
+  expect_true(all(!is.na(v$pHospitalNum)))
+  expect_true(all(!is.na(v$GeneralPractitioner.x)))
+  expect_true(all(!is.na(v$Date.x)))
+  expect_true(all(!is.na(v$Endoscopist)))
+  expect_true(all(!is.na(v$Secondendoscopist)))
+  expect_true(all(!is.na(v$Medications)))
+  expect_true(all(!is.na(v$Instrument)))
+  expect_true(all(!is.na(v$ExtentofExam)))
+  expect_true(all(!is.na(v$Indications)))
+  expect_true(all(!is.na(v$GeneralPractitioner.y)))
+  expect_true(all(!is.na(v$Date.y)))
+  expect_true(all(!is.na(v$ClinicalDetails)))
+  expect_true(all(!is.na(v$Natureofspecimen)))
+  expect_true(all(!is.na(v$Histology)))
+  expect_true(all(!is.na(v$Diagnosis)))
+  expect_true(all(!is.na(v$Days)))
 })
 
 test_that("EndoscChopperEndoscopist", {
   Myendo<-EndoscChopperEndoscopist(Myendo,"Endoscopist")
   Myendo$Endoscopist<-gsub("2nd [Ee]ndoscopist","Second endoscopist",Myendo$Endoscopist)
-  expect_that(all(!is.na(Myendo$Endoscopist)),equals(TRUE))
+  expect_true(all(!is.na(Myendo$Endoscopist)))
   
 })
 
 test_that("EndoscChopperMeds", {
   Myendo<-EndoscChopperMeds(Myendo,"Medications")
-  expect_that(all(!is.na(Myendo$Medications)),equals(TRUE))
+  expect_true(all(!is.na(Myendo$Medications)))
 })
 
 test_that("EndoscChopperInstrument", {
   Myendo<-EndoscChopperInstrument(Myendo,"Instrument")
-  expect_that(all(!is.na(Myendo$Instrument)),equals(TRUE))
+  expect_true(all(!is.na(Myendo$Instrument)))
 })
 
 test_that("EndoscChopperIndications", {
   Myendo<-EndoscChopperIndications(Myendo,"Indications")
-  expect_that(all(!is.na(Myendo$Indications)),equals(TRUE))
+  expect_true(all(!is.na(Myendo$Indications)))
 })
 
 test_that("EndoscChopperProcPerformed", {
   Myendo<-EndoscChopperProcPerformed(Myendo,"ProcedurePerformed")
-  expect_that(all(!is.na(Myendo$Findings)),equals(TRUE))
+  expect_true(all(!is.na(Myendo$Findings)))
 })
 
 test_that("EndoscChopperFindings", {
   Myendo<-EndoscChopperFindings(Myendo,"Findings")
-  expect_that(all(!is.na(Myendo$Findings)),equals(TRUE))
+  expect_true(all(!is.na(Myendo$Findings)))
 })
 
 test_that("NegativeRemove", {
@@ -96,52 +95,52 @@ test_that("HistolChopperHistol", {
 
 test_that("HistolChopperDx", {
   Mypath<-HistolChopperDx(Mypath,"Diagnosis")
-  expect_that(all(!is.na(Mypath$Dx)),equals(TRUE))
+  expect_true(all(!is.na(Mypath$Dx)))
 })
 
 test_that("HistolChopperExtrapolDx", {
   Mypath<-HistolChopperExtrapolDx(Mypath,"Diagnosis")
-  expect_that(all(!is.na(Mypath$Dysplasia)),equals(FALSE))
+  expect_false(all(!is.na(Mypath$Dysplasia)))
 })
 
 
 test_that("HistolChopperNumbOfBx", {
   Mypath<-HistolChopperNumbOfBx(Mypath,"Natureofspecimen","specimen")
-  expect_that(all(!is.na(Mypath$NumbOfBx)),equals(TRUE))
+  expect_true(all(!is.na(Mypath$NumbOfBx)))
 })
 
 test_that("HistolChopperNumbOfBx", {
   #Mypath<-HistolChopperMacDescrip(Mypath, "Natureofspecimen")
   Mypath<-HistolChopperBxSize(Mypath,"Natureofspecimen")
-  expect_that(all(!is.na(Mypath$BxSize)),equals(TRUE))
+  expect_true(all(!is.na(Mypath$BxSize)))
 })
 
-##### Barrett's test functions ####
-##EndoMineR functions
+
+##### EndoMineR functions #####
 
 test_that("SurveillanceTimeByRow", {
   em<-SurveillanceTimeByRow(Myendo,"HospitalNumber","Dateofprocedure")
-  expect_that(nrow(em)>0,equals(TRUE))
+  expect_true(nrow(em)>0)
 })
 
 test_that("SurveillanceLastToNow", {
   em<-SurveillanceLastToNow(Myendo,"HospitalNumber","Dateofprocedure")
-  expect_that(nrow(em)>0,equals(TRUE))
+  expect_true(nrow(em)>0)
 })
 
 test_that("SurveillanceLastTest", {
   em<-SurveillanceLastTest(Myendo,"HospitalNumber","Dateofprocedure")
-  expect_that(nrow(em)>0,equals(TRUE))
+  expect_true(nrow(em)>0)
 })
 
 test_that("SurveillanceFirstTest", {
   em<-SurveillanceFirstTest(Mypath,"HospitalNumber","Dateofprocedure")
-  expect_that(nrow(em)>0,equals(TRUE))
+  expect_true(nrow(em)>0)
 })
 
 test_that("SurveillanceTimeByRow", {
   em<-SurveillanceTimeByRow(Myendo,"HospitalNumber","Dateofprocedure")
-  expect_that(nrow(em)>0,equals(TRUE))
+  expect_true(nrow(em)>0)
 })
 
 test_that("SurveillanceCapacity", {
@@ -151,14 +150,23 @@ test_that("SurveillanceCapacity", {
 
 test_that("HowManyTests", {
   Tests<-HowManyTests(Myendo,"Indications","Dateofprocedure","S.*")
-  expect_that(class(Tests[1])=="list",equals(TRUE))
-  expect_that(class(Tests[2])=="list",equals(TRUE))
+  expect_true(class(Tests[1])=="list")
+  expect_true(class(Tests[2])=="list")
+})
+
+test_that("SurveySankey", {
+})
+
+test_that("PatientFlow_CircosPlots", {
+})
+
+test_that("ListLookup", {
 })
 
 test_that("MetricByEndoscopist", {
   myNotableWords<-c("arrett","oeliac")
   tt<-ListLookup(Myendo,"Findings",myNotableWords)
-  expect_that(class(tt)=="data.frame",equals(TRUE))
+  expect_true(class(tt)=="data.frame")
 })
 
 
@@ -166,8 +174,29 @@ test_that("MetricByEndoscopist", {
 test_that("MetricByEndoscopist", {
   Myendo<-EndoscChopperMeds(Myendo,"Medications")
   Fent<-MetricByEndoscopist(Myendo,"Endoscopist","Fent")
-  expect_that(class(Fent[1])=="list",equals(TRUE))
-  expect_that(class(Fent[2])=="list",equals(TRUE))
+  expect_true(class(Fent[1])=="list")
+  expect_true(class(Fent[2])=="list")
+})
+
+test_that("TermStandardLocation", {
+})
+
+test_that("SampleLocator", {
+})
+
+test_that("PolypLocator", {
+})
+
+test_that("PolypTidyUpLocator", {
+})
+
+test_that("GRS_Type_Assess_By_Unit", {
+})
+
+test_that("NumberPerformed", {
+})
+
+test_that("TermStandardLocation", {
 })
 
 
