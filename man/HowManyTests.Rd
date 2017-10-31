@@ -22,6 +22,8 @@ This returns a list which contains a plot (number of tests for that indication o
 and a table with the same information broken down by month and year).
 }
 \examples{
+
+
 how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 }
 \keyword{Tests}

@@ -20,9 +20,12 @@ Endomerge2 <- function(x,EndoDate,EndoHospNumber,y,PathDate,PathHospNumber) {
     # Rename the columns so can do the join Extract the date from both reports
   colnames(x)[which(names(x) == EndoDate)]<-"Date"
   colnames(x)[which(names(x) == EndoHospNumber)]<-"eHospitalNum"
+ 
   colnames(y)[which(names(y) == PathDate)]<-"Date"
   colnames(y)[which(names(y) == PathHospNumber)]<-"pHospitalNum"
-    
+  y$Date<-gsub("\n","",y$Date)
+  y$Date<-as.Date(y$Date)
+  
     EndoHistoMerge <- fuzzyjoin::difference_full_join(y, x, by = "Date", max_dist = 7, distance_col = "Days") %>% 
         dplyr::filter(eHospitalNum == pHospitalNum)
     return(EndoHistoMerge)

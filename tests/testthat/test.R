@@ -8,15 +8,18 @@ EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:","Dat
 for(i in 1:(length(EndoscTree)-1)) {
   Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
-Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+
 
 Histoltree<-list("Hospital Number:","Patient Name:","General Practitioner:","Date of procedure:","Clinical Details","Nature of specimen","Histology","Diagnosis","")
 for(i in 1:(length(Histoltree)-1)) {
   Mypath<-Extractor(Mypath,"PathReportWhole",as.character(Histoltree[i]),as.character(Histoltree[i+1]),gsub(" ","",as.character(Histoltree[i])))
 }
 Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
-
 v<-Endomerge2(Mypath,"Dateofprocedure","HospitalNumber",Myendo,"Dateofprocedure","HospitalNumber")
+
+
+
+
 
 #Make sure that the Endoscopist cleanup function has data in the Endoscopist column
 test_that("Extractor", {

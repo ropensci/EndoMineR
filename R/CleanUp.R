@@ -72,6 +72,7 @@ Extractor <- function(x, y, stra, strb, t) {
     
     
     x[, t] <- gsub("\\\\.*", "", x[, t])
+    
     names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = T)
     x[, t] <- gsub("       ", "", x[, t])
     x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
@@ -80,9 +81,6 @@ Extractor <- function(x, y, stra, strb, t) {
     }
     x[, t] <- gsub("       ", "", x[, t])
     x[, t] <- ColumnCleanUp(x, t)
-    x[, t] <- trimws(x[, t])
-    
-    
     return(x)
 }
 
@@ -90,8 +88,9 @@ Extractor <- function(x, y, stra, strb, t) {
 
 #' EndoscChopperEndoscopist
 #'
-#' This cleans endoscopist column from the report assuming such a column exists. 
-#' It gets rid of common entries that are not needed. 
+#' If an endoscopist column is part of the dataset once the extractor function has been used
+#' this cleans the endoscopist column from the report. It gets rid of titles
+#' It gets rid of common entries that are not needed.
 #' It should be used after the Extractor and the optional ChopperNewLines has been used.
 #' 
 #' @param x dataframe 
@@ -105,6 +104,7 @@ EndoscChopperEndoscopist <- function(x, y) {
     x <- data.frame(x)
     x[, y] <- gsub("Dr", "", x[, y], fixed = TRUE)
     x[, y] <- gsub("Mr", "", x[, y], fixed = TRUE)
+    x[, y] <- gsub("Professor|Prof", "", x[, y], fixed = TRUE)
     x[, y] <- gsub("[^[:alnum:],]", "", x[, y])
     # Put gaps between names
     x[, y] <- gsub("([a-z])([A-Z])", "\\1 \\2", x[, y])
@@ -266,7 +266,6 @@ NegativeRemove <- function(x, y) {
     #Conjunctions
     x[, y] <- gsub("(but|although|however|though|apart|otherwise|unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=T,ignore.case=TRUE)
     x[, y] <- gsub("(no |negative|unremarkable|-ve| normal) .*?([Bb]ut| [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise| [Uu]nremarkable)\\R*", "", x[, y],perl=T,ignore.case=TRUE)
-   
     #Nots
     x[, y] <- gsub(".*(was|were) not.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = T,ignore.case=TRUE)
     x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = T,ignore.case=TRUE)
@@ -279,8 +278,6 @@ NegativeRemove <- function(x, y) {
     #Other negatives
     x[, y] <- gsub(".*there (is|are) \\bno\\b .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
     x[, y] <- gsub("(within|with) (normal|\\bno\\b) .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
-
-    
     #Specific cases
     x[, y] <- gsub(".*duct.*clear.*?(\\.|\n|:|$)\\R*", "", x[, y],perl=T,ignore.case=T)
     #Unanswered prompt lines
@@ -313,7 +310,7 @@ ColumnCleanUp <- function(x, y) {
     x[, y] <- gsub("\\s{5}", "", x[, y])
     x[, y] <- gsub("^\\.", "", x[, y])
     x[, y] <- gsub("$\\.", "", x[, y])
-    return(x)
+    return(x[,y])
 }
 
 ####### Histology Clean Up functions #######
@@ -418,8 +415,6 @@ HistolChopperAccessionNumber <- function(x, y, stra) {
 #' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
 
 HistolChopperDx <- function(x, y) {
-  
-    # 
     x[, y] <- gsub("Dr.*", "", x[, y], perl = T)
     x[, y] <- gsub("[Rr]eported.*", "", x[, y])
     # Column-generic cleanup
