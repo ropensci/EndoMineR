@@ -19,6 +19,6 @@ The cleanup usually relates to the removal of top and tail characters such
 as who reported the specimens etc.
 }
 \examples{
-v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
+v<-HistolChopperMacDescripCleanup(Mypath,'Macroscopicdescription')
 }
 \keyword{Macroscopic}

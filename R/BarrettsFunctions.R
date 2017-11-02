@@ -1,12 +1,6 @@
-if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CStage",
-                                                        "NumbOfBx", 
-    "Years", "Difference", "barplot", "head", "read.table", "eHospitalNum",
-    "pHospitalNum", ".", 
-    "EVENT", "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", 
-    "dcast", "complete.cases", 
-    "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", 
-    "region", "rgb", 
-    "setDT","ind"))
+if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CStage", "NumbOfBx", "Years", "Difference", "barplot", "head", "read.table", "eHospitalNum", "pHospitalNum", ".", "EVENT", 
+    "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", "dcast", "complete.cases", "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", "region", "rgb", "setDT", 
+    "ind"))
 ###### Barretts Surveillance and Therapeutic Functions ######
 
 #' BarrettsDataAccord_Prague
@@ -22,7 +16,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CSt
 #' @export
 #' @examples v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 
-BarrettsDataAccord_Prague <- function(x, y) {  
+BarrettsDataAccord_Prague <- function(x, y) {
     x <- data.frame(x)
     x$CStage <- stringr::str_extract(x[, y], "(C(\\s|=)*\\d+)")
     x$CStage <- as.numeric(gsub("C", "", x$CStage))
@@ -46,26 +40,20 @@ BarrettsDataAccord_Prague <- function(x, y) {
 #' @param y column of interest
 #' @keywords Pathology extraction 
 #' @export
-#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
-#' v<-HistolChopperDx(v,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\d{2}-\\d{7}')
+#' v<-HistolChopperDx(v,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
 #' b<-BarrettsDataAccord_PathStage(v,'Histology')
 
 BarrettsDataAccord_PathStage <- function(x, y) {
     # Get the worst pathology for that sample
     x <- data.frame(x)
-    x$IMorNoIM <- ifelse(grepl("[Ss][Mm]1", x[, y], perl = TRUE), "SM2", ifelse(grepl("[Ss][Mm]1", 
-        x[, y], perl = TRUE), "SM1", ifelse(grepl("T1b", x[, y], perl = TRUE), "T1b_Unspec", 
-        ifelse(grepl("T1a|ntramucosal", x[, y], perl = TRUE), "T1a", ifelse(grepl("[Hh]igh grade ", 
-            x[, y], perl = TRUE), "HGD", ifelse(grepl("[Ll]ow grade", x[, y], perl = TRUE), "LGD", 
-            ifelse(grepl("[Ii]ndef", x[, y], perl = TRUE), "IGD", 
-                   ifelse(grepl("(?<!egative for |No evidence of |[Nn]o |either |or |and )[Ii]ntestinal [Mm]etaplasia", 
-                x[, y], perl = TRUE), "IM", 
-                ifelse(grepl("(?<!egative for |No evidence of |[Nn]o |either |or |and )[Ii]ntestinal [Mm]etaplasia", 
-                x[, y], perl = TRUE), "IM", 
-                ifelse(is.na(x[, y]), "No tissue", "No_IM"))))))))))
+    x$IMorNoIM <- ifelse(grepl("[Ss][Mm]1", x[, y], perl = TRUE), "SM2", ifelse(grepl("[Ss][Mm]1", x[, y], perl = TRUE), "SM1", ifelse(grepl("T1b", x[, y], perl = TRUE), "T1b_Unspec", ifelse(grepl("T1a|ntramucosal", 
+        x[, y], perl = TRUE), "T1a", ifelse(grepl("[Hh]igh grade ", x[, y], perl = TRUE), "HGD", ifelse(grepl("[Ll]ow grade", x[, y], perl = TRUE), "LGD", ifelse(grepl("[Ii]ndef", x[, y], perl = TRUE), 
+        "IGD", ifelse(grepl("(?<!egative for |No evidence of |[Nn]o |either |or |and )[Ii]ntestinal [Mm]etaplasia", x[, y], perl = TRUE), "IM", ifelse(grepl("(?<!egative for |No evidence of |[Nn]o |either |or |and )[Ii]ntestinal [Mm]etaplasia", 
+            x[, y], perl = TRUE), "IM", ifelse(is.na(x[, y]), "No tissue", "No_IM"))))))))))
     return(x)
 }
 
@@ -83,27 +71,21 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' @param bb The endoscopic findings column if different to the Diagnosis column
 #' @keywords Event extraction
 #' @export
-#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
-#' v<-HistolChopperDx(v,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\d{2}-\\d{7}')
+#' v<-HistolChopperDx(v,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b<-BarrettsDataAccord_Event(v,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #'
 BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
     x <- data.frame(x)
     # Get all the EVENTS in:
-    x$EVENT <- ifelse(grepl("[Ee][Mm][Rr]", x[, y], perl = TRUE), "EMR",
-                      ifelse(grepl("[Ee]ndoscopic [Mm]ucosal [Rr]esection", 
-        x[, y], perl = TRUE), "EMR", ifelse(grepl("ndomucosal", x[, y], perl = TRUE), "EMR", 
-        ifelse(grepl("HALO|RFA", x[, z], perl = TRUE), "RFA", 
-               ifelse(grepl("APC", x[, z], perl = TRUE), 
-            "APC", ifelse(grepl("HALO|RFA", x[, aa], perl = TRUE), "RFA", 
-                          ifelse(grepl("APC", 
-                x[, aa], perl = TRUE), "RFA", ifelse(grepl("HALO|RFA", x[, bb], perl = TRUE), 
-                "RFA", ifelse(grepl("APC", x[, bb], perl = TRUE), "APC", "nothing")))))))))
+    x$EVENT <- ifelse(grepl("[Ee][Mm][Rr]", x[, y], perl = TRUE), "EMR", ifelse(grepl("[Ee]ndoscopic [Mm]ucosal [Rr]esection", x[, y], perl = TRUE), "EMR", ifelse(grepl("ndomucosal", x[, y], perl = TRUE), 
+        "EMR", ifelse(grepl("HALO|RFA", x[, z], perl = TRUE), "RFA", ifelse(grepl("APC", x[, z], perl = TRUE), "APC", ifelse(grepl("HALO|RFA", x[, aa], perl = TRUE), "RFA", ifelse(grepl("APC", x[, 
+            aa], perl = TRUE), "RFA", ifelse(grepl("HALO|RFA", x[, bb], perl = TRUE), "RFA", ifelse(grepl("APC", x[, bb], perl = TRUE), "APC", "nothing")))))))))
     return(x)
 }
 
@@ -121,11 +103,11 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' @param y The field to search (endoscopic findings)
 #' @keywords Follow-Up
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b<-BarrettsDataAccord_PathStage(v,'Histology')
 #' b2<-BarrettsDataAccord_Event(b,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
@@ -134,16 +116,13 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 BarrettsDataAccord_FUGroup <- function(x, y) {
     x <- data.frame(x)
     # Do the follow-up groupings
-    try(x$MStage <- ifelse(grepl("(C(\\s|=)*\\d+)", x[, y], perl = TRUE), stringr::str_extract(x[, 
-        y], "(M(\\s|=)*\\d+)"), ifelse(grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall", x[, y], perl = TRUE), 
-        "0", ifelse(grepl("[1-3]{1}(\\s)*?[cC][mM]", x[, y], perl = TRUE), stringr::str_extract(x[, 
-            y], "[1-3]{1}(\\s)*?[cC][mM]"), NA))))
+    try(x$MStage <- ifelse(grepl("(C(\\s|=)*\\d+)", x[, y], perl = TRUE), stringr::str_extract(x[, y], "(M(\\s|=)*\\d+)"), ifelse(grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall", x[, y], perl = TRUE), 
+        "0", ifelse(grepl("[1-3]{1}(\\s)*?[cC][mM]", x[, y], perl = TRUE), stringr::str_extract(x[, y], "[1-3]{1}(\\s)*?[cC][mM]"), NA))))
     
     x$MStage <- gsub("M|cm|=", "", x$MStage)
     
     x$MStage <- as.integer(x$MStage)
-    x$FU_Group <- ifelse(x$IMorNoIM == "No_IM" & x$MStage < 3, "Rule1", ifelse(x$IMorNoIM == 
-        "IM" & x$MStage < 3, "Rule2", ifelse(x$MStage >= 3, "Rule3", "NoRules")))
+    x$FU_Group <- ifelse(x$IMorNoIM == "No_IM" & x$MStage < 3, "Rule1", ifelse(x$IMorNoIM == "IM" & x$MStage < 3, "Rule2", ifelse(x$MStage >= 3, "Rule3", "NoRules")))
     return(x)
     
 }
@@ -169,20 +148,16 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' @examples Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',
 #' 'Dateofprocedure','Indications')
 
-BarrettsPatientTracking_Enrollment_Surveillance <- function(x, PatientID, Endo_ResultPerformed, 
-    IndicationsFroExamination) {
+BarrettsPatientTracking_Enrollment_Surveillance <- function(x, PatientID, Endo_ResultPerformed, IndicationsFroExamination) {
     x <- data.frame(x)
     PatientIDa <- rlang::sym(PatientID)
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
     IndicationsFroExaminationa <- rlang::sym(IndicationsFroExamination)
-    # So you want all those whose last endoscopy was non surveillance but who have a difftime
-    # between now and the last of > 3years So get the last endoscopy for each patient Filter out
-    # the endoscopies that were surveillance Get the difftime between now and the last endoscopy
-    # Filter for those who have been waiting >3 years post non surveillance endoscopy
+    # So you want all those whose last endoscopy was non surveillance but who have a difftime between now and the last of > 3years So get the last endoscopy for each patient Filter out the endoscopies
+    # that were surveillance Get the difftime between now and the last endoscopy Filter for those who have been waiting >3 years post non surveillance endoscopy
     
-    t <- x %>% arrange(as.Date(!!Endo_ResultPerformeda)) %>% group_by(!!PatientIDa) %>% slice(n()) %>% filter(!grepl("Surv|Barr", 
-        !!IndicationsFroExamination)) %>% mutate(Years = difftime(as.Date(Sys.Date()), as.Date(!!Endo_ResultPerformeda), 
-        units = "weeks")/52) %>% filter(Years > 3)
+    t <- x %>% arrange(as.Date(!(!Endo_ResultPerformeda))) %>% group_by(!(!PatientIDa)) %>% slice(n()) %>% filter(!grepl("Surv|Barr", !(!IndicationsFroExamination))) %>% mutate(Years = difftime(as.Date(Sys.Date()), 
+        as.Date(!(!Endo_ResultPerformeda)), units = "weeks")/52) %>% filter(Years > 3)
     
     return(t)
     
@@ -201,12 +176,12 @@ BarrettsPatientTracking_Enrollment_Surveillance <- function(x, PatientID, Endo_R
 #' @param PatientID Column containing patient numbers
 #' @keywords Rule
 #' @export
-#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
-#' v<-HistolChopperDx(v,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\d{2}-\\d{7}')
+#' v<-HistolChopperDx(v,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
@@ -236,13 +211,13 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 #' @import lattice
 #' @keywords Documentation
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b<-BarrettsDataAccord_PathStage(v,'Histology')
-#' BarrettsQuality_AnalysisDocumentation(b,"Findings")
+#' BarrettsQuality_AnalysisDocumentation(b,'Findings')
 
 
 
@@ -261,23 +236,18 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
     # Visible lesions- should also describe the absence of visible lesions explicitly
     LesionSubsetx <- x[grep("esion|odule|lcer", x[, Findings]), ]
     
-    # Classification of lesions On surveillance vs not on surveillance Thie one is done as part
-    # of the Therapeutic survey so a different dataset.
+    # Classification of lesions On surveillance vs not on surveillance Thie one is done as part of the Therapeutic survey so a different dataset.
     
-    # Biopsies (location and samples taken) Decided not to do this as no point as all biopsies
-    # are labelled at time of pathology so don't see why they should be on the form. On
-    # surveillance vs not on surveillance
+    # Biopsies (location and samples taken) Decided not to do this as no point as all biopsies are labelled at time of pathology so don't see why they should be on the form. On surveillance vs not on
+    # surveillance
     
-    n = c(as.numeric(nrow(PragueSubsetx)/nrow(x)), as.numeric(nrow(IslandSubsetx)/nrow(x)), as.numeric(nrow(HerniaSubsetx)/nrow(x)), 
-        as.numeric(nrow(LesionSubsetx))/nrow(x))
+    n = c(as.numeric(nrow(PragueSubsetx)/nrow(x)), as.numeric(nrow(IslandSubsetx)/nrow(x)), as.numeric(nrow(HerniaSubsetx)/nrow(x)), as.numeric(nrow(LesionSubsetx))/nrow(x))
     s = c("On", "On", "On", "On")
     b = c("Prague", "Prague", "Island", "Island", "Hernia", "Hernia", "Lesion", "Lesion")
     EndoMinDataSet <- data.frame(s, b, n)
     
-    t <- lattice::barchart(b ~ n, data = EndoMinDataSet, groups = s, scales = list(x = list(rot = 0, 
-        cex = 2), y = list(cex = 2), main = list("Endoscopy documentation for Barrett's PRE DOI", 
-        cex = 2.8)), key = list(space = "right", lines = list(col = c("pink", "lightblue"), lty = c(2, 
-        2), lwd = 16), text = list(c("On", "Off"), cex = 2)))
+    t <- lattice::barchart(b ~ n, data = EndoMinDataSet, groups = s, scales = list(x = list(rot = 0, cex = 2), y = list(cex = 2), main = list("Endoscopy documentation for Barrett's PRE DOI", cex = 2.8)), 
+        key = list(space = "right", lines = list(col = c("pink", "lightblue"), lty = c(2, 2), lwd = 16), text = list(c("On", "Off"), cex = 2)))
     return(t)
     
 }
@@ -296,12 +266,12 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @importFrom dplyr summarise group_by filter
 #' @keywords Does something with data
 #' @export
-#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
-#' v<-HistolChopperDx(v,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\d{2}-\\d{7}')
+#' v<-HistolChopperDx(v,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
@@ -316,22 +286,19 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x, Endo_ResultPerformed, Patien
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
     Endoscopista <- rlang::sym(Endoscopist)
     
-    GroupedByEndoscopy <- x %>% dplyr::filter(!is.na(CStage), !is.na(NumbOfBx)) %>% dplyr::group_by(as.Date(!!Endo_ResultPerformeda), 
-        !!PatientID, !!Endoscopista) %>% dplyr::summarise(Sum = sum(NumbOfBx), AvgC = mean(CStage))
+    GroupedByEndoscopy <- x %>% dplyr::filter(!is.na(CStage), !is.na(NumbOfBx)) %>% dplyr::group_by(as.Date(!(!Endo_ResultPerformeda)), !(!PatientID), !(!Endoscopista)) %>% dplyr::summarise(Sum = sum(NumbOfBx), 
+        AvgC = mean(CStage))
     
     GroupedByEndoscopy$ExpectedNumber <- (GroupedByEndoscopy$AvgC + 1) * 2
     GroupedByEndoscopy$Difference <- GroupedByEndoscopy$Sum - GroupedByEndoscopy$ExpectedNumber
     
     # Now group the difference by endoscopist
-    BxShortfallPre <- GroupedByEndoscopy %>% dplyr::group_by(!!Endoscopista) %>% dplyr::summarise(MeanDiff = mean(Difference))
+    BxShortfallPre <- GroupedByEndoscopy %>% dplyr::group_by(!(!Endoscopista)) %>% dplyr::summarise(MeanDiff = mean(Difference))
     
     # e) Then show shortfall of number of biopsies on a graph
-    t <- ggplot2::ggplot() + geom_point(aes(BxShortfallPre$Endoscopist, BxShortfallPre$MeanDiff), 
-        size = 9) + geom_point(cex = 2) + labs(title = "Shortfall number of biopsies on Barrett's Surveillance list", 
-        x = "", y = "") + theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) + theme(legend.position = "top") + 
-        xlab("Endoscopist") + ylab("Shortfall(Obs-\nexpec number Bx)") + theme(axis.text.x = element_text(angle = -90, 
-        size = 10)) + theme(axis.text.y = element_text(angle = -90, size = 10)) + theme(axis.title = element_text(size = 10)) + 
-        theme(title = element_text(size = 10)) + theme(legend.position = "top")
+    t <- ggplot2::ggplot() + geom_point(aes(BxShortfallPre$Endoscopist, BxShortfallPre$MeanDiff), size = 9) + geom_point(cex = 2) + labs(title = "Shortfall number of biopsies on Barrett's Surveillance list", 
+        x = "", y = "") + theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) + theme(legend.position = "top") + xlab("Endoscopist") + ylab("Shortfall(Obs-\nexpec number Bx)") + theme(axis.text.x = element_text(angle = -90, 
+        size = 10)) + theme(axis.text.y = element_text(angle = -90, size = 10)) + theme(axis.title = element_text(size = 10)) + theme(title = element_text(size = 10)) + theme(legend.position = "top")
     
     functionResults <- list(BxShortfallPre = BxShortfallPre, t = t)
     return(functionResults)
@@ -353,11 +320,11 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x, Endo_ResultPerformed, Patien
 #' @import ggplot2
 #' @importFrom magrittr '%>%'
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
@@ -378,8 +345,7 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
     b = c("LGD", "HGD", "OAC")
     EndoMinDataSet <- data.frame(b, n)
     
-    ggplot2::ggplot(EndoMinDataSet, aes(x = b, y = n)) + geom_bar(stat = "identity") + xlab("Pathology Grade") + 
-        ylab("Total Number") + theme(axis.text.x = element_text(angle = -90)) + labs(title = titlePlot) + 
+    ggplot2::ggplot(EndoMinDataSet, aes(x = b, y = n)) + geom_bar(stat = "identity") + xlab("Pathology Grade") + ylab("Total Number") + theme(axis.text.x = element_text(angle = -90)) + labs(title = titlePlot) + 
         theme(legend.position = "top")
 }
 
@@ -394,11 +360,11 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 #' @param IMorNoIM extracted with the function BarrettsDataAccord_PathStage()
 #' @keywords dysplasia detection rate
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,"Diagnosis")
-#' v<-HistolChopperExtrapolDx(v,"Diagnosis")
-#' v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-#' v<-HistolChopperBxSize(v,"Macroscopicdescription")
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
@@ -464,14 +430,12 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
     IM <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "IM", ])
     NoIM <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "No_IM", ])
     
-    n = c(as.numeric(AllEMRs), as.numeric(SM2), as.numeric(SM1), as.numeric(T1b), as.numeric(T1a), 
-        as.numeric(HGD), as.numeric(LGD), as.numeric(IM), as.numeric(NoIM))
+    n = c(as.numeric(AllEMRs), as.numeric(SM2), as.numeric(SM1), as.numeric(T1b), as.numeric(T1a), as.numeric(HGD), as.numeric(LGD), as.numeric(IM), as.numeric(NoIM))
     s = c("AllEMRs", "SM2", "SM1", "T1b_Unspecified", "T1a", "HGD", "LGD", "IM", "No IM")
     EMRResult <- data.frame(s, n)
     # axis(1, at=mids)
-    barplot(EMRResult$n, names.arg = c("AllEMRs", "SM2", "SM1", "T1b_Unspec", "T1a", "HGD", "LGD", 
-        "IM", "No IM"), xlab = "Tissue grade", ylab = "Number of EMRs", cex.lab = 2, cex.axis = 2.5, 
-        cex.main = 2.5, cex.names = 2.5, main = "EMR Tissue pathology results")
+    barplot(EMRResult$n, names.arg = c("AllEMRs", "SM2", "SM1", "T1b_Unspec", "T1a", "HGD", "LGD", "IM", "No IM"), xlab = "Tissue grade", ylab = "Number of EMRs", cex.lab = 2, cex.axis = 2.5, cex.main = 2.5, 
+        cex.names = 2.5, main = "EMR Tissue pathology results")
 }
 
 
@@ -492,8 +456,7 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 
 BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
     x <- data.frame(x)
-    xNum <- x %>% filter(EVENT != "nothing") %>% mutate(year = year(Endo_ResultPerformed)) %>% 
-        group_by(EVENT, year) %>% summarise(n = n())
+    xNum <- x %>% filter(EVENT != "nothing") %>% mutate(year = year(Endo_ResultPerformed)) %>% group_by(EVENT, year) %>% summarise(n = n())
     xNumPlot <- ggplot(xNum, aes(x = year, y = n, group = EVENT, colour = EVENT)) + geom_line()
     functionResults <- list(ProcNumbers = xNum, ProcNumbersPlot = xNumPlot)
     return(functionResults)
@@ -539,9 +502,8 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
     s = c("HALO 90", "HALO 360", "HALO 60", "HALO TTS", "APC")
     EMRResult <- data.frame(s, n)
     # axis(1, at=mids, labels=EMRResult%s) axis(1, at=mids)
-    barplot(EMRResult$n, names.arg = c("HALO 90", "HALO 360", "HALO 60", "HALO TTS", "APC"), 
-        xlab = "Catheter type", ylab = "Number of RFA's", cex.lab = 2, cex.axis = 2.5, cex.main = 2.5, 
-        cex.names = 2.5, main = "RFA Catheter type usage")
+    barplot(EMRResult$n, names.arg = c("HALO 90", "HALO 360", "HALO 60", "HALO TTS", "APC"), xlab = "Catheter type", ylab = "Number of RFA's", cex.lab = 2, cex.axis = 2.5, cex.main = 2.5, cex.names = 2.5, 
+        main = "RFA Catheter type usage")
 }
 
 
@@ -563,17 +525,11 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
     
     EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
     
-    EndoSubsetEMR$ParisClass <- ifelse(grepl("11a_c|2a_c|[Ii][Ii]a_c", EndoSubsetEMR[, y], perl = TRUE) | 
-        grepl("11a_c|2a_c|[Ii][Ii]a_c", EndoSubsetEMR[, z], perl = TRUE), "2a_c", ifelse(grepl("[Ii][Ii]a|2a|11a", 
-        EndoSubsetEMR[, y], perl = TRUE) | grepl("[Ii][Ii]a|2a|11a", EndoSubsetEMR[, z], perl = TRUE), 
-        "2a", ifelse(grepl("[Ii][Ii]b|2b|11b", EndoSubsetEMR[, y], perl = TRUE) | grepl("[Ii][Ii]b|2b|11b", 
-            EndoSubsetEMR[, z], perl = TRUE), "2b", ifelse(grepl("[Ii][Ii]c|2c|11c", EndoSubsetEMR[, 
-            y], perl = TRUE) | grepl("[Ii][Ii]c|2c|11c", EndoSubsetEMR[, z], perl = TRUE), "2c", 
-            ifelse(grepl("[Ii][Ii][Ii]|III", EndoSubsetEMR[, y], perl = TRUE) | grepl("[Ii][Ii][Ii]|III", 
-                EndoSubsetEMR[, z], perl = TRUE), "3", ifelse(grepl("Paris [Tt]ype [Ii]s|1s ", 
-                EndoSubsetEMR[, y], perl = TRUE) | grepl("Paris [Tt]ype [Ii]s|1s", EndoSubsetEMR[, 
-                z], perl = TRUE), "1s", ifelse(grepl("[Ii]p|1p", EndoSubsetEMR[, y], perl = TRUE) | 
-                grepl("[Ii]p|1p", EndoSubsetEMR[, z], perl = TRUE), "1p", "No_Paris")))))))
+    EndoSubsetEMR$ParisClass <- ifelse(grepl("11a_c|2a_c|[Ii][Ii]a_c", EndoSubsetEMR[, y], perl = TRUE) | grepl("11a_c|2a_c|[Ii][Ii]a_c", EndoSubsetEMR[, z], perl = TRUE), "2a_c", ifelse(grepl("[Ii][Ii]a|2a|11a", 
+        EndoSubsetEMR[, y], perl = TRUE) | grepl("[Ii][Ii]a|2a|11a", EndoSubsetEMR[, z], perl = TRUE), "2a", ifelse(grepl("[Ii][Ii]b|2b|11b", EndoSubsetEMR[, y], perl = TRUE) | grepl("[Ii][Ii]b|2b|11b", 
+        EndoSubsetEMR[, z], perl = TRUE), "2b", ifelse(grepl("[Ii][Ii]c|2c|11c", EndoSubsetEMR[, y], perl = TRUE) | grepl("[Ii][Ii]c|2c|11c", EndoSubsetEMR[, z], perl = TRUE), "2c", ifelse(grepl("[Ii][Ii][Ii]|III", 
+        EndoSubsetEMR[, y], perl = TRUE) | grepl("[Ii][Ii][Ii]|III", EndoSubsetEMR[, z], perl = TRUE), "3", ifelse(grepl("Paris [Tt]ype [Ii]s|1s ", EndoSubsetEMR[, y], perl = TRUE) | grepl("Paris [Tt]ype [Ii]s|1s", 
+        EndoSubsetEMR[, z], perl = TRUE), "1s", ifelse(grepl("[Ii]p|1p", EndoSubsetEMR[, y], perl = TRUE) | grepl("[Ii]p|1p", EndoSubsetEMR[, z], perl = TRUE), "1p", "No_Paris")))))))
     
     # Create the matrix
     df3 <- data.frame(EndoSubsetEMR$ParisClass, EndoSubsetEMR$IMorNoIM)
@@ -588,8 +544,7 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
     
     colors = c(seq(-1, 0.2, length = 100), seq(0.21, 0.8, length = 100), seq(0.81, 1, length = 100))
     
-    gplots::heatmap.2(tr5, trace = "none", breaks = colors, density.info = "none", dendrogram = "none", 
-        Rowv = FALSE, Colv = FALSE, cexRow = 3.5, cexCol = 1.5)
+    gplots::heatmap.2(tr5, trace = "none", breaks = colors, density.info = "none", dendrogram = "none", Rowv = FALSE, Colv = FALSE, cexRow = 3.5, cexCol = 1.5)
     
 }
 
@@ -597,7 +552,7 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' 
 #' This collects the patients in whom it is assumed that complete clearance of intestinal
 #' metasplasia has occurred (CRIM) after ablation therapy. This is done by collecting those
-#' endoscopies where the last EVENT was equal to "nothing" when the patient had undergone 
+#' endoscopies where the last EVENT was equal to 'nothing' when the patient had undergone 
 #' radiofrequency ablation at some point
 #' @param x The dataframe
 #' @param HospNum The Hospital Number column
@@ -608,13 +563,10 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' @export
 #' @examples 
 
-Barretts_CRIM<-function(x,HospNum,EVENT){
-  x <- data.frame(x)
-  HospNuma <- rlang::sym(HospNum)
-  EVENTa <- rlang::sym(EVENT)
-  
-  CRIM<-x %>%
-    group_by(!!HospNuma) %>% 
-    mutate(ind = (!!EVENTa)=="RFA" & lead(!!EVENTa)=="nothing") %>% 
-    slice(sort(c(which(ind),which(ind)+1)))
+Barretts_CRIM <- function(x, HospNum, EVENT) {
+    x <- data.frame(x)
+    HospNuma <- rlang::sym(HospNum)
+    EVENTa <- rlang::sym(EVENT)
+    
+    CRIM <- x %>% group_by(!(!HospNuma)) %>% mutate(ind = (!(!EVENTa)) == "RFA" & lead(!(!EVENTa)) == "nothing") %>% slice(sort(c(which(ind), which(ind) + 1)))
 }

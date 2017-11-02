@@ -14,9 +14,11 @@ PatientFlow_CircosPlots(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed)
 \item{HospNum_Id}{Column with the patient's unique hospital number}
 
 \item{ProcPerformed}{The procedure that you want to plot (eg EMR,
-radiofrequency ablation for Barrett's but can be any dscription of a procedure you desire)}
+radiofrequency ablation for Barrett's but can be 
+any dscription of a procedure you desire)}
 }
 \description{
-This allows us to look at the overall flow from one type of procedure to another using circos plots.
+This allows us to look at the overall flow from one 
+type of procedure to another using circos plots.
 }
 \keyword{Circos}

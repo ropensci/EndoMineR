@@ -17,12 +17,12 @@ the mandatory report fields as specified in the BSG standards on
 Barrett's endoscopic reporting. This should be run after the BarrettsDataAccord_Prague.
 }
 \examples{
-v<-HistolChopperDx(Mypath,"Diagnosis")
-v<-HistolChopperExtrapolDx(v,"Diagnosis")
-v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-v<-HistolChopperBxSize(v,"Macroscopicdescription")
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+v<-HistolChopperDx(Mypath,'Diagnosis')
+v<-HistolChopperExtrapolDx(v,'Diagnosis')
+v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+v<-HistolChopperBxSize(v,'Macroscopicdescription')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 b<-BarrettsDataAccord_PathStage(v,'Histology')
-BarrettsQuality_AnalysisDocumentation(b,"Findings")
+BarrettsQuality_AnalysisDocumentation(b,'Findings')
 }
 \keyword{Documentation}

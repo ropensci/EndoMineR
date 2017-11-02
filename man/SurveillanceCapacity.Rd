@@ -15,6 +15,6 @@ SurveillanceCapacity(x, Endo_ResultPerformed)
 This determines the number of tests done per month
 }
 \examples{
-em<-SurveillanceCapacity(Myendo,"Dateofprocedure")
+em<-SurveillanceCapacity(Myendo,'Dateofprocedure')
 }
 \keyword{cats}

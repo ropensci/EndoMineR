@@ -14,11 +14,11 @@ ListLookup(theframe, y, myNotableWords)
 \item{myNotableWords}{list of words you are interested in}
 }
 \description{
-The aim here is simply to 
-produce a document term matrix to get the frequency 
-of all the words, then extract the words you are 
-interested in with tofind then find which reports 
-have those words. Then find what proportion of the reports 
+The aim here is simply to
+produce a document term matrix to get the frequency
+of all the words, then extract the words you are
+interested in with tofind then find which reports
+have those words. Then find what proportion of the reports
 have those terms.
 }
 \examples{

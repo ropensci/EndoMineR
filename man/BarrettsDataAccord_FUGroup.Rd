@@ -22,11 +22,11 @@ if the sample is non-dysplastic.
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
-v<-HistolChopperDx(Mypath,"Diagnosis")
-v<-HistolChopperExtrapolDx(v,"Diagnosis")
-v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-v<-HistolChopperBxSize(v,"Macroscopicdescription")
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+v<-HistolChopperDx(Mypath,'Diagnosis')
+v<-HistolChopperExtrapolDx(v,'Diagnosis')
+v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+v<-HistolChopperBxSize(v,'Macroscopicdescription')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 b<-BarrettsDataAccord_PathStage(v,'Histology')
 b2<-BarrettsDataAccord_Event(b,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')

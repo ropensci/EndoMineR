@@ -9,7 +9,8 @@ PolypTidyUpLocator(x, SampleLocation)
 \arguments{
 \item{x}{The dataframe}
 
-\item{SampleLocation}{The column containing the SampleLocation from the Term Standardizer}
+\item{SampleLocation}{The column containing the 
+SampleLocation from the Term Standardizer}
 }
 \description{
 This cleans up the polyps from the TermStandardLocation function

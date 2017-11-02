@@ -12,7 +12,7 @@ TermStandardLocation(x, SampleLocation)
 \item{SampleLocation}{Column describing the Macroscopic sample from histology}
 }
 \description{
-Standardises the location of biopsies by cleaning up the common typos and 
+Standardises the location of biopsies by cleaning up the common typos and
 abbreviations that are commonly used in free text of pathology reports
 }
 \examples{

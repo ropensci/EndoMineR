@@ -3,7 +3,7 @@
 \name{HowManyTests}
 \alias{HowManyTests}
 \title{HowManyTests
-Get an overall idea of how many endoscopies have been done for an indication by year and month. This is a 
+Get an overall idea of how many endoscopies have been done for an indication by year and month. This is a
 more involved version of SurveillanceCapacity function. It takes string for the Indication for the test}
 \usage{
 HowManyTests(x, Indication, Endo_ResultPerformed, StringToSearch)

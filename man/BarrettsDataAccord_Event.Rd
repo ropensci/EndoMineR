@@ -23,12 +23,12 @@ mucosal resection, radiofrequency ablation etc. It does not currently include st
 dilatation.Specfically it extracts the event
 }
 \examples{
-v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")
-v<-HistolChopperDx(v,"Diagnosis")
-v<-HistolChopperExtrapolDx(v,"Diagnosis")
-v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-v<-HistolChopperBxSize(v,"Macroscopicdescription")
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\\\d{2}-\\\\d{7}')
+v<-HistolChopperDx(v,'Diagnosis')
+v<-HistolChopperExtrapolDx(v,'Diagnosis')
+v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+v<-HistolChopperBxSize(v,'Macroscopicdescription')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 b<-BarrettsDataAccord_Event(v,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
 

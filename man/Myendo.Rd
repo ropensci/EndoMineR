@@ -27,13 +27,13 @@ Myendo
 A dataset containing fake endoscopy reports. The report fields have already been
 The report field is derived from the whole report as follows:
 Myendo<-TheOGDReportFinal
-Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-"Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-"Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-"Endoscopic Diagnosis:")
+Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',Myendo$OGDReportWhole)
+EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
+'Instrument','Extent of Exam:','Indications:','Procedure Performed:','Findings:',
+'Endoscopic Diagnosis:')
 for(i in 1:(length(EndoscTree)-1)) {
- Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+ Myendo<-Extractor(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 }
 Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)

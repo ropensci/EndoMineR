@@ -14,9 +14,9 @@ NumberPerformed(x, y, z)
 \item{z}{The column containing the Indication for the examination}
 }
 \description{
-Determines the number of endoscopies done by an endoscopist 
+Determines the number of endoscopies done by an endoscopist
 by type of endosopy and indication for a given timeframe
-As per BSG recommendations for Upper GI minimum number of 
+As per BSG recommendations for Upper GI minimum number of
 gastroscopies in a year (although here the time frame is user
 defined)
 }

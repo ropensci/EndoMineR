@@ -21,12 +21,12 @@ This function gets the biopsies taken per endoscopy and compares to the Prague s
 for that endoscopy.
 }
 \examples{
-v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\\\d{2}-\\\\d{7}")
-v<-HistolChopperDx(v,"Diagnosis")
-v<-HistolChopperExtrapolDx(v,"Diagnosis")
-v<-HistolChopperNumbOfBx(v,"Macroscopicdescription","specimen")
-v<-HistolChopperBxSize(v,"Macroscopicdescription")
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\\\d{2}-\\\\d{7}')
+v<-HistolChopperDx(v,'Diagnosis')
+v<-HistolChopperExtrapolDx(v,'Diagnosis')
+v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+v<-HistolChopperBxSize(v,'Macroscopicdescription')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',

@@ -1,8 +1,10 @@
-if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", "CStage", "NumbOfBx", 
-    "Years", "Difference", "barplot", "head", "read.table", "eHospitalNum", "pHospitalNum", ".", 
-    "EVENT", "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", "dcast", "complete.cases", 
-    "g", "gvisSankey", "head", "pHospitalNum", "par", "plot", "r", "read.table", "region", "rgb", 
-    "setDT"))
+if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD", 
+        "CStage", "NumbOfBx", "Years", "Difference", "barplot", "head", 
+        "read.table", "eHospitalNum", "pHospitalNum", ".", "EVENT", 
+    "MonthYear", "freq", "Endoscopist", "avg", "v", "destination", 
+    "dcast", "complete.cases", "g", "gvisSankey", "head", 
+    "pHospitalNum", "par", "plot", "r", "read.table", 
+    "region", "rgb", "setDT"))
 
 
 ############## Endoscopy Clean-up functions##############
@@ -51,13 +53,13 @@ ChopperNewLines <- function(x, y) {
 #' @export
 #' @examples v<-TheOGDReportFinal
 #' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub("2nd Endoscopist:","Second endoscopist:",Myendo$OGDReportWhole)
-#' EndoscTree<-list("Hospital Number:","Patient Name:","General Practitioner:",
-#' "Date of procedure:","Endoscopist:","Second Endoscopist:","Medications",
-#' "Instrument","Extent of Exam:","Indications:","Procedure Performed:","Findings:",
-#' "Endoscopic Diagnosis:")
+#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',Myendo$OGDReportWhole)
+#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+#' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
+#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:','Findings:',
+#' 'Endoscopic Diagnosis:')
 #' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,"OGDReportWhole",as.character(EndoscTree[i]),
+#'  Myendo<-Extractor(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
 #'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
 #' }
 #' res<-Myendo
@@ -67,8 +69,8 @@ Extractor <- function(x, y, stra, strb, t) {
     x <- data.frame(x)
     t <- gsub("[^[:alnum:],]", " ", t)
     t <- gsub(" ", "", t, fixed = TRUE)
-    x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra, "(.*)", strb, sep = ""), 
-        dotall = TRUE))
+    x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra, 
+             "(.*)", strb, sep = ""), dotall = TRUE))
     
     
     x[, t] <- gsub("\\\\.*", "", x[, t])
@@ -159,15 +161,13 @@ EndoscChopperInstrument <- function(x, y) {
     # Extraction of the Instrument used:
     
     x[, y] <- gsub("-.*", "", x[, y])
-    x[, y] <- gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|Loan Scope \\(specify serial no:|Loan Scope \\(specify\\s*serial no|\\)|-.*", 
-        "", x[, y])
+    x[, y] <- gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|Loan Scope \\(specify serial no:
+                   |Loan Scope \\(specify\\s*serial no|\\)|-.*", "", x[, y])
     x[, y] <- gsub(",.*|:|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |^,", "", x[, y])
     x[, y] <- gsub("FC ", "FC", x[, y])
     x[, y] <- gsub("^\\s*([1-9])", "A\\1", x[, y])
-    x[, y] <- gsub("[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] \\(specify serial no\\)\\s*", "", 
-        x[, y])
-    x[, y] <- gsub("[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] \\(specify serial no:\\)\\s*", "", 
-        x[, y])
+    x[, y] <- gsub("[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] \\(specify serial no\\)\\s*", "", x[, y])
+    x[, y] <- gsub("[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] \\(specify serial no:\\)\\s*", "", x[, y])
     x[, y] <- toupper(x[, y])
     x[, y] <- trimws(x[, y])
     return(x)
@@ -263,27 +263,34 @@ EndoscChopperFindings <- function(x, y) {
 
 NegativeRemove <- function(x, y) {
     x <- (data.frame(x))
-    #Conjunctions
-    x[, y] <- gsub("(but|although|however|though|apart|otherwise|unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*", "\\.\n", x[, y],perl=TRUE,ignore.case=TRUE)
-    x[, y] <- gsub("(no |negative|unremarkable|-ve| normal) .*?([Bb]ut| [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise| [Uu]nremarkable)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
-    #Nots
-    x[, y] <- gsub(".*(was|were) not.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE,ignore.case=TRUE)
-    x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE,ignore.case=TRUE)
-    #Nos
-    x[, y] <- gsub(".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b(?![?:A-Za-z])|([?:]\\s*N?![A-Za-z])).*\\R*", "", x[, y], perl=TRUE, ignore.case=TRUE)
-    x[, y] <- gsub(".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
-    x[, y] <- gsub(".*(negative|neither).*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
-    #Keep abnormal in- don't ignore case as it messes it up
-    x[, y] <- gsub(".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "", x[, y],perl=TRUE)
-    #Other negatives
-    x[, y] <- gsub(".*there (is|are) \\bno\\b .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
-    x[, y] <- gsub("(within|with) (normal|\\bno\\b) .*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
-    #Specific cases
-    x[, y] <- gsub(".*duct.*clear.*?(\\.|\n|:|$)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
-    #Unanswered prompt lines
-    x[, y] <- gsub(".*:(\\.|\n)\\R*", "", x[, y],perl=TRUE,ignore.case=TRUE)
+    # Conjunctions
+    x[, y] <- gsub("(but|although|however|though|apart|otherwise
+                   |unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|unremarkable|-ve|normal).*?(\\.|
+                   \\n|:|$)\\R*", "\\.\n", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub("(no |negative|unremarkable|-ve| normal) .*?([Bb]ut|
+                   [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise|
+                   [Uu]nremarkable)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    # Nots
+    x[, y] <- gsub(".*(was|were) not.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    # Nos
+    x[, y] <- gsub(".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b(?![?:A-Za-z])|
+                   ([?:]\\s*N?![A-Za-z])).*\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub(".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub(".*(negative|neither).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    # Keep abnormal in- don't ignore case as it messes it up
+    x[, y] <- gsub(".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "", x[, y], perl = TRUE)
+    # Other negatives
+    x[, y] <- gsub(".*there (is|are) \\bno\\b .*?(\\.|
+                   \n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub("(within|with) (normal|\\bno\\b) .*?(\\.|
+                   \n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    # Specific cases
+    x[, y] <- gsub(".*duct.*clear.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    # Unanswered prompt lines
+    x[, y] <- gsub(".*:(\\.|\n)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
     return(x)
-  }
+}
 
 
 
@@ -310,7 +317,7 @@ ColumnCleanUp <- function(x, y) {
     x[, y] <- gsub("\\s{5}", "", x[, y])
     x[, y] <- gsub("^\\.", "", x[, y])
     x[, y] <- gsub("$\\.", "", x[, y])
-    return(x[,y])
+    return(x[, y])
 }
 
 ####### Histology Clean Up functions #######
@@ -326,7 +333,7 @@ ColumnCleanUp <- function(x, y) {
 #' @param y column of interest that describes the macroscopic specimen
 #' @keywords Macroscopic
 #' @export
-#' @examples v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
+#' @examples v<-HistolChopperMacDescripCleanup(Mypath,'Macroscopicdescription')
 
 
 HistolChopperMacDescripCleanup <- function(x, y) {
@@ -355,8 +362,8 @@ HistolChopperHistol <- function(x, y) {
     x[, y] <- gsub("\n|\r", " ", x[, y])
     x[, y] <- NegativeRemove(x[, y])
     x$Histol_Simplified <- x[, y]
-    # Negative extraction- may merge this with the function NegativeRemove() above and some of
-    # the phrases below could undoubetdly be simplified with more intelligent regex
+    # Negative extraction- may merge this with the function NegativeRemove() above and some of the 
+    #phrases below could undoubetdly be simplified with more intelligent regex
     x$Histol_Simplified <- gsub("- ", "\n", x$Histol_Simplified, fixed = TRUE)
     x$Histol_Simplified <- gsub("-[A-Z]", "\n", x$Histol_Simplified, fixed = TRUE)
     x$Histol_Simplified <- gsub(".*biopsies.*\n", "", x$Histol_Simplified, perl = TRUE)
@@ -373,8 +380,7 @@ HistolChopperHistol <- function(x, y) {
     x$Histol_Simplified <- gsub("[Nn]o [Dd]ysplasia.*?\\.", "", x$Histol_Simplified, perl = TRUE)
     x$Histol_Simplified <- gsub("[Nn]egative for.*?\\.", "", x$Histol_Simplified, perl = TRUE)
     x$Histol_Simplified <- gsub("Neither dysplasia.*?\\.", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("Neither dysplasia nor malignancy is seen", "", x$Histol_Simplified, 
-        perl = TRUE)
+    x$Histol_Simplified <- gsub("Neither dysplasia nor malignancy is seen", "", x$Histol_Simplified, perl = TRUE)
     return(x)
 }
 
@@ -391,7 +397,7 @@ HistolChopperHistol <- function(x, y) {
 #' @importFrom stringr str_extract
 #' @keywords Sample Accession number
 #' @export
-#' @examples v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\d{2}-\\d{7}')
 
 HistolChopperAccessionNumber <- function(x, y, stra) {
     x <- data.frame(x)
@@ -464,7 +470,7 @@ HistolChopperExtrapolDx <- function(x, y) {
 #' with the Nature of the specimen or the Macroscopic description in it
 #' @keywords Macroscopic
 #' @export
-#' @examples t<-HistolChopperMacDescrip(Mypath, "Macroscopicdescription")
+#' @examples t<-HistolChopperMacDescrip(Mypath, 'Macroscopicdescription')
 
 HistolChopperMacDescrip <- function(x, y) {
     x <- data.frame(x)
@@ -526,8 +532,9 @@ HistolChopperBxSize <- function(x, y) {
     x$BxSize <- gsub("mm", "", x$BxSize)
     x$BxSize <- gsub("less than", "", x$BxSize)
     strBxSize <- "([0-9]+).*?([0-9])+.*?([0-9])"
-    x$BxSize <- as.numeric(stringr::str_match(x$BxSize, strBxSize)[, 2]) * as.numeric(stringr::str_match(x$BxSize, 
-        strBxSize)[, 3]) * as.numeric(stringr::str_match(x$BxSize, strBxSize)[, 4])
+    x$BxSize <- as.numeric(stringr::str_match(x$BxSize, strBxSize)[, 2]) * 
+      as.numeric(stringr::str_match(x$BxSize, strBxSize)[, 3]) * 
+      as.numeric(stringr::str_match(x$BxSize, strBxSize)[, 4])
     return(x)
 }
 

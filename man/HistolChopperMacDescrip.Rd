@@ -19,6 +19,6 @@ This is used as part of the HistolChopperNumOfBx function below and normally not
 as a stand alone function.
 }
 \examples{
-t<-HistolChopperMacDescrip(Mypath, "Macroscopicdescription")
+t<-HistolChopperMacDescrip(Mypath, 'Macroscopicdescription')
 }
 \keyword{Macroscopic}
