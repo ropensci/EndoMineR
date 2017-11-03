@@ -3,8 +3,10 @@
 \name{HowManyTests}
 \alias{HowManyTests}
 \title{HowManyTests
-Get an overall idea of how many endoscopies have been done for an indication by year and month. This is a
-more involved version of SurveillanceCapacity function. It takes string for the Indication for the test}
+Get an overall idea of how many endoscopies have been done for an indication 
+by year and month. This is a more involved version of 
+SurveillanceCapacity function. It takes string for 
+the Indication for the test}
 \usage{
 HowManyTests(x, Indication, Endo_ResultPerformed, StringToSearch)
 }
@@ -13,13 +15,15 @@ HowManyTests(x, Indication, Endo_ResultPerformed, StringToSearch)
 
 \item{Indication}{Indication column}
 
-\item{Endo_ResultPerformed}{column containing date the Endoscopy was performed}
+\item{Endo_ResultPerformed}{column containing date the Endoscopy was 
+performed}
 
 \item{StringToSearch}{The string in the Indication to search for}
 }
 \description{
-This returns a list which contains a plot (number of tests for that indication over time
-and a table with the same information broken down by month and year).
+This returns a list which contains a plot (number of tests for that 
+indication over time and a table with the same information broken down 
+by month and year).
 }
 \examples{
 

@@ -12,10 +12,11 @@ EndoscChopperMeds(x, y)
 \item{y}{column of interest}
 }
 \description{
-This cleans medication column from the report assuming such a column exists. It gets rid
-of common entries that are not needed. It also splits the medication into fentanyl and
-midazolam doses for use in the global rating scale tables later. 
-It should be used after the Extractor and the optional ChopperNewLines has been used.
+This cleans medication column from the report assuming such a column exists. 
+It gets rid of common entries that are not needed. It also splits the 
+medication into fentanyl and midazolam doses for use in the global rating 
+scale tables later. It should be used after the Extractor and the optional 
+ChopperNewLines has been used.
 }
 \examples{
 v<-EndoscChopperMeds(Myendo,'Medications')

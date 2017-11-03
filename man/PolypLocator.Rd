@@ -9,12 +9,13 @@ PolypLocator(x, y)
 \arguments{
 \item{x}{The dataframe}
 
-\item{y}{The column containing the SampleLocation from the TermStandardLocation}
+\item{y}{The column containing the SampleLocation from the 
+TermStandardLocation}
 }
 \description{
 This should be used after the TermStandardizer
 as it relies on the presence of a SampleLocation column
-which the TermStandardLocation produces. 
+which the TermStandardLocation produces.
 It should be used after the PolypTidyUpLocator
 }
 \examples{

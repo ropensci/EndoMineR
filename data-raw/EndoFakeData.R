@@ -248,17 +248,17 @@ Histop_df <- function(x) {
 
 
 
- samplenumber <- 2000
- HospitalNumberID <- paste("Hospital Number: ", sample(c(LETTERS)), 
-     sample(1e+06:9999999, (samplenumber - 1900), replace = T), 
-    sep = "")
-# NHS_Trust <- replicate(samplenumber, c("Hospital: Random NHS Foundation Trust"))
-# Patient_Name <- paste("Patient Name: ", randomNames::randomNames(samplenumber, 
-#     "first", "last"))
-# Date_of_Birth <- paste("DOB: ", generator::r_date_of_births(samplenumber, 
-#     start = as.Date("1900-01-01"), end = as.Date("1999-01-01")))
-# GeneralPractictioner <- paste("General Practitioner: Dr. ", 
-#                               randomNames::randomNames(samplenumber, "first", "last"), sep = "")
+samplenumber <- 2000
+HospitalNumberID <- paste("Hospital Number: ", sample(c(LETTERS)), 
+                          sample(1e+06:9999999, (samplenumber - 1900), replace = T), 
+                          sep = "")
+NHS_Trust <- replicate(samplenumber, c("Hospital: Random NHS Foundation Trust"))
+Patient_Name <- paste("Patient Name: ", randomNames::randomNames(samplenumber, 
+     "first", "last"))
+Date_of_Birth <- paste("DOB: ", generator::r_date_of_births(samplenumber, 
+     start = as.Date("1900-01-01"), end = as.Date("1999-01-01")))
+ GeneralPractictioner <- paste("General Practitioner: Dr. ", 
+                               randomNames::randomNames(samplenumber, "first", "last"), sep = "")
 Date_of_ProcedureAll <- generator::r_date_of_births(samplenumber,
                                                     start = as.Date("2001-01-01"), end = as.Date("2017-01-01"))
 
@@ -343,7 +343,7 @@ EndoRaw2 <- function() {
                                     cat(paste(colnames(TheOGDReport), collapse = "\n")),
                                     colnames(TheOGDReport), sep = "\n")
   names(TheOGDReportFinal) <- "OGDReportWhole"
-  # load(file = "./data_raw/data/TheOGDReportFinal.rda")
+  save(TheOGDReportFinal,file = "/home/rstudio/EndoMineR/data/TheOGDReportFinal.rda")
   # return(TheOGDReportFinal)
 }
 
@@ -359,6 +359,8 @@ EndoRaw2 <- function() {
 #' @examples pathRep(x)
 
 pathRep2 <- function() {
+  
+  AccessionNum<-paste0("SP-",sample(1:99),"-",sample(0000000:9999999,2000,replace=F))
   Date <- Date_of_ProcedureAll+sample(1:12)
   Date <- paste("Date received: ", Date_of_Procedure +
                   replicate(samplenumber, as.numeric(sample(1:10)),
@@ -395,7 +397,7 @@ pathRep2 <- function() {
   Diagnostic <- replicate(samplenumber, paste("Diagnosis: ",
                                               stringr::str_c(as.list(sample(Diagnostic$x, sample(5:10),
                                                                             replace = T)), collapse = ",")))
-  PathDataFrameReport <- data.frame(NHS_Trust, HospitalNumberID,
+  PathDataFrameReport <- data.frame(AccessionNum,NHS_Trust, HospitalNumberID,
                                     Patient_Name, Date_of_Birth, GeneralPractictioner,
                                     Date, ClinDet, NatureOfSpec, MacDescrip, Histol,
                                     Diagnostic)
@@ -403,8 +405,9 @@ pathRep2 <- function() {
                                      cat(paste(colnames(PathDataFrameReport), collapse = "\n")),
                                      colnames(PathDataFrameReport), sep = "\n")
   names(PathDataFrameFinal) <- "PathReportWhole"
+  save(TheOGDReportFinal,file = "/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
   # load(file = "./data_raw/data/PathDataFrameFinal.rda")
-  return(PathDataFrameFinal)
+  #return(PathDataFrameFinal)
 }
 
 

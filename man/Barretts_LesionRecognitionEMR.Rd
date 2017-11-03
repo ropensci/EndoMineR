@@ -14,8 +14,10 @@ Barretts_LesionRecognitionEMR(EndoSubsetEMR, y, z)
 \item{z}{Another endoscopy report field of interest}
 }
 \description{
-This looks at the Paris grades of each EMR and then creates a heatmap of pathological grade vs 
-endoscopic Paris grade.This should only be run after all the BarrettsDataAccord functions.
+This looks at the Paris grades of each EMR and then creates a heatmap 
+of pathological grade vs
+endoscopic Paris grade.This should only be run after all the 
+BarrettsDataAccord functions.
 }
 \keyword{Does}
 \keyword{data}

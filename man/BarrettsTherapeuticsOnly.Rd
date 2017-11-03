@@ -10,8 +10,9 @@ BarrettsTherapeuticsOnly(x)
 \item{x}{dataframe}
 }
 \description{
-This function makes all therapeutics unique. This should only be run after the 
-BarrettsDataAccord_EventFunction as this provides an EVENT column which this 
+This function makes all therapeutics unique. 
+This should only be run after the
+BarrettsDataAccord_EventFunction as this provides an EVENT column which this
 function uses.
 }
 \keyword{Therapeutic}

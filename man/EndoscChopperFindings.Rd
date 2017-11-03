@@ -17,7 +17,8 @@ such a column exists. Findings relates to what was found at the endoscopy
 This is usually a separate entry to the overall 'Diagnosis' but any
 are in which the description of the endoscopic findings, including 
 overall diagnosis or not, can be used.
-It should be used after the Extractor and the optional ChopperNewLines has been used.
+It should be used after the Extractor and the optional ChopperNewLines 
+has been used.
 }
 \examples{
 v<-EndoscChopperFindings(Myendo,'Findings')

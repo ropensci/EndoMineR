@@ -21,6 +21,7 @@ This determines the last test done by that patient and the time
 between now and that last test in days
 }
 \examples{
-em<-SurveillanceLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
+em<-SurveillanceLastToNow(Myendo,'HospitalNumber',
+'Dateofprocedure')
 }
 \keyword{Surveillance}

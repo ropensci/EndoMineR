@@ -14,19 +14,22 @@ BarrettsPatientTracking_UniqueHospNum(x, rule, PatientID)
 \item{PatientID}{Column containing patient numbers}
 }
 \description{
-This function gets the unique patient ID's for each patient, 
-for each rule. It lists the unique PatientIDs assocaited with a rule 
-('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many patients will need 
-follow up at specific time intervals. This should be run after the BarrettsDataAccord_Prague 
-and BarrettsDataAccord_PathStage.
+This function gets the unique patient ID's for each patient,
+for each rule. It lists the unique PatientIDs assocaited with a rule
+('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many 
+patients will need follow up at specific time intervals. 
+This should be run after the BarrettsDataAccord_Prague and 
+BarrettsDataAccord_PathStage.
 }
 \examples{
-v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\\\d{2}-\\\\d{7}')
+v<-HistolChopperAccessionNumber(Mypath,'Histology',
+'SP-\\\\d{2}-\\\\d{7}')
 v<-HistolChopperDx(v,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+'HospitalNumber')
 b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',

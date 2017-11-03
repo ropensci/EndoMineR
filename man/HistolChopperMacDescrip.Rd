@@ -13,10 +13,11 @@ HistolChopperMacDescrip(x, y)
 with the Nature of the specimen or the Macroscopic description in it}
 }
 \description{
-This extracts numbers from written (spelt) numbers in the Macroscopic description
-text. This means the text can then be used to extract the number and size of biopsies.
-This is used as part of the HistolChopperNumOfBx function below and normally not used
-as a stand alone function.
+This extracts numbers from written (spelt) numbers in the Macroscopic 
+description
+text. This means the text can then be used to extract the number and size of 
+biopsies.This is used as part of the HistolChopperNumOfBx function below and
+ normally not used as a stand alone function.
 }
 \examples{
 t<-HistolChopperMacDescrip(Mypath, 'Macroscopicdescription')

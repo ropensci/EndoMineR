@@ -12,10 +12,10 @@ SampleLocator(x, y)
 \item{y}{SampleLocation from the TermStandardizer}
 }
 \description{
-This assess where samples are taken from. 
+This assess where samples are taken from.
 This should be used after the TermStandardLocation
 as it relies on the presence of a SampleLocation column
-which the TermStandardLocation produces. 
+which the TermStandardLocation produces.
 It can be used after the PolypTidyUpLocator
 although you could just run it after the TermStandardLocation
 to get an overview of where samples were taken from.

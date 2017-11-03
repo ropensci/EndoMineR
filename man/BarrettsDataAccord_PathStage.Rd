@@ -12,17 +12,18 @@ BarrettsDataAccord_PathStage(x, y)
 \item{y}{column of interest}
 }
 \description{
-This extracts the pathological stage from the histopathology specimen. It is 
-done using 'degradation' so that it will look for the worst overall grade 
+This extracts the pathological stage from the histopathology specimen. It is
+done using 'degradation' so that it will look for the worst overall grade
 in the histology specimen and if not found it will look for the next worst
 and so on. It looks per report not per biopsy (it is more common
-for histopathology reports tocontain the worst overall grade 
+for histopathology reports tocontain the worst overall grade
 rather than individual biopsy grades).
 Specfically it extracts the histopathology worst grade
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
-v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\\\d{2}-\\\\d{7}')
+v<-HistolChopperAccessionNumber(Mypath,'Histology',
+'SP-\\\\d{2}-\\\\d{7}')
 v<-HistolChopperDx(v,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')

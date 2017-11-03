@@ -18,17 +18,20 @@ BarrettsDataAccord_Event(x, y, z, aa, bb)
 \item{bb}{The endoscopic findings column if different to the Diagnosis column}
 }
 \description{
-This function extracts the Event- usually a therapeutic event, from the text eg endoscopic
-mucosal resection, radiofrequency ablation etc. It does not currently include stricture
+This function extracts the Event- usually a therapeutic event, from the text 
+eg endoscopic mucosal resection, radiofrequency ablation etc. 
+It does not currently include stricture
 dilatation.Specfically it extracts the event
 }
 \examples{
-v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\\\d{2}-\\\\d{7}')
+v<-HistolChopperAccessionNumber(Mypath,'Histology',
+'SP-\\\\d{2}-\\\\d{7}')
 v<-HistolChopperDx(v,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+'HospitalNumber')
 b<-BarrettsDataAccord_Event(v,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
 

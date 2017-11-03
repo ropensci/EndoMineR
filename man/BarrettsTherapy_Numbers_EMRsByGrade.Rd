@@ -10,7 +10,8 @@ BarrettsTherapy_Numbers_EMRsByGrade(EndoSubsetEMR)
 \item{EndoSubsetEMR}{The dataset.}
 }
 \description{
-Plots all the pathological grades of the EMRs.This should only be run after all the 
+Plots all the pathological grades of the EMRs.This should only be 
+run after all the
 BarrettsDataAccord functions.
 }
 \keyword{EMR}

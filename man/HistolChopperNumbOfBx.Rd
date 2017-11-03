@@ -20,7 +20,8 @@ It collects everything from the regex [0-9]{1,2}.{0,3}
 to whatever the string boundary is (z).
 }
 \examples{
-v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription',
+'specimen')
 }
 \keyword{Biopsy}
 \keyword{number}

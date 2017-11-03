@@ -18,9 +18,9 @@ GRS_Type_Assess_By_Unit(x, ProcPerformed, Endo_Endoscopist, Dx, Histol)
 \item{Histol}{The column with the Histology text in it}
 }
 \description{
-This extracts the polyps types from the data 
+This extracts the polyps types from the data
 (for colonoscopy and flexible sigmoidosscopy data)
-and output the adenoma,adenocarcinoma and 
+and output the adenoma,adenocarcinoma and
 hyperplastic detection rate by endoscopist as well
 as overall number of colonoscopies.
 This will be extended to other GRS outputs in the future.
@@ -30,7 +30,9 @@ v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
-GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed', 'Endoscopist','Diagnosis','Histology')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,
+'Dateofprocedure','HospitalNumber')
+GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed', 
+'Endoscopist','Diagnosis','Histology')
 }
 \keyword{Withdrawal}

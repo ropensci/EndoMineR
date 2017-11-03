@@ -7,18 +7,20 @@
 BarrettsDataAccord_FUGroup(x, y)
 }
 \arguments{
-\item{x}{the dataframe(which has to have been processed by the BarrettsDataAccord_PathStage function first to get IMorNoIM),}
+\item{x}{the dataframe(which has to have been processed by the 
+BarrettsDataAccord_PathStage function first to get IMorNoIM),}
 
 \item{y}{The field to search (endoscopic findings)}
 }
 \description{
-This determines the follow up rule a patient should fit in to (according to the 
-British Society for Gastroenterology guidance on Barrett's oesophagus)
-Specfically it combines the presence of intestinal metaplasia with 
-Prague score so the follow-up group can be determined. It relies on the presence of a Prague
-score. It should be run after BarrettsDAtaAccord_PathStage which looks for the worst stage of a 
-specimen and which will determine the presence or absence of intestinal metaplasia
-if the sample is non-dysplastic.
+This determines the follow up rule a patient should fit in to (according to 
+the British Society for Gastroenterology guidance on Barrett's oesophagus)
+Specfically it combines the presence of intestinal metaplasia with
+Prague score so the follow-up group can be determined. It relies on the 
+presence of a Prague score. It should be run after 
+BarrettsDAtaAccord_PathStage which looks for the worst stage of a
+specimen and which will determine the presence or absence of intestinal 
+metaplasia if the sample is non-dysplastic.
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
@@ -26,7 +28,8 @@ v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+'HospitalNumber')
 b<-BarrettsDataAccord_PathStage(v,'Histology')
 b2<-BarrettsDataAccord_Event(b,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')

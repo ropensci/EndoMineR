@@ -9,7 +9,7 @@ PolypTidyUpLocator(x, SampleLocation)
 \arguments{
 \item{x}{The dataframe}
 
-\item{SampleLocation}{The column containing the 
+\item{SampleLocation}{The column containing the
 SampleLocation from the Term Standardizer}
 }
 \description{

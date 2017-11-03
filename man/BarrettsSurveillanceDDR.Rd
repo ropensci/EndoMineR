@@ -21,7 +21,8 @@ v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+'HospitalNumber')
 b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',

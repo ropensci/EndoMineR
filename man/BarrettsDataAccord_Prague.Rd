@@ -13,7 +13,7 @@ BarrettsDataAccord_Prague(x, y)
 }
 \description{
 The aim is to extract a C and M stage (Prague score) for Barrett's samples.
-This is done using a regex where C and M stages are explicitly mentioned in 
+This is done using a regex where C and M stages are explicitly mentioned in
 the free text
 Specfically it extracts the Prague score
 }

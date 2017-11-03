@@ -17,6 +17,7 @@ SurveillanceFirstTest(x, HospNum_Id, Endo_ResultPerformed)
 Extracts the first test only per patient
 }
 \examples{
-em<-SurveillanceFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
+em<-SurveillanceFirstTest(Myendo,'HospitalNumber',
+'Dateofprocedure')
 }
 \keyword{Surveillance}

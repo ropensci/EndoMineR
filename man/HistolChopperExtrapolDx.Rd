@@ -9,11 +9,12 @@ HistolChopperExtrapolDx(x, y)
 \arguments{
 \item{x}{the dataframe containing histology results,}
 
-\item{y}{the column to extract dysplasia, cancer, and GIST from- often the Histology diagnosis column}
+\item{y}{the column to extract dysplasia, cancer, and GIST from- often the 
+Histology diagnosis column}
 }
 \description{
-This extracts other specific diagnoses from the report. These have been hard coded to 
-look for dysplasia cancer and GIST. Optional use.
+This extracts other specific diagnoses from the report. These have been hard 
+coded to look for dysplasia cancer and GIST. Optional use.
 }
 \examples{
 v<-HistolChopperExtrapolDx(Mypath,'Diagnosis')

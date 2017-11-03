@@ -9,19 +9,22 @@ BarrettsQuality_AnalysisDocumentation(x, Findings)
 \arguments{
 \item{x}{dataframe}
 
-\item{Findings}{column of interest- usually the main body of the endoscopic report}
+\item{Findings}{column of interest- usually the main body of the 
+endoscopic report}
 }
 \description{
-This function assesses the Barrett's documentation. This notes how many reports contain
-the mandatory report fields as specified in the BSG standards on 
-Barrett's endoscopic reporting. This should be run after the BarrettsDataAccord_Prague.
+This function assesses the Barrett's documentation. This notes how many 
+reports contain the mandatory report fields as specified in the BSG standards
+ on Barrett's endoscopic reporting. This should be run after the 
+BarrettsDataAccord_Prague.
 }
 \examples{
 v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+'HospitalNumber')
 b<-BarrettsDataAccord_PathStage(v,'Histology')
 BarrettsQuality_AnalysisDocumentation(b,'Findings')
 }

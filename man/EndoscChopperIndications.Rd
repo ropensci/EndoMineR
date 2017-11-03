@@ -13,9 +13,10 @@ EndoscChopperIndications(x, y)
 }
 \description{
 This cleans the Indication from the report assuming such a column exists. 
-It largely gets rid of carriage returns especially if used after the ChopperNewLines
-function. There may be multiple indications.
-It should be used after the Extractor and the optional ChopperNewLines has been used.
+It largely gets rid of carriage returns especially if used after the 
+ChopperNewLinesfunction. There may be multiple indications.
+It should be used after the Extractor and the optional ChopperNewLines has 
+been used.
 }
 \examples{
 v<-EndoscChopperIndications(Myendo,'Indications')

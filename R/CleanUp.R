@@ -11,9 +11,10 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD",
 
 #' EndoscChopperNewLines
 #'
-#' Cleans the long lines to separate them into new lines if necessary. This helps further
-#' down the line in the tokenisation of the text. It is optional depending on the format of 
-#' your text. It should be used after the Extractor has separated out the different
+#' Cleans the long lines to separate them into new lines if necessary. 
+#' This helps further down the line in the tokenisation of the text. 
+#' It is optional depending on the format of your text. It should be used 
+#' after the Extractor has separated out the different
 #' parts of the text according to the user's requirements
 #' @param x dataframe
 #' @param y The endoscopy report text column
@@ -36,12 +37,13 @@ ChopperNewLines <- function(x, y) {
 #' Extractor
 #'
 #' This is the main extractor for the Endoscopy and Histology report.
-#' This depends on the user creating a list of words or characters that act as the 
-#' words that should be split against. The list is then fed to the Extractor in a 
-#' loop so that it acts as the beginning and the end of the regex used to split the 
-#' text. Whatever has been specified in the list is used as a column header. Column 
-#' headers don't tolerate special characters like : or ? and / and don't allow numbers
-#' as the start character so these have to be dealt with in the text before processing
+#' This depends on the user creating a list of words or characters that 
+#' act as the words that should be split against. The list is then fed to the 
+#' Extractor in a loop so that it acts as the beginning and the end of the 
+#' regex used to split the text. Whatever has been specified in the list 
+#' is used as a column header. Column headers don't tolerate special characters 
+#' like : or ? and / and don't allow numbers as the start character so these 
+#' have to be dealt with in the text before processing
 #' 
 #' @param x the dataframe 
 #' @param y the column to extract from
@@ -53,11 +55,12 @@ ChopperNewLines <- function(x, y) {
 #' @export
 #' @examples v<-TheOGDReportFinal
 #' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',Myendo$OGDReportWhole)
+#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
+#' Myendo$OGDReportWhole)
 #' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
 #' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
-#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:','Findings:',
-#' 'Endoscopic Diagnosis:')
+#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
+#' 'Findings:','Endoscopic Diagnosis:')
 #' for(i in 1:(length(EndoscTree)-1)) {
 #'  Myendo<-Extractor(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
 #'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
@@ -90,10 +93,12 @@ Extractor <- function(x, y, stra, strb, t) {
 
 #' EndoscChopperEndoscopist
 #'
-#' If an endoscopist column is part of the dataset once the extractor function has been used
-#' this cleans the endoscopist column from the report. It gets rid of titles
+#' If an endoscopist column is part of the dataset once the extractor 
+#' function has been used this cleans the endoscopist column from the report. 
+#' It gets rid of titles
 #' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional ChopperNewLines has been used.
+#' It should be used after the Extractor and the optional ChopperNewLines 
+#' has been used.
 #' 
 #' @param x dataframe 
 #' @param y The endoscopy text column
@@ -118,10 +123,11 @@ EndoscChopperEndoscopist <- function(x, y) {
 
 #' EndoscChopperMeds
 #'
-#' This cleans medication column from the report assuming such a column exists. It gets rid
-#' of common entries that are not needed. It also splits the medication into fentanyl and
-#' midazolam doses for use in the global rating scale tables later. 
-#' It should be used after the Extractor and the optional ChopperNewLines has been used.
+#' This cleans medication column from the report assuming such a column exists. 
+#' It gets rid of common entries that are not needed. It also splits the 
+#' medication into fentanyl and midazolam doses for use in the global rating 
+#' scale tables later. It should be used after the Extractor and the optional 
+#' ChopperNewLines has been used.
 #' @param x dataframe with column of interest 
 #' @param y column of interest
 #' @keywords Endoscopy medications
@@ -147,10 +153,11 @@ EndoscChopperMeds <- function(x, y) {
 
 #' EndoscChopperInstrument
 #'
-#' This cleans Instument column from the report assuming such a column exists (where 
-#' instrument usually refers to the endoscope number being used. It gets rid
-#' of common entries that are not needed.
-#' It should be used after the Extractor and the optional ChopperNewLines has been used.
+#' This cleans Instument column from the report assuming such a column exists
+#' (where instrument usually refers to the endoscope number being used. 
+#' It gets rid of common entries that are not needed.
+#' It should be used after the Extractor and the optional 
+#' ChopperNewLines has been used.
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Instrument
@@ -161,13 +168,17 @@ EndoscChopperInstrument <- function(x, y) {
     # Extraction of the Instrument used:
     
     x[, y] <- gsub("-.*", "", x[, y])
-    x[, y] <- gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|Loan Scope \\(specify serial no:
-                   |Loan Scope \\(specify\\s*serial no|\\)|-.*", "", x[, y])
-    x[, y] <- gsub(",.*|:|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |^,", "", x[, y])
+    x[, y] <- gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
+                   Loan Scope \\(specify serial no:|
+                   Loan Scope \\(specify\\s*serial no|\\)|-.*", "", x[, y])
+    x[, y] <- gsub(",.*|:|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |
+                   ^,", "", x[, y])
     x[, y] <- gsub("FC ", "FC", x[, y])
     x[, y] <- gsub("^\\s*([1-9])", "A\\1", x[, y])
-    x[, y] <- gsub("[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] \\(specify serial no\\)\\s*", "", x[, y])
-    x[, y] <- gsub("[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] \\(specify serial no:\\)\\s*", "", x[, y])
+    x[, y] <- gsub("[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]
+                   \\(specify serial no\\)\\s*", "", x[, y])
+    x[, y] <- gsub("[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] 
+                   \\(specify serial no:\\)\\s*", "", x[, y])
     x[, y] <- toupper(x[, y])
     x[, y] <- trimws(x[, y])
     return(x)
@@ -176,9 +187,10 @@ EndoscChopperInstrument <- function(x, y) {
 #' EndoscChopperIndications
 #'
 #' This cleans the Indication from the report assuming such a column exists. 
-#' It largely gets rid of carriage returns especially if used after the ChopperNewLines
-#' function. There may be multiple indications.
-#' It should be used after the Extractor and the optional ChopperNewLines has been used.
+#' It largely gets rid of carriage returns especially if used after the 
+#' ChopperNewLinesfunction. There may be multiple indications.
+#' It should be used after the Extractor and the optional ChopperNewLines has 
+#' been used.
 #' @param x dataframe with column of interest 
 #' @param y column of interest
 #' @keywords Indications
@@ -186,7 +198,8 @@ EndoscChopperInstrument <- function(x, y) {
 #' @examples v<-EndoscChopperIndications(Myendo,'Indications')
 
 EndoscChopperIndications <- function(x, y) {
-    # Extraction of the Indications for examination eg chest pain/ dysphagia etc.
+    # Extraction of the Indications for examination 
+  # eg chest pain/ dysphagia etc.
     x[, y] <- gsub("\r\n", "\n", x[, y])
     x[, y] <- gsub("\\.\n\\.\n|\\.\r\\.\r", "\\.", x[, y])
     return(x)
@@ -200,7 +213,8 @@ EndoscChopperIndications <- function(x, y) {
 #' such a column exists. Procedure Performed relates to whether this was a 
 #' Gastroscopy or Colonoscopy etc.
 #' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional ChopperNewLines has been used.
+#' It should be used after the Extractor and the optional ChopperNewLines 
+#' has been used.
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Procedure 
@@ -229,7 +243,8 @@ EndoscChopperProcPerformed <- function(x, y) {
 #' This is usually a separate entry to the overall 'Diagnosis' but any
 #' are in which the description of the endoscopic findings, including 
 #' overall diagnosis or not, can be used.
-#' It should be used after the Extractor and the optional ChopperNewLines has been used.
+#' It should be used after the Extractor and the optional ChopperNewLines 
+#' has been used.
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Procedure 
@@ -265,30 +280,45 @@ NegativeRemove <- function(x, y) {
     x <- (data.frame(x))
     # Conjunctions
     x[, y] <- gsub("(but|although|however|though|apart|otherwise
-                   |unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|unremarkable|-ve|normal).*?(\\.|
-                   \\n|:|$)\\R*", "\\.\n", x[, y], perl = TRUE, ignore.case = TRUE)
+                   |unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|
+unremarkable|-ve|normal).*?(\\.|
+                   \\n|:|$)\\R*", "\\.\n", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
     x[, y] <- gsub("(no |negative|unremarkable|-ve| normal) .*?([Bb]ut|
                    [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise|
-                   [Uu]nremarkable)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+                   [Uu]nremarkable)\\R*", "", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
     # Nots
-    x[, y] <- gsub(".*(was|were) not.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
-    x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub(".*(was|were) not.*?(\\.|\n|:|$)\\R*", "", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub("not (biop|seen).*?(\\.|\n|:|$)\\R*", "", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
     # Nos
-    x[, y] <- gsub(".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b(?![?:A-Za-z])|
-                   ([?:]\\s*N?![A-Za-z])).*\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
-    x[, y] <- gsub(".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
-    x[, y] <- gsub(".*(negative|neither).*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub(".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b
+(?![?:A-Za-z])|
+                   ([?:]\\s*N?![A-Za-z])).*\\R*", "", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub(".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)
+                   \\R*", "", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub(".*(negative|neither).*?(\\.|\n|:|$)\\R*", "", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
     # Keep abnormal in- don't ignore case as it messes it up
-    x[, y] <- gsub(".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "", x[, y], perl = TRUE)
+    x[, y] <- gsub(".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "", x[, y], 
+                   perl = TRUE)
     # Other negatives
     x[, y] <- gsub(".*there (is|are) \\bno\\b .*?(\\.|
-                   \n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+                   \n|:|$)\\R*", "", x[, y], perl = TRUE, 
+                   ignore.case = TRUE)
     x[, y] <- gsub("(within|with) (normal|\\bno\\b) .*?(\\.|
-                   \n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+                   \n|:|$)\\R*", "", x[, y], perl = TRUE, 
+                   ignore.case = TRUE)
     # Specific cases
-    x[, y] <- gsub(".*duct.*clear.*?(\\.|\n|:|$)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub(".*duct.*clear.*?(\\.|\n|:|$)\\R*", "", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
     # Unanswered prompt lines
-    x[, y] <- gsub(".*:(\\.|\n)\\R*", "", x[, y], perl = TRUE, ignore.case = TRUE)
+    x[, y] <- gsub(".*:(\\.|\n)\\R*", "", x[, y], 
+                   perl = TRUE, ignore.case = TRUE)
     return(x)
 }
 
@@ -347,9 +377,9 @@ HistolChopperMacDescripCleanup <- function(x, y) {
 #' HistolChopperHistol
 #'
 #' This extracts Histology details data from the report. The Histology details
-#' usually relate to the description of the histological report. This implements the 
-#' negative remover and also adds further negative removing regexes. This may be refined
-#' in further iterations.
+#' usually relate to the description of the histological report. This implements
+#'  the negative remover and also adds further negative removing regexes. This 
+#' may be refined in further iterations.
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Histology
@@ -362,25 +392,43 @@ HistolChopperHistol <- function(x, y) {
     x[, y] <- gsub("\n|\r", " ", x[, y])
     x[, y] <- NegativeRemove(x[, y])
     x$Histol_Simplified <- x[, y]
-    # Negative extraction- may merge this with the function NegativeRemove() above and some of the 
+    # Negative extraction- may merge this with the function 
+    # NegativeRemove() above and some of the 
     #phrases below could undoubetdly be simplified with more intelligent regex
-    x$Histol_Simplified <- gsub("- ", "\n", x$Histol_Simplified, fixed = TRUE)
-    x$Histol_Simplified <- gsub("-[A-Z]", "\n", x$Histol_Simplified, fixed = TRUE)
-    x$Histol_Simplified <- gsub(".*biopsies.*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub(".*biopsy.*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub(":", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]egative.*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Ww]ithin normal .*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]o .*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub(".*[Nn]ormal.*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("^[Nn]ormal.*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Ww]ithin normal histol.*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]egative for.*\n", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]egative for [Dd]ysplasia", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]o [Dd]ysplasia.*?\\.", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]egative for.*?\\.", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("Neither dysplasia.*?\\.", "", x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("Neither dysplasia nor malignancy is seen", "", x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("- ", "\n", x$Histol_Simplified,
+                                fixed = TRUE)
+    x$Histol_Simplified <- gsub("-[A-Z]", "\n", x$Histol_Simplified
+                                , fixed = TRUE)
+    x$Histol_Simplified <- gsub(".*biopsies.*\n", "", x$Histol_Simplified,
+                                perl = TRUE)
+    x$Histol_Simplified <- gsub(".*biopsy.*\n", "", x$Histol_Simplified,
+                                perl = TRUE)
+    x$Histol_Simplified <- gsub(":", "", x$Histol_Simplified,
+                                perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]egative.*\n", "", x$Histol_Simplified,
+                                perl = TRUE)
+    x$Histol_Simplified <- gsub("[Ww]ithin normal .*\n", "", 
+                                x$Histol_Simplified,perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]o .*\n", "", x$Histol_Simplified,
+                                perl = TRUE)
+    x$Histol_Simplified <- gsub(".*[Nn]ormal.*\n", "", x$Histol_Simplified,
+                                perl = TRUE)
+    x$Histol_Simplified <- gsub("^[Nn]ormal.*\n", "", x$Histol_Simplified
+                                , perl = TRUE)
+    x$Histol_Simplified <- gsub("[Ww]ithin normal histol.*\n", "", 
+                                x$Histol_Simplified,perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]egative for.*\n", "", x$Histol_Simplified,
+                                perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]egative for [Dd]ysplasia", "", 
+                                x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]o [Dd]ysplasia.*?\\.", "", 
+                                x$Histol_Simplified, perl = TRUE)
+    x$Histol_Simplified <- gsub("[Nn]egative for.*?\\.", "", 
+                                x$Histol_Simplified,perl = TRUE)
+    x$Histol_Simplified <- gsub("Neither dysplasia.*?\\.", "", 
+                                x$Histol_Simplified,perl = TRUE)
+    x$Histol_Simplified <- gsub("Neither dysplasia nor malignancy is seen",
+                                "", x$Histol_Simplified, perl = TRUE)
     return(x)
 }
 
@@ -388,16 +436,17 @@ HistolChopperHistol <- function(x, y) {
 
 #' HistolChopperAccessionNumber
 #'
-#' This extracts Accession Number data data from the report where one is present.
-#' The Accession number relates to the actual specimen number as ascribed by the 
-#' pathology service.
+#' This extracts Accession Number data data from the report where one is 
+#' present. The Accession number relates to the actual specimen number as 
+#' ascribed by the pathology service.
 #' @param x the dataframe name and 
 #' @param  y the column name as a string. 
 #' @param  stra regular expression needed as a string
 #' @importFrom stringr str_extract
 #' @keywords Sample Accession number
 #' @export
-#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\d{2}-\\d{7}')
+#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' 'SP-\\d{2}-\\d{7}')
 
 HistolChopperAccessionNumber <- function(x, y, stra) {
     x <- data.frame(x)
@@ -408,11 +457,11 @@ HistolChopperAccessionNumber <- function(x, y, stra) {
 
 #' HistolChopperDx
 #'
-#' This extracts Diagnosis data from the report. The Diagnosis is the overall impression
-#' of the pathologist for that specimen. At the moment, Only Capital D included (not
-#' lower case d) to make sure picks up subtitle header as opposed to 
-#' mentioning 'diagnosis' as part of a sentence.  Column specific cleanup and negative 
-#' remover have also been implemented here.
+#' This extracts Diagnosis data from the report. The Diagnosis is the overall 
+#' impression of the pathologist for that specimen. At the moment, Only Capital 
+#' D included (not lower case d) to make sure picks up subtitle header as 
+#' opposed to mentioning 'diagnosis' as part of a sentence.  Column specific 
+#' cleanup and negative remover have also been implemented here.
 #' 
 #' @param x the dataframe
 #' @param y column containing the Hisopathology report
@@ -437,11 +486,12 @@ HistolChopperDx <- function(x, y) {
 
 #' HistolChopperExtrapolDx
 #'
-#' This extracts other specific diagnoses from the report. These have been hard coded to 
-#' look for dysplasia cancer and GIST. Optional use.
+#' This extracts other specific diagnoses from the report. These have been hard 
+#' coded to look for dysplasia cancer and GIST. Optional use.
 #' 
 #' @param x the dataframe containing histology results, 
-#' @param y the column to extract dysplasia, cancer, and GIST from- often the Histology diagnosis column
+#' @param y the column to extract dysplasia, cancer, and GIST from- often the 
+#' Histology diagnosis column
 #' @importFrom stringr str_extract
 #' @keywords Histology diagnosis
 #' @export
@@ -449,7 +499,8 @@ HistolChopperDx <- function(x, y) {
 
 HistolChopperExtrapolDx <- function(x, y) {
     # Some further extraction to get commonly searched for data
-    x$Cancer <- stringr::str_extract(x[, y], "[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour")
+    x$Cancer <- stringr::str_extract(x[, y], "[Cc]arcin|[Cc]ance|[Ll]ymphoma|
+                                     [Tt]umour")
     x$Dysplasia <- stringr::str_extract(x[, y], "[Dd]yspla")
     x$GIST <- stringr::str_extract(x[, y], "G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio")
     return(x)
@@ -460,10 +511,11 @@ HistolChopperExtrapolDx <- function(x, y) {
 
 #' HistolChopperMacDescrip
 #' 
-#' This extracts numbers from written (spelt) numbers in the Macroscopic description
-#' text. This means the text can then be used to extract the number and size of biopsies.
-#' This is used as part of the HistolChopperNumOfBx function below and normally not used
-#' as a stand alone function.
+#' This extracts numbers from written (spelt) numbers in the Macroscopic 
+#' description text. This means the text can then be used to extract the number 
+#' and size of biopsies.This is used as part of the 
+#' HistolChopperNumOfBx function below and normally not used as a stand alone 
+#' function.
 #' 
 #' @param x dataframe
 #' @param y column to extract the numbers from. Usually the column
@@ -500,7 +552,8 @@ HistolChopperMacDescrip <- function(x, y) {
 #' @importFrom stringr str_match_all
 #' @keywords Biopsy number
 #' @export
-#' @examples v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+#' @examples v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription',
+#' 'specimen')
 
 HistolChopperNumbOfBx <- function(x, y, z) {
     x <- data.frame(x)
