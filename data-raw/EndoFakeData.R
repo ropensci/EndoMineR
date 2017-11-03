@@ -406,8 +406,6 @@ pathRep2 <- function() {
                                      colnames(PathDataFrameReport), sep = "\n")
   names(PathDataFrameFinal) <- "PathReportWhole"
   save(PathDataFrameFinal,file = "/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
-  # load(file = "./data_raw/data/PathDataFrameFinal.rda")
-  #return(PathDataFrameFinal)
 }
 
 

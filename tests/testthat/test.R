@@ -41,7 +41,7 @@ Histoltree <-
     "Hospital Number:",
     "Patient Name:",
     "General Practitioner:",
-    "Date of procedure:",
+    "Date received:",
     "Clinical Details",
     "Nature of specimen",
     "Histology",
@@ -58,6 +58,7 @@ for (i in 1:(length(Histoltree) - 1)) {
       gsub(" ", "", as.character(Histoltree[i]))
     )
 }
+names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 v <-
   Endomerge2(
@@ -211,7 +212,8 @@ test_that("HistolChopperExtrapolDx", {
 #### HistolChopperAccessionNumber test ####
 
 test_that("HistolChopperAccessionNumber", {
-  Mypath <- HistolChopperAccessionNumber(Mypath,'Histology','SP-\\d{2}-\\d{7}')
+  Mypath <- HistolChopperAccessionNumber(Mypath,'PathReportWhole',
+                                         'SP-\\d{2}-\\d{7}')
   expect_true(all(!is.na(Mypath$AccessionNumber)))
 })
 
