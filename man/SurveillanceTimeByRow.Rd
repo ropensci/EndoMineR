@@ -17,6 +17,7 @@ SurveillanceTimeByRow(x, HospNum_Id, Endo_ResultPerformed)
 This determines the time difference between each test for a patient in days.
 }
 \examples{
-em<-SurveillanceTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
+em<-SurveillanceTimeByRow(Myendo,'HospitalNumber',
+'Dateofprocedure')
 }
 \keyword{Surveillance}

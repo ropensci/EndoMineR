@@ -405,7 +405,7 @@ pathRep2 <- function() {
                                      cat(paste(colnames(PathDataFrameReport), collapse = "\n")),
                                      colnames(PathDataFrameReport), sep = "\n")
   names(PathDataFrameFinal) <- "PathReportWhole"
-  save(TheOGDReportFinal,file = "/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
+  save(PathDataFrameFinal,file = "/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
   # load(file = "./data_raw/data/PathDataFrameFinal.rda")
   #return(PathDataFrameFinal)
 }
