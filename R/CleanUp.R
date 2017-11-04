@@ -522,7 +522,7 @@ HistolChopperExtrapolDx <- function(x, y) {
 #' with the Nature of the specimen or the Macroscopic description in it
 #' @keywords Macroscopic
 #' @export
-#' @examples t<-HistolChopperMacDescrip(Mypath, 'Macroscopicdescription')
+#' @examples t<-HistolChopperMacDescrip(Mypath, 'Natureofspecimen')
 
 HistolChopperMacDescrip <- function(x, y) {
     x <- data.frame(x)
@@ -576,7 +576,7 @@ HistolChopperNumbOfBx <- function(x, y, z) {
 #' @importFrom stringr str_extract
 #' @keywords biopsy size
 #' @export
-#' @examples v<-HistolChopperBxSize(Mypath,'Macroscopicdescription')
+#' @examples v<-HistolChopperBxSize(Mypath,'Natureofspecimen')
 
 HistolChopperBxSize <- function(x, y) {
     # What's the average biopsy size this month?

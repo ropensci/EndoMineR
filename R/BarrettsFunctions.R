@@ -478,6 +478,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' 
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' BarrettsQuality_AnalysisBiopsyNumber(b4,'Endoscopist','Dateofprocedure',
 #' 'Endoscopist')
@@ -614,30 +615,6 @@ BarrettsSurveillanceDDR <- function(x, y, IMorNoIM) {
 
 
 
-
-#### Therapeutics Functions ####
-
-#' BarrettsTherapeuticsOnly
-#'
-#' This function makes all therapeutics unique. 
-#' This should only be run after the
-#' BarrettsDataAccord_EventFunction as this provides an EVENT column which this
-#' function uses.
-#' @param x dataframe
-#' @keywords Therapeutic
-#' @export
-#' @examples
-
-
-
-BarrettsTherapeuticsOnly <- function(x) {
-  x <- data.frame(x)
-  x <- x[x$EVENT != "nothing",]
-  return(x)
-  
-}
-
-
 #' BarrettsTherapy_Numbers_EMRsByGrade
 #'
 #' Plots all the pathological grades of the EMRs.This should only be 
@@ -646,8 +623,19 @@ BarrettsTherapeuticsOnly <- function(x) {
 #' @param EndoSubsetEMR The dataset.
 #' @keywords EMR chart
 #' @export
-#' @examples
-
+#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' 'HospitalNumber')
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' BarrettsTherapy_Numbers_EMRsByGrade(b4)
 BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
   EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR",]
   AllEMRs <- nrow(EndoSubsetEMR)

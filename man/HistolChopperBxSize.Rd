@@ -21,7 +21,7 @@ in row duplication.
 This is usually from the Macroscopic description column.
 }
 \examples{
-v<-HistolChopperBxSize(Mypath,'Macroscopicdescription')
+v<-HistolChopperBxSize(Mypath,'Natureofspecimen')
 }
 \keyword{biopsy}
 \keyword{size}

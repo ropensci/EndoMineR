@@ -71,7 +71,7 @@ v <-
   )
 
 
-##### CleanUp test functions ####
+##### rrrrrrrrrrrrrrrrrrrCleanUp test functions ####
 
 #Make sure that the Endoscopist cleanup function has data in the Endoscopist 
 #column
@@ -221,7 +221,7 @@ test_that("HistolChopperAccessionNumber", {
 
 test_that("HistolChopperMacDescrip", {
   #Mypath<-HistolChopperMacDescrip(Mypath, "Natureofspecimen")
-  Mypath <- HistolChopperBxSize(Mypath, "Natureofspecimen")
+  Mypath <- HistolChopperMacDescrip(Mypath, "Natureofspecimen")
   expect_true(all(!is.na(Mypath$BxSize)))
 })
 
@@ -235,12 +235,12 @@ test_that("HistolChopperNumbOfBx", {
 #### HistolChopperBxSize test ####
 
 test_that("HistolChopperBxSize", {
-  Mypath <- HistolChopperBxSize(Mypath,'Macroscopicdescription')
+  Mypath <- HistolChopperBxSize(Mypath,'Natureofspecimen')
   expect_true(all(!is.na(Mypath$BxSize)))
 })
 
 
-##### EndoMineR functions #####
+##### rrrrrrrrrrrrrrrrrrrEndoMineR functions #####
 
 #### SurveillanceTimeByRow test ####
 
@@ -365,5 +365,168 @@ test_that("NumberPerformed", {
 #### TermStandardLocation test ####
 
 test_that("TermStandardLocation", {
+  
+})
+
+#### rrrrrrrrrrrrrrrrrrrrrrr Barretts Functions Test ####
+
+#### BarrettsDataAccord_Prague ####
+
+test_that("BarrettsDataAccord_Prague", {
+  
+  v<-BarrettsDataAccord_Prague(Myendo,'Findings')
+  expect_true(nrow(v) > 0)
+  
+})
+
+
+#### BarrettsDataAccord_PathStage ####
+
+test_that("BarrettsDataAccord_PathStage", {
+  b<-BarrettsDataAccord_PathStage(v,'Histology')
+  
+})
+
+
+#### BarrettsDataAccord_Event ####
+
+test_that("BarrettsDataAccord_Event", {
+
+b<-BarrettsDataAccord_Event(v,'Histology','ProcedurePerformed','OGDReportWhole'
+                            ,'Findings')
+})
+
+
+#### BarrettsDataAccord_FUGroup ####
+
+test_that("BarrettsDataAccord_FUGroup", {
+  b<-BarrettsDataAccord_PathStage(v,'Histology')
+  b2<-BarrettsDataAccord_Event(b,'Histology',
+  'ProcedurePerformed','OGDReportWhole','Findings')
+  b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
+  
+})
+
+#### BarrettsPatientTracking_Enrollment_Surveillance ####
+
+test_that("BarrettsPatientTracking_Enrollment_Surveillance", {
+  
+Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',
+                                              'Dateofprocedure','Indications')
+  
+})
+
+
+#### BarrettsPatientTracking_UniqueHospNum ####
+
+test_that("BarrettsPatientTracking_UniqueHospNum", {
+  
+  b1<-BarrettsDataAccord_Prague(v,'Findings')
+  b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+  b3<-BarrettsDataAccord_Event(b2,'Histology',
+  'ProcedurePerformed','OGDReportWhole','Findings')
+  b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+  colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+  Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
+  
+})
+
+
+#### BarrettsQuality_AnalysisDocumentation ####
+
+test_that("BarrettsQuality_AnalysisDocumentation", {
+  b<-BarrettsDataAccord_PathStage(v,'Histology')
+  BarrettsQuality_AnalysisDocumentation(b,'Findings')
+})
+
+
+#### BarrettsQuality_AnalysisBiopsyNumber ####
+
+test_that("BarrettsQuality_AnalysisBiopsyNumber", {
+  v<-HistolChopperExtrapolDx(v,'Diagnosis')
+  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  b1<-BarrettsDataAccord_Prague(v,'Findings')
+  b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+  b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed',
+                               'OGDReportWhole','Findings')
+  b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+  colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+  BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
+                                       'Endoscopist')
+  
+})
+
+#### BarrettsSurveillance_PathDetection ####
+
+test_that("BarrettsSurveillance_PathDetection", {
+  v<-HistolChopperDx(v,'Diagnosis')
+  v<-HistolChopperExtrapolDx(v,'Diagnosis')
+  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  b1<-BarrettsDataAccord_Prague(v,'Findings')
+  b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+  b3<-BarrettsDataAccord_Event(b2,'Histology',
+  'ProcedurePerformed','OGDReportWhole','Findings')
+  b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+  colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+  BarrettsSurveillance_PathDetection(b4,'Myplot')
+})
+
+
+#### BarrettsSurveillanceDDR ####
+
+test_that("BarrettsSurveillanceDDR", {
+  v<-HistolChopperDx(v,'Diagnosis')
+  v<-HistolChopperExtrapolDx(v,'Diagnosis')
+  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  b1<-BarrettsDataAccord_Prague(v,'Findings')
+  b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+  b3<-BarrettsDataAccord_Event(b2,'Histology',
+                               'ProcedurePerformed','OGDReportWhole','Findings')
+  b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+  colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+  BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
+})
+
+
+#### BarrettsTherapeuticsOnly ####
+
+test_that("BarrettsTherapeuticsOnly", {
+  
+})
+
+
+#### BarrettsTherapy_Numbers_EMRsByGrade ####
+
+test_that("BarrettsTherapy_Numbers_EMRsByGrade", {
+  
+})
+
+
+#### BarrettsBasicNumbers ####
+
+test_that("BarrettsBasicNumbers", {
+  
+})
+
+
+#### BarrettsTherapeuticsRFA_ByCatheter ####
+
+test_that("BarrettsTherapeuticsRFA_ByCatheter", {
+  
+})
+
+
+#### Barretts_LesionRecognitionEMR ####
+
+test_that("Barretts_LesionRecognitionEMR", {
+  
+})
+
+
+#### Barretts_CRIM ####
+test_that("Barretts_CRIM", {
   
 })

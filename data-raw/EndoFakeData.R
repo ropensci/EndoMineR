@@ -360,11 +360,12 @@ EndoRaw2 <- function() {
 
 pathRep2 <- function() {
   
-  AccessionNum<-paste0("SP-",sample(1:99),"-",sample(0000000:9999999,2000,replace=F))
-  Date <- Date_of_ProcedureAll+sample(1:12)
-  Date <- paste("Date received: ", Date_of_Procedure +
-                  replicate(samplenumber, as.numeric(sample(1:10)),
-                            1))
+  AccessionNum<-paste0("SP-",sample(10:99),"-",sample(1000000:9999999,2000,replace=F))
+  Date <- Date_of_ProcedureAll+sample(1:12,1)
+  Date <- paste("Date received: ", Date_of_Procedure)
+
+                 # replicate(samplenumber, as.numeric(sample(1:10)),
+                 #         1))
   # Clinical Details
   ClinDet <- read.table("./data-raw/data/HistolClinDetText",
                         header = T, stringsAsFactors = F)

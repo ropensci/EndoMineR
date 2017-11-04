@@ -33,6 +33,7 @@ b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
 b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 BarrettsQuality_AnalysisBiopsyNumber(b4,'Endoscopist','Dateofprocedure',
 'Endoscopist')
