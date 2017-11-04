@@ -38,7 +38,7 @@ if (getRversion() >= "2.15.1")
   )
 ###### Barretts Surveillance and Therapeutic Functions ######
 
-#' BarrettsDataAccord_Prague
+#' Prague score extraction
 #'
 #' The aim is to extract a C and M stage (Prague score) for Barrett's samples.
 #' This is done using a regex where C and M stages are explicitly mentioned in
@@ -61,7 +61,7 @@ BarrettsDataAccord_Prague <- function(x, y) {
 }
 
 
-#' BarrettsDataAccord_PathStage
+#' Worst pathological stage Barrett's
 #'
 #' This extracts the pathological stage from the histopathology specimen. It is
 #' done using 'degradation' so that it will look for the worst overall grade
@@ -137,7 +137,7 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 }
 
 
-#' BarrettsDataAccord_Event
+#' Therapeutic subtypes
 #'
 #' This function extracts the Event- usually a therapeutic event, from the text 
 #' eg endoscopic mucosal resection, radiofrequency ablation etc. 
@@ -202,7 +202,7 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
   return(x)
 }
 
-#' BarrettsDataAccord_FUGroup
+#' Follow up group determination
 #'
 #' This determines the follow up rule a patient should fit in to (according to 
 #' the British Society for Gastroenterology guidance on Barrett's oesophagus)
@@ -271,7 +271,7 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 ############## Surveillance functions ########
 
 
-#' BarrettsPatientTracking_Enrollment_Surveillance
+#' How many Barrett's patients had surveillance
 #'
 #' This function graphs the patients who were not on surveillance programmes and 
 #' sees how many then had an endoscopy.This allows us to determine how many 
@@ -323,7 +323,7 @@ as.Date(!!Endo_ResultPerformeda), units = "weeks") / 52) %>%
 }
 
 
-#' BarrettsPatientTracking_UniqueHospNum
+#' Unique Hospital Numbers of Barrett's patients
 #'
 #' This function gets the unique patient ID's for each patient,
 #' for each rule. It lists the unique PatientIDs assocaited with a rule
@@ -363,7 +363,7 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 ######## Endoscopic Performance Quality-#####
 
 
-#' BarrettsQuality_AnalysisDocumentation
+#' Analysis of Barrett's Documentation Quality
 #'
 #' This function assesses the Barrett's documentation. This notes how many 
 #' reports contain the mandatory report fields as specified in the BSG standards
@@ -454,7 +454,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 ############## Pathology Quality #############
 
 
-#' BarrettsQuality_AnalysisBiopsyNumber
+#' Barrett's number of biopsies
 #'
 #' This function gets the biopsies taken per endoscopy and compares to the 
 #' Prague score for that endoscopy.
@@ -465,9 +465,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @importFrom dplyr summarise group_by filter
 #' @keywords Does something with data
 #' @export
-#' @examples 
-#' v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\d{2}-\\d{7}')
-#' v<-HistolChopperDx(v,'Diagnosis')
+#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
@@ -478,10 +476,9 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
-#' 
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' BarrettsQuality_AnalysisBiopsyNumber(b4,'Endoscopist','Dateofprocedure',
-#' 'Endoscopist')
+#' BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
+#'                                      'Endoscopist')
 
 BarrettsQuality_AnalysisBiopsyNumber <- function(x,
                                                  Endo_ResultPerformed,
@@ -533,7 +530,7 @@ dplyr::group_by(as.Date(!!Endo_ResultPerformeda),
 
 ############## Diagnostic yield functions #######
 
-#' BarrettsSurveillance_PathDetection
+#' Dysplasia detection on surveillance
 #'
 #' This function assesses pathology of specimens taken at surveillance per year.
 #' It outputs a plot which determines the the overall number of pathologies (
@@ -581,7 +578,7 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 
 
 
-#' BarrettsSurveillanceDDR
+#' Dysplasia detection rate on surveillance
 #'
 #' This function assesses the dysplasia detection rate per endoscopist.
 #' @param x dataframe,
@@ -615,7 +612,7 @@ BarrettsSurveillanceDDR <- function(x, y, IMorNoIM) {
 
 
 
-#' BarrettsTherapy_Numbers_EMRsByGrade
+#' Number of Barrett's EMRs by grade
 #'
 #' Plots all the pathological grades of the EMRs.This should only be 
 #' run after all the
@@ -636,6 +633,7 @@ BarrettsSurveillanceDDR <- function(x, y, IMorNoIM) {
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' BarrettsTherapy_Numbers_EMRsByGrade(b4)
+
 BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
   EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR",]
   AllEMRs <- nrow(EndoSubsetEMR)
@@ -696,7 +694,7 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 
 
 
-#' BarrettsBasicNumbers
+#' Barretts Basic Numbers
 #'
 #' This looks at the basic numbers of all the therapeutic endoscopies over time.
 #' This should only be run after all the BarrettsDataAccord functions.
@@ -711,9 +709,10 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 
 BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
   x <- data.frame(x)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
   xNum <-
     x %>% filter(EVENT != "nothing") %>% 
-    mutate(year = year(Endo_ResultPerformed)) %>% 
+    mutate(year = year(as.Date(!!Endo_ResultPerformeda))) %>% 
     group_by(EVENT, year) %>% summarise(n = n())
   xNumPlot <-
     ggplot(xNum, aes(
@@ -727,7 +726,7 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
   return(functionResults)
 }
 
-#' BarrettsTherapeuticsRFA_ByCatheter
+#' RFA catheter use
 #'
 #' This looks at the basic numbers of RFA by catheter type used.
 #' This should only be run after all the BarrettsDataAccord functions.
@@ -740,7 +739,6 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
 
 BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
   EndoSubsetRFA <- EndoSubsetRFA[EndoSubsetRFA$EVENT == "RFA",]
-  
   HALO90a <-
     EndoSubsetRFA[grepl("90", EndoSubsetRFA[, y], perl = TRUE),]
   HALO90b <-
@@ -796,7 +794,7 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 
 
 
-#' Barretts_LesionRecognitionEMR
+#' Paris vs histopath Barrett's
 #'
 #' This looks at the Paris grades of each EMR and then creates a heatmap 
 #' of pathological grade vs
@@ -868,6 +866,11 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
   tr5 <- head(tr5,-1)
   # Create the heatmap par(oma = c(4, 0, 0, 4))
   
+  tr5<-tr5[!!rowSums(!is.na(tr5)),]
+  tr5<-t(tr5)
+  tr5<-tr5[!!rowSums(!is.na(tr5)),]
+  tr5<-t(tr5)
+  if(nrow(tr5)>2&ncol(tr5)>2){
   colors <- c(seq(-1, 0.2, length = 100),
              seq(0.21, 0.8, length = 100),
              seq(0.81, 1, length = 100))
@@ -883,10 +886,11 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
     cexRow = 3.5,
     cexCol = 1.5
   )
+  }
   
 }
 
-#' Barretts_CRIM
+#' CRIM status Barrett's
 #'
 #' This collects the patients in whom it is assumed that complete clearance of 
 #' intestinal metasplasia has occurred (CRIM) after ablation therapy. 
@@ -908,7 +912,7 @@ Barretts_CRIM <- function(x, HospNum, EVENT) {
   EVENTa <- rlang::sym(EVENT)
   
   CRIM <-
-    x %>% group_by(!(!HospNuma)) %>% 
-    mutate(ind = (!(!EVENTa)) == "RFA" & lead(!(!EVENTa)) == "nothing") %>%
+    x %>% group_by(!!HospNuma) %>% 
+    mutate(ind = (!!EVENTa) == "RFA" & lead(!!EVENTa) == "nothing") %>%
     slice(sort(c(which(ind), which(ind) + 1)))
 }

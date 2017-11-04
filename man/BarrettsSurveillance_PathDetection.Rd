@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsSurveillance_PathDetection}
 \alias{BarrettsSurveillance_PathDetection}
-\title{BarrettsSurveillance_PathDetection}
+\title{Dysplasia detection on surveillance}
 \usage{
 BarrettsSurveillance_PathDetection(x, titlePlot)
 }

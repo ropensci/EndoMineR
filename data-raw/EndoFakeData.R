@@ -71,15 +71,16 @@ Endoscopies <- function(x) {
                       "C6M8", "C6M9")
   # Merge them all together into a dataframe
   Endoscopies <- data.frame(EndoHospNum, replicate(1000,
-                                                   paste("Date of Procedure", sample(Endodat,
-                                                                                     1, replace = F), " Endoscopist: ", sample(Endoscopist,
-                                                                                                                               1, replace = F), "Midazolam: ", sample(Midazolam,
-                                                                                                                                                                      1, replace = F), "Fentanyl: ", sample(Fentanyl,
-                                                                                                                                                                                                            1, replace = F), "Indication:", sample(Indication,
-                                                                                                                                                                                                                                                   1, replace = F), "Diagnosis:", stringr::str_c(sample(Diagnosis,
-                                                                                                                                                                                                                                                                                                        sample(1:10, 1), replace = F), collapse = "."),
-                                                         sample(c("", paste("Barrett's oesophagus length:",
-                                                                            sample(BarrettsLength, 1))), 1))))
+                   paste("Date of Procedure", sample(Endodat,
+1, replace = F), " Endoscopist: ", sample(Endoscopist,
+1, replace = F), "Midazolam: ", sample(Midazolam,
+1, replace = F), "Fentanyl: ", sample(Fentanyl,
+1, replace = F), "Indication:", sample(Indication,
+1, replace = F), "Diagnosis:", stringr::str_c(sample(Diagnosis,
+sample(1:10, 1), replace = F), collapse = "."),
+sample(c("", paste("Barrett's oesophagus length:",
+                   sample(BarrettsLength, 1))), 1))))
+  
   # Lets rename the one column to something more
   # intelligent
   names(Endoscopies) <- c("HospNum_Id", "EndoReports")
@@ -214,7 +215,7 @@ Histop_df <- function(x) {
   ######### Data accordionisation Convert into paragraphs so
   ######### can be more easily separated
   Histop_df$Date <- stringr::str_extract(Histop_df$HistoReport,
-                                         "Date received:.*Macrosopic description:")
+                              "Date received:.*Macrosopic description:")
   Histop_df$Macro <- stringr::str_extract(Histop_df$HistoReport,
                                           "Macrosopic description:.*Diagnoses")
   Histop_df$Diagnoses <- stringr::str_extract(Histop_df$HistoReport,
@@ -250,7 +251,7 @@ Histop_df <- function(x) {
 
 samplenumber <- 2000
 HospitalNumberID <- paste("Hospital Number: ", sample(c(LETTERS)), 
-                          sample(1e+06:9999999, (samplenumber - 1900), replace = T), 
+                 sample(1e+06:9999999, (samplenumber - 1900), replace = T), 
                           sep = "")
 NHS_Trust <- replicate(samplenumber, c("Hospital: Random NHS Foundation Trust"))
 Patient_Name <- paste("Patient Name: ", randomNames::randomNames(samplenumber, 
@@ -258,9 +259,9 @@ Patient_Name <- paste("Patient Name: ", randomNames::randomNames(samplenumber,
 Date_of_Birth <- paste("DOB: ", generator::r_date_of_births(samplenumber, 
      start = as.Date("1900-01-01"), end = as.Date("1999-01-01")))
  GeneralPractictioner <- paste("General Practitioner: Dr. ", 
-                               randomNames::randomNames(samplenumber, "first", "last"), sep = "")
+            randomNames::randomNames(samplenumber, "first", "last"), sep = "")
 Date_of_ProcedureAll <- generator::r_date_of_births(samplenumber,
-                                                    start = as.Date("2001-01-01"), end = as.Date("2017-01-01"))
+                  start = as.Date("2001-01-01"), end = as.Date("2017-01-01"))
 
 #' EndoRaw
 #'
@@ -276,25 +277,25 @@ EndoRaw2 <- function() {
   Date_of_Procedure<-Date_of_ProcedureAll
   Date <- paste("Date of procedure: ", Date_of_Procedure)
   EndoscopistList <- as.list(sample(randomNames::randomNames(samplenumber,
-                                                             "first", "last"), 10, replace = T))
+                                        "first", "last"), 10, replace = T))
   Second_EndoscopistList <- as.list(sample(randomNames::randomNames(samplenumber,
-                                                                    "first", "last"), 10, replace = T))
+                                     "first", "last"), 10, replace = T))
   Endoscopist <- replicate(samplenumber, paste("Endoscopist: Dr. ",
-                                               sample(EndoscopistList, 1, replace = F), sep = ""))
+                            sample(EndoscopistList, 1, replace = F), sep = ""))
   Second_Endoscopist <- replicate(samplenumber, paste("2nd Endoscopist: Dr. ",
-                                                      sample(Second_EndoscopistList, 1, replace = F),
+                               sample(Second_EndoscopistList, 1, replace = F),
                                                       sep = ""))
   MedicationsFent <- replicate(samplenumber, paste("Medications: Fentanyl ",
-                                                   sample(list(x = "12.5mcg", x = "25mcg", x = "50mcg",
-                                                               x = "75mcg", x = "100mcg", x = "125mcg",
-                                                               x = "150mcg"), 1, replace = F)))
+                        sample(list(x = "12.5mcg", x = "25mcg", x = "50mcg",
+                             x = "75mcg", x = "100mcg", x = "125mcg",
+                           x = "150mcg"), 1, replace = F)))
   MedicationsMidaz <- replicate(samplenumber, paste("Midazolam ",
-                                                    sample(list(x = "1mg", x = "2mg", x = "3mg",
-                                                                x = "4mg", x = "5mg", x = "6mg", x = "7mg"),
+                        sample(list(x = "1mg", x = "2mg", x = "3mg",
+                       x = "4mg", x = "5mg", x = "6mg", x = "7mg"),
                                                            1, replace = F)))
   Instrument <- replicate(samplenumber, paste("Instrument: ",
-                                              sample(list(x = "FG1", x = "FG2", x = "FG3",
-                                                          x = "FG4", x = "FG5", x = "FG6", x = "FG7"),
+                                sample(list(x = "FG1", x = "FG2", x = "FG3",
+                          x = "FG4", x = "FG5", x = "FG6", x = "FG7"),
                                                      1, replace = F)))
   Extent_of_Exam <- replicate(samplenumber, paste("Extent of Exam: ",
                                                   sample(list(x = "Failed intubation", x = "Oesophagus",
@@ -320,6 +321,22 @@ EndoRaw2 <- function() {
   FINDINGS <- replicate(samplenumber, paste("Findings: ",
                                             stringr::str_c(as.list(sample(FINDINGS$x, sample(1:10),
                                                                           replace = T)), collapse = ",")))
+  
+  TherapyorNot <- replicate(samplenumber,
+                                           paste(sample(list(x1 = "Therapeutic- Dilatation was performed",
+                                                                             x2 = "", x3 = "HALO 90 done with good effect",
+                                                                             x4 = "TTS HALO to area",
+                                                                             x5 = "", x6 = "",
+                                                                             x7 = "A lesion underwent EMR", x8 = "",
+                                                                             x9 = "", x10 = "",
+                                                                             x11 = "", x12 = "Area APC'd",
+                                                                             x13 = "", x14 = "",
+                                                                             x15 = "",
+                                                                             x16 = "", x17 = "Therapeutic- RFA",x18= "",
+                                                             x19= "",x20= "",x21= "",x22= "",x23= "",x24= "",x25= ""
+                                                             ),
+                                                                        1, replace = F)))
+  
   ENDOSCOPIC_DIAGNOSIS <- data.frame(c("Ulcer- Oesophageal. ",
                                        "Post chemo-radiotherapy stricture ", "Possible achalasia.",
                                        "Oesophagitis. ", "Food bolus obstructing the oesophagus.",
@@ -336,7 +353,7 @@ EndoRaw2 <- function() {
                              Patient_Name, GeneralPractictioner, Date, Endoscopist,
                              Second_Endoscopist, MedicationsFent, MedicationsMidaz,
                              Instrument, Extent_of_Exam, INDICATIONS_FOR_EXAMINATION,
-                             PROCEDURE_PERFORMED, FINDINGS, ENDOSCOPIC_DIAGNOSIS)
+                             PROCEDURE_PERFORMED, FINDINGS, TherapyorNot,ENDOSCOPIC_DIAGNOSIS)
   # Now paste the OGD report dataframe together to
   # make the fake report:
   TheOGDReportFinal <- tidyr::unite(TheOGDReport,

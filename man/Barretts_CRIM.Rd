@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{Barretts_CRIM}
 \alias{Barretts_CRIM}
-\title{Barretts_CRIM}
+\title{CRIM status Barrett's}
 \usage{
 Barretts_CRIM(x, HospNum, EVENT)
 }

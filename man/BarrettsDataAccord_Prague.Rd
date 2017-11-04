@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsDataAccord_Prague}
 \alias{BarrettsDataAccord_Prague}
-\title{BarrettsDataAccord_Prague}
+\title{Prague score extraction}
 \usage{
 BarrettsDataAccord_Prague(x, y)
 }

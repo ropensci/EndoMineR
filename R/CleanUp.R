@@ -74,8 +74,6 @@ Extractor <- function(x, y, stra, strb, t) {
     t <- gsub(" ", "", t, fixed = TRUE)
     x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra, 
              "(.*)", strb, sep = ""), dotall = TRUE))
-    
-    
     x[, t] <- gsub("\\\\.*", "", x[, t])
     
     names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
@@ -274,7 +272,14 @@ EndoscChopperFindings <- function(x, y) {
 #' @keywords Negative Sentences
 #' @importFrom stringr str_replace
 #' @export
-#' @examples
+#' @examples anexample<-c("There is no evidence of polyp here",
+#' "Although the prep was poor,there was no adenoma found",
+#' "The colon was basically inflammed, but no polyp was seen",
+#' "The Barrett's segment was not biopsied",
+#' "The C0M7 stretch of Barrett's was flat")
+#' anexample<-data.frame(anexample)
+#' names(anexample)<-"Thecol"
+#' NegativeRemove(anexample,"Thecol")
 
 NegativeRemove <- function(x, y) {
     x <- (data.frame(x))
@@ -369,7 +374,7 @@ ColumnCleanUp <- function(x, y) {
 HistolChopperMacDescripCleanup <- function(x, y) {
     x <- data.frame(x)
     # Column specific cleanup
-    x[, y] <- gsub("Dictated by.*", "", x[, y])
+    x[, y] <- gsub("[Dd]ictated by.*", "", x[, y])
     return(x)
 }
 
@@ -405,30 +410,6 @@ HistolChopperHistol <- function(x, y) {
                                 perl = TRUE)
     x$Histol_Simplified <- gsub(":", "", x$Histol_Simplified,
                                 perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]egative.*\n", "", x$Histol_Simplified,
-                                perl = TRUE)
-    x$Histol_Simplified <- gsub("[Ww]ithin normal .*\n", "", 
-                                x$Histol_Simplified,perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]o .*\n", "", x$Histol_Simplified,
-                                perl = TRUE)
-    x$Histol_Simplified <- gsub(".*[Nn]ormal.*\n", "", x$Histol_Simplified,
-                                perl = TRUE)
-    x$Histol_Simplified <- gsub("^[Nn]ormal.*\n", "", x$Histol_Simplified
-                                , perl = TRUE)
-    x$Histol_Simplified <- gsub("[Ww]ithin normal histol.*\n", "", 
-                                x$Histol_Simplified,perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]egative for.*\n", "", x$Histol_Simplified,
-                                perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]egative for [Dd]ysplasia", "", 
-                                x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]o [Dd]ysplasia.*?\\.", "", 
-                                x$Histol_Simplified, perl = TRUE)
-    x$Histol_Simplified <- gsub("[Nn]egative for.*?\\.", "", 
-                                x$Histol_Simplified,perl = TRUE)
-    x$Histol_Simplified <- gsub("Neither dysplasia.*?\\.", "", 
-                                x$Histol_Simplified,perl = TRUE)
-    x$Histol_Simplified <- gsub("Neither dysplasia nor malignancy is seen",
-                                "", x$Histol_Simplified, perl = TRUE)
     return(x)
 }
 
@@ -522,7 +503,7 @@ HistolChopperExtrapolDx <- function(x, y) {
 #' with the Nature of the specimen or the Macroscopic description in it
 #' @keywords Macroscopic
 #' @export
-#' @examples t<-HistolChopperMacDescrip(Mypath, 'Natureofspecimen')
+#' @examples t<-HistolChopperMacDescrip(Mypath, 'Macroscopicdescription')
 
 HistolChopperMacDescrip <- function(x, y) {
     x <- data.frame(x)
@@ -576,7 +557,7 @@ HistolChopperNumbOfBx <- function(x, y, z) {
 #' @importFrom stringr str_extract
 #' @keywords biopsy size
 #' @export
-#' @examples v<-HistolChopperBxSize(Mypath,'Natureofspecimen')
+#' @examples v<-HistolChopperBxSize(Mypath,'Macroscopicdescription')
 
 HistolChopperBxSize <- function(x, y) {
     # What's the average biopsy size this month?

@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsTherapy_Numbers_EMRsByGrade}
 \alias{BarrettsTherapy_Numbers_EMRsByGrade}
-\title{BarrettsTherapy_Numbers_EMRsByGrade}
+\title{Number of Barrett's EMRs by grade}
 \usage{
 BarrettsTherapy_Numbers_EMRsByGrade(EndoSubsetEMR)
 }

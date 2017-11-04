@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsQuality_AnalysisBiopsyNumber}
 \alias{BarrettsQuality_AnalysisBiopsyNumber}
-\title{BarrettsQuality_AnalysisBiopsyNumber}
+\title{Barrett's number of biopsies}
 \usage{
 BarrettsQuality_AnalysisBiopsyNumber(x, Endo_ResultPerformed, PatientID,
   Endoscopist)
@@ -21,8 +21,7 @@ This function gets the biopsies taken per endoscopy and compares to the
 Prague score for that endoscopy.
 }
 \examples{
-v<-HistolChopperAccessionNumber(Mypath,'Histology','SP-\\\\d{2}-\\\\d{7}')
-v<-HistolChopperDx(v,'Diagnosis')
+v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
@@ -33,10 +32,9 @@ b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
 b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
-
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-BarrettsQuality_AnalysisBiopsyNumber(b4,'Endoscopist','Dateofprocedure',
-'Endoscopist')
+BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
+                                     'Endoscopist')
 }
 \keyword{Does}
 \keyword{data}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsPatientTracking_UniqueHospNum}
 \alias{BarrettsPatientTracking_UniqueHospNum}
-\title{BarrettsPatientTracking_UniqueHospNum}
+\title{Unique Hospital Numbers of Barrett's patients}
 \usage{
 BarrettsPatientTracking_UniqueHospNum(x, rule, PatientID)
 }

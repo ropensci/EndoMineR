@@ -245,6 +245,8 @@ HowManyTests <-
 #'  Note the Hospital Number column MUST be called PatientID.
 #' @param dfw the dataframe extracted using the standard cleanup scripts
 #' @param y the column containing the test like ProcPerformed for example
+#' @param PatientID the column containing the patients unique identifier 
+#' eg hostpital number
 #' @importFrom dplyr group_by
 #' @importFrom magrittr '%>%'
 #' @importfrom data.table setDT rowid
@@ -253,7 +255,7 @@ HowManyTests <-
 #' @export
 #' @examples
 
-SurveySankey <- function(dfw, y) {
+SurveySankey <- function(dfw, y,PatientID) {
   # Create the Sankey diagrams
   Sankey <-
     dcast(setDT(dfw)[, .SD, PatientID], PatientID ~ rowid(PatientID),
@@ -501,7 +503,21 @@ MetricByEndoscopist <- function(x, y, z) {
 #' @param SampleLocation Column describing the Macroscopic sample from histology
 #' @keywords Withdrawal
 #' @export
-#' @examples f<-TermStandardLocation(Mypath,'Histology')
+#' @examples Histoltree <-list("Hospital Number:","Patient Name:",
+#' "General Practitioner:","Date received:","Clinical Details",
+#'  "Nature of specimen","Histology","Diagnosis",""
+#')
+#'
+#' for (i in 1:(length(Histoltree) - 1)) {
+#'  Mypath <-Extractor(
+#'      Mypath, "PathReportWhole",as.character(Histoltree[i]),
+#'      as.character(Histoltree[i + 1]),
+#'      gsub(" ", "", as.character(Histoltree[i]))
+#'    )
+#' }
+#' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
+#' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+#' f<-TermStandardLocation(Mypath,'Histology')
 
 
 
@@ -628,7 +644,21 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' @importFrom stringr str_match_all
 #' @keywords Sample location
 #' @export
-#' @examples f<-TermStandardLocation(Mypath,'Histology')
+#' @examples Histoltree <-list("Hospital Number:","Patient Name:",
+#' "General Practitioner:","Date received:","Clinical Details",
+#'  "Nature of specimen","Histology","Diagnosis",""
+#')
+#'
+#' for (i in 1:(length(Histoltree) - 1)) {
+#'  Mypath <-Extractor(
+#'      Mypath, "PathReportWhole",as.character(Histoltree[i]),
+#'      as.character(Histoltree[i + 1]),
+#'      gsub(" ", "", as.character(Histoltree[i]))
+#'    )
+#' }
+#' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
+#' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+#' f<-TermStandardLocation(Mypath,'Histology')
 #' f<-SampleLocator(f,'SampleLocation')
 
 SampleLocator <- function(x, y) {
@@ -682,7 +712,21 @@ SampleLocator <- function(x, y) {
 #' @keywords Withdrawal
 #' @importFrom stringr str_match_all
 #' @export
-#' @examples f<-TermStandardLocation(Mypath,'Histology')
+#' @examples Histoltree <-list("Hospital Number:","Patient Name:",
+#' "General Practitioner:","Date received:","Clinical Details",
+#'  "Nature of specimen","Histology","Diagnosis",""
+#')
+#'
+#' for (i in 1:(length(Histoltree) - 1)) {
+#'  Mypath <-Extractor(
+#'      Mypath, "PathReportWhole",as.character(Histoltree[i]),
+#'      as.character(Histoltree[i + 1]),
+#'      gsub(" ", "", as.character(Histoltree[i]))
+#'    )
+#' }
+#' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
+#' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+#' f<-TermStandardLocation(Mypath,'Histology')
 #' f<-PolypLocator(f,'SampleLocation')
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{Barretts_LesionRecognitionEMR}
 \alias{Barretts_LesionRecognitionEMR}
-\title{Barretts_LesionRecognitionEMR}
+\title{Paris vs histopath Barrett's}
 \usage{
 Barretts_LesionRecognitionEMR(EndoSubsetEMR, y, z)
 }

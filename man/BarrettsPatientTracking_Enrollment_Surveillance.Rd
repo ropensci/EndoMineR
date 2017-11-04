@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsPatientTracking_Enrollment_Surveillance}
 \alias{BarrettsPatientTracking_Enrollment_Surveillance}
-\title{BarrettsPatientTracking_Enrollment_Surveillance}
+\title{How many Barrett's patients had surveillance}
 \usage{
 BarrettsPatientTracking_Enrollment_Surveillance(x, PatientID,
   Endo_ResultPerformed, IndicationsFroExamination)

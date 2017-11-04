@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsBasicNumbers}
 \alias{BarrettsBasicNumbers}
-\title{BarrettsBasicNumbers}
+\title{Barretts Basic Numbers}
 \usage{
 BarrettsBasicNumbers(x, Endo_ResultPerformed)
 }

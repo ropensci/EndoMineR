@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsDataAccord_FUGroup}
 \alias{BarrettsDataAccord_FUGroup}
-\title{BarrettsDataAccord_FUGroup}
+\title{Follow up group determination}
 \usage{
 BarrettsDataAccord_FUGroup(x, y)
 }

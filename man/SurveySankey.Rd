@@ -4,12 +4,15 @@
 \alias{SurveySankey}
 \title{SurveySankey}
 \usage{
-SurveySankey(dfw, y)
+SurveySankey(dfw, y, PatientID)
 }
 \arguments{
 \item{dfw}{the dataframe extracted using the standard cleanup scripts}
 
 \item{y}{the column containing the test like ProcPerformed for example}
+
+\item{PatientID}{the column containing the patients unique identifier 
+eg hostpital number}
 }
 \description{
 This creates a Sankey plot to see the order of tests for all patients:

@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsTherapeuticsRFA_ByCatheter}
 \alias{BarrettsTherapeuticsRFA_ByCatheter}
-\title{BarrettsTherapeuticsRFA_ByCatheter}
+\title{RFA catheter use}
 \usage{
 BarrettsTherapeuticsRFA_ByCatheter(EndoSubsetRFA, y, z)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsSurveillanceDDR}
 \alias{BarrettsSurveillanceDDR}
-\title{BarrettsSurveillanceDDR}
+\title{Dysplasia detection rate on surveillance}
 \usage{
 BarrettsSurveillanceDDR(x, y, IMorNoIM)
 }

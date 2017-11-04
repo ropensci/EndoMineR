@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsDataAccord_PathStage}
 \alias{BarrettsDataAccord_PathStage}
-\title{BarrettsDataAccord_PathStage}
+\title{Worst pathological stage Barrett's}
 \usage{
 BarrettsDataAccord_PathStage(x, y)
 }

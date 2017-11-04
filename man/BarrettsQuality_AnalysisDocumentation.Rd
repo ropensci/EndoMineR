@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsQuality_AnalysisDocumentation}
 \alias{BarrettsQuality_AnalysisDocumentation}
-\title{BarrettsQuality_AnalysisDocumentation}
+\title{Analysis of Barrett's Documentation Quality}
 \usage{
 BarrettsQuality_AnalysisDocumentation(x, Findings)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/BarrettsFunctions.R
 \name{BarrettsDataAccord_Event}
 \alias{BarrettsDataAccord_Event}
-\title{BarrettsDataAccord_Event}
+\title{Therapeutic subtypes}
 \usage{
 BarrettsDataAccord_Event(x, y, z, aa, bb)
 }

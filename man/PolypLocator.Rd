@@ -19,6 +19,20 @@ which the TermStandardLocation produces.
 It should be used after the PolypTidyUpLocator
 }
 \examples{
+Histoltree <-list("Hospital Number:","Patient Name:",
+"General Practitioner:","Date received:","Clinical Details",
+ "Nature of specimen","Histology","Diagnosis",""
+)
+
+for (i in 1:(length(Histoltree) - 1)) {
+ Mypath <-Extractor(
+     Mypath, "PathReportWhole",as.character(Histoltree[i]),
+     as.character(Histoltree[i + 1]),
+     gsub(" ", "", as.character(Histoltree[i]))
+   )
+}
+names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
+Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 f<-TermStandardLocation(Mypath,'Histology')
 f<-PolypLocator(f,'SampleLocation')
 }
