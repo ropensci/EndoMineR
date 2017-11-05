@@ -19,6 +19,19 @@ of pathological grade vs
 endoscopic Paris grade.This should only be run after all the 
 BarrettsDataAccord functions.
 }
+\examples{
+v<-HistolChopperDx(v,'Diagnosis')
+v<-HistolChopperExtrapolDx(v,'Diagnosis')
+v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+v<-HistolChopperBxSize(v,'Natureofspecimen')
+b1<-BarrettsDataAccord_Prague(v,'Findings')
+b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+b3<-BarrettsDataAccord_Event(b2,'Histology',
+                             'ProcedurePerformed','OGDReportWhole','Findings')
+b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+Barretts_LesionRecognitionEMR(b4,"ProcedurePerformed","Findings")
+}
 \keyword{Does}
 \keyword{data}
 \keyword{something}

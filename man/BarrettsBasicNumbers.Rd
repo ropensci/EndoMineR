@@ -15,6 +15,19 @@ BarrettsBasicNumbers(x, Endo_ResultPerformed)
 This looks at the basic numbers of all the therapeutic endoscopies over time.
 This should only be run after all the BarrettsDataAccord functions.
 }
+\examples{
+v<-HistolChopperDx(v,'Diagnosis')
+v<-HistolChopperExtrapolDx(v,'Diagnosis')
+v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+v<-HistolChopperBxSize(v,'Natureofspecimen')
+b1<-BarrettsDataAccord_Prague(v,'Findings')
+b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+b3<-BarrettsDataAccord_Event(b2,'Histology',
+                             'ProcedurePerformed','OGDReportWhole','Findings')
+b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+BarrettsBasicNumbers(b4,"Date.x")
+}
 \keyword{Number}
 \keyword{of}
 \keyword{therapies}

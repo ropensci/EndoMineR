@@ -342,7 +342,8 @@ unremarkable|-ve|normal).*?(\\.|
 #' @param y column of interest
 #' @keywords Cleaner
 #' @export
-#' @examples
+#' @examples pp<-c("The rain in spain falls mainly",".\n",":What")
+#' me<-ColumnCleanUp(pp)
 
 ColumnCleanUp <- function(x, y) {
     x <- (data.frame(x))

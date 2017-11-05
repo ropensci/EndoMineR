@@ -705,7 +705,17 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' @importFrom magrittr '%>%'
 #' @import ggplot2
 #' @export
-#' @examples
+#' @examples v<-HistolChopperDx(v,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+#' v<-HistolChopperBxSize(v,'Natureofspecimen')
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#'                              'ProcedurePerformed','OGDReportWhole','Findings')
+#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' BarrettsBasicNumbers(b4,"Date.x")
 
 BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
   x <- data.frame(x)
@@ -735,7 +745,17 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
 #' @param z Another endoscopy report field of interest
 #' @keywords RFA, Radiofrequency ablation
 #' @export
-#' @examples
+#' @examples v<-HistolChopperDx(v,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+#' v<-HistolChopperBxSize(v,'Natureofspecimen')
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#'                              'ProcedurePerformed','OGDReportWhole','Findings')
+#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' BarrettsTherapeuticsRFA_ByCatheter(b4,"ProcedurePerformed","Findings")
 
 BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
   EndoSubsetRFA <- EndoSubsetRFA[EndoSubsetRFA$EVENT == "RFA",]
@@ -806,7 +826,17 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 #' @keywords Does something with data
 #' @import gplots
 #' @export
-#' @examples
+#' @examples v<-HistolChopperDx(v,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+#' v<-HistolChopperBxSize(v,'Natureofspecimen')
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#'                              'ProcedurePerformed','OGDReportWhole','Findings')
+#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' Barretts_LesionRecognitionEMR(b4,"ProcedurePerformed","Findings")
 
 Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
   EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR",]
@@ -904,7 +934,16 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' @keywords CRIM
 #' @importFrom dplyr group_by slice mutate lead
 #' @export
-#' @examples
+#' @examples v<-HistolChopperDx(v,'Diagnosis')
+#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#' v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+#' v<-HistolChopperBxSize(v,'Natureofspecimen')
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#'                              'ProcedurePerformed','OGDReportWhole','Findings')
+#' colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
+#' Barretts_CRIM(b3,'HospitalNumber',"EVENT")
 
 Barretts_CRIM <- function(x, HospNum, EVENT) {
   x <- data.frame(x)

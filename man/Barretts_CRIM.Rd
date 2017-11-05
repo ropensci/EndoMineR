@@ -21,4 +21,16 @@ This is done by collecting those endoscopies where the last EVENT was
 equal to 'nothing' when the patient had undergone radiofrequency ablation at 
 some point
 }
+\examples{
+v<-HistolChopperDx(v,'Diagnosis')
+v<-HistolChopperExtrapolDx(v,'Diagnosis')
+v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
+v<-HistolChopperBxSize(v,'Natureofspecimen')
+b1<-BarrettsDataAccord_Prague(v,'Findings')
+b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+b3<-BarrettsDataAccord_Event(b2,'Histology',
+                             'ProcedurePerformed','OGDReportWhole','Findings')
+colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
+Barretts_CRIM(b3,'HospitalNumber',"EVENT")
+}
 \keyword{CRIM}

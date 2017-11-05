@@ -20,4 +20,8 @@ ChopperNewLines has been used. It can be used as part of the other functions
 or as a way of providing a 'positive diagnosis only' type output (see
 HistolChopperDx)
 }
+\examples{
+pp<-c("The rain in spain falls mainly",".\\n",":What")
+me<-ColumnCleanUp(pp)
+}
 \keyword{Cleaner}

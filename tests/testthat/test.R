@@ -2,6 +2,8 @@
 #load(file="/home/rstudio/EndoMineR/data/TheOGDReportFinal.rda")
 
 #### The data for the tests ####
+
+# For the upper GI
 Mypath <- PathDataFrameFinal
 Myendo <- TheOGDReportFinal
 Myendo$OGDReportWhole <-
@@ -69,6 +71,84 @@ v <-
     "Dateofprocedure",
     "HospitalNumber"
   )
+
+
+
+
+
+
+
+#For the colon data
+MypathColon<-PathDataFrameFinalColon
+MyendoColon <- ColonFinal
+MyendoColon$OGDReportWhole <-
+  gsub("2nd Endoscopist:",
+       "Second endoscopist:",
+       MyendoColon$OGDReportWhole)
+EndoscTree <-
+  list(
+    "Hospital Number:",
+    "Patient Name:",
+    "General Practitioner:",
+    "Date of procedure:",
+    "Endoscopist:",
+    "Second endoscopist:",
+    "Medications",
+    "Instrument",
+    "Extent of Exam:",
+    "Indications:",
+    "Procedure Performed:",
+    "Findings:",
+    "Endoscopic Diagnosis:"
+  )
+for (i in 1:(length(EndoscTree) - 1)) {
+  MyendoColon <-
+    Extractor(
+      MyendoColon,
+      "OGDReportWhole",
+      as.character(EndoscTree[i]),
+      as.character(EndoscTree[i + 1]),
+      as.character(EndoscTree[i])
+    )
+}
+
+
+Histoltree <-
+  list(
+    "Hospital Number:",
+    "Patient Name:",
+    "General Practitioner:",
+    "Date received:",
+    "Clinical Details",
+    "Nature of specimen",
+    "Histology",
+    "Diagnosis",
+    ""
+  )
+for (i in 1:(length(Histoltree) - 1)) {
+  MypathColon <-
+    Extractor(
+      MypathColon,
+      "PathReportWhole",
+      as.character(Histoltree[i]),
+      as.character(Histoltree[i + 1]),
+      gsub(" ", "", as.character(Histoltree[i]))
+    )
+}
+names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
+MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
+
+vColon <-
+  Endomerge2(
+    MypathColon,
+    "Dateofprocedure",
+    "HospitalNumber",
+    MyendoColon,
+    "Dateofprocedure",
+    "HospitalNumber"
+  )
+
+
 
 
 ##### rrrrrrrrrrrrrrrrrrrCleanUp test functions ####
@@ -443,23 +523,24 @@ test_that("PolypTidyUpLocator", {
 
 test_that("GRS_Type_Assess_By_Unit", {
  #  
- #  v<-HistolChopperDx(PathDataFrameFinalColon,'Diagnosis')
- #  v<-HistolChopperExtrapolDx(v,'Diagnosis')
- #  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
- #  v<-HistolChopperBxSize(v,'Natureofspecimen')
- #  
- #  
- #  v<-Endomerge2(ColonFinal,'Dateofprocedure','HospitalNumber',v,
- # 'Dateofprocedure','HospitalNumber')
- #  GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed', 
- # 'Endoscopist','Diagnosis','Histology')
+ 
+ vColon2<-HistolChopperDx(vColon,'Diagnosis')
+ 
+ vColon2<-HistolChopperExtrapolDx(vColon2,'Diagnosis')
+ 
+ vColon2<-HistolChopperNumbOfBx(vColon2,'Natureofspecimen','specimen')
+ 
+ vColon2<-HistolChopperBxSize(vColon2,'Natureofspecimen')
+ GRSTable<-GRS_Type_Assess_By_Unit(vColon2,'ProcedurePerformed', 
+ 'Endoscopist','Diagnosis','Histology')
   
 })
 
 #### NumberPerformed test ####
 
 test_that("NumberPerformed", {
-  
+  Myendo<-Myendo[grepl('Gastroscopy',Myendo$ProcedurePerformed),]
+  NumberPerformed(Myendo,'Endoscopist','Indications')
 })
 
 #### rrrrrrrrrrrrrrrrrrrrrrr Barretts Functions Test ####

@@ -379,7 +379,7 @@ pathRep2 <- function() {
   
   AccessionNum<-paste0("SP-",sample(10:99),"-",sample(1000000:9999999,2000,replace=F))
   Date <- Date_of_ProcedureAll+sample(1:12,1)
-  Date <- paste("Date received: ", Date_of_Procedure)
+  Date <- paste("Date received: ", Date)
 
                  # replicate(samplenumber, as.numeric(sample(1:10)),
                  #         1))
@@ -440,9 +440,9 @@ pathRep2 <- function() {
 #' @examples ColonEndoRaw(x)
 
 ColonEndoRaw <- function(x) {
-  Date_of_Procedure <- generator::r_date_of_births(samplenumber,
-                                                   start = as.Date("2001-01-01"), end = as.Date("2017-01-01"))
-  Date <- paste("Date of procedure: ", Date_of_Procedure)
+  #Date_of_Procedure <- generator::r_date_of_births(samplenumber,
+  #                                                 start = as.Date("2001-01-01"), end = as.Date("2017-01-01"))
+  Date <- paste("Date of procedure: ", Date_of_ProcedureAll)
   EndoscopistList <- as.list(sample(randomNames::randomNames(samplenumber,
                                                              "first", "last"), 10, replace = T))
   Second_EndoscopistList <- as.list(sample(randomNames::randomNames(samplenumber,
@@ -480,7 +480,7 @@ ColonEndoRaw <- function(x) {
                                                                              x11 = "Fe deficiency anaemia", x12 = "Chronic abdominal pain"),
                                                                         1, replace = F)))
   PROCEDURE_PERFORMED <- "Procedure Performed: Colonoscopy"
-  FINDINGS <- read.table("./data_raw/data/FindingsTextColon",
+  FINDINGS <- read.table("/home/rstudio/EndoMineR/data-raw/data/FindingsTextColon.txt",
                          header = T, stringsAsFactors = F)
   FINDINGS <- replicate(samplenumber, paste("Findings: ",
                                             stringr::str_c(as.list(sample(FINDINGS$x, sample(1:10),
@@ -510,7 +510,9 @@ ColonEndoRaw <- function(x) {
   names(TheOGDReportFinal) <- "OGDReportWhole"
   ColonFinal<-TheOGDReportFinal
   # load(file = "ColonFinal.rda")
-  return(TheOGDReportFinal)
+  
+  save(ColonFinal,file = "/home/rstudio/EndoMineR/data/ColonFinal.rda")
+  return(ColonFinal)
 }
 
 
@@ -524,19 +526,22 @@ ColonEndoRaw <- function(x) {
 #' @examples ColonpathRep(x)
 
 ColonpathRep <- function(x) {
-  Date_of_Procedure <- generator::r_date_of_births(samplenumber,
-                                                   start = as.Date("2001-01-01"), end = as.Date("2017-01-01"))
-  Date <- paste("Date received: ", Date_of_Procedure +
-                  replicate(samplenumber, as.numeric(sample(1:10)),
-                            1))
+  #Date_of_Procedure <- generator::r_date_of_births(samplenumber,
+  #                                                 start = as.Date("2001-01-01"), end = as.Date("2017-01-01"))
+  # Date <- paste("Date received: ", Date_of_Procedure +
+  #                 replicate(samplenumber, as.numeric(sample(1:10)),
+  #                           1))
+  
+  Date <- Date_of_ProcedureAll+sample(1:12,1)
+  Date <- paste("Date received: ", Date)
   # Clinical Details
-  ClinDet <- read.table("./data_raw/data/Histopath_ClinDetPhrasesColon.txt",
+  ClinDet <- read.table("./data-raw/data/Histopath_ClinDetPhrasesColon.txt",
                         header = F, stringsAsFactors = F)
   ClinDet <- replicate(samplenumber, paste("Clinical Details: ",
                                            stringr::str_c(as.list(sample(ClinDet$V1, sample(1:10),
                                                                          replace = T)), collapse = ",")))
   # Nature of the specimen
-  NatureOfSpec <- read.table("./data_raw/data/Histopath_MacDescripPhrasesColon.txt",
+  NatureOfSpec <- read.table("./data-raw/data/Histopath_MacDescripPhrasesColon.txt",
                              header = F, stringsAsFactors = F)
   NatureOfSpec <- replicate(samplenumber, paste(sample(1:10,1,replace=T),"specimen. Nature of specimen: ",
                                                 stringr::str_c(as.list(sample(NatureOfSpec$V1, sample(1:10), replace = T)), collapse = ",")))
@@ -550,13 +555,13 @@ ColonpathRep <- function(x) {
   # MacDescrip<-replicate(1000,paste
   # (sample(list.of.samples,1,replace=F),paste('Diagnoses',stringr::stringr::str_c(sample(line,sample(3:10,1),replace=F),collapse='.'))))
   # Histol Details
-  Histol <- read.table("./data_raw/data/HistolTextColon",
+  Histol <- read.table("./data-raw/data/HistolTextColon",
                        header = F, stringsAsFactors = F)
   Histol <- replicate(samplenumber, paste("Histology: ",
                                           stringr::str_c(as.list(sample(Histol$V1, sample(1:10),
                                                                         replace = T)), collapse = ",")))
   # Diagnostic details
-  Diagnostic <- read.table("./data_raw/data/Histopath_DxRawColon.txt",
+  Diagnostic <- read.table("./data-raw/data/Histopath_DxRawColon.txt",
                            header = F, stringsAsFactors = F)
   Diagnostic <- replicate(samplenumber, paste("Diagnosis: ",
                                               stringr::str_c(as.list(sample(Diagnostic$V1, sample(5:10),
@@ -570,5 +575,6 @@ ColonpathRep <- function(x) {
                                           colnames(PathDataFrameReport), sep = "\n")
   names(PathDataFrameFinalColon) <- "PathReportWhole"
   # load(file = "./data_raw/data/PathDataFrameFinalColon.rda")
+  save(PathDataFrameFinalColon,file = "/home/rstudio/EndoMineR/data/PathDataFrameFinalColon.rda")
   return(PathDataFrameFinalColon)
 }
