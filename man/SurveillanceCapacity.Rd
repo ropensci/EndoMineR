@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SurveillanceCapacity}
 \alias{SurveillanceCapacity}
-\title{SurveillanceCapacity}
+\title{Number of tests done per month}
 \usage{
 SurveillanceCapacity(x, Endo_ResultPerformed)
 }

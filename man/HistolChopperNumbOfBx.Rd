@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{HistolChopperNumbOfBx}
 \alias{HistolChopperNumbOfBx}
-\title{HistolChopperNumbOfBx}
+\title{Extract the number of biopsies taken from histology report}
 \usage{
 HistolChopperNumbOfBx(x, y, z)
 }

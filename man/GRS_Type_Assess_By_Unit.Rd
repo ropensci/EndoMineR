@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{GRS_Type_Assess_By_Unit}
 \alias{GRS_Type_Assess_By_Unit}
-\title{GRS_Type_Assess_By_Unit}
+\title{Create GRS metrics by endoscopist (X-ref with pathology)}
 \usage{
 GRS_Type_Assess_By_Unit(x, ProcPerformed, Endo_Endoscopist, Dx, Histol)
 }

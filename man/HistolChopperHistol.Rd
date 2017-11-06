@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{HistolChopperHistol}
 \alias{HistolChopperHistol}
-\title{HistolChopperHistol}
+\title{Extract the histology data from the report by removing negative findings}
 \usage{
 HistolChopperHistol(x, y)
 }

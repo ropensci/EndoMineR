@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SurveillanceTimeByRow}
 \alias{SurveillanceTimeByRow}
-\title{SurveillanceTimeByRow}
+\title{Extract the time difference between each test in days}
 \usage{
 SurveillanceTimeByRow(x, HospNum_Id, Endo_ResultPerformed)
 }

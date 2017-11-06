@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{PolypTidyUpLocator}
 \alias{PolypTidyUpLocator}
-\title{PolypTidyUpLocator}
+\title{Clean the polyp location}
 \usage{
 PolypTidyUpLocator(x, SampleLocation)
 }

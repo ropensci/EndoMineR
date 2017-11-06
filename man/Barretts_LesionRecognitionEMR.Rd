@@ -20,10 +20,12 @@ endoscopic Paris grade.This should only be run after all the
 BarrettsDataAccord functions.
 }
 \examples{
-v<-HistolChopperDx(v,'Diagnosis')
+v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
-v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-v<-HistolChopperBxSize(v,'Natureofspecimen')
+v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+v<-HistolChopperBxSize(v,'Macroscopicdescription')
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+'HospitalNumber')
 b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',

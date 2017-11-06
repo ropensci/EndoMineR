@@ -250,6 +250,11 @@ test_that("EndoscChopperFindings", {
   expect_true(all(!is.na(Myendo$Findings)))
 })
 
+#### ChopperNewLines test ####
+test_that("ChopperNewLines", {
+ChopperNewLines(Myendo,'OGDReportWhole')
+})
+
 #### NegativeRemove test ####
 
 test_that("NegativeRemove", {
@@ -323,7 +328,6 @@ test_that("HistolChopperAccessionNumber", {
 #### HistolChopperMacDescrip test ####
 
 test_that("HistolChopperMacDescrip", {
-  #Mypath<-HistolChopperMacDescrip(Mypath, "Natureofspecimen")
   Mypath <- HistolChopperMacDescrip(Mypath, "Natureofspecimen")
   expect_true(all(!is.na(Mypath$BxSize)))
 })
@@ -397,13 +401,28 @@ test_that("HowManyTests", {
 #### SurveySankey test ####
 
 test_that("SurveySankey", {
-  
+names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
+SurveySankey(Myendo,"ProcedurePerformed","PatientID")
 })
 
 #### PatientFlow_CircosPlots test ####
 
 test_that("PatientFlow_CircosPlots", {
-  
+  Event <- list(x1 = "Therapeutic- Dilatation",
+                x2 = "Other-", x3 = "Surveillance",
+                x4 = "APC", x5 = "Therapeutic- RFA TTS",
+                x5 = "Therapeutic- RFA 90",
+                x6 = "Therapeutic- EMR", x7 = "Therapeutic- RFA 360")
+  EndoEvent<-replicate(2000,sample(Event,1, replace = F))
+  fff<-unlist(EndoEvent)
+  fff<-data.frame(fff)
+  names(fff)<-"col1"
+  Myendo<-cbind(fff$col1,Myendo)
+  names(Myendo)[names(Myendo) == 'fff$col1'] <- 'EndoEvent'
+  Myendo$EndoEvent<-unlist(Myendo$EndoEvent)
+  Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
+  names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
+  PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
 })
 
 #### ListLookup test ####
@@ -446,7 +465,8 @@ test_that("TermStandardLocation", {
       gsub(" ", "", as.character(Histoltree[i]))
     )
 }
-names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) == 'Datereceived'] <- 'Dateofprocedure'
+names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) == 
+                                 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
 f<-PolypLocator(f,'SampleLocation')
@@ -469,7 +489,8 @@ test_that("SampleLocator", {
       gsub(" ", "", as.character(Histoltree[i]))
     )
   }
-  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) == 'Datereceived'] <- 'Dateofprocedure'
+  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
+                                   'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
   f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
   f<-SampleLocator(f,'SampleLocation')
@@ -491,7 +512,8 @@ test_that("PolypLocator", {
       gsub(" ", "", as.character(Histoltree[i]))
     )
   }
-  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) == 'Datereceived'] <- 'Dateofprocedure'
+  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
+                                   'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
   f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
   f<-PolypLocator(f,'SampleLocation')
@@ -513,7 +535,8 @@ test_that("PolypTidyUpLocator", {
       gsub(" ", "", as.character(Histoltree[i]))
     )
   }
-  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) == 'Datereceived'] <- 'Dateofprocedure'
+  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
+                                   'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
   f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
   f<-PolypTidyUpLocator(f,'SampleLocation')
@@ -525,11 +548,8 @@ test_that("GRS_Type_Assess_By_Unit", {
  #  
  
  vColon2<-HistolChopperDx(vColon,'Diagnosis')
- 
  vColon2<-HistolChopperExtrapolDx(vColon2,'Diagnosis')
- 
  vColon2<-HistolChopperNumbOfBx(vColon2,'Natureofspecimen','specimen')
- 
  vColon2<-HistolChopperBxSize(vColon2,'Natureofspecimen')
  GRSTable<-GRS_Type_Assess_By_Unit(vColon2,'ProcedurePerformed', 
  'Endoscopist','Diagnosis','Histology')
@@ -688,14 +708,16 @@ test_that("BarrettsTherapy_Numbers_EMRsByGrade", {
 #### BarrettsBasicNumbers ####
 
 test_that("BarrettsBasicNumbers", {
-  v<-HistolChopperDx(v,'Diagnosis')
+  v<-HistolChopperDx(Mypath,'Diagnosis')
   v<-HistolChopperExtrapolDx(v,'Diagnosis')
   v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
   v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
+                "Dateofprocedure","HospitalNumber")
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-                      'ProcedurePerformed','OGDReportWhole','Findings')
+                               'ProcedurePerformed','OGDReportWhole','Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsBasicNumbers(b4,"Date.x")

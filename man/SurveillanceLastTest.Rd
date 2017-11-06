@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SurveillanceLastTest}
 \alias{SurveillanceLastTest}
-\title{SurveillanceLastTest}
+\title{Extract the last test done by a patient only}
 \usage{
 SurveillanceLastTest(x, HospNum_Id, Endo_ResultPerformed)
 }

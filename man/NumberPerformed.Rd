@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{NumberPerformed}
 \alias{NumberPerformed}
-\title{NumberPerformed}
+\title{Determine overall number of procedures performed}
 \usage{
 NumberPerformed(x, y, z)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{EndoscChopperInstrument}
 \alias{EndoscChopperInstrument}
-\title{EndoscChopperInstrument}
+\title{Cleans instrument column if present}
 \usage{
 EndoscChopperInstrument(x, y)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SurveySankey}
 \alias{SurveySankey}
-\title{SurveySankey}
+\title{Create a Sankey plot for patient flow}
 \usage{
 SurveySankey(dfw, y, PatientID)
 }
@@ -21,5 +21,9 @@ the procedure type (eg EMR,
  radiofrequency ablation for Barrett's but can be
  any description of a procedure you desire)
  Note the Hospital Number column MUST be called PatientID.
+}
+\examples{
+names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
+SurveySankey(Myendo,"ProcedurePerformed","PatientID")
 }
 \keyword{Sankey}

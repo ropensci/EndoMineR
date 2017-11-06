@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{HistolChopperDx}
 \alias{HistolChopperDx}
-\title{HistolChopperDx}
+\title{Extracts histological diagnosis}
 \usage{
 HistolChopperDx(x, y)
 }

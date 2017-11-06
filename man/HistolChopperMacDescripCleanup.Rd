@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{HistolChopperMacDescripCleanup}
 \alias{HistolChopperMacDescripCleanup}
-\title{HistolChopperMacDescripCleanup}
+\title{Clean up histological macroscopic description data}
 \usage{
 HistolChopperMacDescripCleanup(x, y)
 }

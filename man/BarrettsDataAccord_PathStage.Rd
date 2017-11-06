@@ -22,12 +22,22 @@ Specfically it extracts the histopathology worst grade
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
+# Firstly relevant columns are extrapolated from the 
+# Mypath demo dataset. These functions are all part of Histology data cleaning
+# as part of the package. 
+
 v<-HistolChopperAccessionNumber(Mypath,'Histology',
 'SP-\\\\d{2}-\\\\d{7}')
 v<-HistolChopperDx(v,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
+# The histology is then merged with the Endoscopy dataset. The merge occurs
+according to date and Hospital number
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+'HospitalNumber')
+# The function then takes the Histology column from the merged data set (v).
+# It extracts the worst histological grade for a specimen
 b<-BarrettsDataAccord_PathStage(v,'Histology')
 }
 \keyword{Pathology}

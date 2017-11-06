@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{EndoscChopperIndications}
 \alias{EndoscChopperIndications}
-\title{EndoscChopperIndications}
+\title{Cleans indications column if present}
 \usage{
 EndoscChopperIndications(x, y)
 }

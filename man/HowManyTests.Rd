@@ -2,11 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{HowManyTests}
 \alias{HowManyTests}
-\title{HowManyTests
-Get an overall idea of how many endoscopies have been done for an indication 
-by year and month. This is a more involved version of 
-SurveillanceCapacity function. It takes string for 
-the Indication for the test}
+\title{Number of tests done per month and year by indication}
 \usage{
 HowManyTests(x, Indication, Endo_ResultPerformed, StringToSearch)
 }
@@ -21,6 +17,12 @@ performed}
 \item{StringToSearch}{The string in the Indication to search for}
 }
 \description{
+Get an overall idea of how many endoscopies have been done for an indication 
+by year and month. This is a more involved version of 
+SurveillanceCapacity function. It takes string for 
+the Indication for the test
+}
+\details{
 This returns a list which contains a plot (number of tests for that 
 indication over time and a table with the same information broken down 
 by month and year).

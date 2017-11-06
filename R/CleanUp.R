@@ -9,7 +9,7 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD",
 
 ############## Endoscopy Clean-up functions##############
 
-#' EndoscChopperNewLines
+#' Cleans endoscopy reports and splits sentences into new lines
 #'
 #' Cleans the long lines to separate them into new lines if necessary. 
 #' This helps further down the line in the tokenisation of the text. 
@@ -34,7 +34,7 @@ ChopperNewLines <- function(x, y) {
 
 
 
-#' Extractor
+#' Extracts the columns from the raw report
 #'
 #' This is the main extractor for the Endoscopy and Histology report.
 #' This depends on the user creating a list of words or characters that 
@@ -89,7 +89,7 @@ Extractor <- function(x, y, stra, strb, t) {
 
 
 
-#' EndoscChopperEndoscopist
+#' Cleans endoscopist column if present
 #'
 #' If an endoscopist column is part of the dataset once the extractor 
 #' function has been used this cleans the endoscopist column from the report. 
@@ -119,7 +119,7 @@ EndoscChopperEndoscopist <- function(x, y) {
     return(x)
 }
 
-#' EndoscChopperMeds
+#' Cleans medication column if present
 #'
 #' This cleans medication column from the report assuming such a column exists. 
 #' It gets rid of common entries that are not needed. It also splits the 
@@ -149,7 +149,7 @@ EndoscChopperMeds <- function(x, y) {
 }
 
 
-#' EndoscChopperInstrument
+#' Cleans instrument column if present
 #'
 #' This cleans Instument column from the report assuming such a column exists
 #' (where instrument usually refers to the endoscope number being used. 
@@ -182,7 +182,7 @@ EndoscChopperInstrument <- function(x, y) {
     return(x)
 }
 
-#' EndoscChopperIndications
+#' Cleans indications column if present
 #'
 #' This cleans the Indication from the report assuming such a column exists. 
 #' It largely gets rid of carriage returns especially if used after the 
@@ -205,11 +205,11 @@ EndoscChopperIndications <- function(x, y) {
 }
 
 
-#' EndoscChopperProcPerformed
+#'  Cleans Procedure performed column if present
 #'
 #' This cleans the Procedure Performed column from the report assuming 
 #' such a column exists. Procedure Performed relates to whether this was a 
-#' Gastroscopy or Colonoscopy etc.
+#' Gastroscopy or Colonoscopy and or the type of therapy used etc.
 #' It gets rid of common entries that are not needed.
 #' It should be used after the Extractor and the optional ChopperNewLines 
 #' has been used.
@@ -234,15 +234,15 @@ EndoscChopperProcPerformed <- function(x, y) {
 }
 
 
-#' EndoscChopperFindings
+#' Cleans Procedure performed column if present
 #'
-#' This cleans the Procedure Performed column from the report assuming 
+#' This cleans the Findings column from the report assuming 
 #' such a column exists. Findings relates to what was found at the endoscopy
 #' This is usually a separate entry to the overall 'Diagnosis' but any
 #' are in which the description of the endoscopic findings, including 
 #' overall diagnosis or not, can be used.
 #' It should be used after the Extractor and the optional ChopperNewLines 
-#' has been used.
+#' has been used. At present it only cleans cm measurement
 #' @param x dataframe with column of interest
 #' @param y column of interest
 #' @keywords Procedure 
@@ -257,7 +257,7 @@ EndoscChopperFindings <- function(x, y) {
 
 ####### General Clean-Up functions #####
 
-#' NegativeRemove
+#' Removes negative and normal sentences
 #'
 #' Extraction of the Negative sentences so that normal findings can be 
 #' removed and not counted when searching for true diseases. eg remove 
@@ -329,7 +329,7 @@ unremarkable|-ve|normal).*?(\\.|
 
 
 
-#' ColumnCleanUp
+#' Tidies up messy columns
 #'
 #' This does a general clean up of whitespace,
 #' semi-colons,full stops at the start
@@ -358,7 +358,7 @@ ColumnCleanUp <- function(x, y) {
 
 ####### Histology Clean Up functions #######
 
-#' HistolChopperMacDescripCleanup
+#' Clean up histological macroscopic description data 
 #'
 #' This extracts Macroscopic description data from the pathology report.
 #' Macroscopic description usually relates to the number of specimens
@@ -380,7 +380,7 @@ HistolChopperMacDescripCleanup <- function(x, y) {
 }
 
 
-#' HistolChopperHistol
+#' Extract the histology data from the report by removing negative findings 
 #'
 #' This extracts Histology details data from the report. The Histology details
 #' usually relate to the description of the histological report. This implements
@@ -416,7 +416,7 @@ HistolChopperHistol <- function(x, y) {
 
 
 
-#' HistolChopperAccessionNumber
+#' Extract histological accession number
 #'
 #' This extracts Accession Number data data from the report where one is 
 #' present. The Accession number relates to the actual specimen number as 
@@ -437,7 +437,7 @@ HistolChopperAccessionNumber <- function(x, y, stra) {
     return(x)
 }
 
-#' HistolChopperDx
+#' Extracts histological diagnosis
 #'
 #' This extracts Diagnosis data from the report. The Diagnosis is the overall 
 #' impression of the pathologist for that specimen. At the moment, Only Capital 
@@ -466,7 +466,7 @@ HistolChopperDx <- function(x, y) {
     
 }
 
-#' HistolChopperExtrapolDx
+#' Extract specific diagnoses from the histology report
 #'
 #' This extracts other specific diagnoses from the report. These have been hard 
 #' coded to look for dysplasia cancer and GIST. Optional use.
@@ -491,7 +491,7 @@ HistolChopperExtrapolDx <- function(x, y) {
 
 
 
-#' HistolChopperMacDescrip
+#' Cleans spelt numbers in histology report
 #' 
 #' This extracts numbers from written (spelt) numbers in the Macroscopic 
 #' description text. This means the text can then be used to extract the number 
@@ -521,7 +521,7 @@ HistolChopperMacDescrip <- function(x, y) {
     return(x)
 }
 
-#' HistolChopperNumbOfBx
+#' Extract the number of biopsies taken from histology report
 #'
 #' This extracts the number of biopsies taken from the pathology report. 
 #' This is usually from the Macroscopic description column.
@@ -545,7 +545,7 @@ HistolChopperNumbOfBx <- function(x, y, z) {
     return(x)
 }
 
-#' HistolChopperBxSize
+#' Determine the largest biopsy size from the histology report
 #'
 #' This extracts the biopsy size from the report. If there are multiple 
 #' biopsies it will extract the overall size of each one (size is calculated 

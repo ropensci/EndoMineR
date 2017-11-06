@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{HistolChopperAccessionNumber}
 \alias{HistolChopperAccessionNumber}
-\title{HistolChopperAccessionNumber}
+\title{Extract histological accession number}
 \usage{
 HistolChopperAccessionNumber(x, y, stra)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{MetricByEndoscopist}
 \alias{MetricByEndoscopist}
-\title{MetricByEndoscopist}
+\title{Plot a metric by endoscopist}
 \usage{
 MetricByEndoscopist(x, y, z)
 }

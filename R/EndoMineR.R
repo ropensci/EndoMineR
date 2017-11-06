@@ -43,7 +43,7 @@ if (getRversion() >= "2.15.1")
 
 ######## Surveillance functions ######
 
-#' SurveillanceTimeByRow
+#' Extract the time difference between each test in days
 #'
 #' This determines the time difference between each test for a patient in days.
 #'
@@ -68,7 +68,8 @@ SurveillanceTimeByRow <-
     ), 1), units = "days"))
   }
 
-#' SurveillanceLastToNow
+#' Extract the last test done by a patient in days and how long ago
+#' 
 #' This determines the last test done by that patient and the time
 #' between now and that last test in days
 #'
@@ -94,7 +95,7 @@ SurveillanceLastToNow <-
   }
 
 
-#' SurveillanceLastTest
+#' Extract the last test done by a patient only
 #'
 #' Extracts the last test only per patient
 #' @param x dataframe
@@ -118,7 +119,7 @@ SurveillanceLastTest <-
   }
 
 
-#' SurveillanceFirstTest
+#' Extracts the first test only per patient
 #'
 #' Extracts the first test only per patient
 #' @param x dataframe
@@ -142,7 +143,7 @@ SurveillanceFirstTest <-
 
 
 
-#' SurveillanceCapacity
+#' Number of tests done per month
 #'
 #' This determines the number of tests done per month
 #' @param x dataframe
@@ -160,7 +161,8 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
     group_by(month) %>% summarise(n = n())
 }
 
-#' HowManyTests
+#' Number of tests done per month and year by indication
+#' 
 #' Get an overall idea of how many endoscopies have been done for an indication 
 #' by year and month. This is a more involved version of 
 #' SurveillanceCapacity function. It takes string for 
@@ -235,7 +237,7 @@ HowManyTests <-
 
 ########################################## Patient flow functions#######
 
-#' SurveySankey
+#' Create a Sankey plot for patient flow
 #'
 #' This creates a Sankey plot to see the order of tests for all patients:
 #' dfw is the dataframe, y is the value of in this case
@@ -249,22 +251,28 @@ HowManyTests <-
 #' eg hostpital number
 #' @importFrom dplyr group_by
 #' @importFrom magrittr '%>%'
-#' @importfrom data.table setDT rowid
+#' @import data.table
+#' @importfrom data.table 'setDT' 'rowid' '.SD'
 #' @importfrom reshape2 'dcast'
+#' @importFrom googleVis gvisSankey
 #' @keywords Sankey
 #' @export
-#' @examples
+#' @examples names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
+#' SurveySankey(Myendo,"ProcedurePerformed","PatientID")
 
 SurveySankey <- function(dfw, y,PatientID) {
   # Create the Sankey diagrams
   Sankey <-
-    dcast(setDT(dfw)[, .SD, PatientID], PatientID ~ rowid(PatientID),
+    dcast(data.table::setDT(dfw)[, .SD, PatientID], 
+          PatientID ~ rowid(PatientID),
           value.var = y)
   PtFlow <- Sankey
   PtFlow <- data.frame(PtFlow)
   PtFlow <- PtFlow[!is.na(names(PtFlow))]
   r <- c()
-  for (i in 1:ncol(PtFlow)) {
+
+  #names(PtFlow)<-gsub("X(\\d+)","Event\\1",names(PtFlow))
+  for (i in seq_along(PtFlow)) {
     t <- paste("ord", i, sep = "")
     r <- c(r, t)
     names(PtFlow) <- r
@@ -295,7 +303,7 @@ SurveySankey <- function(dfw, y,PatientID) {
   orders.plot <-
     orders.plot[!grepl("NA", orders.plot$from) &
                   !grepl("NA", orders.plot$to), ]
-  plot(gvisSankey(
+  plot(googleVis::gvisSankey(
     orders.plot,
     from = "from",
     to = "to",
@@ -308,11 +316,10 @@ SurveySankey <- function(dfw, y,PatientID) {
       label: { color: '#871b47',fontName: 'Open Sans',fontSize: 35 } }}"
     )
     ))
-  
 }
 
 
-#' PatientFlow_CircosPlots
+#' Create a Circos plot for patient flow
 #'
 #' This allows us to look at the overall flow from one
 #' type of procedure to another using circos plots.
@@ -328,7 +335,20 @@ SurveySankey <- function(dfw, y,PatientID) {
 #' @import circlize
 #' @importFrom magrittr '%>%'
 #' @keywords Circos
-#' @export
+#' @export Event <- list(x1 = "Therapeutic- Dilatation",
+#' x2 = "Other-", x3 = "Surveillance",
+#' x4 = "APC", x5 = "Therapeutic- RFA TTS",
+#' x5 = "Therapeutic- RFA 90",
+#' x6 = "Therapeutic- EMR", x7 = "Therapeutic- RFA 360")
+#' EndoEvent<-replicate(2000,sample(Event,1, replace = F))
+#' fff<-unlist(EndoEvent)
+#' fff<-data.frame(fff)
+#' names(fff)<-"col1"
+#' Myendo<-cbind(fff$col1,Myendo)
+#' names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
+#' names(Myendo)[names(Myendo) == 'fff$col1'] <- 'EndoEvent'
+#' Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
+#' PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
 
 
 PatientFlow_CircosPlots <-
@@ -336,16 +356,20 @@ PatientFlow_CircosPlots <-
            Endo_ResultPerformed,
            HospNum_Id,
            ProcPerformed) {
+    
+    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    HospNum_Ida <- rlang::sym(HospNum_Id)
+    ProcPerformeda <- rlang::sym(ProcPerformed)
+    
     mydf <-
-      x %>% arrange_(Endo_ResultPerformed) %>% group_by_(HospNum_Id) %>%
-      mutate_(origin = lag(ProcPerformed, 1),
-              destination = ProcPerformed) %>%
-      select(origin, destination) %>% group_by(origin, destination) %>%
+      x %>% arrange(!!Endo_ResultPerformeda) %>% group_by(!!HospNum_Ida) %>%
+      mutate(origin = lag(!!ProcPerformeda, 1),
+              destination = !!ProcPerformeda) %>%
+      select(origin, destination,PatientID) %>% 
+      group_by(origin, destination,PatientID) %>%
       summarise(n = n()) %>% ungroup()
     
-    
     mydf <- data.frame(dcast(mydf, origin ~ destination))
-    
     
     # Get rid of NA's
     mydf <- mydf[complete.cases(mydf), ]
@@ -390,32 +414,22 @@ PatientFlow_CircosPlots <-
     )
     
     
-    circos.trackPlotRegion(
-      track.index <- 1,
-      panel.fun <- function(x, y) {
-        xlim <- get.cell.meta.data("xlim")
-        sector.index <- get.cell.meta.data("sector.index")
-        circos.text(mean(xlim), 3.5, sector.index, facing = "bending")
-        circos.axis(
-          "top",
-          major.at = seq(0, max(xlim), by = 5),
-          minor.ticks = 1,
-          labels.cex = 0.8,
-          labels.away.percentage = 0.2,
-          labels.niceFacing = FALSE
-        )
-      },
-      bg.border = NA
-    )
-    
-    
-    
+    circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
+      xlim <- get.cell.meta.data("xlim")
+      ylim <- get.cell.meta.data("ylim")
+      sector.index <- get.cell.meta.data("sector.index")
+      circos.text(mean(xlim), mean(ylim), 
+                  sector.index, col = "black", 
+                  cex = 0.6, facing = "inside", 
+                  niceFacing = TRUE)
+    }, 
+    bg.border = NA)
   }
 
 
 ##### Endoscopic Performance Quality- documentation.######
 
-#' ListLookup
+#' Extract from report, using words from a list 
 #'
 #' The aim here is simply to
 #' produce a document term matrix to get the frequency
@@ -457,7 +471,7 @@ ListLookup <- function(theframe, y, myNotableWords) {
 # Groups anything by Endoscopist and returns the table and a ggplot
 
 
-#' MetricByEndoscopist
+#' Plot a metric by endoscopist
 #'
 #' This takes any numerical metric in the dataset and plots it by endoscopist.
 #' It of course relies on a Endoscopist column being present
@@ -494,7 +508,7 @@ MetricByEndoscopist <- function(x, y, z) {
 
 
 
-#' TermStandardLocation
+#' Standardise location of biopsies or tissue samples
 #'
 #' Standardises the location of biopsies by cleaning up the common typos and
 #' abbreviations that are commonly used in free text of pathology reports
@@ -629,7 +643,7 @@ TermStandardLocation <- function(x, SampleLocation) {
 }
 
 
-#' SampleLocator
+#' Locate where samples are taken from
 #'
 #' This assess where samples are taken from.
 #' This should be used after the TermStandardLocation
@@ -700,7 +714,7 @@ SampleLocator <- function(x, y) {
 }
 
 
-#' PolypLocator
+#' Determine polyp location
 #'
 #' This should be used after the TermStandardizer
 #' as it relies on the presence of a SampleLocation column
@@ -771,7 +785,7 @@ PolypLocator <- function(x, y) {
 
 
 
-#' PolypTidyUpLocator
+#' Clean the polyp location
 #'
 #' This cleans up the polyps from the TermStandardLocation function
 #' @param x The dataframe
@@ -793,7 +807,7 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 
 ########################### Diagnostic yield functions #######
 
-#' GRS_Type_Assess_By_Unit
+#' Create GRS metrics by endoscopist (X-ref with pathology)
 #'
 #' This extracts the polyps types from the data
 #' (for colonoscopy and flexible sigmoidosscopy data)
@@ -965,7 +979,7 @@ GRS_Type_Assess_By_Unit <-
 
 ############# Endoscopist Quality ######
 
-#'NumberPerformed
+#' Determine overall number of procedures performed
 #'
 #' Determines the number of endoscopies done by an endoscopist
 #' by type of endosopy and indication for a given timeframe

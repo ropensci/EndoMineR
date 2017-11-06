@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SampleLocator}
 \alias{SampleLocator}
-\title{SampleLocator}
+\title{Locate where samples are taken from}
 \usage{
 SampleLocator(x, y)
 }

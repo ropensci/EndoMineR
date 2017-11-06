@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{HistolChopperBxSize}
 \alias{HistolChopperBxSize}
-\title{HistolChopperBxSize}
+\title{Determine the largest biopsy size from the histology report}
 \usage{
 HistolChopperBxSize(x, y)
 }

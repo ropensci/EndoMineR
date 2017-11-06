@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{PatientFlow_CircosPlots}
 \alias{PatientFlow_CircosPlots}
-\title{PatientFlow_CircosPlots}
+\title{Create a Circos plot for patient flow}
 \usage{
 PatientFlow_CircosPlots(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed)
 }

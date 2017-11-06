@@ -11,8 +11,7 @@ BarrettsTherapy_Numbers_EMRsByGrade(EndoSubsetEMR)
 }
 \description{
 Plots all the pathological grades of the EMRs.This should only be 
-run after all the
-BarrettsDataAccord functions.
+run after all the BarrettsDataAccord functions.
 }
 \examples{
 v<-HistolChopperDx(Mypath,'Diagnosis')

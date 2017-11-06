@@ -2,9 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SurveillanceLastToNow}
 \alias{SurveillanceLastToNow}
-\title{SurveillanceLastToNow
-This determines the last test done by that patient and the time
-between now and that last test in days}
+\title{Extract the last test done by a patient in days and how long ago}
 \usage{
 SurveillanceLastToNow(x, HospNum_Id, Endo_ResultPerformed)
 }
@@ -16,7 +14,6 @@ SurveillanceLastToNow(x, HospNum_Id, Endo_ResultPerformed)
 \item{Endo_ResultPerformed}{Date of the Endoscopy}
 }
 \description{
-SurveillanceLastToNow
 This determines the last test done by that patient and the time
 between now and that last test in days
 }

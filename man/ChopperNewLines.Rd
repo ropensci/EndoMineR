@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{ChopperNewLines}
 \alias{ChopperNewLines}
-\title{EndoscChopperNewLines}
+\title{Cleans endoscopy reports and splits sentences into new lines}
 \usage{
 ChopperNewLines(x, y)
 }

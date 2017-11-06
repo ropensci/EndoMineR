@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SurveillanceFirstTest}
 \alias{SurveillanceFirstTest}
-\title{SurveillanceFirstTest}
+\title{Extracts the first test only per patient}
 \usage{
 SurveillanceFirstTest(x, HospNum_Id, Endo_ResultPerformed)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{ListLookup}
 \alias{ListLookup}
-\title{ListLookup}
+\title{Extract from report, using words from a list}
 \usage{
 ListLookup(theframe, y, myNotableWords)
 }

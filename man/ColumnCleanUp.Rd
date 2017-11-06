@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{ColumnCleanUp}
 \alias{ColumnCleanUp}
-\title{ColumnCleanUp}
+\title{Tidies up messy columns}
 \usage{
 ColumnCleanUp(x, y)
 }

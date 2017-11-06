@@ -18,6 +18,14 @@ the free text
 Specfically it extracts the Prague score
 }
 \examples{
+#The example takes the endoscopy demo dataset and searches the 
+# Findings column (which contains endoscopy free text about the 
+# procedure itself). It then extracts the Prague score if relevant. I
+# find it easiest to use this on a Barrett's subset of data rather than
+# a dump of all endoscopies but of course this is a permissible dataset
+# too
+
+
 v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 }
 \keyword{Prague}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{EndoscChopperMeds}
 \alias{EndoscChopperMeds}
-\title{EndoscChopperMeds}
+\title{Cleans medication column if present}
 \usage{
 EndoscChopperMeds(x, y)
 }

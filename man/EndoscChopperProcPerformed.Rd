@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{EndoscChopperProcPerformed}
 \alias{EndoscChopperProcPerformed}
-\title{EndoscChopperProcPerformed}
+\title{Cleans Procedure performed column if present}
 \usage{
 EndoscChopperProcPerformed(x, y)
 }
@@ -14,7 +14,7 @@ EndoscChopperProcPerformed(x, y)
 \description{
 This cleans the Procedure Performed column from the report assuming 
 such a column exists. Procedure Performed relates to whether this was a 
-Gastroscopy or Colonoscopy etc.
+Gastroscopy or Colonoscopy and or the type of therapy used etc.
 It gets rid of common entries that are not needed.
 It should be used after the Extractor and the optional ChopperNewLines 
 has been used.

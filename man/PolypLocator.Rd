@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{PolypLocator}
 \alias{PolypLocator}
-\title{PolypLocator}
+\title{Determine polyp location}
 \usage{
 PolypLocator(x, y)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{HistolChopperMacDescrip}
 \alias{HistolChopperMacDescrip}
-\title{HistolChopperMacDescrip}
+\title{Cleans spelt numbers in histology report}
 \usage{
 HistolChopperMacDescrip(x, y)
 }

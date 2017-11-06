@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{EndoscChopperEndoscopist}
 \alias{EndoscChopperEndoscopist}
-\title{EndoscChopperEndoscopist}
+\title{Cleans endoscopist column if present}
 \usage{
 EndoscChopperEndoscopist(x, y)
 }

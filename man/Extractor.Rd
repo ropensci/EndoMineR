@@ -2,7 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{Extractor}
 \alias{Extractor}
-\title{Extractor}
+\title{Extracts the columns from the raw report}
 \usage{
 Extractor(x, y, stra, strb, t)
 }

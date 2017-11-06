@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{TermStandardLocation}
 \alias{TermStandardLocation}
-\title{TermStandardLocation}
+\title{Standardise location of biopsies or tissue samples}
 \usage{
 TermStandardLocation(x, SampleLocation)
 }
