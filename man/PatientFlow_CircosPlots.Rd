@@ -23,16 +23,16 @@ type of procedure to another using circos plots.
 }
 \examples{
 # This function builds a circos plot which gives a more aggregated
-#overview of how patients flow from one state to another than the 
+# overview of how patients flow from one state to another than the 
 # SurveySankey function 
-#Build a list of procedures
+# Build a list of procedures
 Event <- list(x1 = "Therapeutic- Dilatation",
 x2 = "Other-", x3 = "Surveillance",
 x4 = "APC", x5 = "Therapeutic- RFA TTS",
 x5 = "Therapeutic- RFA 90",
 x6 = "Therapeutic- EMR", x7 = "Therapeutic- RFA 360")
-EndoEvent<-replicate(2000,sample(Event,1, replace = F))
-#Merge the list with the Myendo dataframe
+EndoEvent<-replicate(2000,sample(Event,1, replace = FALSE))
+# Merge the list with the Myendo dataframe
 fff<-unlist(EndoEvent)
 fff<-data.frame(fff)
 names(fff)<-"col1"

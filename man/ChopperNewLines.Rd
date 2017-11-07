@@ -19,6 +19,10 @@ after the Extractor has separated out the different
 parts of the text according to the user's requirements
 }
 \examples{
+# The function takes the demo data
+# Myendo and searches through the raw 
+# endoscopy text so that the text is
+#divided by sentence into a newline
 v<-ChopperNewLines(Myendo,'OGDReportWhole')
 }
 \keyword{Endoscopy}

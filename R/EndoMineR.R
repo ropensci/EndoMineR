@@ -52,6 +52,7 @@ if (getRversion() >= "2.15.1")
 #' @param Endo_ResultPerformed Date of the Endoscopy
 #' @importFrom dplyr arrange group_by mutate lead
 #' @importFrom magrittr '%>%'
+#' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
 #' @examples em<-SurveillanceTimeByRow(Myendo,'HospitalNumber',
@@ -59,8 +60,8 @@ if (getRversion() >= "2.15.1")
 
 SurveillanceTimeByRow <-
   function(x, HospNum_Id, Endo_ResultPerformed) {
-    HospNum_Ida <- rlang::sym(HospNum_Id)
-    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    HospNum_Ida <- sym(HospNum_Id)
+    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     x %>% arrange(!!HospNum_Ida, !!Endo_ResultPerformeda) %>% 
       group_by(!!HospNum_Ida) %>% 
       mutate(diffDate = difftime(as.Date(!!Endo_ResultPerformeda), lead(as.Date(
@@ -78,6 +79,7 @@ SurveillanceTimeByRow <-
 #' @param Endo_ResultPerformed Date of the Endoscopy
 #' @importFrom magrittr '%>%'
 #' @importFrom dplyr arrange group_by mutate lead
+#' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
 #' @examples em<-SurveillanceLastToNow(Myendo,'HospitalNumber',
@@ -85,8 +87,8 @@ SurveillanceTimeByRow <-
 
 SurveillanceLastToNow <-
   function(x, HospNum_Id, Endo_ResultPerformed) {
-    HospNum_Ida <- rlang::sym(HospNum_Id)
-    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    HospNum_Ida <- sym(HospNum_Id)
+    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     
     x %>% arrange(!!HospNum_Ida, !!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
@@ -103,6 +105,7 @@ SurveillanceLastToNow <-
 #' @param Endo_ResultPerformed Date of the Endoscopy
 #' @importFrom magrittr '%>%'
 #' @importFrom dplyr arrange group_by filter row_number
+#' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
 #' @examples em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
@@ -111,8 +114,8 @@ SurveillanceLastToNow <-
 
 SurveillanceLastTest <-
   function(x, HospNum_Id, Endo_ResultPerformed) {
-    HospNum_Ida <- rlang::sym(HospNum_Id)
-    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    HospNum_Ida <- sym(HospNum_Id)
+    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     x %>% group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == n())
@@ -125,8 +128,9 @@ SurveillanceLastTest <-
 #' @param x dataframe
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
-#' @import dplyr
+#' @importFrom dplyr arrange group_by filter
 #' @importFrom magrittr '%>%'
+#' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
 #' @examples em<-SurveillanceFirstTest(Myendo,'HospitalNumber',
@@ -135,8 +139,8 @@ SurveillanceLastTest <-
 
 SurveillanceFirstTest <-
   function(x, HospNum_Id, Endo_ResultPerformed) {
-    HospNum_Ida <- rlang::sym(HospNum_Id)
-    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    HospNum_Ida <- sym(HospNum_Id)
+    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     x %>% group_by(!!HospNum_Ida) %>% arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == 1)
   }
@@ -151,12 +155,13 @@ SurveillanceFirstTest <-
 #' @importFrom dplyr group_by summarise
 #' @importFrom lubridate dmy month
 #' @importFrom magrittr '%>%'
+#' @importFrom rlang sym
 #' @keywords cats
 #' @export
 #' @examples em<-SurveillanceCapacity(Myendo,'Dateofprocedure')
 
 SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
-  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+  Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
   x %>% mutate(month = format(as.Date(!!Endo_ResultPerformeda), "%m")) %>%
     group_by(month) %>% summarise(n = n())
 }
@@ -181,6 +186,7 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @importFrom lubridate week year month dmy
 #' @importFrom magrittr '%>%'
 #' @importFrom stringr str_detect
+#' @importFrom rlang sym
 #' @keywords Tests number
 #' @export
 #' @examples
@@ -201,14 +207,14 @@ HowManyTests <-
            Indication,
            Endo_ResultPerformed,
            StringToSearch) {
-    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     TestNumbers <-
-      x %>% filter(stringr::str_detect(x[, Indication], StringToSearch)) %>%
+      x %>% filter(str_detect(x[, Indication], StringToSearch)) %>%
       arrange(as.Date(!!Endo_ResultPerformeda)) %>% group_by(
-        day = lubridate::day(as.Date(!!Endo_ResultPerformeda)),
-        week = lubridate::week(as.Date(!!Endo_ResultPerformeda)),
+        day = day(as.Date(!!Endo_ResultPerformeda)),
+        week = week(as.Date(!!Endo_ResultPerformeda)),
         month = month(as.Date(!!Endo_ResultPerformeda)),
-        year = lubridate::year(as.Date(!!Endo_ResultPerformeda))
+        year = year(as.Date(!!Endo_ResultPerformeda))
       ) %>%
       summarise(Number = n())
     names(TestNumbers) <- c("day", "week", "month", "year", "freq")
@@ -252,7 +258,6 @@ HowManyTests <-
 #' @importFrom dplyr group_by
 #' @importFrom magrittr '%>%'
 #' @import data.table
-#' @importfrom data.table 'setDT' 'rowid' '.SD'
 #' @importfrom reshape2 'dcast'
 #' @importFrom googleVis gvisSankey
 #' @keywords Sankey
@@ -268,7 +273,7 @@ HowManyTests <-
 SurveySankey <- function(dfw, y,PatientID) {
   # Create the Sankey diagrams
   Sankey <-
-    dcast(data.table::setDT(dfw)[, .SD, PatientID], 
+    dcast(setDT(dfw)[, .SD, PatientID], 
           PatientID ~ rowid(PatientID),
           value.var = y)
   PtFlow <- Sankey
@@ -334,24 +339,25 @@ SurveySankey <- function(dfw, y,PatientID) {
 #'  radiofrequency ablation for Barrett's but can be
 #'  any dscription of a procedure you desire)
 #' @param HospNum_Id Column with the patient's unique hospital number
-#' @import dplyr
+#' @importFrom dplyr arrange group_by mutate select summarise lag
 #' @importFrom reshape2 'dcast'
 #' @importFrom tidyr separate
 #' @import circlize
 #' @importFrom magrittr '%>%'
+#' @importFrom rlang sym
 #' @keywords Circos
 #' @export 
 #' @examples # This function builds a circos plot which gives a more aggregated
-#' #overview of how patients flow from one state to another than the 
+#' # overview of how patients flow from one state to another than the 
 #' # SurveySankey function 
-#' #Build a list of procedures
+#' # Build a list of procedures
 #' Event <- list(x1 = "Therapeutic- Dilatation",
 #' x2 = "Other-", x3 = "Surveillance",
 #' x4 = "APC", x5 = "Therapeutic- RFA TTS",
 #' x5 = "Therapeutic- RFA 90",
 #' x6 = "Therapeutic- EMR", x7 = "Therapeutic- RFA 360")
-#' EndoEvent<-replicate(2000,sample(Event,1, replace = F))
-#' #Merge the list with the Myendo dataframe
+#' EndoEvent<-replicate(2000,sample(Event,1, replace = FALSE))
+#' # Merge the list with the Myendo dataframe
 #' fff<-unlist(EndoEvent)
 #' fff<-data.frame(fff)
 #' names(fff)<-"col1"
@@ -370,9 +376,9 @@ PatientFlow_CircosPlots <-
            HospNum_Id,
            ProcPerformed) {
     
-    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
-    HospNum_Ida <- rlang::sym(HospNum_Id)
-    ProcPerformeda <- rlang::sym(ProcPerformed)
+    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
+    HospNum_Ida <- sym(HospNum_Id)
+    ProcPerformeda <- sym(ProcPerformed)
     
     mydf <-
       x %>% arrange(!!Endo_ResultPerformeda) %>% group_by(!!HospNum_Ida) %>%
@@ -496,10 +502,10 @@ ListLookup <- function(theframe, y, myNotableWords) {
 #' @param x The dataframe
 #' @param y The column (numeric data) of interest
 #' @param z The endoscopist column
-#' @import ggplot2
-#' @import rlang
+#' @importFrom ggplot2 ggplot
 #' @importFrom tidyr drop_na
 #' @importFrom dplyr group_by summarise
+#' @importFrom rlang sym
 #' @keywords Endoscopist
 #' @export
 #' @examples #The function plots any numeric metric by endoscopist
@@ -510,8 +516,8 @@ ListLookup <- function(theframe, y, myNotableWords) {
 
 
 MetricByEndoscopist <- function(x, y, z) {
-  group <- rlang::sym(y)
-  variable <- rlang::sym(z)
+  group <- sym(y)
+  variable <- sym(z)
   
   NumBxPlot <-
     x %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>% 
@@ -738,7 +744,7 @@ SampleLocator <- function(x, y) {
       ),
       collapse = "|"
     )
-  x$AllSampleLocator <- stringr::str_match_all(x[, y], tofind)
+  x$AllSampleLocator <- str_match_all(x[, y], tofind)
   x$AllSampleLocator <-
     lapply(x$AllSampleLocator, function(p)
       unique(p))
@@ -811,7 +817,7 @@ PolypLocator <- function(x, y) {
       ),
       collapse = "|"
     )
-  x$PolypLocator <- stringr::str_match_all(x[, y], tofind)
+  x$PolypLocator <- str_match_all(x[, y], tofind)
   x$PolypLocator <- lapply(x$PolypLocator, function(p)
     unique(p))
   return(x)
@@ -838,7 +844,7 @@ PolypLocator <- function(x, y) {
 PolypTidyUpLocator <- function(x, SampleLocation) {
   # Get all the polyps and tidy up the polyp data- Function 5
   x$Polyp <-
-    stringr::str_match_all(x[, SampleLocation], ".*[Pp]olyp.*")
+    str_match_all(x[, SampleLocation], ".*[Pp]olyp.*")
   x <- PolypLocator(x, "Polyp")
   
   return(x)

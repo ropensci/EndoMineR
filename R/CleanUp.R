@@ -284,7 +284,7 @@ EndoscChopperFindings <- function(x, y) {
 #' @export
 #' @examples # Build a character vector and then
 #' # incorporate into a dataframe
-#' # anexample<-c("There is no evidence of polyp here",
+#' anexample<-c("There is no evidence of polyp here",
 #' "Although the prep was poor,there was no adenoma found",
 #' "The colon was basically inflammed, but no polyp was seen",
 #' "The Barrett's segment was not biopsied",

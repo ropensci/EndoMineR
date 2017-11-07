@@ -62,9 +62,9 @@ if (getRversion() >= "2.15.1")
 
 BarrettsDataAccord_Prague <- function(x, y) {
   x <- data.frame(x)
-  x$CStage <- stringr::str_extract(x[, y], "(C(\\s|=)*\\d+)")
+  x$CStage <- str_extract(x[, y], "(C(\\s|=)*\\d+)")
   x$CStage <- as.numeric(gsub("C", "", x$CStage))
-  x$MStage <- stringr::str_extract(x[, y], "(M(\\s|=)*\\d+)")
+  x$MStage <- str_extract(x[, y], "(M(\\s|=)*\\d+)")
   x$MStage <- as.numeric(gsub("M", "", x$MStage))
   return(x)
 }
@@ -246,6 +246,7 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' BarrettsDataAccord_PathStage function first to get IMorNoIM),
 #' @param y The field to search (endoscopic findings)
 #' @keywords Follow-Up
+#' @importFrom stringr str_extract
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the 
 #' # Mypath demo dataset. These functions are all part of Histology data 
@@ -273,13 +274,13 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
   try(x$MStage <-
         ifelse(
           grepl("(C(\\s|=)*\\d+)", x[, y], perl = TRUE),
-          stringr::str_extract(x[, y], "(M(\\s|=)*\\d+)"),
+          str_extract(x[, y], "(M(\\s|=)*\\d+)"),
           ifelse(
             grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall", x[, y], perl = TRUE),
             "0",
             ifelse(
               grepl("[1-3]{1}(\\s)*?[cC][mM]", x[, y], perl = TRUE),
-              stringr::str_extract(x[, y], "[1-3]{1}(\\s)*?[cC][mM]"),
+              str_extract(x[, y], "[1-3]{1}(\\s)*?[cC][mM]"),
               NA
             )
           )
@@ -325,6 +326,7 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' @keywords Patient Tracking
 #' @importFrom dplyr group_by slice mutate filter
 #' @importFrom magrittr '%>%'
+#' @importFrom rlang sym
 #' @export
 #' @examples #This takes the Myendo demo dataset
 #' # and then groups the Barrett's endoscopies by patient (as defined by their
@@ -339,10 +341,10 @@ BarrettsPatientTracking_Enrollment_Surveillance <- function(x,
                                                   Endo_ResultPerformed,
                                                   IndicationsFroExamination) {
   x <- data.frame(x)
-  PatientIDa <- rlang::sym(PatientID)
-  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+  PatientIDa <- sym(PatientID)
+  Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
   IndicationsFroExaminationa <-
-    rlang::sym(IndicationsFroExamination)
+    sym(IndicationsFroExamination)
   # So you want all those whose last endoscopy was non surveillance but who 
   # have 
   # a difftime between now and the last of > 3years So get the last endoscopy 
@@ -425,7 +427,7 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 #' @param x dataframe
 #' @param Findings column of interest- usually the main body of the 
 #' endoscopic report
-#' @import lattice
+#' @importFrom lattice barchart
 #' @keywords Documentation
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the 
@@ -488,7 +490,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
   EndoMinDataSet <- data.frame(s, b, n)
   
   t <-
-    lattice::barchart(
+    barchart(
       b ~ n,
       data = EndoMinDataSet,
       groups = s,
@@ -523,6 +525,8 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @param PatientID Patient's unique identifier
 #' @param Endoscopist name of the column with the Endoscopist names
 #' @importFrom dplyr summarise group_by filter
+#' @importFrom rlang sym
+#' @importFrom ggplot2 ggplot
 #' @keywords Does something with data
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the 
@@ -557,15 +561,15 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x,
                                                  PatientID,
                                                  Endoscopist) {
   x <- data.frame(x)
-  PatientIDa <- rlang::sym(PatientID)
-  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
-  Endoscopista <- rlang::sym(Endoscopist)
+  PatientIDa <- sym(PatientID)
+  Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
+  Endoscopista <- sym(Endoscopist)
   
   GroupedByEndoscopy <-
-    x %>% dplyr::filter(!is.na(CStage),!is.na(NumbOfBx)) %>% 
-dplyr::group_by(as.Date(!!Endo_ResultPerformeda),
+    x %>% filter(!is.na(CStage),!is.na(NumbOfBx)) %>% 
+group_by(as.Date(!!Endo_ResultPerformeda),
                 !!PatientID,!!Endoscopista) %>% 
-    dplyr::summarise(Sum = sum(NumbOfBx),AvgC = mean(CStage))
+    summarise(Sum = sum(NumbOfBx),AvgC = mean(CStage))
   
   GroupedByEndoscopy$ExpectedNumber <-
     (GroupedByEndoscopy$AvgC + 1) * 2
@@ -574,12 +578,12 @@ dplyr::group_by(as.Date(!!Endo_ResultPerformeda),
   
   # Now group the difference by endoscopist
   BxShortfallPre <-
-    GroupedByEndoscopy %>% dplyr::group_by(!!Endoscopista) %>% 
-    dplyr::summarise(MeanDiff = mean(Difference))
+    GroupedByEndoscopy %>% group_by(!!Endoscopista) %>% 
+    summarise(MeanDiff = mean(Difference))
   
   # e) Then show shortfall of number of biopsies on a graph
   t <-
-    ggplot2::ggplot() + 
+    ggplot() + 
     geom_point(aes(BxShortfallPre$Endoscopist, BxShortfallPre$MeanDiff),
        size = 9) + geom_point(cex = 2) + 
     labs(title = "Shortfall number of biopsies on Barrett's Surveillance list",
@@ -651,7 +655,7 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
   b <- c("LGD", "HGD", "OAC")
   EndoMinDataSet <- data.frame(b, n)
   
-  ggplot2::ggplot(EndoMinDataSet, aes(x = b, y = n)) + 
+  ggplot(EndoMinDataSet, aes(x = b, y = n)) + 
     geom_bar(stat = "identity") + xlab("Pathology Grade") + 
     ylab("Total Number") + theme(axis.text.x = element_text(angle = -90)) + 
     labs(title = titlePlot) +
@@ -808,6 +812,7 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' @keywords Number of therapies
 #' @importFrom dplyr group_by mutate summarise
 #' @importFrom magrittr '%>%'
+#' @importFrom rlang sym
 #' @import ggplot2
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the 
@@ -838,7 +843,7 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 
 BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
   x <- data.frame(x)
-  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+  Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
   xNum <-
     x %>% filter(EVENT != "nothing") %>% 
     mutate(year = year(as.Date(!!Endo_ResultPerformeda))) %>% 
@@ -1081,6 +1086,7 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' patient had at that endoscopy
 #' @keywords CRIM
 #' @importFrom dplyr group_by slice mutate lead
+#' @importFrom rlang sym
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the 
 #' # Mypath demo dataset. These functions are all part of Histology data 
@@ -1109,8 +1115,8 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 
 Barretts_CRIM <- function(x, HospNum, EVENT) {
   x <- data.frame(x)
-  HospNuma <- rlang::sym(HospNum)
-  EVENTa <- rlang::sym(EVENT)
+  HospNuma <- sym(HospNum)
+  EVENTa <- sym(EVENT)
   
   CRIM <-
     x %>% group_by(!!HospNuma) %>% 

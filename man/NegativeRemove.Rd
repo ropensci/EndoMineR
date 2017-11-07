@@ -22,6 +22,8 @@ or as a way of providing a 'positive diagnosis only' type output (see
 HistolChopperDx)
 }
 \examples{
+# Build a character vector and then
+# incorporate into a dataframe
 anexample<-c("There is no evidence of polyp here",
 "Although the prep was poor,there was no adenoma found",
 "The colon was basically inflammed, but no polyp was seen",
@@ -29,6 +31,8 @@ anexample<-c("There is no evidence of polyp here",
 "The C0M7 stretch of Barrett's was flat")
 anexample<-data.frame(anexample)
 names(anexample)<-"Thecol"
+# Run the function on the dataframe and it should get rid of sentences (and
+# parts of sentences) with negative parts in them.
 NegativeRemove(anexample,"Thecol")
 }
 \keyword{Negative}
