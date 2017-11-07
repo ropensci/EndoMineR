@@ -23,8 +23,8 @@ the procedure type (eg EMR,
  Note the Hospital Number column MUST be called PatientID.
 }
 \examples{
-#The purpose of the function is to 
-#provide a Sankey plot which allows the analyst to see the proportion 
+# The purpose of the function is to 
+# provide a Sankey plot which allows the analyst to see the proportion 
 # of patients moving from one state (in this case type of Procedure) to 
 # another. This allows us to see for example how many EMRs are done after 
 #RFA. For further patient flow examples see PatientFlow_CircosPlots

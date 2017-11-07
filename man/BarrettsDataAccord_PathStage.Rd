@@ -39,6 +39,7 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 # The function then takes the Histology column from the merged data set (v).
 # It extracts the worst histological grade for a specimen
 b<-BarrettsDataAccord_PathStage(v,'Histology')
+rm(v)
 }
 \keyword{Pathology}
 \keyword{extraction}

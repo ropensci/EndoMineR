@@ -39,6 +39,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # EMR and then extracts the EMR grade from the extracted worst histopath
 # column (called IMorNoIM). This is then plotted out.
 BarrettsTherapy_Numbers_EMRsByGrade(b4)
+rm(v)
 }
 \keyword{EMR}
 \keyword{chart}

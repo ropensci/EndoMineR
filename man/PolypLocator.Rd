@@ -38,5 +38,6 @@ Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 # TermStandardLocation function.
 f<-TermStandardLocation(Mypath,'Histology')
 f<-PolypLocator(f,'SampleLocation')
+rm(Mypath)
 }
 \keyword{Withdrawal}

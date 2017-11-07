@@ -183,22 +183,19 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @param StringToSearch The string in the Indication to search for
 #' @importFrom magrittr '%>%'
 #' @importFrom dplyr arrange group_by mutate lead filter
-#' @importFrom lubridate week year month dmy
+#' @importFrom lubridate day week year month dmy
 #' @importFrom magrittr '%>%'
 #' @importFrom stringr str_detect
 #' @importFrom rlang sym
 #' @keywords Tests number
 #' @export
-#' @examples
-#'
-#'
-# This takes the dataframe MyEndo (part of the package examples) and looks in 
-# the column which holds the test indication (in this example it is called 
-# 'Indication' The date of the procedure column(which can be date format or 
-# POSIX format) is also necessary.  Finally the string which indicates the text 
-# indication needs to be inpoutted. In this case we are looking for all 
-# endoscopies done
-# where the indication is surveillance (so grepping on 'Surv' will do fine) .
+#' @examples # This takes the dataframe MyEndo (part of the package examples) and looks in 
+#' # the column which holds the test indication (in this example it is called 
+#' # 'Indication' The date of the procedure column(which can be date format or 
+#' # POSIX format) is also necessary.  Finally the string which indicates the text 
+#' # indication needs to be inpoutted. In this case we are looking for all 
+#' # endoscopies done
+#' # where the indication is surveillance (so grepping on 'Surv' will do fine) .
 #' how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 
 
@@ -262,8 +259,8 @@ HowManyTests <-
 #' @importFrom googleVis gvisSankey
 #' @keywords Sankey
 #' @export
-#' @examples #The purpose of the function is to 
-#' #provide a Sankey plot which allows the analyst to see the proportion 
+#' @examples # The purpose of the function is to 
+#' # provide a Sankey plot which allows the analyst to see the proportion 
 #' # of patients moving from one state (in this case type of Procedure) to 
 #' # another. This allows us to see for example how many EMRs are done after 
 #' #RFA. For further patient flow examples see PatientFlow_CircosPlots
@@ -339,7 +336,7 @@ SurveySankey <- function(dfw, y,PatientID) {
 #'  radiofrequency ablation for Barrett's but can be
 #'  any dscription of a procedure you desire)
 #' @param HospNum_Id Column with the patient's unique hospital number
-#' @importFrom dplyr arrange group_by mutate select summarise lag
+#' @importFrom dplyr arrange group_by mutate select summarise lag ungroup rename
 #' @importFrom reshape2 'dcast'
 #' @importFrom tidyr separate
 #' @import circlize
@@ -364,10 +361,12 @@ SurveySankey <- function(dfw, y,PatientID) {
 #' Myendo<-cbind(fff$col1,Myendo)
 #' names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
 #' names(Myendo)[names(Myendo) == 'fff$col1'] <- 'EndoEvent'
-#' Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
+#' # Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
 #' # Run the function using the procedure information (the date of the 
 #' # procedure, the Event type and the individual patient IDs)
 #' PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
+#' rm(Myendo)
+#' rm(EndoEvent)
 
 
 PatientFlow_CircosPlots <-
@@ -513,6 +512,7 @@ ListLookup <- function(theframe, y, myNotableWords) {
 #' # endoscopist
 #' Myendo<-EndoscChopperMeds(Myendo,'Medications')
 #' Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+#' rm(Myendo)
 
 
 MetricByEndoscopist <- function(x, y, z) {
@@ -563,6 +563,7 @@ MetricByEndoscopist <- function(x, y, z) {
 #' # The function then standardises the histology terms through a series of 
 #' # regular expressions
 #' f<-TermStandardLocation(Mypath,'Histology')
+#' rm(Mypath)
 
 
 
@@ -712,6 +713,7 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' # by assessing the SampleLocation column which comes from the
 #' # TermStandardLocation function.
 #' f<-SampleLocator(f,'SampleLocation')
+#' rm(Mypath)
 
 SampleLocator <- function(x, y) {
   x <- data.frame(x)
@@ -783,6 +785,7 @@ SampleLocator <- function(x, y) {
 #' # TermStandardLocation function.
 #' f<-TermStandardLocation(Mypath,'Histology')
 #' f<-PolypLocator(f,'SampleLocation')
+#' rm(Mypath)
 
 
 
@@ -865,7 +868,7 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #' @param Endo_Endoscopist column containing the Endoscopist name
 #' @param Dx The column with the Histological diagnosis
 #' @param Histol The column with the Histology text in it
-#' @importFrom dplyr group_by_
+#' @importFrom dplyr group_by_ do full_join
 #' @keywords Withdrawal
 #' @export
 #' @examples # Firstly merge histology and endoscopy datasets for the colon:
@@ -901,6 +904,9 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #'                     MyendoColon, "Dateofprocedure","HospitalNumber")
 #' GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed', 
 #' 'Endoscopist','Diagnosis','Histology')
+#' rm(vColon)
+#' rm(MypathColon)
+#' rm(MyendoColon)
 
 GRS_Type_Assess_By_Unit <-
   function(x,

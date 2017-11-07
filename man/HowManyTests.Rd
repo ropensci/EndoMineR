@@ -28,8 +28,13 @@ indication over time and a table with the same information broken down
 by month and year).
 }
 \examples{
-
-
+# This takes the dataframe MyEndo (part of the package examples) and looks in 
+# the column which holds the test indication (in this example it is called 
+# 'Indication' The date of the procedure column(which can be date format or 
+# POSIX format) is also necessary.  Finally the string which indicates the text 
+# indication needs to be inpoutted. In this case we are looking for all 
+# endoscopies done
+# where the indication is surveillance (so grepping on 'Surv' will do fine) .
 how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 }
 \keyword{Tests}

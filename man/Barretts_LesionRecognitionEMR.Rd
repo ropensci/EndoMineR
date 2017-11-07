@@ -47,6 +47,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # the histopathology scores for the same endoscopies so you can see what the
 # lesion recognition is like overall
 Barretts_LesionRecognitionEMR(b4,"ProcedurePerformed","Findings")
+rm(v)
 }
 \keyword{Does}
 \keyword{data}

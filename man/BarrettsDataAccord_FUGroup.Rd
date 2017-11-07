@@ -43,5 +43,6 @@ b2<-BarrettsDataAccord_Event(b,'Histology',
 # patient so it takes the processed Barrett's data and then looks in the 
 # Findings column for permutations of the Prague score.
 b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
+rm(v)
 }
 \keyword{Follow-Up}

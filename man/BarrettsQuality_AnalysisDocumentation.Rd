@@ -34,5 +34,6 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 b<-BarrettsDataAccord_PathStage(v,'Histology')
 # The documentation is really from the endoscopic Findings column
 BarrettsQuality_AnalysisDocumentation(b,'Findings')
+rm(v)
 }
 \keyword{Documentation}

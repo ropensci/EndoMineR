@@ -42,6 +42,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function takes the RFA cases by looking in any free text column where 
 # endoscopy fingings are described and then summarising by RFA subtype
 BarrettsTherapeuticsRFA_ByCatheter(b4,"ProcedurePerformed","Findings")
+rm(v)
 }
 \keyword{RFA,}
 \keyword{Radiofrequency}

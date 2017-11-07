@@ -47,6 +47,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # too few biopsies can be determined
 BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
                                      'Endoscopist')
+rm(v)
 }
 \keyword{Does}
 \keyword{data}

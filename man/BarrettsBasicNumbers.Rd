@@ -41,6 +41,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The endoscopic episodes should be selected according to surveillance
 # being the indication prior to using this function
 BarrettsBasicNumbers(b4,"Date.x")
+rm(v)
 }
 \keyword{Number}
 \keyword{of}

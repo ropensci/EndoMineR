@@ -45,6 +45,7 @@ f<-TermStandardLocation(Mypath,'Histology')
 # by assessing the SampleLocation column which comes from the
 # TermStandardLocation function.
 f<-SampleLocator(f,'SampleLocation')
+rm(Mypath)
 }
 \keyword{Sample}
 \keyword{location}

@@ -44,6 +44,7 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 # EMR/APC/RFA/HALO so that the event for the procedure is recorded.
 b<-BarrettsDataAccord_Event(v,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
+rm(v)
 
 }
 \keyword{Event}

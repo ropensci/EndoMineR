@@ -48,5 +48,6 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #Finally the unique hospital numbers are obtained according to the follow-up
 # rule you are looking for
 Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
+rm(v)
 }
 \keyword{Rule}

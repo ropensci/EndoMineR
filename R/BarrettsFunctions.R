@@ -13,6 +13,7 @@ if (getRversion() >= "2.15.1")
       "eHospitalNum",
       "pHospitalNum",
       ".",
+      "n",
       "EVENT",
       "MonthYear",
       "freq",
@@ -101,6 +102,7 @@ BarrettsDataAccord_Prague <- function(x, y) {
 #' # The function then takes the Histology column from the merged data set (v).
 #' # It extracts the worst histological grade for a specimen
 #' b<-BarrettsDataAccord_PathStage(v,'Histology')
+#' rm(v)
 
 BarrettsDataAccord_PathStage <- function(x, y) {
   # Get the worst pathology for that sample
@@ -190,6 +192,7 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' # EMR/APC/RFA/HALO so that the event for the procedure is recorded.
 #' b<-BarrettsDataAccord_Event(v,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' rm(v)
 #'
 BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
   x <- data.frame(x)
@@ -267,6 +270,7 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' # patient so it takes the processed Barrett's data and then looks in the 
 #' # Findings column for permutations of the Prague score.
 #' b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
+#' rm(v)
 
 BarrettsDataAccord_FUGroup <- function(x, y) {
   x <- data.frame(x)
@@ -406,6 +410,7 @@ as.Date(!!Endo_ResultPerformeda), units = "weeks") / 52) %>%
 #' #Finally the unique hospital numbers are obtained according to the follow-up
 #' # rule you are looking for
 #' Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
+#' rm(v)
 
 BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
   x <- data.frame(x)
@@ -445,6 +450,7 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 #' b<-BarrettsDataAccord_PathStage(v,'Histology')
 #' # The documentation is really from the endoscopic Findings column
 #' BarrettsQuality_AnalysisDocumentation(b,'Findings')
+#' rm(v)
 
 
 
@@ -555,6 +561,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' # too few biopsies can be determined
 #' BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
 #'                                      'Endoscopist')
+#' rm(v)
 
 BarrettsQuality_AnalysisBiopsyNumber <- function(x,
                                                  Endo_ResultPerformed,
@@ -642,6 +649,7 @@ group_by(as.Date(!!Endo_ResultPerformeda),
 #' # The function simply the the histopathological grades overall for 
 #' # your dataset and then creates a frequency plot of them
 #' BarrettsSurveillance_PathDetection(b4,'Myplot')
+#' rm(v)
 
 
 BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
@@ -699,6 +707,7 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 #' # proportion with low grade dysplasia, high grade etc.) for each
 #' # endoscopist
 #' BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
+#' rm(v)
 
 
 
@@ -742,6 +751,7 @@ BarrettsSurveillanceDDR <- function(x, y, IMorNoIM) {
 #' # EMR and then extracts the EMR grade from the extracted worst histopath
 #' # column (called IMorNoIM). This is then plotted out.
 #' BarrettsTherapy_Numbers_EMRsByGrade(b4)
+#' rm(v)
 
 BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
   EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR",]
@@ -840,6 +850,7 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' # The endoscopic episodes should be selected according to surveillance
 #' # being the indication prior to using this function
 #' BarrettsBasicNumbers(b4,"Date.x")
+#' rm(v)
 
 BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
   x <- data.frame(x)
@@ -893,6 +904,7 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
 #' # The function takes the RFA cases by looking in any free text column where 
 #' # endoscopy fingings are described and then summarising by RFA subtype
 #' BarrettsTherapeuticsRFA_ByCatheter(b4,"ProcedurePerformed","Findings")
+#' rm(v)
 
 BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
   EndoSubsetRFA <- EndoSubsetRFA[EndoSubsetRFA$EVENT == "RFA",]
@@ -990,6 +1002,7 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 #' # the histopathology scores for the same endoscopies so you can see what the
 #' # lesion recognition is like overall
 #' Barretts_LesionRecognitionEMR(b4,"ProcedurePerformed","Findings")
+#' rm(v)
 
 Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
   EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR",]
@@ -1112,6 +1125,7 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' # preceded by radiofrequency ablation (RFA) so that these patients are
 #' # labelled as having clearance of intestinal metaplasia
 #' Barretts_CRIM(b3,'HospitalNumber',"EVENT")
+#' rm(v)
 
 Barretts_CRIM <- function(x, HospNum, EVENT) {
   x <- data.frame(x)

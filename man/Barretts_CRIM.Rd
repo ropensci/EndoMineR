@@ -46,5 +46,6 @@ colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
 # preceded by radiofrequency ablation (RFA) so that these patients are
 # labelled as having clearance of intestinal metaplasia
 Barretts_CRIM(b3,'HospitalNumber',"EVENT")
+rm(v)
 }
 \keyword{CRIM}

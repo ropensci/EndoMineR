@@ -43,6 +43,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # proportion with low grade dysplasia, high grade etc.) for each
 # endoscopist
 BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
+rm(v)
 }
 \keyword{detection}
 \keyword{dysplasia}
