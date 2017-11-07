@@ -257,7 +257,12 @@ HowManyTests <-
 #' @importFrom googleVis gvisSankey
 #' @keywords Sankey
 #' @export
-#' @examples names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
+#' @examples #The purpose of the function is to 
+#' #provide a Sankey plot which allows the analyst to see the proportion 
+#' # of patients moving from one state (in this case type of Procedure) to 
+#' # another. This allows us to see for example how many EMRs are done after 
+#' #RFA. For further patient flow examples see PatientFlow_CircosPlots
+#' names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
 #' SurveySankey(Myendo,"ProcedurePerformed","PatientID")
 
 SurveySankey <- function(dfw, y,PatientID) {
@@ -335,12 +340,18 @@ SurveySankey <- function(dfw, y,PatientID) {
 #' @import circlize
 #' @importFrom magrittr '%>%'
 #' @keywords Circos
-#' @export Event <- list(x1 = "Therapeutic- Dilatation",
+#' @export 
+#' @examples # This function builds a circos plot which gives a more aggregated
+#' #overview of how patients flow from one state to another than the 
+#' # SurveySankey function 
+#' #Build a list of procedures
+#' Event <- list(x1 = "Therapeutic- Dilatation",
 #' x2 = "Other-", x3 = "Surveillance",
 #' x4 = "APC", x5 = "Therapeutic- RFA TTS",
 #' x5 = "Therapeutic- RFA 90",
 #' x6 = "Therapeutic- EMR", x7 = "Therapeutic- RFA 360")
 #' EndoEvent<-replicate(2000,sample(Event,1, replace = F))
+#' #Merge the list with the Myendo dataframe
 #' fff<-unlist(EndoEvent)
 #' fff<-data.frame(fff)
 #' names(fff)<-"col1"
@@ -348,6 +359,8 @@ SurveySankey <- function(dfw, y,PatientID) {
 #' names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
 #' names(Myendo)[names(Myendo) == 'fff$col1'] <- 'EndoEvent'
 #' Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
+#' # Run the function using the procedure information (the date of the 
+#' # procedure, the Event type and the individual patient IDs)
 #' PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
 
 
@@ -443,7 +456,12 @@ PatientFlow_CircosPlots <-
 #' @import tm
 #' @keywords Lookup
 #' @export
-#' @examples myNotableWords<-c('arrett','oeliac')
+#' @examples #The function relies on defined a list of 
+#' # words you are interested in and then choosing the column you are 
+#' # interested in looking in for these words. This can be for histopathology 
+#' # free text columns or endoscopic. In this example it is for endoscopic
+#' # columns
+#' myNotableWords<-c('arrett','oeliac')
 #' tt<-ListLookup(Myendo,'Findings',myNotableWords)
 
 ListLookup <- function(theframe, y, myNotableWords) {
@@ -484,7 +502,10 @@ ListLookup <- function(theframe, y, myNotableWords) {
 #' @importFrom dplyr group_by summarise
 #' @keywords Endoscopist
 #' @export
-#' @examples Myendo<-EndoscChopperMeds(Myendo,'Medications')
+#' @examples #The function plots any numeric metric by endoscopist
+#' # and also gives a table with it. In this example we plot medication by
+#' # endoscopist
+#' Myendo<-EndoscChopperMeds(Myendo,'Medications')
 #' Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 
 
@@ -517,7 +538,9 @@ MetricByEndoscopist <- function(x, y, z) {
 #' @param SampleLocation Column describing the Macroscopic sample from histology
 #' @keywords Withdrawal
 #' @export
-#' @examples Histoltree <-list("Hospital Number:","Patient Name:",
+#' @examples #Firstly we extract histology from the raw report
+#' # using the extractor function
+#' Histoltree <-list("Hospital Number:","Patient Name:",
 #' "General Practitioner:","Date received:","Clinical Details",
 #'  "Nature of specimen","Histology","Diagnosis",""
 #')
@@ -531,6 +554,8 @@ MetricByEndoscopist <- function(x, y, z) {
 #' }
 #' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+#' # The function then standardises the histology terms through a series of 
+#' # regular expressions
 #' f<-TermStandardLocation(Mypath,'Histology')
 
 
@@ -658,7 +683,9 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' @importFrom stringr str_match_all
 #' @keywords Sample location
 #' @export
-#' @examples Histoltree <-list("Hospital Number:","Patient Name:",
+#' @examples #Firstly we extract histology from the raw report
+#' # using the extractor function
+#' Histoltree <-list("Hospital Number:","Patient Name:",
 #' "General Practitioner:","Date received:","Clinical Details",
 #'  "Nature of specimen","Histology","Diagnosis",""
 #')
@@ -672,7 +699,12 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' }
 #' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+#' # The function needs all the terms to be standardised first so the 
+#' # function TermStandardLocation needs to be run first
 #' f<-TermStandardLocation(Mypath,'Histology')
+#' # The sample locator then determines where the biopsies were taken from
+#' # by assessing the SampleLocation column which comes from the
+#' # TermStandardLocation function.
 #' f<-SampleLocator(f,'SampleLocation')
 
 SampleLocator <- function(x, y) {
@@ -740,6 +772,9 @@ SampleLocator <- function(x, y) {
 #' }
 #' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+#' # The polyp locator then determines where the biopsies were taken from
+#' # by assessing the SampleLocation column which comes from the
+#' # TermStandardLocation function.
 #' f<-TermStandardLocation(Mypath,'Histology')
 #' f<-PolypLocator(f,'SampleLocation')
 
@@ -793,7 +828,11 @@ PolypLocator <- function(x, y) {
 #' SampleLocation from the Term Standardizer
 #' @keywords Withdrawal
 #' @export
-#' @examples f<-TermStandardLocation(Mypath,'Histology')
+#' @examples #' # The polyp locator then determines where the biopsies were taken from
+#' # by assessing the SampleLocation column which comes from the
+#' # TermStandardLocation function. This should also be run before the polyp 
+#' # locator function
+#' f<-TermStandardLocation(Mypath,'Histology')
 #' f<-PolypTidyUpLocator(f,'SampleLocation')
 
 PolypTidyUpLocator <- function(x, SampleLocation) {
@@ -823,13 +862,38 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #' @importFrom dplyr group_by_
 #' @keywords Withdrawal
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,
-#' 'Dateofprocedure','HospitalNumber')
-#' GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed', 
+#' @examples # Firstly merge histology and endoscopy datasets for the colon:
+#' 
+#' MypathColon<-PathDataFrameFinalColon
+#' MyendoColon <- ColonFinal
+#' MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
+#' MyendoColon$OGDReportWhole)
+#' EndoscTree <-
+  #'   list("Hospital Number:","Patient Name:","General Practitioner:",
+#'        "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
+#'        "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
+#'        "Findings:","Endoscopic Diagnosis:")
+#' for (i in 1:(length(EndoscTree) - 1)) {
+  #'   MyendoColon <-
+    #'     Extractor(MyendoColon,"OGDReportWhole",  as.character(EndoscTree[i]),
+#'               as.character(EndoscTree[i + 1]),as.character(EndoscTree[i])
+#'     )}
+#' Histoltree <-
+  #'   list(
+    #'     "Hospital Number:","Patient Name:","General Practitioner:",
+    #'     "Date received:","Clinical Details","Nature of specimen","Histology",
+    #'     "Diagnosis","")
+#' for (i in 1:(length(Histoltree) - 1)) {
+  #' MypathColon <-Extractor(MypathColon,"PathReportWhole",  
+#'                           as.character(Histoltree[i]),
+#'                           as.character(Histoltree[i + 1]),
+#'                           gsub(" ", "", as.character(Histoltree[i]))
+#'   )}
+#' names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
+#' MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
+#' vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
+#'                     MyendoColon, "Dateofprocedure","HospitalNumber")
+#' GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed', 
 #' 'Endoscopist','Diagnosis','Histology')
 
 GRS_Type_Assess_By_Unit <-

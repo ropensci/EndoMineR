@@ -26,13 +26,38 @@ as overall number of colonoscopies.
 This will be extended to other GRS outputs in the future.
 }
 \examples{
-v<-HistolChopperDx(Mypath,'Diagnosis')
-v<-HistolChopperExtrapolDx(v,'Diagnosis')
-v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-v<-HistolChopperBxSize(v,'Macroscopicdescription')
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,
-'Dateofprocedure','HospitalNumber')
-GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed', 
+# Firstly merge histology and endoscopy datasets for the colon:
+
+MypathColon<-PathDataFrameFinalColon
+MyendoColon <- ColonFinal
+MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
+MyendoColon$OGDReportWhole)
+EndoscTree <-
+  list("Hospital Number:","Patient Name:","General Practitioner:",
+       "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
+       "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
+       "Findings:","Endoscopic Diagnosis:")
+for (i in 1:(length(EndoscTree) - 1)) {
+  MyendoColon <-
+    Extractor(MyendoColon,"OGDReportWhole",  as.character(EndoscTree[i]),
+              as.character(EndoscTree[i + 1]),as.character(EndoscTree[i])
+    )}
+Histoltree <-
+  list(
+    "Hospital Number:","Patient Name:","General Practitioner:",
+    "Date received:","Clinical Details","Nature of specimen","Histology",
+    "Diagnosis","")
+for (i in 1:(length(Histoltree) - 1)) {
+MypathColon <-Extractor(MypathColon,"PathReportWhole",  
+                          as.character(Histoltree[i]),
+                          as.character(Histoltree[i + 1]),
+                          gsub(" ", "", as.character(Histoltree[i]))
+  )}
+names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
+MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
+vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
+                    MyendoColon, "Dateofprocedure","HospitalNumber")
+GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed', 
 'Endoscopist','Diagnosis','Histology')
 }
 \keyword{Withdrawal}

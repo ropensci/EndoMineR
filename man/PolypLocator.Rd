@@ -33,6 +33,9 @@ for (i in 1:(length(Histoltree) - 1)) {
 }
 names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+# The polyp locator then determines where the biopsies were taken from
+# by assessing the SampleLocation column which comes from the
+# TermStandardLocation function.
 f<-TermStandardLocation(Mypath,'Histology')
 f<-PolypLocator(f,'SampleLocation')
 }

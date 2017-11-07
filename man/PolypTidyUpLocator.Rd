@@ -16,6 +16,10 @@ SampleLocation from the Term Standardizer}
 This cleans up the polyps from the TermStandardLocation function
 }
 \examples{
+#' # The polyp locator then determines where the biopsies were taken from
+# by assessing the SampleLocation column which comes from the
+# TermStandardLocation function. This should also be run before the polyp 
+# locator function
 f<-TermStandardLocation(Mypath,'Histology')
 f<-PolypTidyUpLocator(f,'SampleLocation')
 }

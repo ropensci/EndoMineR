@@ -19,13 +19,20 @@ reports contain the mandatory report fields as specified in the BSG standards
 BarrettsDataAccord_Prague.
 }
 \examples{
+# Firstly relevant columns are extrapolated from the 
+# Mypath demo dataset. These functions are all part of Histology data 
+# cleaning as part of the package. 
 v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
+# The histology is then merged with the Endoscopy dataset. The merge occurs
+# according to date and Hospital number
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 'HospitalNumber')
+# The pathology stage is then recorded
 b<-BarrettsDataAccord_PathStage(v,'Histology')
+# The documentation is really from the endoscopic Findings column
 BarrettsQuality_AnalysisDocumentation(b,'Findings')
 }
 \keyword{Documentation}

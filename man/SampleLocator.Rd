@@ -22,6 +22,8 @@ to get an overview of where samples were taken from.
 It will tell you the sites sampled without duplication
 }
 \examples{
+#Firstly we extract histology from the raw report
+# using the extractor function
 Histoltree <-list("Hospital Number:","Patient Name:",
 "General Practitioner:","Date received:","Clinical Details",
  "Nature of specimen","Histology","Diagnosis",""
@@ -36,7 +38,12 @@ for (i in 1:(length(Histoltree) - 1)) {
 }
 names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+# The function needs all the terms to be standardised first so the 
+# function TermStandardLocation needs to be run first
 f<-TermStandardLocation(Mypath,'Histology')
+# The sample locator then determines where the biopsies were taken from
+# by assessing the SampleLocation column which comes from the
+# TermStandardLocation function.
 f<-SampleLocator(f,'SampleLocation')
 }
 \keyword{Sample}

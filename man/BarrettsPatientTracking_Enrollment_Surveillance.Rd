@@ -30,7 +30,6 @@ BarrettsDataAccord_PathStage.
 # and then groups the Barrett's endoscopies by patient (as defined by their
 # unique hospital identifier and then orders by the date of procedure. It 
 # should look in the Indications column for Barrett's related indication
-
 Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,
 'HospitalNumber',
 'Dateofprocedure','Indications')

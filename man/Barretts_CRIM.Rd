@@ -22,17 +22,29 @@ equal to 'nothing' when the patient had undergone radiofrequency ablation at
 some point
 }
 \examples{
-v<-HistolChopperDx(Mypath,'Diagnosis')
+# Firstly relevant columns are extrapolated from the 
+# Mypath demo dataset. These functions are all part of Histology data 
+# cleaning as part of the package. 
+v<-HistolChopperAccessionNumber(Mypath,'Histology',
+'SP-\\\\d{2}-\\\\d{7}')
+v<-HistolChopperDx(v,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolChopperBxSize(v,'Macroscopicdescription')
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
-"Dateofprocedure","HospitalNumber")
+# The histology is then merged with the Endoscopy dataset. The merge occurs
+# according to date and Hospital number
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+'HospitalNumber')
+# The function relies on the other Barrett's functions being run as well:
 b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
-                    'ProcedurePerformed','OGDReportWhole','Findings')
+'ProcedurePerformed','OGDReportWhole','Findings')
 colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
+# The function groups the procedures by patient and then looks at those which 
+# have 'nothing' in the event column (which means biopsies only) which was
+# preceded by radiofrequency ablation (RFA) so that these patients are
+# labelled as having clearance of intestinal metaplasia
 Barretts_CRIM(b3,'HospitalNumber',"EVENT")
 }
 \keyword{CRIM}

@@ -16,6 +16,8 @@ Standardises the location of biopsies by cleaning up the common typos and
 abbreviations that are commonly used in free text of pathology reports
 }
 \examples{
+#Firstly we extract histology from the raw report
+# using the extractor function
 Histoltree <-list("Hospital Number:","Patient Name:",
 "General Practitioner:","Date received:","Clinical Details",
  "Nature of specimen","Histology","Diagnosis",""
@@ -30,6 +32,8 @@ for (i in 1:(length(Histoltree) - 1)) {
 }
 names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+# The function then standardises the histology terms through a series of 
+# regular expressions
 f<-TermStandardLocation(Mypath,'Histology')
 }
 \keyword{Withdrawal}

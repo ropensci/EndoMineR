@@ -20,7 +20,11 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c("PatientID", ".SD",
 #' @param y The endoscopy report text column
 #' @keywords Endoscopy Newlines
 #' @export
-#' @examples v<-ChopperNewLines(Myendo,'OGDReportWhole')
+#' @examples # The function takes the demo data
+#' # Myendo and searches through the raw 
+#' # endoscopy text so that the text is
+#' #divided by sentence into a newline
+#' v<-ChopperNewLines(Myendo,'OGDReportWhole')
 
 
 ChopperNewLines <- function(x, y) {
@@ -53,14 +57,20 @@ ChopperNewLines <- function(x, y) {
 #' @importFrom stringr str_extract
 #' @keywords Extraction
 #' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
+#' @examples 
+#' # As column names cant start with a number, one of the dividing
+#' # words has to be converted
 #' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
 #' Myendo$OGDReportWhole)
+#' # A list of dividing words (which will also act as column names)
+#' # is then constructed 
 #' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
 #' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
 #' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
 #' 'Findings:','Endoscopic Diagnosis:')
+#' # The Extractor function is then used as part of a loop to divide the raw
+#' # report up according to the user-defined words in the extraction list
+#' # defined above
 #' for(i in 1:(length(EndoscTree)-1)) {
 #'  Myendo<-Extractor(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
 #'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
@@ -272,13 +282,17 @@ EndoscChopperFindings <- function(x, y) {
 #' @keywords Negative Sentences
 #' @importFrom stringr str_replace
 #' @export
-#' @examples anexample<-c("There is no evidence of polyp here",
+#' @examples # Build a character vector and then
+#' # incorporate into a dataframe
+#' # anexample<-c("There is no evidence of polyp here",
 #' "Although the prep was poor,there was no adenoma found",
 #' "The colon was basically inflammed, but no polyp was seen",
 #' "The Barrett's segment was not biopsied",
 #' "The C0M7 stretch of Barrett's was flat")
 #' anexample<-data.frame(anexample)
 #' names(anexample)<-"Thecol"
+#' # Run the function on the dataframe and it should get rid of sentences (and
+#' # parts of sentences) with negative parts in them.
 #' NegativeRemove(anexample,"Thecol")
 
 NegativeRemove <- function(x, y) {

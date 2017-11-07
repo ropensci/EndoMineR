@@ -95,7 +95,7 @@ BarrettsDataAccord_Prague <- function(x, y) {
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' according to date and Hospital number
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function then takes the Histology column from the merged data set (v).
@@ -181,7 +181,7 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' according to date and Hospital number
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function then looks within the Histology and the 
@@ -255,7 +255,7 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' according to date and Hospital number
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' #The function relies on the other Barrett's functions being run as well:
@@ -263,8 +263,8 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' b2<-BarrettsDataAccord_Event(b,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' #The follow-up group depends on the histology and the Prague score for a 
-#' patient so it takes the processed Barrett's data and then looks in the 
-#' Findings column for permutations of the Prague score.
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
 
 BarrettsDataAccord_FUGroup <- function(x, y) {
@@ -330,7 +330,6 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' # and then groups the Barrett's endoscopies by patient (as defined by their
 #' # unique hospital identifier and then orders by the date of procedure. It 
 #' # should look in the Indications column for Barrett's related indication
-#' 
 #' Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,
 #' 'HospitalNumber',
 #' 'Dateofprocedure','Indications')
@@ -379,20 +378,31 @@ as.Date(!!Endo_ResultPerformeda), units = "weeks") / 52) %>%
 #' @param PatientID Column containing patient numbers
 #' @keywords Rule
 #' @export
-#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolChopperDx(v,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
+#' # The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' # The follow-up group depends on the histology and the Prague score for a 
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' #Finally the unique hospital numbers are obtained according to the follow-up
+#' # rule you are looking for
 #' Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
 
 BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
@@ -418,13 +428,20 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 #' @import lattice
 #' @keywords Documentation
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
+#' # The pathology stage is then recorded
 #' b<-BarrettsDataAccord_PathStage(v,'Histology')
+#' # The documentation is really from the endoscopic Findings column
 #' BarrettsQuality_AnalysisDocumentation(b,'Findings')
 
 
@@ -450,7 +467,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
   # This one is done as part of the Therapeutic survey so a different dataset.
   
   # Biopsies (location and samples taken) Decided not to do this as no point as 
-  #all biopsies are labelled at time of pathology so don't see why they should 
+  # all biopsies are labelled at time of pathology so don't see why they should 
   # be on the form. On surveillance vs not on surveillance
   
   n <- c(
@@ -508,18 +525,30 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @importFrom dplyr summarise group_by filter
 #' @keywords Does something with data
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
+#' # The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' # The follow-up group depends on the histology and the Prague score for a 
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The number of average number of biopsies is then calculated and
+#' # compared to the average Prague C score so that those who are taking
+#' # too few biopsies can be determined
 #' BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
 #'                                      'Endoscopist')
 
@@ -585,18 +614,29 @@ dplyr::group_by(as.Date(!!Endo_ResultPerformeda),
 #' @import ggplot2
 #' @importFrom magrittr '%>%'
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
+#' # The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' # The follow-up group depends on the histology and the Prague score for a 
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function simply the the histopathological grades overall for 
+#' # your dataset and then creates a frequency plot of them
 #' BarrettsSurveillance_PathDetection(b4,'Myplot')
 
 
@@ -629,18 +669,31 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 #' @param IMorNoIM extracted with the function BarrettsDataAccord_PathStage()
 #' @keywords dysplasia detection rate
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
+#' #The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' # The follow-up group depends on the histology and the Prague score for a 
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function takes the column with the extracted worst grade of 
+#' # histopathology and returns the proportion of each finding (ie 
+#' # proportion with low grade dysplasia, high grade etc.) for each
+#' # endoscopist
 #' BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
 
 
@@ -660,18 +713,30 @@ BarrettsSurveillanceDDR <- function(x, y, IMorNoIM) {
 #' @param EndoSubsetEMR The dataset.
 #' @keywords EMR chart
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
+#' #The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' # The follow-up group depends on the histology and the Prague score for a 
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function extracts only those rows for patients who have undergone 
+#' # EMR and then extracts the EMR grade from the extracted worst histopath
+#' # column (called IMorNoIM). This is then plotted out.
 #' BarrettsTherapy_Numbers_EMRsByGrade(b4)
 
 BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
@@ -745,18 +810,30 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' @importFrom magrittr '%>%'
 #' @import ggplot2
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
 #' "Dateofprocedure","HospitalNumber")
+#' # The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
-#'                              'ProcedurePerformed','OGDReportWhole','Findings')
+#'  'ProcedurePerformed','OGDReportWhole','Findings')
+#' # The follow-up group depends on the histology and the Prague score for a 
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function groups the overall number of surveillance cases over time
+#' # The endoscopic episodes should be selected according to surveillance
+#' # being the indication prior to using this function
 #' BarrettsBasicNumbers(b4,"Date.x")
 
 BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
@@ -787,18 +864,29 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
 #' @param z Another endoscopy report field of interest
 #' @keywords RFA, Radiofrequency ablation
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date #and Hospital number
 #' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
 #' "Dateofprocedure","HospitalNumber")
+#' # The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
-#'                              'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' # The follow-up group depends on the histology and the Prague score for a 
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function takes the RFA cases by looking in any free text column where 
+#' # endoscopy fingings are described and then summarising by RFA subtype
 #' BarrettsTherapeuticsRFA_ByCatheter(b4,"ProcedurePerformed","Findings")
 
 BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
@@ -870,18 +958,32 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 #' @keywords Does something with data
 #' @importFrom gplots 'heatmap.2'
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' 'SP-\\d{2}-\\d{7}')
+#' v<-HistolChopperDx(v,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
+#' #The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
-#'                              'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' # The follow-up group depends on the histology and the Prague score for a 
+#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function compares the Paris score from the endoscopy report free text to
+#' # the histopathology scores for the same endoscopies so you can see what the
+#' # lesion recognition is like overall
 #' Barretts_LesionRecognitionEMR(b4,"ProcedurePerformed","Findings")
 
 Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
@@ -980,17 +1082,29 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' @keywords CRIM
 #' @importFrom dplyr group_by slice mutate lead
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples # Firstly relevant columns are extrapolated from the 
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning as part of the package. 
+#' v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' 'SP-\\d{2}-\\d{7}')
+#' v<-HistolChopperDx(v,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
-              #' "Dateofprocedure","HospitalNumber")
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' 'HospitalNumber')
+#' # The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
-#'                     'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function groups the procedures by patient and then looks at those which 
+#' # have 'nothing' in the event column (which means biopsies only) which was
+#' # preceded by radiofrequency ablation (RFA) so that these patients are
+#' # labelled as having clearance of intestinal metaplasia
 #' Barretts_CRIM(b3,'HospitalNumber',"EVENT")
 
 Barretts_CRIM <- function(x, HospNum, EVENT) {
