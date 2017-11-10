@@ -504,7 +504,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
         x = list(rot = 0, cex = 2),
         y = list(cex = 2),
         main = list("Endoscopy documentation for Barrett's PRE DOI", cex = 2.8)
-      ),
+      )
       # key = list(
       #   space = "right",
       #   lines = list(
@@ -530,7 +530,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @param Endoscopist name of the column with the Endoscopist names
 #' @importFrom dplyr summarise group_by filter
 #' @importFrom rlang sym
-#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 ggplot geom_point labs theme xlab ylab unit element_text
 #' @keywords Does something with data
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
@@ -620,7 +620,7 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x,
 #' @param x the dataframe
 #' @param titlePlot The plot title
 #' @keywords dysplasia and cancer detection
-#' @import ggplot2
+#' @importFrom ggplot2 ggplot geom_bar ylab labs theme element_text xlab
 #' @importFrom magrittr '%>%'
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
@@ -662,8 +662,10 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
   EndoMinDataSet <- data.frame(b, n)
   
   ggplot(EndoMinDataSet, aes(x = b, y = n)) +
-    geom_bar(stat = "identity") + xlab("Pathology Grade") +
-    ylab("Total Number") + theme(axis.text.x = element_text(angle = -90)) +
+    geom_bar(stat = "identity") + 
+    xlab("Pathology Grade") +
+    ylab("Total Number") + 
+    theme(axis.text.x = element_text(angle = -90)) +
     labs(title = titlePlot) +
     theme(legend.position = "top")
 }
@@ -821,7 +823,7 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' @importFrom dplyr group_by mutate summarise
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang sym
-#' @import ggplot2
+#' @importFrom ggplot2 ggplot aes geom_line
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data

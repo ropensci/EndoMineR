@@ -80,7 +80,7 @@ SurveillanceTimeByRow <-
 #' @param  HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
 #' @importFrom magrittr '%>%'
-#' @importFrom dplyr arrange group_by mutate lead
+#' @importFrom dplyr arrange group_by mutate lead last
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
@@ -189,6 +189,7 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @importFrom magrittr '%>%'
 #' @importFrom stringr str_detect
 #' @importFrom rlang sym
+#' @importFrom ggplot2 geom_smooth geom_line geom_point scale_x_date theme_bw
 #' @keywords Tests number
 #' @export
 #' @examples # This takes the dataframe MyEndo (part of the package examples) and looks in
@@ -343,7 +344,8 @@ SurveySankey <- function(dfw, y, PatientID) {
 #' @importFrom dplyr arrange group_by mutate select summarise lag ungroup rename
 #' @importFrom reshape2 'dcast'
 #' @importFrom tidyr separate
-#' @import circlize
+#' @importFrom circlize circos.clear circos.par chordDiagram 
+#' circos.trackPlotRegion get.cell.meta.data circos.text
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang sym
 #' @keywords Circos
@@ -418,7 +420,7 @@ PatientFlow_CircosPlots <-
              max = rowSums(matmydf) + colSums(matmydf))
     
     
-    # library('circlize')
+   
     circos.clear()
     par(mar = rep(0, 4), cex = 0.9)
     circos.par(start.degree = 90, gap.degree = 4)
