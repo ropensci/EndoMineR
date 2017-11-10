@@ -114,7 +114,8 @@ Extractor <- function(x, y, stra, strb, t) {
   t <- gsub(" ", "", t, fixed = TRUE)
   x[, t] <-
     stringr::str_extract(x[, y], stringr::regex(paste(stra,
-                                                      "(.*)", strb, sep = ""), dotall = TRUE))
+                                                      "(.*)", strb, sep = ""), 
+                                                dotall = TRUE))
   x[, t] <- gsub("\\\\.*", "", x[, t])
   
   names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)

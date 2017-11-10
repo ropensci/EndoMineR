@@ -455,8 +455,10 @@ pathRep2 <- function() {
   
   
   Mypath<-PathDataFrameFinal
-  HistolTree<-list('Hospital Number','Patient Name','DOB:','General Practitioner:',
-  'Date received:','Clinical Details:','Macroscopic description:','Histology:','Diagnosis:','')
+  HistolTree<-list('Hospital Number','Patient Name','DOB:',
+                   'General Practitioner:',
+  'Date received:','Clinical Details:','Macroscopic description:','Histology:',
+  'Diagnosis:','')
   for(i in 1:(length(HistolTree)-1)) {
   Mypath<-Extractor(Mypath,'PathReportWhole',as.character(HistolTree[i]),
   as.character(HistolTree[i+1]),as.character(HistolTree[i]))

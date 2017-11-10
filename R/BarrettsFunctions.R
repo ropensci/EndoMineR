@@ -341,9 +341,9 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' 'Dateofprocedure','Indications')
 
 BarrettsPatientTracking_Enrollment_Surveillance <- function(x,
-                                                            PatientID,
-                                                            Endo_ResultPerformed,
-                                                            IndicationsFroExamination) {
+                                              PatientID,
+                                              Endo_ResultPerformed,
+                                              IndicationsFroExamination) {
   x <- data.frame(x)
   PatientIDa <- sym(PatientID)
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)

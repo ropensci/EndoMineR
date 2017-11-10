@@ -536,8 +536,8 @@ MetricByEndoscopist <- function(x, y, z) {
   
   
   ggplot(NumBxPlot) + geom_point(aes(x = Endoscopist, y = avg),
-                                 colour = "red",
-                                 size = 3) + labs(title = "Average  by endoscopist") +
+                      colour = "red",
+                     size = 3) + labs(title = "Average  by endoscopist") +
     theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) +
     theme(axis.text.x = element_text(angle = -90)) +
     theme(axis.text.y = element_text(angle = -90)) +

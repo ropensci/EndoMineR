@@ -126,13 +126,32 @@
 #  BarrettsQuality_AnalysisDocumentation(b,"Findings")
 
 ## ----exampleBarrettsQuality_AnalysisBiopsyNumber, eval = FALSE-----------
-#  Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-#  b1<-BarrettsDataAccord_Prague(v,'Findings')
-#  b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#  b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-#  b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
-#  colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#  BarrettsQuality_AnalysisBiopsyNumber(b4,'Endoscopist','Dateofprocedure','Endoscopist')
+#  # Firstly relevant columns are extrapolated from the
+#   # Mypath demo dataset. These functions are all part of Histology data
+#   # cleaning as part of the package.
+#   v<-HistolChopperDx(Mypath,'Diagnosis')
+#   v<-HistolChopperExtrapolDx(v,'Diagnosis')
+#   v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+#   v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#   # The histology is then merged with the Endoscopy dataset. The merge occurs
+#   # according to date and Hospital number
+#   v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#   'HospitalNumber')
+#   # The function relies on the other Barrett's functions being run as well:
+#   b1<-BarrettsDataAccord_Prague(v,'Findings')
+#   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+#   b3<-BarrettsDataAccord_Event(b2,'Histology',
+#   'ProcedurePerformed','OGDReportWhole','Findings')
+#   # The follow-up group depends on the histology and the Prague score for a
+#   # patient so it takes the processed Barrett's data and then looks in the
+#  # Findings column for permutations of the Prague score.
+#   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#   # The number of average number of biopsies is then calculated and
+#   # compared to the average Prague C score so that those who are taking
+#   # too few biopsies can be determined
+#   BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
+#                                        'Endoscopist')
 
 ## ----exampleBarrettsSurveillance_PathDetection, eval = FALSE-------------
 #  Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
@@ -151,9 +170,6 @@
 #  b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #  colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #  BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
-
-## ----exampleBarrettsTherapeuticsOnly, eval = FALSE-----------------------
-#  BarrettsTherapeuticsOnly(dataframe)
 
 ## ----exampleBarretts_LesionRecognitionEMR, eval = FALSE------------------
 #  Barretts_LesionRecognitionEMR(dataframe,y,z)
