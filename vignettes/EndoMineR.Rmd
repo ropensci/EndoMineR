@@ -31,6 +31,8 @@ The following described an overview of how data should be structured using both 
 
 <br>
 
+![Figure 1: Typical starting data set](/home/rstudio/EndoMineR/vignettes/TypicalReportForGastroDSEndoMinerVignette.svg){width=900px}
+
 ####Assumption 1 (Mandatory)- Data is episodic 
 
 A fundamental assumption is that all patient related data at the departmental level can be viewed as pertaining to a clinical episode recorded as a single timepoint (usually as the day of the episode. A single patient is related to patient timed episodes in a one to many relationship (one patient can have many endoscopies).
@@ -97,9 +99,9 @@ Performance metrics depend on what is being assessed. There is a natural weighti
 ##How is the package divided?
 
 
-![Overview of all the functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_FunctionStructure.svg){width=900px}
+![Figure 2: Overview of all the functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_FunctionStructure.svg){width=900px}
 
-The package is basically in three parts. How all the functions are connected in Figure 1. Extracts from this figure will be used in sequential sections below.
+The package is basically in three parts. How all the functions are connected in Figure 2. Extracts from this figure will be used in sequential sections below.
 
 1. **The extraction**- This is really when the data is provided as full text reports. You may already have the data in a spreadsheet in which case this part isn't necessary
 
@@ -117,7 +119,7 @@ For the latter, the package user will not need to Extract information as it is a
 
 <br>
 
-![Extractor function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Extractor.png)
+![Figure 3: Extractor function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Extractor.png)
 
 <br>
 
@@ -174,7 +176,7 @@ EndoscChopperEndoscopist <- function(x, y) {
 
 <br>
 
-![Endoscopy Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_EndoscopyClean.png)
+![Figure 4: Endoscopy Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_EndoscopyClean.png)
 
 <br>
 
@@ -197,7 +199,7 @@ In general, each histology reports can be divided into the Macroscopic descripti
 
 <br>
 
-![Histopathology Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_HistopExtrapol.png)
+![Figure 5: Histopathology Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_HistopExtrapol.png)
 
 <br>
 
@@ -259,7 +261,7 @@ Surveillance relates to the timing of a test relative to other tests or all test
 
 <br>
 
-![Surveillance functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_Surveillance.png)
+![Figure 6: Surveillance functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_Surveillance.png)
 
 <br>
 
@@ -298,7 +300,7 @@ how<-SurveySankey(Myendo,"ProcPerformed")
 
 <br>
 
-![SurveySankey function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Sankey.svg){width=600px}
+![Figure 7: SurveySankey function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Sankey.svg){width=600px}
 
 <br>
 
@@ -310,9 +312,10 @@ flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePer
 
 <br>
 
-![Circos function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Circos.svg){width=600px}
+![Figure 8: Circos function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Circos.svg){width=600px}
 
 <br>
+
 ###Assessment of quality functions
 
 Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to standards for endoscopic documentation as well as detection of certain pathological conditions such as dysplasia.
@@ -330,9 +333,14 @@ Another measure of quality is by looking at those factors that are recorded at e
 
 ```{r exampleEndoscChopperMeds, eval = FALSE}
 Myendo<-EndoscChopperMeds(Myendo,'Medications')
-Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 ```
 
+<br>
+
+![Figure 9: MetricbyEndoscopist function](/home/rstudio/EndoMineR/vignettes/MetricByEndoscopist.png){width=600px}
+
+<br>
 
 Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.
 
@@ -377,6 +385,12 @@ One particular disease, the premalignant oesophageal condition Barrett's oesopha
 ###Pre-processing Barrett's samples
 
 Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett's oesophagus itself. 
+
+<br>
+
+![Figure 10: Barretts cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_Barretts.svg){width=600px}
+
+<br>
 
 ####Prague score
 
@@ -461,20 +475,53 @@ b<-BarrettsDataAccord_PathStage(v,'Histology')
 BarrettsQuality_AnalysisDocumentation(b,"Findings")
 ```
 
+
+<br>
+
+![Figure 11: Barretts documentation quality function](/home/rstudio/EndoMineR/vignettes/Rplot.png){width=600px}
+
+<br>
+
 ####Quality of perfomance of Barrett's surveillance endoscopies as just by tissue sampling
 
 One of the essential requirements to demonstrate adequate sampling of Barrett's oesophagus during endoscopy is that the endoscopist should adhere to the 'Seattle protocol' for biopsies which is to take  4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett's samples is pre-requisite.
 
 ```{r exampleBarrettsQuality_AnalysisBiopsyNumber, eval = FALSE}
-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-b1<-BarrettsDataAccord_Prague(v,'Findings')
-b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
-colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-BarrettsQuality_AnalysisBiopsyNumber(b4,'Endoscopist','Dateofprocedure','Endoscopist')
+# Firstly relevant columns are extrapolated from the
+ # Mypath demo dataset. These functions are all part of Histology data
+ # cleaning as part of the package.
+ v<-HistolChopperDx(Mypath,'Diagnosis')
+ v<-HistolChopperExtrapolDx(v,'Diagnosis')
+ v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+ v<-HistolChopperBxSize(v,'Macroscopicdescription')
+ # The histology is then merged with the Endoscopy dataset. The merge occurs
+ # according to date and Hospital number
+ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+ 'HospitalNumber')
+ # The function relies on the other Barrett's functions being run as well:
+ b1<-BarrettsDataAccord_Prague(v,'Findings')
+ b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+ b3<-BarrettsDataAccord_Event(b2,'Histology',
+ 'ProcedurePerformed','OGDReportWhole','Findings')
+ # The follow-up group depends on the histology and the Prague score for a
+ # patient so it takes the processed Barrett's data and then looks in the
+# Findings column for permutations of the Prague score.
+ b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+ # The number of average number of biopsies is then calculated and
+ # compared to the average Prague C score so that those who are taking
+ # too few biopsies can be determined
+ BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
+                                      'Endoscopist')
 ```
+ <br>
  
+ ![Figure 12: Barretts quality of biopsying function](/home/rstudio/EndoMineR/vignettes/Barretts_Shortfall.png){width=600px}
+ 
+ <br>
+ 
+ 
+ <br>
  
  This function will again return a list with a ggplot showing the shortfall per endoscopist as well as a table with the same values
 
@@ -492,7 +539,13 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 BarrettsSurveillance_PathDetection(b4,'Myplot')
 ```
  
- This function provides a plot with absolute numbers of pathology detected. This of course doesn't tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist.
+<br>
+  
+ ![Figure 13: EMR by pathology grade](/home/rstudio/EndoMineR/vignettes/BarrettsEMR_By_Pathology.svg){width=600px}
+ 
+<br>
+ 
+ This function provides a plot with absolute numbers of pathology detected. This of course doesn't tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist. The output is provided as a table of proportions per endoscopist
 
 ```{r exampleBarrettsSurveillanceDDR, eval = FALSE} 
  v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
@@ -508,30 +561,43 @@ BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
 
 Barrett's patients also undergo therapeutic procedures and there are various metrics to analyse the performance of the therapy by endoscopist, as well which catheters are being used etc. To start with we can do simple things like plotting all the pathological grades of the EMRs.This should only be run after all the BarrettsDataAccord functions so that the column event is present in the dataframe.
 
-To separate out the endscopies where no therapeutic procedure was performed (assuming the Barrett's preprocessing scripts have been run) you can use:
 
-
-```{r exampleBarrettsTherapeuticsOnly, eval = FALSE} 
-BarrettsTherapeuticsOnly(dataframe)
-``` 
- 
- and then the rest of the therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function:
+The therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function:
  
 ```{r exampleBarretts_LesionRecognitionEMR, eval = FALSE} 
 Barretts_LesionRecognitionEMR(dataframe,y,z)
 ``` 
- 
+
+<br>
+
+ ![Figure 14: Worst grade dysplasia/cancer function](/home/rstudio/EndoMineR/vignettes/GradeBarretts.svg){width=600px}
+
+<br>
+
  In order to determine the basic number of EMR, RFA and APC a function called BarrettsBasicNumbers is provided which outputs a geom_line plot with the information on it.
  
 ```{r exampleBarrettsBasicNumbers, eval = FALSE} 
 BarrettsBasicNumbers(dataframe)
 ``` 
  
+ <br>
+
+![Figure 15: Number of Barrett's therapeutic endoscopies by type](/home/rstudio/EndoMineR/vignettes/BarrettsBasicNumbers.svg){width=600px}
+
+<br>
+
+
  To assess the number of different catheter types used (for renumeration purposes) the following function can be used:
  
 ```{r exampleBarrettsTherapeuticsRFA_ByCatheter, eval = FALSE} 
 BarrettsTherapeuticsRFA_ByCatheter(dataframe)
 ``` 
+
+<br>
+
+![Figure 16: Number of Barrett's therapeutic endoscopies by type](/home/rstudio/EndoMineR/vignettes/BarrettsRFA_CatheterType.svg){width=600px}
+
+<br>
 
 One of the most important aspects of therapeutics is the assessment of outcome which is defined as clearance of intestinal metaplasia (CRIM), usually on at least two endoscopies. As most patients undergoing Barrett's ablation will require radiofrequency ablation after the initial endoscopic mucosal resection, we can define CRIM as being an endoscopy where the therapeutic procedure is listed as 'nothing' in the EVENT column (this will only work if the Barrett's pre-processing functions have been used)
 

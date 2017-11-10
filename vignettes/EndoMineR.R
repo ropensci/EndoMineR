@@ -78,7 +78,7 @@
 
 ## ----exampleEndoscChopperMeds, eval = FALSE------------------------------
 #  Myendo<-EndoscChopperMeds(Myendo,'Medications')
-#  Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+#  MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 
 ## ----exampleTermStandardLocation, eval = FALSE---------------------------
 #  f<-TermStandardLocation(Mypath,'Histology')

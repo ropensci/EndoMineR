@@ -482,7 +482,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
   # all biopsies are labelled at time of pathology so don't see why they should
   # be on the form. On surveillance vs not on surveillance
   
-  n <- c(
+  Proportion <- c(
     as.numeric(nrow(PragueSubsetx) / nrow(x)),
     as.numeric(nrow(IslandSubsetx) / nrow(x)),
     as.numeric(nrow(HerniaSubsetx) / nrow(x)),
@@ -490,18 +490,14 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
   )
   s <- c("On", "On", "On", "On")
   b <- c("Prague",
-         "Prague",
-         "Island",
          "Island",
          "Hernia",
-         "Hernia",
-         "Lesion",
          "Lesion")
-  EndoMinDataSet <- data.frame(s, b, n)
+  EndoMinDataSet <- data.frame(s, b, Proportion)
   
   t <-
     barchart(
-      b ~ n,
+      b ~ Proportion,
       data = EndoMinDataSet,
       groups = s,
       scales = list(
@@ -509,18 +505,16 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
         y = list(cex = 2),
         main = list("Endoscopy documentation for Barrett's PRE DOI", cex = 2.8)
       ),
-      key = list(
-        space = "right",
-        lines = list(
-          col = c("pink", "lightblue"),
-          lty = c(2, 2),
-          lwd = 16
-        ),
-        text = list(c("On", "Off"), cex = 2)
-      )
+      # key = list(
+      #   space = "right",
+      #   lines = list(
+      #     col = c("pink", "lightblue"),
+      #     lty = c(2, 2),
+      #     lwd = 16
+      #   )
+      # )
     )
   return(t)
-  
 }
 
 ############## Pathology Quality #############
@@ -572,9 +566,9 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x,
                                                  PatientID,
                                                  Endoscopist) {
   x <- data.frame(x)
-  PatientIDa <- sym(PatientID)
-  Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-  Endoscopista <- sym(Endoscopist)
+  PatientIDa <- rlang::sym(PatientID)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+  Endoscopista <- rlang::sym(Endoscopist)
   
   GroupedByEndoscopy <-
     x %>% filter(!is.na(CStage), !is.na(NumbOfBx)) %>%
@@ -652,7 +646,7 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x,
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function simply the the histopathological grades overall for
 #' # your dataset and then creates a frequency plot of them
-#' BarrettsSurveillance_PathDetection(b4,'Myplot')
+#' BarrettsSurveillance_PathDetection(b4,'Proportion with dysplasia or cancer')
 #' rm(v)
 
 
