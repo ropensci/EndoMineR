@@ -38,7 +38,7 @@ for (i in 1:(length(Histoltree) - 1)) {
 }
 names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
-# The function needs all the terms to be standardised first so the 
+# The function needs all the terms to be standardised first so the
 # function TermStandardLocation needs to be run first
 f<-TermStandardLocation(Mypath,'Histology')
 # The sample locator then determines where the biopsies were taken from

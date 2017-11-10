@@ -16,15 +16,15 @@ BarrettsPatientTracking_UniqueHospNum(x, rule, PatientID)
 \description{
 This function gets the unique patient ID's for each patient,
 for each rule. It lists the unique PatientIDs assocaited with a rule
-('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many 
-patients will need follow up at specific time intervals. 
-This should be run after the BarrettsDataAccord_Prague and 
+('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many
+patients will need follow up at specific time intervals.
+This should be run after the BarrettsDataAccord_Prague and
 BarrettsDataAccord_PathStage.
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 v<-HistolChopperAccessionNumber(Mypath,'Histology',
 'SP-\\\\d{2}-\\\\d{7}')
 v<-HistolChopperDx(v,'Diagnosis')
@@ -40,8 +40,8 @@ b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
-# The follow-up group depends on the histology and the Prague score for a 
-# patient so it takes the processed Barrett's data and then looks in the 
+# The follow-up group depends on the histology and the Prague score for a
+# patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
 b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'

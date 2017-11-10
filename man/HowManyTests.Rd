@@ -11,28 +11,28 @@ HowManyTests(x, Indication, Endo_ResultPerformed, StringToSearch)
 
 \item{Indication}{Indication column}
 
-\item{Endo_ResultPerformed}{column containing date the Endoscopy was 
+\item{Endo_ResultPerformed}{column containing date the Endoscopy was
 performed}
 
 \item{StringToSearch}{The string in the Indication to search for}
 }
 \description{
-Get an overall idea of how many endoscopies have been done for an indication 
-by year and month. This is a more involved version of 
-SurveillanceCapacity function. It takes string for 
+Get an overall idea of how many endoscopies have been done for an indication
+by year and month. This is a more involved version of
+SurveillanceCapacity function. It takes string for
 the Indication for the test
 }
 \details{
-This returns a list which contains a plot (number of tests for that 
-indication over time and a table with the same information broken down 
+This returns a list which contains a plot (number of tests for that
+indication over time and a table with the same information broken down
 by month and year).
 }
 \examples{
-# This takes the dataframe MyEndo (part of the package examples) and looks in 
-# the column which holds the test indication (in this example it is called 
-# 'Indication' The date of the procedure column(which can be date format or 
-# POSIX format) is also necessary.  Finally the string which indicates the text 
-# indication needs to be inpoutted. In this case we are looking for all 
+# This takes the dataframe MyEndo (part of the package examples) and looks in
+# the column which holds the test indication (in this example it is called
+# 'Indication' The date of the procedure column(which can be date format or
+# POSIX format) is also necessary.  Finally the string which indicates the text
+# indication needs to be inpoutted. In this case we are looking for all
 # endoscopies done
 # where the indication is surveillance (so grepping on 'Surv' will do fine) .
 how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')

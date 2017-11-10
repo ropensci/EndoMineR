@@ -12,15 +12,15 @@ ChopperNewLines(x, y)
 \item{y}{The endoscopy report text column}
 }
 \description{
-Cleans the long lines to separate them into new lines if necessary. 
-This helps further down the line in the tokenisation of the text. 
-It is optional depending on the format of your text. It should be used 
+Cleans the long lines to separate them into new lines if necessary.
+This helps further down the line in the tokenisation of the text.
+It is optional depending on the format of your text. It should be used
 after the Extractor has separated out the different
 parts of the text according to the user's requirements
 }
 \examples{
 # The function takes the demo data
-# Myendo and searches through the raw 
+# Myendo and searches through the raw
 # endoscopy text so that the text is
 #divided by sentence into a newline
 v<-ChopperNewLines(Myendo,'OGDReportWhole')

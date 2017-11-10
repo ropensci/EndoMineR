@@ -9,19 +9,19 @@ BarrettsQuality_AnalysisDocumentation(x, Findings)
 \arguments{
 \item{x}{dataframe}
 
-\item{Findings}{column of interest- usually the main body of the 
+\item{Findings}{column of interest- usually the main body of the
 endoscopic report}
 }
 \description{
-This function assesses the Barrett's documentation. This notes how many 
+This function assesses the Barrett's documentation. This notes how many
 reports contain the mandatory report fields as specified in the BSG standards
- on Barrett's endoscopic reporting. This should be run after the 
+ on Barrett's endoscopic reporting. This should be run after the
 BarrettsDataAccord_Prague.
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -31,9 +31,10 @@ v<-HistolChopperBxSize(v,'Macroscopicdescription')
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 'HospitalNumber')
 # The pathology stage is then recorded
-b<-BarrettsDataAccord_PathStage(v,'Histology')
+b1<-BarrettsDataAccord_Prague(v,'Findings')
+b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 # The documentation is really from the endoscopic Findings column
-BarrettsQuality_AnalysisDocumentation(b,'Findings')
+BarrettsQuality_AnalysisDocumentation(b2,'Findings')
 rm(v)
 }
 \keyword{Documentation}

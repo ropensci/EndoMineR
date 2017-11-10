@@ -22,9 +22,9 @@ Specfically it extracts the histopathology worst grade
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
+# Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data cleaning
-# as part of the package. 
+# as part of the package.
 
 v<-HistolChopperAccessionNumber(Mypath,'Histology',
 'SP-\\\\d{2}-\\\\d{7}')

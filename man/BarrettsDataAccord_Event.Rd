@@ -18,15 +18,15 @@ BarrettsDataAccord_Event(x, y, z, aa, bb)
 \item{bb}{The endoscopic findings column if different to the Diagnosis column}
 }
 \description{
-This function extracts the Event- usually a therapeutic event, from the text 
-eg endoscopic mucosal resection, radiofrequency ablation etc. 
+This function extracts the Event- usually a therapeutic event, from the text
+eg endoscopic mucosal resection, radiofrequency ablation etc.
 It does not currently include stricture
 dilatation.Specfically it extracts the event
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 
 v<-HistolChopperAccessionNumber(Mypath,'Histology',
 'SP-\\\\d{2}-\\\\d{7}')
@@ -38,9 +38,9 @@ v<-HistolChopperBxSize(v,'Macroscopicdescription')
 # according to date and Hospital number
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 'HospitalNumber')
-# The function then looks within the Histology and the 
-# Procedure performed, free text endoscopic Findings and the original 
-# whole endoscopy report columns from the merged data set (v) for 
+# The function then looks within the Histology and the
+# Procedure performed, free text endoscopic Findings and the original
+# whole endoscopy report columns from the merged data set (v) for
 # EMR/APC/RFA/HALO so that the event for the procedure is recorded.
 b<-BarrettsDataAccord_Event(v,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')

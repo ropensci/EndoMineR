@@ -50,14 +50,14 @@ if (getRversion() >= "2.15.1")
 #' @importFrom stringr str_extract
 #' @keywords  Prague score
 #' @export
-#' @examples #The example takes the endoscopy demo dataset and searches the 
-#' # Findings column (which contains endoscopy free text about the 
+#' @examples #The example takes the endoscopy demo dataset and searches the
+#' # Findings column (which contains endoscopy free text about the
 #' # procedure itself). It then extracts the Prague score if relevant. I
 #' # find it easiest to use this on a Barrett's subset of data rather than
 #' # a dump of all endoscopies but of course this is a permissible dataset
 #' # too
-#' 
-#' 
+#'
+#'
 #' v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 
 
@@ -85,10 +85,10 @@ BarrettsDataAccord_Prague <- function(x, y) {
 #' @param y column of interest
 #' @keywords Pathology extraction
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
+#' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data cleaning
-#' # as part of the package. 
-#' 
+#' # as part of the package.
+#'
 #' v<-HistolChopperAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolChopperDx(v,'Diagnosis')
@@ -135,33 +135,33 @@ BarrettsDataAccord_PathStage <- function(x, y) {
                            or |and )[Ii]ntestinal [Mm]etaplasia",
                            x[, y],
                            perl = TRUE
-                         ),
-                         "IM",
-                         ifelse(
-                           grepl(
-                             "(?<!egative for |No evidence of |[Nn]o |either |
-                             or |and )[Ii]ntestinal [Mm]etaplasia",
-                             x[, y],
-                             perl = TRUE
-                           ),
-                           "IM",
-                           ifelse(is.na(x[, y]), "No tissue", "No_IM")
-                         )
+                       ),
+                       "IM",
+                       ifelse(
+                         grepl(
+                           "(?<!egative for |No evidence of |[Nn]o |either |
+                           or |and )[Ii]ntestinal [Mm]etaplasia",
+                           x[, y],
+                           perl = TRUE
+                       ),
+                       "IM",
+                       ifelse(is.na(x[, y]), "No tissue", "No_IM")
+                       )
+                       )
                        )
                      )
-                   )
                  )
                )
              )
-           ))
+               ))
   return(x)
 }
 
 
 #' Therapeutic subtypes
 #'
-#' This function extracts the Event- usually a therapeutic event, from the text 
-#' eg endoscopic mucosal resection, radiofrequency ablation etc. 
+#' This function extracts the Event- usually a therapeutic event, from the text
+#' eg endoscopic mucosal resection, radiofrequency ablation etc.
 #' It does not currently include stricture
 #' dilatation.Specfically it extracts the event
 #'
@@ -172,10 +172,10 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' @param bb The endoscopic findings column if different to the Diagnosis column
 #' @keywords Event extraction
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
-#' 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#'
 #' v<-HistolChopperAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolChopperDx(v,'Diagnosis')
@@ -186,9 +186,9 @@ BarrettsDataAccord_PathStage <- function(x, y) {
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
-#' # The function then looks within the Histology and the 
-#' # Procedure performed, free text endoscopic Findings and the original 
-#' # whole endoscopy report columns from the merged data set (v) for 
+#' # The function then looks within the Histology and the
+#' # Procedure performed, free text endoscopic Findings and the original
+#' # whole endoscopy report columns from the merged data set (v) for
 #' # EMR/APC/RFA/HALO so that the event for the procedure is recorded.
 #' b<-BarrettsDataAccord_Event(v,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
@@ -201,7 +201,7 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
     ifelse(grepl("[Ee][Mm][Rr]", x[, y], perl = TRUE),
            "EMR",
            ifelse(
-             grepl("[Ee]ndoscopic [Mm]ucosal [Rr]esection", 
+             grepl("[Ee]ndoscopic [Mm]ucosal [Rr]esection",
                    x[, y], perl = TRUE),
              "EMR",
              ifelse(
@@ -217,12 +217,12 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
                      grepl("HALO|RFA", x[, aa], perl = TRUE),
                      "RFA",
                      ifelse(
-                       grepl("APC", x[,aa], perl = TRUE),
+                       grepl("APC", x[, aa], perl = TRUE),
                        "RFA",
                        ifelse(
                          grepl("HALO|RFA", x[, bb], perl = TRUE),
                          "RFA",
-                         ifelse(grepl("APC", x[, bb], perl = TRUE), "APC", 
+                         ifelse(grepl("APC", x[, bb], perl = TRUE), "APC",
                                 "nothing")
                        )
                      )
@@ -236,24 +236,24 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 
 #' Follow up group determination
 #'
-#' This determines the follow up rule a patient should fit in to (according to 
+#' This determines the follow up rule a patient should fit in to (according to
 #' the British Society for Gastroenterology guidance on Barrett's oesophagus)
 #' Specfically it combines the presence of intestinal metaplasia with
-#' Prague score so the follow-up group can be determined. It relies on the 
-#' presence of a Prague score. It should be run after 
+#' Prague score so the follow-up group can be determined. It relies on the
+#' presence of a Prague score. It should be run after
 #' BarrettsDAtaAccord_PathStage which looks for the worst stage of a
-#' specimen and which will determine the presence or absence of intestinal 
+#' specimen and which will determine the presence or absence of intestinal
 #' metaplasia if the sample is non-dysplastic.
 #' Being the procedure done at the time and the follow-up timings
-#' @param x the dataframe(which has to have been processed by the 
+#' @param x the dataframe(which has to have been processed by the
 #' BarrettsDataAccord_PathStage function first to get IMorNoIM),
 #' @param y The field to search (endoscopic findings)
 #' @keywords Follow-Up
 #' @importFrom stringr str_extract
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -266,8 +266,8 @@ BarrettsDataAccord_Event <- function(x, y, z, aa, bb) {
 #' b<-BarrettsDataAccord_PathStage(v,'Histology')
 #' b2<-BarrettsDataAccord_Event(b,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
-#' #The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' #The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
 #' rm(v)
@@ -316,16 +316,16 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 
 #' How many Barrett's patients had surveillance
 #'
-#' This function graphs the patients who were not on surveillance programmes and 
-#' sees how many then had an endoscopy.This allows us to determine how many 
+#' This function graphs the patients who were not on surveillance programmes and
+#' sees how many then had an endoscopy.This allows us to determine how many
 #' index Barrett's detections went on to undergo surveillance.
-#' This should be run after the BarrettsDataAccord_Prague and 
+#' This should be run after the BarrettsDataAccord_Prague and
 #' BarrettsDataAccord_PathStage.
 #' @param x dataframe
 #' @param PatientID column of interest with unique hospital number in it
-#' @param Endo_ResultPerformed column of interest with date endiscopy performed 
+#' @param Endo_ResultPerformed column of interest with date endiscopy performed
 #' in it
-#' @param IndicationsFroExamination column of interest with indications in it 
+#' @param IndicationsFroExamination column of interest with indications in it
 #' (usually 'Surveillance' or similar)
 #' @keywords Patient Tracking
 #' @importFrom dplyr group_by slice mutate filter
@@ -334,36 +334,39 @@ BarrettsDataAccord_FUGroup <- function(x, y) {
 #' @export
 #' @examples #This takes the Myendo demo dataset
 #' # and then groups the Barrett's endoscopies by patient (as defined by their
-#' # unique hospital identifier and then orders by the date of procedure. It 
+#' # unique hospital identifier and then orders by the date of procedure. It
 #' # should look in the Indications column for Barrett's related indication
 #' Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,
 #' 'HospitalNumber',
 #' 'Dateofprocedure','Indications')
 
 BarrettsPatientTracking_Enrollment_Surveillance <- function(x,
-                                                  PatientID,
-                                                  Endo_ResultPerformed,
-                                                  IndicationsFroExamination) {
+                                                            PatientID,
+                                                            Endo_ResultPerformed,
+                                                            IndicationsFroExamination) {
   x <- data.frame(x)
   PatientIDa <- sym(PatientID)
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
   IndicationsFroExaminationa <-
     sym(IndicationsFroExamination)
-  # So you want all those whose last endoscopy was non surveillance but who 
-  # have 
-  # a difftime between now and the last of > 3years So get the last endoscopy 
-  # for each patient Filter out the endoscopiesthat were surveillance Get the 
-  # difftime between now and the last endoscopy 
-  # Filter for those who have been waiting >3 years post non surveillance 
+  # So you want all those whose last endoscopy was non surveillance but who
+  # have
+  # a difftime between now and the last of > 3years So get the last endoscopy
+  # for each patient Filter out the endoscopiesthat were surveillance Get the
+  # difftime between now and the last endoscopy
+  # Filter for those who have been waiting >3 years post non surveillance
   # endoscopy
   
   t <-
-    x %>% arrange(as.Date(!!Endo_ResultPerformeda)) %>% 
-    group_by(!!PatientIDa) %>% 
-    slice(n()) %>% 
-    filter(!grepl("Surv|Barr",!!IndicationsFroExamination)) %>% 
-    mutate(Years = difftime(as.Date(Sys.Date()),
-as.Date(!!Endo_ResultPerformeda), units = "weeks") / 52) %>% 
+    x %>% arrange(as.Date(!!Endo_ResultPerformeda)) %>%
+    group_by(!!PatientIDa) %>%
+    slice(n()) %>%
+    filter(!grepl("Surv|Barr", !!IndicationsFroExamination)) %>%
+    mutate(Years = difftime(
+      as.Date(Sys.Date()),
+      as.Date(!!Endo_ResultPerformeda),
+      units = "weeks"
+    ) / 52) %>%
     filter(Years > 3)
   
   return(t)
@@ -375,18 +378,18 @@ as.Date(!!Endo_ResultPerformeda), units = "weeks") / 52) %>%
 #'
 #' This function gets the unique patient ID's for each patient,
 #' for each rule. It lists the unique PatientIDs assocaited with a rule
-#' ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many 
-#' patients will need follow up at specific time intervals. 
-#' This should be run after the BarrettsDataAccord_Prague and 
+#' ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many
+#' patients will need follow up at specific time intervals.
+#' This should be run after the BarrettsDataAccord_Prague and
 #' BarrettsDataAccord_PathStage.
 #' @param x dataframe with column of interest
 #' @param rule Rule of interest
 #' @param PatientID Column containing patient numbers
 #' @keywords Rule
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolChopperDx(v,'Diagnosis')
@@ -402,8 +405,8 @@ as.Date(!!Endo_ResultPerformeda), units = "weeks") / 52) %>%
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
-#' # The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
@@ -425,19 +428,19 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 
 #' Analysis of Barrett's Documentation Quality
 #'
-#' This function assesses the Barrett's documentation. This notes how many 
+#' This function assesses the Barrett's documentation. This notes how many
 #' reports contain the mandatory report fields as specified in the BSG standards
-#'  on Barrett's endoscopic reporting. This should be run after the 
+#'  on Barrett's endoscopic reporting. This should be run after the
 #' BarrettsDataAccord_Prague.
 #' @param x dataframe
-#' @param Findings column of interest- usually the main body of the 
+#' @param Findings column of interest- usually the main body of the
 #' endoscopic report
 #' @importFrom lattice barchart
 #' @keywords Documentation
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -447,9 +450,10 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The pathology stage is then recorded
-#' b<-BarrettsDataAccord_PathStage(v,'Histology')
+#' b1<-BarrettsDataAccord_Prague(v,'Findings')
+#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' # The documentation is really from the endoscopic Findings column
-#' BarrettsQuality_AnalysisDocumentation(b,'Findings')
+#' BarrettsQuality_AnalysisDocumentation(b2,'Findings')
 #' rm(v)
 
 
@@ -457,25 +461,25 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
   x <- data.frame(x)
   # Is Surveillance documentation done properly?
-  PragueSubsetx <- subset(x,!is.na(x$MStage))
+  PragueSubsetx <- subset(x, !is.na(x$MStage))
   
   # Presence of islands
-  IslandSubsetx <- x[grepl("[Ii]sland", x[, Findings]),]
+  IslandSubsetx <- x[grepl("[Ii]sland", x[, Findings]), ]
   
   # Hiatus hernia (top of gastric folds)
   HerniaSubsetx <-
-    x[grep("[Hh]iat|astric fold|[Pp]inch", x[, Findings]),]
+    x[grep("[Hh]iat|astric fold|[Pp]inch", x[, Findings]), ]
   
   
-  # Visible lesions- should also describe the absence of visible lesions 
+  # Visible lesions- should also describe the absence of visible lesions
   #explicitly
-  LesionSubsetx <- x[grep("esion|odule|lcer", x[, Findings]),]
+  LesionSubsetx <- x[grep("esion|odule|lcer", x[, Findings]), ]
   
   # Classification of lesions On surveillance vs not on surveillance.
   # This one is done as part of the Therapeutic survey so a different dataset.
   
-  # Biopsies (location and samples taken) Decided not to do this as no point as 
-  # all biopsies are labelled at time of pathology so don't see why they should 
+  # Biopsies (location and samples taken) Decided not to do this as no point as
+  # all biopsies are labelled at time of pathology so don't see why they should
   # be on the form. On surveillance vs not on surveillance
   
   n <- c(
@@ -486,13 +490,13 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
   )
   s <- c("On", "On", "On", "On")
   b <- c("Prague",
-        "Prague",
-        "Island",
-        "Island",
-        "Hernia",
-        "Hernia",
-        "Lesion",
-        "Lesion")
+         "Prague",
+         "Island",
+         "Island",
+         "Hernia",
+         "Hernia",
+         "Lesion",
+         "Lesion")
   EndoMinDataSet <- data.frame(s, b, n)
   
   t <-
@@ -524,7 +528,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 
 #' Barrett's number of biopsies
 #'
-#' This function gets the biopsies taken per endoscopy and compares to the 
+#' This function gets the biopsies taken per endoscopy and compares to the
 #' Prague score for that endoscopy.
 #' @param x dataframe
 #' @param Endo_ResultPerformed Date of the Endocscopy
@@ -535,9 +539,9 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @importFrom ggplot2 ggplot
 #' @keywords Does something with data
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -551,8 +555,8 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
-#' # The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
@@ -573,10 +577,10 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x,
   Endoscopista <- sym(Endoscopist)
   
   GroupedByEndoscopy <-
-    x %>% filter(!is.na(CStage),!is.na(NumbOfBx)) %>% 
-group_by(as.Date(!!Endo_ResultPerformeda),
-                !!PatientID,!!Endoscopista) %>% 
-    summarise(Sum = sum(NumbOfBx),AvgC = mean(CStage))
+    x %>% filter(!is.na(CStage), !is.na(NumbOfBx)) %>%
+    group_by(as.Date(!!Endo_ResultPerformeda),!!PatientID,
+             !!Endoscopista) %>%
+    summarise(Sum = sum(NumbOfBx), AvgC = mean(CStage))
   
   GroupedByEndoscopy$ExpectedNumber <-
     (GroupedByEndoscopy$AvgC + 1) * 2
@@ -585,24 +589,24 @@ group_by(as.Date(!!Endo_ResultPerformeda),
   
   # Now group the difference by endoscopist
   BxShortfallPre <-
-    GroupedByEndoscopy %>% group_by(!!Endoscopista) %>% 
+    GroupedByEndoscopy %>% group_by(!!Endoscopista) %>%
     summarise(MeanDiff = mean(Difference))
   
   # e) Then show shortfall of number of biopsies on a graph
   t <-
-    ggplot() + 
+    ggplot() +
     geom_point(aes(BxShortfallPre$Endoscopist, BxShortfallPre$MeanDiff),
-       size = 9) + geom_point(cex = 2) + 
+               size = 9) + geom_point(cex = 2) +
     labs(title = "Shortfall number of biopsies on Barrett's Surveillance list",
-                         x = "", y = "") + 
-    theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) + 
-    theme(legend.position = "top") + 
-    xlab("Endoscopist") + 
-    ylab("Shortfall(Obs-\nexpec number Bx)") + 
-    theme(axis.text.x = element_text(angle = -90,size = 10)) + 
-    theme(axis.text.y = element_text(angle = -90, size = 10)) + 
-    theme(axis.title = element_text(size = 10)) + 
-    theme(title = element_text(size = 10)) + 
+         x = "", y = "") +
+    theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) +
+    theme(legend.position = "top") +
+    xlab("Endoscopist") +
+    ylab("Shortfall(Obs-\nexpec number Bx)") +
+    theme(axis.text.x = element_text(angle = -90, size = 10)) +
+    theme(axis.text.y = element_text(angle = -90, size = 10)) +
+    theme(axis.title = element_text(size = 10)) +
+    theme(title = element_text(size = 10)) +
     theme(legend.position = "top")
   
   functionResults <- list(BxShortfallPre = BxShortfallPre, t = t)
@@ -625,9 +629,9 @@ group_by(as.Date(!!Endo_ResultPerformeda),
 #' @import ggplot2
 #' @importFrom magrittr '%>%'
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -641,12 +645,12 @@ group_by(as.Date(!!Endo_ResultPerformeda),
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
-#' # The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function simply the the histopathological grades overall for 
+#' # The function simply the the histopathological grades overall for
 #' # your dataset and then creates a frequency plot of them
 #' BarrettsSurveillance_PathDetection(b4,'Myplot')
 #' rm(v)
@@ -655,17 +659,17 @@ group_by(as.Date(!!Endo_ResultPerformeda),
 BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
   x <- data.frame(x)
   
-  LGD <- x[grepl("LGD", x$IMorNoIM),]
-  HGD <- x[grepl("HGD", x$IMorNoIM),]
-  OAC <- x[grepl("SM1|SM2|T1b|T1a", x$IMorNoIM),]
+  LGD <- x[grepl("LGD", x$IMorNoIM), ]
+  HGD <- x[grepl("HGD", x$IMorNoIM), ]
+  OAC <- x[grepl("SM1|SM2|T1b|T1a", x$IMorNoIM), ]
   
   n <- c(nrow(LGD), nrow(HGD), nrow(OAC))
   b <- c("LGD", "HGD", "OAC")
   EndoMinDataSet <- data.frame(b, n)
   
-  ggplot(EndoMinDataSet, aes(x = b, y = n)) + 
-    geom_bar(stat = "identity") + xlab("Pathology Grade") + 
-    ylab("Total Number") + theme(axis.text.x = element_text(angle = -90)) + 
+  ggplot(EndoMinDataSet, aes(x = b, y = n)) +
+    geom_bar(stat = "identity") + xlab("Pathology Grade") +
+    ylab("Total Number") + theme(axis.text.x = element_text(angle = -90)) +
     labs(title = titlePlot) +
     theme(legend.position = "top")
 }
@@ -681,9 +685,9 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 #' @param IMorNoIM extracted with the function BarrettsDataAccord_PathStage()
 #' @keywords dysplasia detection rate
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -697,13 +701,13 @@ BarrettsSurveillance_PathDetection <- function(x, titlePlot) {
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
-#' # The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function takes the column with the extracted worst grade of 
-#' # histopathology and returns the proportion of each finding (ie 
+#' # The function takes the column with the extracted worst grade of
+#' # histopathology and returns the proportion of each finding (ie
 #' # proportion with low grade dysplasia, high grade etc.) for each
 #' # endoscopist
 #' BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
@@ -721,14 +725,14 @@ BarrettsSurveillanceDDR <- function(x, y, IMorNoIM) {
 
 #' Number of Barrett's EMRs by grade
 #'
-#' Plots all the pathological grades of the EMRs.This should only be 
+#' Plots all the pathological grades of the EMRs.This should only be
 #' run after all the BarrettsDataAccord functions.
 #' @param EndoSubsetEMR The dataset.
 #' @keywords EMR chart
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -742,28 +746,28 @@ BarrettsSurveillanceDDR <- function(x, y, IMorNoIM) {
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
-#' # The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function extracts only those rows for patients who have undergone 
+#' # The function extracts only those rows for patients who have undergone
 #' # EMR and then extracts the EMR grade from the extracted worst histopath
 #' # column (called IMorNoIM). This is then plotted out.
 #' BarrettsTherapy_Numbers_EMRsByGrade(b4)
 #' rm(v)
 
 BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
-  EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR",]
+  EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
   AllEMRs <- nrow(EndoSubsetEMR)
-  SM2 <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "SM2",])
-  SM1 <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "SM1",])
-  T1b <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "T1b",])
-  T1a <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "T1a",])
-  HGD <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "HGD",])
-  LGD <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "LGD",])
-  IM <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "IM",])
-  NoIM <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "No_IM",])
+  SM2 <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "SM2", ])
+  SM1 <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "SM1", ])
+  T1b <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "T1b", ])
+  T1a <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "T1a", ])
+  HGD <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "HGD", ])
+  LGD <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "LGD", ])
+  IM <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "IM", ])
+  NoIM <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "No_IM", ])
   
   n <- c(
     as.numeric(AllEMRs),
@@ -777,14 +781,14 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
     as.numeric(NoIM)
   )
   s <- c("AllEMRs",
-        "SM2",
-        "SM1",
-        "T1b_Unspecified",
-        "T1a",
-        "HGD",
-        "LGD",
-        "IM",
-        "No IM")
+         "SM2",
+         "SM1",
+         "T1b_Unspecified",
+         "T1a",
+         "HGD",
+         "LGD",
+         "IM",
+         "No IM")
   EMRResult <- data.frame(s, n)
   # axis(1, at=mids)
   barplot(
@@ -825,9 +829,9 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' @importFrom rlang sym
 #' @import ggplot2
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -841,8 +845,8 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #'  'ProcedurePerformed','OGDReportWhole','Findings')
-#' # The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
@@ -856,8 +860,8 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
   x <- data.frame(x)
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
   xNum <-
-    x %>% filter(EVENT != "nothing") %>% 
-    mutate(year = year(as.Date(!!Endo_ResultPerformeda))) %>% 
+    x %>% filter(EVENT != "nothing") %>%
+    mutate(year = year(as.Date(!!Endo_ResultPerformeda))) %>%
     group_by(EVENT, year) %>% summarise(n = n())
   xNumPlot <-
     ggplot(xNum, aes(
@@ -880,9 +884,9 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
 #' @param z Another endoscopy report field of interest
 #' @keywords RFA, Radiofrequency ablation
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperDx(Mypath,'Diagnosis')
 #' v<-HistolChopperExtrapolDx(v,'Diagnosis')
 #' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -896,54 +900,54 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
-#' # The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function takes the RFA cases by looking in any free text column where 
+#' # The function takes the RFA cases by looking in any free text column where
 #' # endoscopy fingings are described and then summarising by RFA subtype
 #' BarrettsTherapeuticsRFA_ByCatheter(b4,"ProcedurePerformed","Findings")
 #' rm(v)
 
 BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
-  EndoSubsetRFA <- EndoSubsetRFA[EndoSubsetRFA$EVENT == "RFA",]
+  EndoSubsetRFA <- EndoSubsetRFA[EndoSubsetRFA$EVENT == "RFA", ]
   HALO90a <-
-    EndoSubsetRFA[grepl("90", EndoSubsetRFA[, y], perl = TRUE),]
+    EndoSubsetRFA[grepl("90", EndoSubsetRFA[, y], perl = TRUE), ]
   HALO90b <-
-    EndoSubsetRFA[grepl("90", EndoSubsetRFA[, z], perl = TRUE),]
+    EndoSubsetRFA[grepl("90", EndoSubsetRFA[, z], perl = TRUE), ]
   HALO90c <- rbind(HALO90a, HALO90b)
   
   HALO360a <-
-    EndoSubsetRFA[grepl("360", EndoSubsetRFA[, y], perl = TRUE),]
+    EndoSubsetRFA[grepl("360", EndoSubsetRFA[, y], perl = TRUE), ]
   HALO360b <-
-    EndoSubsetRFA[grepl("360", EndoSubsetRFA[, z], perl = TRUE),]
+    EndoSubsetRFA[grepl("360", EndoSubsetRFA[, z], perl = TRUE), ]
   HALO360c <- rbind(HALO360a, HALO360b)
   
   HALO60a <-
-    EndoSubsetRFA[grepl("HALO60| 60", EndoSubsetRFA[, y], perl = TRUE),]
+    EndoSubsetRFA[grepl("HALO60| 60", EndoSubsetRFA[, y], perl = TRUE), ]
   HALO60b <-
-    EndoSubsetRFA[grepl("HALO60| 60", EndoSubsetRFA[, z], perl = TRUE),]
+    EndoSubsetRFA[grepl("HALO60| 60", EndoSubsetRFA[, z], perl = TRUE), ]
   HALO60c <- rbind(HALO60a, HALO60b)
   
   HALOTTSa <-
-    EndoSubsetRFA[grepl("TTS|[Cc]hannel", EndoSubsetRFA[, y], perl = TRUE),]
+    EndoSubsetRFA[grepl("TTS|[Cc]hannel", EndoSubsetRFA[, y], perl = TRUE), ]
   HALOTTSb <-
-    EndoSubsetRFA[grepl("TTS|[Cc]hannel", EndoSubsetRFA[, z], perl = TRUE),]
+    EndoSubsetRFA[grepl("TTS|[Cc]hannel", EndoSubsetRFA[, z], perl = TRUE), ]
   HALOTTSc <- rbind(HALOTTSa, HALOTTSb)
   
   HALOAPCa <-
-    EndoSubsetRFA[grepl("APC", EndoSubsetRFA[, y], perl = TRUE),]
+    EndoSubsetRFA[grepl("APC", EndoSubsetRFA[, y], perl = TRUE), ]
   HALOAPCb <-
-    EndoSubsetRFA[grepl("APC", EndoSubsetRFA[, z], perl = TRUE),]
+    EndoSubsetRFA[grepl("APC", EndoSubsetRFA[, z], perl = TRUE), ]
   HALOAPCc <- rbind(HALOAPCa, HALOAPCb)
   
   
   n <- c(nrow(HALO90c),
-        nrow(HALO360c),
-        nrow(HALO60c),
-        nrow(HALOTTSc),
-        nrow(HALOAPCc))
+         nrow(HALO360c),
+         nrow(HALO60c),
+         nrow(HALOTTSc),
+         nrow(HALOAPCc))
   s <- c("HALO 90", "HALO 360", "HALO 60", "HALO TTS", "APC")
   EMRResult <- data.frame(s, n)
   # axis(1, at=mids, labels=EMRResult%s) axis(1, at=mids)
@@ -954,7 +958,7 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
     ylab = "Number of RFA's",
     cex.lab = 2,
     cex.axis = 2.5,
-    cex.main = 2.5,
+    cex.main = 1.5,
     cex.names = 2.5,
     main = "RFA Catheter type usage"
   )
@@ -965,9 +969,9 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 
 #' Paris vs histopath Barrett's
 #'
-#' This looks at the Paris grades of each EMR and then creates a heatmap 
+#' This looks at the Paris grades of each EMR and then creates a heatmap
 #' of pathological grade vs
-#' endoscopic Paris grade.This should only be run after all the 
+#' endoscopic Paris grade.This should only be run after all the
 #' BarrettsDataAccord functions.
 #' @param EndoSubsetEMR The dataframe
 #' @param y Endoscopy report field of interest
@@ -975,9 +979,9 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 #' @keywords Does something with data
 #' @importFrom gplots 'heatmap.2'
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolChopperDx(v,'Diagnosis')
@@ -993,8 +997,8 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 #' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
-#' # The follow-up group depends on the histology and the Prague score for a 
-#' # patient so it takes the processed Barrett's data and then looks in the 
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
@@ -1005,7 +1009,7 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
 #' rm(v)
 
 Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
-  EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR",]
+  EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
   
   EndoSubsetEMR$ParisClass <-
     ifelse(
@@ -1054,44 +1058,44 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
   df3 <-
     data.frame(EndoSubsetEMR$ParisClass, EndoSubsetEMR$IMorNoIM)
   # Reorganise the column names and rows Get rid of no Paris EMR's
-  dfy <- df3[!df3$EndoSubsetEMR.ParisClass == "No_Paris",]
+  dfy <- df3[!df3$EndoSubsetEMR.ParisClass == "No_Paris", ]
   # Get the histology proportions by the Paris grade
   tr4 <- as.data.frame.matrix(prop.table(table(dfy), 1))
   
   tr5 <- as.matrix(tr4)
-  tr5 <- head(tr5,-1)
+  tr5 <- head(tr5, -1)
   # Create the heatmap par(oma = c(4, 0, 0, 4))
   
-  tr5<-tr5[!!rowSums(!is.na(tr5)),]
-  tr5<-t(tr5)
-  tr5<-tr5[!!rowSums(!is.na(tr5)),]
-  tr5<-t(tr5)
-  if(nrow(tr5)>2&ncol(tr5)>2){
-  colors <- c(seq(-1, 0.2, length = 100),
-             seq(0.21, 0.8, length = 100),
-             seq(0.81, 1, length = 100))
-  
-  heatmap.2(
-    tr5,
-    trace = "none",
-    breaks = colors,
-    density.info = "none",
-    dendrogram = "none",
-    Rowv = FALSE,
-    Colv = FALSE,
-    cexRow = 3.5,
-    cexCol = 1.5
-  )
+  tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
+  tr5 <- t(tr5)
+  tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
+  tr5 <- t(tr5)
+  if (nrow(tr5) > 2 & ncol(tr5) > 2) {
+    colors <- c(seq(-1, 0.2, length = 100),
+                seq(0.21, 0.8, length = 100),
+                seq(0.81, 1, length = 100))
+    
+    heatmap.2(
+      tr5,
+      trace = "none",
+      breaks = colors,
+      density.info = "none",
+      dendrogram = "none",
+      Rowv = FALSE,
+      Colv = FALSE,
+      cexRow = 3.5,
+      cexCol = 1.5
+    )
   }
   
 }
 
 #' CRIM status Barrett's
 #'
-#' This collects the patients in whom it is assumed that complete clearance of 
-#' intestinal metasplasia has occurred (CRIM) after ablation therapy. 
-#' This is done by collecting those endoscopies where the last EVENT was 
-#' equal to 'nothing' when the patient had undergone radiofrequency ablation at 
+#' This collects the patients in whom it is assumed that complete clearance of
+#' intestinal metasplasia has occurred (CRIM) after ablation therapy.
+#' This is done by collecting those endoscopies where the last EVENT was
+#' equal to 'nothing' when the patient had undergone radiofrequency ablation at
 #' some point
 #' @param x The dataframe
 #' @param HospNum The Hospital Number column
@@ -1101,9 +1105,9 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' @importFrom dplyr group_by slice mutate lead
 #' @importFrom rlang sym
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the 
-#' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning as part of the package. 
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
 #' v<-HistolChopperAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolChopperDx(v,'Diagnosis')
@@ -1120,7 +1124,7 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, y, z) {
 #' b3<-BarrettsDataAccord_Event(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function groups the procedures by patient and then looks at those which 
+#' # The function groups the procedures by patient and then looks at those which
 #' # have 'nothing' in the event column (which means biopsies only) which was
 #' # preceded by radiofrequency ablation (RFA) so that these patients are
 #' # labelled as having clearance of intestinal metaplasia
@@ -1133,7 +1137,8 @@ Barretts_CRIM <- function(x, HospNum, EVENT) {
   EVENTa <- sym(EVENT)
   
   CRIM <-
-    x %>% group_by(!!HospNuma) %>% 
-    mutate(ind = (!!EVENTa) == "RFA" & lead(!!EVENTa) == "nothing") %>%
+    x %>% group_by(!!HospNuma) %>%
+    mutate(ind = (!!EVENTa) == "RFA" &
+             lead(!!EVENTa) == "nothing") %>%
     slice(sort(c(which(ind), which(ind) + 1)))
 }

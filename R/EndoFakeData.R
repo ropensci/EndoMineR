@@ -1,9 +1,10 @@
 
 
 
+
 #' Endomerge
 #'
-#' Merges endoscopy and histology data. This takes the endoscopy dataset date 
+#' Merges endoscopy and histology data. This takes the endoscopy dataset date
 #' performed and the hospital number column
 #' and merges with the equivalent column in the pathology dataset
 #' @param x Endoscopy dataframe
@@ -20,7 +21,13 @@
 #' @examples v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',
 #' Mypath,'Dateofprocedure','HospitalNumber')
 
-Endomerge2 <- function(x, EndoDate, EndoHospNumber, y, PathDate, PathHospNumber)
+Endomerge2 <-
+  function(x,
+           EndoDate,
+           EndoHospNumber,
+           y,
+           PathDate,
+           PathHospNumber)
   {
     # Rename the columns so can do the join Extract the date from both reports
     colnames(x)[which(names(x) == EndoDate)] <- "Date"
@@ -35,8 +42,12 @@ Endomerge2 <- function(x, EndoDate, EndoHospNumber, y, PathDate, PathHospNumber)
     y$Date <- gsub("\n", "", y$Date)
     y$Date <- as.Date(y$Date)
     
-    EndoHistoMerge <- fuzzyjoin::difference_full_join(y, x, by = "Date", 
-        max_dist = 7, distance_col = "Days") %>% 
+    EndoHistoMerge <-
+      fuzzyjoin::difference_full_join(y,
+                                      x,
+                                      by = "Date",
+                                      max_dist = 7,
+                                      distance_col = "Days") %>%
       filter(eHospitalNum == pHospitalNum)
     return(EndoHistoMerge)
-}
+  }

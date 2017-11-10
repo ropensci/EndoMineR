@@ -32,7 +32,7 @@ for (i in 1:(length(Histoltree) - 1)) {
 }
 names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
-# The function then standardises the histology terms through a series of 
+# The function then standardises the histology terms through a series of
 # regular expressions
 f<-TermStandardLocation(Mypath,'Histology')
 rm(Mypath)

@@ -12,12 +12,12 @@ EndoscChopperFindings(x, y)
 \item{y}{column of interest}
 }
 \description{
-This cleans the Findings column from the report assuming 
+This cleans the Findings column from the report assuming
 such a column exists. Findings relates to what was found at the endoscopy
 This is usually a separate entry to the overall 'Diagnosis' but any
-are in which the description of the endoscopic findings, including 
+are in which the description of the endoscopic findings, including
 overall diagnosis or not, can be used.
-It should be used after the Extractor and the optional ChopperNewLines 
+It should be used after the Extractor and the optional ChopperNewLines
 has been used. At present it only cleans cm measurement
 }
 \examples{

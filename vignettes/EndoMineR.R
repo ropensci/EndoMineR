@@ -1,3 +1,6 @@
+## ----exampleChopperNewLines, eval = FALSE--------------------------------
+#  v<-ChopperNewLines(Myendo,'OGDReportWhole')
+
 ## ----exampleExtractor, eval = FALSE--------------------------------------
 #  Mypath<-data(PathDataFrameFinalColon)
 #  HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
@@ -6,9 +9,6 @@
 #  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
 #  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
 #  }
-
-## ----exampleChopperNewLines, eval = FALSE--------------------------------
-#  v<-ChopperNewLines(Myendo,'OGDReportWhole')
 
 ## ----exampleEndoscChopperEndoscopist, eval = FALSE-----------------------
 #  EndoscChopperEndoscopist(Myendo,'Endoscopist')
@@ -154,4 +154,16 @@
 
 ## ----exampleBarrettsTherapeuticsOnly, eval = FALSE-----------------------
 #  BarrettsTherapeuticsOnly(dataframe)
+
+## ----exampleBarretts_LesionRecognitionEMR, eval = FALSE------------------
+#  Barretts_LesionRecognitionEMR(dataframe,y,z)
+
+## ----exampleBarrettsBasicNumbers, eval = FALSE---------------------------
+#  BarrettsBasicNumbers(dataframe)
+
+## ----exampleBarrettsTherapeuticsRFA_ByCatheter, eval = FALSE-------------
+#  BarrettsTherapeuticsRFA_ByCatheter(dataframe)
+
+## ----exampleBarrettsCRIM, eval = FALSE-----------------------------------
+#  BarrettsCRIM(dataframe,HospNum,EVENT)
 

@@ -11,7 +11,7 @@ SurveySankey(dfw, y, PatientID)
 
 \item{y}{the column containing the test like ProcPerformed for example}
 
-\item{PatientID}{the column containing the patients unique identifier 
+\item{PatientID}{the column containing the patients unique identifier
 eg hostpital number}
 }
 \description{
@@ -23,10 +23,10 @@ the procedure type (eg EMR,
  Note the Hospital Number column MUST be called PatientID.
 }
 \examples{
-# The purpose of the function is to 
-# provide a Sankey plot which allows the analyst to see the proportion 
-# of patients moving from one state (in this case type of Procedure) to 
-# another. This allows us to see for example how many EMRs are done after 
+# The purpose of the function is to
+# provide a Sankey plot which allows the analyst to see the proportion
+# of patients moving from one state (in this case type of Procedure) to
+# another. This allows us to see for example how many EMRs are done after
 #RFA. For further patient flow examples see PatientFlow_CircosPlots
 names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
 SurveySankey(Myendo,"ProcedurePerformed","PatientID")

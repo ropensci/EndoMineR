@@ -9,7 +9,7 @@ PolypLocator(x, y)
 \arguments{
 \item{x}{The dataframe}
 
-\item{y}{The column containing the SampleLocation from the 
+\item{y}{The column containing the SampleLocation from the
 TermStandardLocation}
 }
 \description{

@@ -17,13 +17,13 @@ BarrettsQuality_AnalysisBiopsyNumber(x, Endo_ResultPerformed, PatientID,
 \item{Endoscopist}{name of the column with the Endoscopist names}
 }
 \description{
-This function gets the biopsies taken per endoscopy and compares to the 
+This function gets the biopsies taken per endoscopy and compares to the
 Prague score for that endoscopy.
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -37,8 +37,8 @@ b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
-# The follow-up group depends on the histology and the Prague score for a 
-# patient so it takes the processed Barrett's data and then looks in the 
+# The follow-up group depends on the histology and the Prague score for a
+# patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
 b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'

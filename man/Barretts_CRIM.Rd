@@ -15,16 +15,16 @@ Barretts_CRIM(x, HospNum, EVENT)
 patient had at that endoscopy}
 }
 \description{
-This collects the patients in whom it is assumed that complete clearance of 
-intestinal metasplasia has occurred (CRIM) after ablation therapy. 
-This is done by collecting those endoscopies where the last EVENT was 
-equal to 'nothing' when the patient had undergone radiofrequency ablation at 
+This collects the patients in whom it is assumed that complete clearance of
+intestinal metasplasia has occurred (CRIM) after ablation therapy.
+This is done by collecting those endoscopies where the last EVENT was
+equal to 'nothing' when the patient had undergone radiofrequency ablation at
 some point
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 v<-HistolChopperAccessionNumber(Mypath,'Histology',
 'SP-\\\\d{2}-\\\\d{7}')
 v<-HistolChopperDx(v,'Diagnosis')
@@ -41,7 +41,7 @@ b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
 colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
-# The function groups the procedures by patient and then looks at those which 
+# The function groups the procedures by patient and then looks at those which
 # have 'nothing' in the event column (which means biopsies only) which was
 # preceded by radiofrequency ablation (RFA) so that these patients are
 # labelled as having clearance of intestinal metaplasia

@@ -15,7 +15,7 @@ ColumnCleanUp(x, y)
 This does a general clean up of whitespace,
 semi-colons,full stops at the start
 of lines and converts end sentence full stops to new lines.
-It should be used after the Extractor and the optional 
+It should be used after the Extractor and the optional
 ChopperNewLines has been used. It can be used as part of the other functions
 or as a way of providing a 'positive diagnosis only' type output (see
 HistolChopperDx)

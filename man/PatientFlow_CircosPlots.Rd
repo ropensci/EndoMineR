@@ -23,8 +23,8 @@ type of procedure to another using circos plots.
 }
 \examples{
 # This function builds a circos plot which gives a more aggregated
-# overview of how patients flow from one state to another than the 
-# SurveySankey function 
+# overview of how patients flow from one state to another than the
+# SurveySankey function
 # Build a list of procedures
 Event <- list(x1 = "Therapeutic- Dilatation",
 x2 = "Other-", x3 = "Surveillance",
@@ -40,7 +40,7 @@ Myendo<-cbind(fff$col1,Myendo)
 names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
 names(Myendo)[names(Myendo) == 'fff$col1'] <- 'EndoEvent'
 # Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
-# Run the function using the procedure information (the date of the 
+# Run the function using the procedure information (the date of the
 # procedure, the Event type and the individual patient IDs)
 PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
 rm(Myendo)

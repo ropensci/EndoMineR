@@ -17,9 +17,9 @@ BarrettsSurveillanceDDR(x, y, IMorNoIM)
 This function assesses the dysplasia detection rate per endoscopist.
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -33,13 +33,13 @@ b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
-# The follow-up group depends on the histology and the Prague score for a 
-# patient so it takes the processed Barrett's data and then looks in the 
+# The follow-up group depends on the histology and the Prague score for a
+# patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
 b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-# The function takes the column with the extracted worst grade of 
-# histopathology and returns the proportion of each finding (ie 
+# The function takes the column with the extracted worst grade of
+# histopathology and returns the proportion of each finding (ie
 # proportion with low grade dysplasia, high grade etc.) for each
 # endoscopist
 BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')

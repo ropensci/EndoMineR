@@ -12,23 +12,23 @@ BarrettsPatientTracking_Enrollment_Surveillance(x, PatientID,
 
 \item{PatientID}{column of interest with unique hospital number in it}
 
-\item{Endo_ResultPerformed}{column of interest with date endiscopy performed 
+\item{Endo_ResultPerformed}{column of interest with date endiscopy performed
 in it}
 
-\item{IndicationsFroExamination}{column of interest with indications in it 
+\item{IndicationsFroExamination}{column of interest with indications in it
 (usually 'Surveillance' or similar)}
 }
 \description{
-This function graphs the patients who were not on surveillance programmes and 
-sees how many then had an endoscopy.This allows us to determine how many 
+This function graphs the patients who were not on surveillance programmes and
+sees how many then had an endoscopy.This allows us to determine how many
 index Barrett's detections went on to undergo surveillance.
-This should be run after the BarrettsDataAccord_Prague and 
+This should be run after the BarrettsDataAccord_Prague and
 BarrettsDataAccord_PathStage.
 }
 \examples{
 #This takes the Myendo demo dataset
 # and then groups the Barrett's endoscopies by patient (as defined by their
-# unique hospital identifier and then orders by the date of procedure. It 
+# unique hospital identifier and then orders by the date of procedure. It
 # should look in the Indications column for Barrett's related indication
 Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,
 'HospitalNumber',

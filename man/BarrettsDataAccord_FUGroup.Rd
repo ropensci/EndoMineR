@@ -7,26 +7,26 @@
 BarrettsDataAccord_FUGroup(x, y)
 }
 \arguments{
-\item{x}{the dataframe(which has to have been processed by the 
+\item{x}{the dataframe(which has to have been processed by the
 BarrettsDataAccord_PathStage function first to get IMorNoIM),}
 
 \item{y}{The field to search (endoscopic findings)}
 }
 \description{
-This determines the follow up rule a patient should fit in to (according to 
+This determines the follow up rule a patient should fit in to (according to
 the British Society for Gastroenterology guidance on Barrett's oesophagus)
 Specfically it combines the presence of intestinal metaplasia with
-Prague score so the follow-up group can be determined. It relies on the 
-presence of a Prague score. It should be run after 
+Prague score so the follow-up group can be determined. It relies on the
+presence of a Prague score. It should be run after
 BarrettsDAtaAccord_PathStage which looks for the worst stage of a
-specimen and which will determine the presence or absence of intestinal 
+specimen and which will determine the presence or absence of intestinal
 metaplasia if the sample is non-dysplastic.
 Being the procedure done at the time and the follow-up timings
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -39,8 +39,8 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 b<-BarrettsDataAccord_PathStage(v,'Histology')
 b2<-BarrettsDataAccord_Event(b,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
-#The follow-up group depends on the histology and the Prague score for a 
-# patient so it takes the processed Barrett's data and then looks in the 
+#The follow-up group depends on the histology and the Prague score for a
+# patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
 b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
 rm(v)

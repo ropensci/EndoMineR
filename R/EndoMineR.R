@@ -1,9 +1,11 @@
 
 
 
+
 if (getRversion() >= "2.15.1")
   utils::globalVariables(
     c(
+      ".SD",
       "b",
       "PatientID",
       ".SD",
@@ -62,15 +64,15 @@ SurveillanceTimeByRow <-
   function(x, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    x %>% arrange(!!HospNum_Ida, !!Endo_ResultPerformeda) %>% 
-      group_by(!!HospNum_Ida) %>% 
+    x %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
+      group_by(!!HospNum_Ida) %>%
       mutate(diffDate = difftime(as.Date(!!Endo_ResultPerformeda), lead(as.Date(
-      !!Endo_ResultPerformeda
-    ), 1), units = "days"))
+        !!Endo_ResultPerformeda
+      ), 1), units = "days"))
   }
 
 #' Extract the last test done by a patient in days and how long ago
-#' 
+#'
 #' This determines the last test done by that patient and the time
 #' between now and that last test in days
 #'
@@ -90,9 +92,9 @@ SurveillanceLastToNow <-
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     
-    x %>% arrange(!!HospNum_Ida, !!Endo_ResultPerformeda) %>%
+    x %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
-      mutate(diffDate = difftime(Sys.Date(), last(!!Endo_ResultPerformeda), 
+      mutate(diffDate = difftime(Sys.Date(), last(!!Endo_ResultPerformeda),
                                  units = "days"))
   }
 
@@ -167,18 +169,18 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 }
 
 #' Number of tests done per month and year by indication
-#' 
-#' Get an overall idea of how many endoscopies have been done for an indication 
-#' by year and month. This is a more involved version of 
-#' SurveillanceCapacity function. It takes string for 
+#'
+#' Get an overall idea of how many endoscopies have been done for an indication
+#' by year and month. This is a more involved version of
+#' SurveillanceCapacity function. It takes string for
 #' the Indication for the test
 #'
-#' This returns a list which contains a plot (number of tests for that 
-#' indication over time and a table with the same information broken down 
+#' This returns a list which contains a plot (number of tests for that
+#' indication over time and a table with the same information broken down
 #' by month and year).
 #' @param x dataframe
 #' @param Indication Indication column
-#' @param Endo_ResultPerformed column containing date the Endoscopy was 
+#' @param Endo_ResultPerformed column containing date the Endoscopy was
 #' performed
 #' @param StringToSearch The string in the Indication to search for
 #' @importFrom magrittr '%>%'
@@ -189,11 +191,11 @@ SurveillanceCapacity <- function(x, Endo_ResultPerformed) {
 #' @importFrom rlang sym
 #' @keywords Tests number
 #' @export
-#' @examples # This takes the dataframe MyEndo (part of the package examples) and looks in 
-#' # the column which holds the test indication (in this example it is called 
-#' # 'Indication' The date of the procedure column(which can be date format or 
-#' # POSIX format) is also necessary.  Finally the string which indicates the text 
-#' # indication needs to be inpoutted. In this case we are looking for all 
+#' @examples # This takes the dataframe MyEndo (part of the package examples) and looks in
+#' # the column which holds the test indication (in this example it is called
+#' # 'Indication' The date of the procedure column(which can be date format or
+#' # POSIX format) is also necessary.  Finally the string which indicates the text
+#' # indication needs to be inpoutted. In this case we are looking for all
 #' # endoscopies done
 #' # where the indication is surveillance (so grepping on 'Surv' will do fine) .
 #' how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
@@ -250,34 +252,34 @@ HowManyTests <-
 #'  Note the Hospital Number column MUST be called PatientID.
 #' @param dfw the dataframe extracted using the standard cleanup scripts
 #' @param y the column containing the test like ProcPerformed for example
-#' @param PatientID the column containing the patients unique identifier 
+#' @param PatientID the column containing the patients unique identifier
 #' eg hostpital number
 #' @importFrom dplyr group_by
 #' @importFrom magrittr '%>%'
-#' @import data.table
-#' @importfrom reshape2 'dcast'
+#' @importFrom data.table 'setDT' 'rowid'
+#' @importFrom reshape2 'dcast'
 #' @importFrom googleVis gvisSankey
 #' @keywords Sankey
 #' @export
-#' @examples # The purpose of the function is to 
-#' # provide a Sankey plot which allows the analyst to see the proportion 
-#' # of patients moving from one state (in this case type of Procedure) to 
-#' # another. This allows us to see for example how many EMRs are done after 
+#' @examples # The purpose of the function is to
+#' # provide a Sankey plot which allows the analyst to see the proportion
+#' # of patients moving from one state (in this case type of Procedure) to
+#' # another. This allows us to see for example how many EMRs are done after
 #' #RFA. For further patient flow examples see PatientFlow_CircosPlots
 #' names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
 #' SurveySankey(Myendo,"ProcedurePerformed","PatientID")
 
-SurveySankey <- function(dfw, y,PatientID) {
+SurveySankey <- function(dfw, y, PatientID) {
   # Create the Sankey diagrams
   Sankey <-
-    dcast(setDT(dfw)[, .SD, PatientID], 
+    reshape2::dcast(setDT(dfw)[, .SD, PatientID],
           PatientID ~ rowid(PatientID),
           value.var = y)
   PtFlow <- Sankey
   PtFlow <- data.frame(PtFlow)
   PtFlow <- PtFlow[!is.na(names(PtFlow))]
   r <- c()
-
+  
   #names(PtFlow)<-gsub("X(\\d+)","Event\\1",names(PtFlow))
   for (i in seq_along(PtFlow)) {
     t <- paste("ord", i, sep = "")
@@ -306,23 +308,25 @@ SurveySankey <- function(dfw, y,PatientID) {
   orders.plot <- data.frame(orders.plot)
   orders.plot <-
     orders.plot[grepl("[A-Z]", orders.plot$from) &
-                  grepl("[A-Z]", orders.plot$to), ]
+                  grepl("[A-Z]", orders.plot$to),]
   orders.plot <-
     orders.plot[!grepl("NA", orders.plot$from) &
-                  !grepl("NA", orders.plot$to), ]
-  plot(googleVis::gvisSankey(
-    orders.plot,
-    from = "from",
-    to = "to",
-    weight = "n",
-    options = list(
-      height = 900,
-      width = 1800,
-      sankey = "{link:{color:{fill:'black',stroke: 'black', strokeWidth: 1 }},
-      node: { color: { fill: '#a61d4c' },
-      label: { color: '#871b47',fontName: 'Open Sans',fontSize: 35 } }}"
-    )
-    ))
+                  !grepl("NA", orders.plot$to),]
+  plot(
+    googleVis::gvisSankey(
+      orders.plot,
+      from = "from",
+      to = "to",
+      weight = "n",
+      options = list(
+        height = 900,
+        width = 1800,
+        sankey = "{link:{color:{fill:'black',stroke: 'black', strokeWidth: 1 }},
+        node: { color: { fill: '#a61d4c' },
+        label: { color: '#871b47',fontName: 'Open Sans',fontSize: 35 } }}"
+      )
+      )
+      )
 }
 
 
@@ -343,10 +347,10 @@ SurveySankey <- function(dfw, y,PatientID) {
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang sym
 #' @keywords Circos
-#' @export 
+#' @export
 #' @examples # This function builds a circos plot which gives a more aggregated
-#' # overview of how patients flow from one state to another than the 
-#' # SurveySankey function 
+#' # overview of how patients flow from one state to another than the
+#' # SurveySankey function
 #' # Build a list of procedures
 #' Event <- list(x1 = "Therapeutic- Dilatation",
 #' x2 = "Other-", x3 = "Surveillance",
@@ -362,7 +366,7 @@ SurveySankey <- function(dfw, y,PatientID) {
 #' names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
 #' names(Myendo)[names(Myendo) == 'fff$col1'] <- 'EndoEvent'
 #' # Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
-#' # Run the function using the procedure information (the date of the 
+#' # Run the function using the procedure information (the date of the
 #' # procedure, the Event type and the individual patient IDs)
 #' PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
 #' rm(Myendo)
@@ -374,7 +378,6 @@ PatientFlow_CircosPlots <-
            Endo_ResultPerformed,
            HospNum_Id,
            ProcPerformed) {
-    
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     HospNum_Ida <- sym(HospNum_Id)
     ProcPerformeda <- sym(ProcPerformed)
@@ -382,15 +385,15 @@ PatientFlow_CircosPlots <-
     mydf <-
       x %>% arrange(!!Endo_ResultPerformeda) %>% group_by(!!HospNum_Ida) %>%
       mutate(origin = lag(!!ProcPerformeda, 1),
-              destination = !!ProcPerformeda) %>%
-      select(origin, destination,PatientID) %>% 
-      group_by(origin, destination,PatientID) %>%
+             destination = !!ProcPerformeda) %>%
+      select(origin, destination, PatientID) %>%
+      group_by(origin, destination, PatientID) %>%
       summarise(n = n()) %>% ungroup()
     
     mydf <- data.frame(dcast(mydf, origin ~ destination))
     
     # Get rid of NA's
-    mydf <- mydf[complete.cases(mydf), ]
+    mydf <- mydf[complete.cases(mydf),]
     
     V1 <- c("2", "7", "3", "10")
     V2 <- c("210,150,12", "110,255,233", "125,175,0", "255,219,0")
@@ -400,16 +403,16 @@ PatientFlow_CircosPlots <-
     df_format <-
       mydf %>% select(1:3) %>% rename(order = V1,
                                       rgb = V2,
-                                      region = origin) %>% 
+                                      region = origin) %>%
       mutate(region = gsub("_", " ", region))
     # flow matrix. Need to add V1 and V2 to the matrix here
     
-    matmydf <- as.matrix(mydf[, -(1:3)])
+    matmydf <- as.matrix(mydf[,-(1:3)])
     dimnames(matmydf) <-
       list(orig = df_format$region, dest = df_format$region)
     # library('tidyr')
     df_format <-
-      df_format %>% dplyr::arrange(order) %>% 
+      df_format %>% dplyr::arrange(order) %>%
       separate(rgb, c("r", "g", "b")) %>%
       mutate(col = rgb(r, g, b, max = 255),
              max = rowSums(matmydf) + colSums(matmydf))
@@ -432,22 +435,30 @@ PatientFlow_CircosPlots <-
     )
     
     
-    circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
-      xlim <- get.cell.meta.data("xlim")
-      ylim <- get.cell.meta.data("ylim")
-      sector.index <- get.cell.meta.data("sector.index")
-      circos.text(mean(xlim), mean(ylim), 
-                  sector.index, col = "black", 
-                  cex = 0.6, facing = "inside", 
-                  niceFacing = TRUE)
-    }, 
-    bg.border = NA)
+    circos.trackPlotRegion(
+      track.index = 1,
+      panel.fun = function(x, y) {
+        xlim <- get.cell.meta.data("xlim")
+        ylim <- get.cell.meta.data("ylim")
+        sector.index <- get.cell.meta.data("sector.index")
+        circos.text(
+          mean(xlim),
+          mean(ylim),
+          sector.index,
+          col = "black",
+          cex = 0.6,
+          facing = "inside",
+          niceFacing = TRUE
+        )
+      },
+      bg.border = NA
+    )
   }
 
 
 ##### Endoscopic Performance Quality- documentation.######
 
-#' Extract from report, using words from a list 
+#' Extract from report, using words from a list
 #'
 #' The aim here is simply to
 #' produce a document term matrix to get the frequency
@@ -461,9 +472,9 @@ PatientFlow_CircosPlots <-
 #' @import tm
 #' @keywords Lookup
 #' @export
-#' @examples #The function relies on defined a list of 
-#' # words you are interested in and then choosing the column you are 
-#' # interested in looking in for these words. This can be for histopathology 
+#' @examples #The function relies on defined a list of
+#' # words you are interested in and then choosing the column you are
+#' # interested in looking in for these words. This can be for histopathology
 #' # free text columns or endoscopic. In this example it is for endoscopic
 #' # columns
 #' myNotableWords<-c('arrett','oeliac')
@@ -520,13 +531,13 @@ MetricByEndoscopist <- function(x, y, z) {
   variable <- sym(z)
   
   NumBxPlot <-
-    x %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>% 
+    x %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>%
     summarise(avg = mean(!!variable))
   
   
   ggplot(NumBxPlot) + geom_point(aes(x = Endoscopist, y = avg),
-                     colour = "red",
-                     size = 3) + labs(title = "Average  by endoscopist") +
+                                 colour = "red",
+                                 size = 3) + labs(title = "Average  by endoscopist") +
     theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) +
     theme(axis.text.x = element_text(angle = -90)) +
     theme(axis.text.y = element_text(angle = -90)) +
@@ -560,7 +571,7 @@ MetricByEndoscopist <- function(x, y, z) {
 #' }
 #' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
-#' # The function then standardises the histology terms through a series of 
+#' # The function then standardises the histology terms through a series of
 #' # regular expressions
 #' f<-TermStandardLocation(Mypath,'Histology')
 #' rm(Mypath)
@@ -706,7 +717,7 @@ TermStandardLocation <- function(x, SampleLocation) {
 #' }
 #' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
-#' # The function needs all the terms to be standardised first so the 
+#' # The function needs all the terms to be standardised first so the
 #' # function TermStandardLocation needs to be run first
 #' f<-TermStandardLocation(Mypath,'Histology')
 #' # The sample locator then determines where the biopsies were taken from
@@ -761,7 +772,7 @@ SampleLocator <- function(x, y) {
 #' which the TermStandardLocation produces.
 #' It should be used after the PolypTidyUpLocator
 #' @param x The dataframe
-#' @param y The column containing the SampleLocation from the 
+#' @param y The column containing the SampleLocation from the
 #' TermStandardLocation
 #' @keywords Withdrawal
 #' @importFrom stringr str_match_all
@@ -839,7 +850,7 @@ PolypLocator <- function(x, y) {
 #' @export
 #' @examples #' # The polyp locator then determines where the biopsies were taken from
 #' # by assessing the SampleLocation column which comes from the
-#' # TermStandardLocation function. This should also be run before the polyp 
+#' # TermStandardLocation function. This should also be run before the polyp
 #' # locator function
 #' f<-TermStandardLocation(Mypath,'Histology')
 #' f<-PolypTidyUpLocator(f,'SampleLocation')
@@ -872,28 +883,28 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #' @keywords Withdrawal
 #' @export
 #' @examples # Firstly merge histology and endoscopy datasets for the colon:
-#' 
+#'
 #' MypathColon<-PathDataFrameFinalColon
 #' MyendoColon <- ColonFinal
 #' MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
 #' MyendoColon$OGDReportWhole)
 #' EndoscTree <-
-  #'   list("Hospital Number:","Patient Name:","General Practitioner:",
+#'   list("Hospital Number:","Patient Name:","General Practitioner:",
 #'        "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
 #'        "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
 #'        "Findings:","Endoscopic Diagnosis:")
 #' for (i in 1:(length(EndoscTree) - 1)) {
-  #'   MyendoColon <-
-    #'     Extractor(MyendoColon,"OGDReportWhole",  as.character(EndoscTree[i]),
+#'   MyendoColon <-
+#'     Extractor(MyendoColon,"OGDReportWhole",  as.character(EndoscTree[i]),
 #'               as.character(EndoscTree[i + 1]),as.character(EndoscTree[i])
 #'     )}
 #' Histoltree <-
-  #'   list(
-    #'     "Hospital Number:","Patient Name:","General Practitioner:",
-    #'     "Date received:","Clinical Details","Nature of specimen","Histology",
-    #'     "Diagnosis","")
+#'   list(
+#'     "Hospital Number:","Patient Name:","General Practitioner:",
+#'     "Date received:","Clinical Details","Nature of specimen","Histology",
+#'     "Diagnosis","")
 #' for (i in 1:(length(Histoltree) - 1)) {
-  #' MypathColon <-Extractor(MypathColon,"PathReportWhole",  
+#' MypathColon <-Extractor(MypathColon,"PathReportWhole",
 #'                           as.character(Histoltree[i]),
 #'                           as.character(Histoltree[i + 1]),
 #'                           gsub(" ", "", as.character(Histoltree[i]))
@@ -902,7 +913,7 @@ PolypTidyUpLocator <- function(x, SampleLocation) {
 #' MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 #' vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
 #'                     MyendoColon, "Dateofprocedure","HospitalNumber")
-#' GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed', 
+#' GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
 #' 'Endoscopist','Diagnosis','Histology')
 #' rm(vColon)
 #' rm(MypathColon)
@@ -918,9 +929,9 @@ GRS_Type_Assess_By_Unit <-
     
     # Adenomas by endoscopist ============
     
-    x <- x[grepl("Colonoscopy", x[, ProcPerformed]), ]
+    x <- x[grepl("Colonoscopy", x[, ProcPerformed]),]
     MyColonDataAdenomaDetectionByEndoscopist <-
-      x[grep(".*[Aa]denom.*", x[, Dx]), ]
+      x[grep(".*[Aa]denom.*", x[, Dx]),]
     MyColonDataAdenomaDetectionByEndoscopist <-
       MyColonDataAdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
@@ -944,7 +955,7 @@ GRS_Type_Assess_By_Unit <-
     
     MyColonDataAdenoCarcinomaDetectionByEndoscopist <-
       x[grepl(".*denoca.*", x[, Histol]) &
-          !grepl(".*denom.*", x[, Histol]), ]
+          !grepl(".*denom.*", x[, Histol]),]
     MyColonDataAdenoCarcinomaDetectionByEndoscopist <-
       MyColonDataAdenoCarcinomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
@@ -958,14 +969,14 @@ GRS_Type_Assess_By_Unit <-
       )
     MyColonDataAdenocarcinomas$PropAdenocarcinomas <-
       (
-        MyColonDataAdenocarcinomas$NumAdenocarcinomas / 
+        MyColonDataAdenocarcinomas$NumAdenocarcinomas /
           MyColonDataAdenocarcinomas$NumColons
       ) * 100
     
     # Dysplastic grade of adenomas by endoscopist (from whole dataset) =====
     MyColonData_HG_AdenomaDetectionByEndoscopist <-
       x[grepl(".*denoma.*", x[, Histol]) &
-          grepl(".*[Hh]igh [Gg]rade.*", x[, Histol]), ]
+          grepl(".*[Hh]igh [Gg]rade.*", x[, Histol]),]
     MyColonData_HG_AdenomaDetectionByEndoscopist <-
       MyColonData_HG_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
@@ -973,7 +984,7 @@ GRS_Type_Assess_By_Unit <-
     
     MyColonData_LG_AdenomaDetectionByEndoscopist <-
       x[grepl(".*denoma.*", x[, Histol]) &
-          grepl(".*[Ll]ow [Gg]rade.*", x[, Histol]), ]
+          grepl(".*[Ll]ow [Gg]rade.*", x[, Histol]),]
     MyColonData_LG_AdenomaDetectionByEndoscopist <-
       MyColonData_LG_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
@@ -987,7 +998,7 @@ GRS_Type_Assess_By_Unit <-
       )
     MyColonDataHGD_Adenomas$PropHGAdenomas <-
       (
-        MyColonDataHGD_Adenomas$NumHighGradeAdenomas / 
+        MyColonDataHGD_Adenomas$NumHighGradeAdenomas /
           MyColonDataHGD_Adenomas$NumColons
       ) * 100
     
@@ -999,12 +1010,12 @@ GRS_Type_Assess_By_Unit <-
       )
     MyColonDataLGD_Adenomas$PropLGAdenomas <-
       (
-        MyColonDataLGD_Adenomas$NumLowGradeAdenomas / 
+        MyColonDataLGD_Adenomas$NumLowGradeAdenomas /
           MyColonDataLGD_Adenomas$NumColons
       ) * 100
     
     MyColonData_Serr_AdenomaDetectionByEndoscopist <-
-      x[grepl(".*[Ss]errated.*", x[, Histol]), ]
+      x[grepl(".*[Ss]errated.*", x[, Histol]),]
     MyColonData_Serr_AdenomaDetectionByEndoscopist <-
       MyColonData_Serr_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
@@ -1017,12 +1028,12 @@ GRS_Type_Assess_By_Unit <-
         by = Endo_Endoscopist
       )
     MyColonDataSerr_Adenomas$PropSerrAdenomas <-
-      (MyColonDataSerr_Adenomas$NumSerrAdenomas / 
+      (MyColonDataSerr_Adenomas$NumSerrAdenomas /
          MyColonDataSerr_Adenomas$NumColons) * 100
     
     # Hyperplastic detection rate by endoscopist (from whole dataset) ====
     MyColonDataHyperplasticDetectionByEndoscopist <-
-      x[grep(".*yperplastic.*", x[, Dx]), ] %>% group_by_(Endo_Endoscopist) %>%
+      x[grep(".*yperplastic.*", x[, Dx]),] %>% group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumHyperplastics = nrow(.)))
     
     MyColonDataColonoscopiesByEndoscopist <-

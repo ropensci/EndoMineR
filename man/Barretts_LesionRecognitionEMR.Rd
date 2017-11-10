@@ -14,15 +14,15 @@ Barretts_LesionRecognitionEMR(EndoSubsetEMR, y, z)
 \item{z}{Another endoscopy report field of interest}
 }
 \description{
-This looks at the Paris grades of each EMR and then creates a heatmap 
+This looks at the Paris grades of each EMR and then creates a heatmap
 of pathological grade vs
-endoscopic Paris grade.This should only be run after all the 
+endoscopic Paris grade.This should only be run after all the
 BarrettsDataAccord functions.
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 v<-HistolChopperAccessionNumber(Mypath,'Histology',
 'SP-\\\\d{2}-\\\\d{7}')
 v<-HistolChopperDx(v,'Diagnosis')
@@ -38,8 +38,8 @@ b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
-# The follow-up group depends on the histology and the Prague score for a 
-# patient so it takes the processed Barrett's data and then looks in the 
+# The follow-up group depends on the histology and the Prague score for a
+# patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
 b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'

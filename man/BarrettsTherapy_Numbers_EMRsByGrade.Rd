@@ -10,13 +10,13 @@ BarrettsTherapy_Numbers_EMRsByGrade(EndoSubsetEMR)
 \item{EndoSubsetEMR}{The dataset.}
 }
 \description{
-Plots all the pathological grades of the EMRs.This should only be 
+Plots all the pathological grades of the EMRs.This should only be
 run after all the BarrettsDataAccord functions.
 }
 \examples{
-# Firstly relevant columns are extrapolated from the 
-# Mypath demo dataset. These functions are all part of Histology data 
-# cleaning as part of the package. 
+# Firstly relevant columns are extrapolated from the
+# Mypath demo dataset. These functions are all part of Histology data
+# cleaning as part of the package.
 v<-HistolChopperDx(Mypath,'Diagnosis')
 v<-HistolChopperExtrapolDx(v,'Diagnosis')
 v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -30,12 +30,12 @@ b1<-BarrettsDataAccord_Prague(v,'Findings')
 b2<-BarrettsDataAccord_PathStage(b1,'Histology')
 b3<-BarrettsDataAccord_Event(b2,'Histology',
 'ProcedurePerformed','OGDReportWhole','Findings')
-# The follow-up group depends on the histology and the Prague score for a 
-# patient so it takes the processed Barrett's data and then looks in the 
+# The follow-up group depends on the histology and the Prague score for a
+# patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
 b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-# The function extracts only those rows for patients who have undergone 
+# The function extracts only those rows for patients who have undergone
 # EMR and then extracts the EMR grade from the extracted worst histopath
 # column (called IMorNoIM). This is then plotted out.
 BarrettsTherapy_Numbers_EMRsByGrade(b4)

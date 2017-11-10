@@ -48,7 +48,7 @@ Histoltree <-
     "Date received:","Clinical Details","Nature of specimen","Histology",
     "Diagnosis","")
 for (i in 1:(length(Histoltree) - 1)) {
-MypathColon <-Extractor(MypathColon,"PathReportWhole",  
+MypathColon <-Extractor(MypathColon,"PathReportWhole",
                           as.character(Histoltree[i]),
                           as.character(Histoltree[i + 1]),
                           gsub(" ", "", as.character(Histoltree[i]))
@@ -57,7 +57,7 @@ names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
 MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
                     MyendoColon, "Dateofprocedure","HospitalNumber")
-GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed', 
+GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
 'Endoscopist','Diagnosis','Histology')
 rm(vColon)
 rm(MypathColon)

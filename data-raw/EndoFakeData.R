@@ -165,7 +165,7 @@ sample(c("", paste("Barrett's oesophagus length:",
 #' @examples Histop_df()
 
 Histop_df <- function(x) {
-  Generate a load of strings
+  #Generate a load of strings
   line <- list(x1 = "Intestinal metaplasia is present.",
                x2 = "Basal hyperplasia is prominent", x3 = "There is no dysplasia or malignancy.",
                x4 = "No Helicobacter are seen.", x5 = "There is some ulceration.",
@@ -362,7 +362,32 @@ EndoRaw2 <- function() {
   names(TheOGDReportFinal) <- "OGDReportWhole"
   save(TheOGDReportFinal,file = "/home/rstudio/EndoMineR/data/TheOGDReportFinal.rda")
   # return(TheOGDReportFinal)
+  
+  Myendo<-TheOGDReportFinal
+  Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',Myendo$OGDReportWhole)
+  EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+                   'Date of procedure:','Endoscopist:','Second endoscopist:','Medications',
+                   'Instrument','Extent of Exam:','Indications:','Procedure Performed:','Findings:',
+                   'Endoscopic Diagnosis:')
+  for(i in 1:(length(EndoscTree)-1)) {
+    Myendo<-Extractor(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
+                      as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
+  }
+  Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
+  
+  save(Myendo,file = "/home/rstudio/EndoMineR/data/Myendo.rda")
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 #' pathRep
@@ -424,6 +449,21 @@ pathRep2 <- function() {
                                      colnames(PathDataFrameReport), sep = "\n")
   names(PathDataFrameFinal) <- "PathReportWhole"
   save(PathDataFrameFinal,file = "/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
+  
+  
+#################  
+  
+  
+  Mypath<-PathDataFrameFinal
+  HistolTree<-list('Hospital Number','Patient Name','DOB:','General Practitioner:',
+  'Date received:','Clinical Details:','Macroscopic description:','Histology:','Diagnosis:','')
+  for(i in 1:(length(HistolTree)-1)) {
+  Mypath<-Extractor(Mypath,'PathReportWhole',as.character(HistolTree[i]),
+  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
+  }
+  colnames(Mypath)[which(names(Mypath) == "Datereceived")] <- "Dateofprocedure"
+  Mypath$Dateofprocedure<-as.Date(Mypath$Dateofprocedure)
+  save(Mypath,file = "/home/rstudio/EndoMineR/data/Mypath.rda")
 }
 
 

@@ -20,7 +20,7 @@ Endomerge2(x, EndoDate, EndoHospNumber, y, PathDate, PathHospNumber)
 \item{PathHospNumber}{The unique hospital number in the endoscopy dataset}
 }
 \description{
-Merges endoscopy and histology data. This takes the endoscopy dataset date 
+Merges endoscopy and histology data. This takes the endoscopy dataset date
 performed and the hospital number column
 and merges with the equivalent column in the pathology dataset
 }

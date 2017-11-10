@@ -13,7 +13,9 @@ vignette: >
 
 ## Aims of EndoMineR
 
-The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens. Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.
+The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens. 
+
+Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.
 
 
 
@@ -23,65 +25,32 @@ Gastroenterological data can be organised in a manner that allows several questi
 The following described an overview of how data should be structured using both and endoscopic dataset and a pathological dataset which we will merge.
 
 
-##Overview of steps for any analysis:
 
-The steps for the preparation of a full dataset incorporating both endoscopic and associated pathological data are as follows: 
-
-
-### 1. Data acquisition- 
-
-Usually Pathology results and endoscopic results are stored separately. Unless you are fortunate, many hospitals are unable to give you all the results you want aggregated for example on a spreadsheet. Given the data is stored electronically I find this incredible but it happens. You may find yourself extracting data, for example, from a folder full of word documents or pdf's. This kind of data acquisition is beyond this site, but there are many tools in R that can extract data for you and collate it into a dataframe.
-
-### 2. Data cleaning- 
-
- Data cleaning is the most difficult challenge any data analyst faces. It involves preparing the data intelligently so that analyses can be performed. There are many steps to cleaning data. This includes ensuring completeness of the dataset, validating it, removing data (or not) with missing entries, correcting spelling mistakes,removing duplicates and so on. One of the most difficult cleaning jobs is text, and especially unstructured or semi-structured text. Overall data cleaning should ensure *data integrity*. Never forget that this should take up 80% of an analyst's time because, as the simple aphorism says**"Rubbish in =Rubbish out"**
-
-
-### 4. Data accordionisation- 
- 
- The data has to be extracted into uniform meaningful categories (a column of a dataframe) and then formatted so that the data is well described (eg dates as date objects rather than characters etc). This is really for ease of analysis. For example, determining the maximal extent of a Barrett’s oesophagus segment can be calculated from the report text and entered into its own numeric column. This is very much dependent on the aim of the analysis.
-
-### 3. Data merging- 
-
-The merging of datasets is a very common tasks because if you want meaningful analyses you often need multiple sources. In hospital level data the most important thing to understand is that data is organised around the dual index of a unique patient identifier and an episode date. Therefore if you want to merge datasets you need to have these columns organised and similarly formatted. Furthermore because you may want to associate episodes that do not have exactly the same dates, this needs to be accomodated into the merging algorithm.
-
-### 5. Data analysis
-
-This should be straightforward if the data is properly prepared. Given R is a statistical language, there are a wealth of packages available to do whatever you want. You are only limited by your question. But of course the analysis is not quite the final step
-
-### 6. Results visualisation
-
-The communication of results is really what convinces people to make changes. Florence Nightingale is often labelled as an influential statistician but in fact her ability was in the communication of results and her graphics depicting the disease burden in soldiers in the Crimean war is really what influenced Parliament. Most people are not statisticians but everyone can understand a well crafted picture.
-
-<br><br><br>
 
 ##Assumptions for practical gastroenterological datasets
 
 <br>
 
-####Assumption 1 (Mandatory): 
+####Assumption 1 (Mandatory)- Data is episodic 
 
 A fundamental assumption is that all patient related data at the departmental level can be viewed as pertaining to a clinical episode recorded as a single timepoint (usually as the day of the episode. A single patient is related to patient timed episodes in a one to many relationship (one patient can have many endoscopies).
 
-####Assumption 2 (Mandatory):
+####Assumption 2 (Mandatory)- Patients have unique identifiers
 
 All patients have a unique identifier. At the departmental level this is likely to be a Trust specific hospital number.
 
-####Assumption 3 (Optional): 
+####Assumption 3 (Optional): Outcome variables are present
 
 A patient episode should have an outcome. In the case of an endoscopy for example, the outcome may be the histopathological diagnosis, or if no biopsies were taken, then the endoscopic diagnosis. The origin of the outcome is not important: it can be a derivative of the dataset itself or can be from a distinct dataset merged into the current one depending on the analysis. What is important is that the outcome relates to the patient episode: if biopsy result is the outcome it should be biopsies taken at the recorded endoscopy. In other words the outcome should be that which is related to the same timepoint as the event.
 
-####Assumption 4 (Optional): 
+####Assumption 4 (Optional): Tests should have an indication
 
 A patient episode should have a reason. The indication for the patient episode should be recorded for the same time point as the episode. This is very commonly found in report text of both an endoscopy and histopathology reports. This is optional as other analyses can still be carried out without this being available.
 
-####Assumption 5 (Optional): 
 
-A patient episode should have recordable variables. Examples of this for endoscopic data may be who performed the procedure, the length of time a procedure took and other variables derived from an endoscopy report. A histopathology report may contain information about the number of biopsies taken, their location and size as well as diagnoses among other aspects.
+####Assumption 5 (Optional): The data is semi-structured.
 
-####Assumption 6 (Optional): 
-
-The data is semi-structured. Structured data is easier to analyse but because it is more cumbersome to input and often lacks flexibility most endoscopic and histopathology data remains semi-structured. This means that although the text extraction techniques outlined here are the same, the boundaries for extracting each section may differ. For example in our trust a pathology report may contain the subsections ‘Macroscopic specimen’ and ‘Diagnosis’ whereas these sections may have alternative labels in another hospital’s report.
+The data is semi-structured. Structured data is easier to analyse but because it is more cumbersome to input and often lacks flexibility, most endoscopic and histopathology data remains semi-structured. This means that although the text extraction techniques outlined here are the same, the boundaries for extracting each section may differ. For example in our trust a pathology report may contain the subsections ‘Macroscopic specimen’ and ‘Diagnosis’ whereas these sections may have alternative labels in another hospital’s report.
 
 Semi-structured data requires specific language processing techniques depending on what is being extracted. For our purposes the extractible data is likely to be either diagnoses or aspects of the test being performed. The diagnostic data is traditionally the most difficult to extract  but this is often because the object to be extracted is from a large set eg for the purposes of coding for financial remuneration. Because the target set is much smaller for endoscopic-pathological diagnoses language extraction can be more focused whilst being more flexible to accommodate edge cases such as misspellings, plurals.
 
@@ -91,7 +60,7 @@ Semi-structured data requires specific language processing techniques depending 
 
 ## So what generic questions can we answer in gastroenterology?
 
-The answer to this is really applicable to most areas in medicine. Many fields share the same practical, day to day questions. Although we may focus on specific questions for a specific field, the strcuture of many questions in medicine is the same. Based on observation and experience I think the main questions are:
+The answer to this is really applicable to most areas in medicine. Many fields share the same practical, day to day questions. Although we may focus on specific questions for a specific field, the structure of many questions in medicine is the same. Based on observation and experience I think the main questions are:
 
 **[1. Analysis patient flow](http://gastrodatascience.com/DataAnalysisEventingsSankey.html) **
 
@@ -128,7 +97,9 @@ Performance metrics depend on what is being assessed. There is a natural weighti
 ##How is the package divided?
 
 
-The package is basically in three parts
+![Overview of all the functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_FunctionStructure.svg){width=900px}
+
+The package is basically in three parts. How all the functions are connected in Figure 1. Extracts from this figure will be used in sequential sections below.
 
 1. **The extraction**- This is really when the data is provided as full text reports. You may already have the data in a spreadsheet in which case this part isn't necessary
 
@@ -142,9 +113,23 @@ The package is basically in three parts
 ## The extractor function
 
 Endoscopic and pathological data will come in one of two forms- either as a collection of the whole text report or as spreadsheets with some degree of separation into different columns of the various aspects of that report eg who the Endoscopist was, the patient's unique identifier etc.
-For the latter, the package user will not need to Extract information as it is already extracted and so can go stratight to cleaning the data. For the former the Extractor function has been provided:
+For the latter, the package user will not need to Extract information as it is already extracted and so can go straight to cleaning the data. For the former the Extractor function has been provided:
 
-One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. A list of keywords is constructed. This list is made up of the words that will be used to split the document. The Extractor then does the splitting for each pair of words, with some cleaning up and then returns the split dataframe:
+<br>
+
+![Extractor function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Extractor.png)
+
+<br>
+
+One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the ChopperNewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)
+
+```{r exampleChopperNewLines, eval = FALSE}
+v<-ChopperNewLines(Myendo,'OGDReportWhole')
+```
+
+<br>
+
+A list of keywords is then constructed. This list is made up of the words that will be used to split the document. The Extractor then does the splitting for each pair of words, with some cleaning up and then returns the split dataframe:
 
 ```{r exampleExtractor, eval = FALSE}
 Mypath<-data(PathDataFrameFinalColon)
@@ -156,11 +141,6 @@ as.character(HistolTree[i+1]),as.character(HistolTree[i]))
 }
 ```
 
-Various other functions exist to do cleaning up of the columns after this, such as the ChopperNewLines function which gets rid of new lines in the text (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)
-
-```{r exampleChopperNewLines, eval = FALSE}
-v<-ChopperNewLines(Myendo,'OGDReportWhole')
-```
 
 
 ## The cleaning functions
@@ -192,6 +172,12 @@ EndoscChopperEndoscopist <- function(x, y) {
 ```
 
 
+<br>
+
+![Endoscopy Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_EndoscopyClean.png)
+
+<br>
+
 The EndoscChopperMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted. 
 
 Several other similar clean up functions are available for Endoscopy as follows:
@@ -207,7 +193,14 @@ Future iterations will try to make these cleaning functions more generic and app
 ### Histological cleaning
 
 The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting.
-In general, each histology reports can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis
+In general, each histology reports can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.
+
+<br>
+
+![Histopathology Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_HistopExtrapol.png)
+
+<br>
+
 
 The histology cleaning functions are based around this. For example, the HistolChopperHistol cleans the Histology text if present. In addition it removes Negative diagnoses using the Negativeremove function. This function is designed to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage.
 
@@ -253,6 +246,9 @@ v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 ```
 v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
 
+<br>
+<br>
+
 ## The Analysis Functions
 
 As per the introduction the analysis functions are split according to the cornerstone questions in day to day gastroenterological practice
@@ -261,6 +257,11 @@ As per the introduction the analysis functions are split according to the corner
 
 Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a load of pre-processing steps
 
+<br>
+
+![Surveillance functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_Surveillance.png)
+
+<br>
 
 ```{r exampleSurveillanceTimeByRow, eval = FALSE}
 em<-SurveillanceTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
@@ -295,12 +296,23 @@ For example, if we have a dataset with events such as 'radiofrequency ablation' 
 how<-SurveySankey(Myendo,"ProcPerformed")
 ```
 
+<br>
+
+![SurveySankey function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Sankey.svg){width=600px}
+
+<br>
+
 We may was something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
 
 ```{r examplePatientFlow_CircosPlots, eval = FALSE}
 flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed")
 ```
 
+<br>
+
+![Circos function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Circos.svg){width=600px}
+
+<br>
 ###Assessment of quality functions
 
 Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to standards for endoscopic documentation as well as detection of certain pathological conditions such as dysplasia.

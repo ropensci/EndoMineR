@@ -14,7 +14,7 @@ HistolChopperHistol(x, y)
 \description{
 This extracts Histology details data from the report. The Histology details
 usually relate to the description of the histological report. This implements
- the negative remover and also adds further negative removing regexes. This 
+ the negative remover and also adds further negative removing regexes. This
 may be refined in further iterations.
 }
 \examples{
