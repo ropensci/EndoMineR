@@ -119,7 +119,7 @@ For the latter, the package user will not need to Extract information as it is a
 
 <br>
 
-![Figure 3: Extractor function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Extractor.png)
+![Figure 3: Extractor function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Extractor.svg)
 
 <br>
 
@@ -176,7 +176,7 @@ EndoscChopperEndoscopist <- function(x, y) {
 
 <br>
 
-![Figure 4: Endoscopy Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_EndoscopyClean.png)
+![Figure 4: Endoscopy Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_EndoscopyClean.svg)
 
 <br>
 
@@ -199,7 +199,7 @@ In general, each histology reports can be divided into the Macroscopic descripti
 
 <br>
 
-![Figure 5: Histopathology Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_HistopExtrapol.png)
+![Figure 5: Histopathology Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_HistopExtrapol.svg)
 
 <br>
 
@@ -261,7 +261,7 @@ Surveillance relates to the timing of a test relative to other tests or all test
 
 <br>
 
-![Figure 6: Surveillance functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_Surveillance.png)
+![Figure 6: Surveillance functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_Surveillance.svg)
 
 <br>
 
