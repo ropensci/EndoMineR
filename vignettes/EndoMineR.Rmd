@@ -31,7 +31,7 @@ The following described an overview of how data should be structured using both 
 
 <br>
 
-![Figure 1: Typical starting data set](/home/rstudio/EndoMineR/vignettes/TypicalReportForGastroDSEndoMinerVignette.svg){width=900px}
+![Figure 1: Typical starting data set](TypicalReportForGastroDSEndoMinerVignette.svg){width=900px}
 
 
 
@@ -101,7 +101,7 @@ Performance metrics depend on what is being assessed. There is a natural weighti
 ##How is the package divided?
 
 
-![Figure 2: Overview of all the functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_FunctionStructure.svg){width=900px}
+![Figure 2: Overview of all the functions](EndoMineR_FunctionStructure.svg){width=900px}
 
 The package is basically in three parts. How all the functions are connected in Figure 2. Extracts from this figure will be used in sequential sections below.
 
@@ -121,7 +121,7 @@ For the latter, the package user will not need to Extract information as it is a
 
 <br>
 
-![Figure 3: Extractor function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Extractor.svg)
+![Figure 3: Extractor function](EndoMineR_Extractor.svg)
 
 <br>
 
@@ -178,7 +178,7 @@ EndoscChopperEndoscopist <- function(x, y) {
 
 <br>
 
-![Figure 4: Endoscopy Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_EndoscopyClean.svg)
+![Figure 4: Endoscopy Cleaning functions](EndoMineR_EndoscopyClean.svg)
 
 <br>
 
@@ -201,7 +201,7 @@ In general, each histology reports can be divided into the Macroscopic descripti
 
 <br>
 
-![Figure 5: Histopathology Cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_HistopExtrapol.svg)
+![Figure 5: Histopathology Cleaning functions](EndoMineR_HistopExtrapol.svg)
 
 <br>
 
@@ -263,7 +263,7 @@ Surveillance relates to the timing of a test relative to other tests or all test
 
 <br>
 
-![Figure 6: Surveillance functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_Surveillance.svg)
+![Figure 6: Surveillance functions](EndoMineR_Surveillance.svg)
 
 <br>
 
@@ -302,7 +302,7 @@ how<-SurveySankey(Myendo,"ProcPerformed")
 
 <br>
 
-![Figure 7: SurveySankey function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Sankey.svg){width=600px}
+![Figure 7: SurveySankey function](EndoMineR_Sankey.svg){width=600px}
 
 <br>
 
@@ -314,7 +314,7 @@ flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePer
 
 <br>
 
-![Figure 8: Circos function](/home/rstudio/EndoMineR/vignettes/EndoMineR_Circos.svg){width=600px}
+![Figure 8: Circos function](EndoMineR_Circos.svg){width=600px}
 
 <br>
 
@@ -340,7 +340,7 @@ MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 
 <br>
 
-![Figure 9: MetricbyEndoscopist function](/home/rstudio/EndoMineR/vignettes/MetricByEndoscopist.png){width=600px}
+![Figure 9: MetricbyEndoscopist function](MetricByEndoscopist.png){width=600px}
 
 <br>
 
@@ -390,7 +390,7 @@ Such a dataset needs some processing prior to the analysis so for this we can tu
 
 <br>
 
-![Figure 10: Barretts cleaning functions](/home/rstudio/EndoMineR/vignettes/EndoMineR_Barretts.svg){width=600px}
+![Figure 10: Barretts cleaning functions](EndoMineR_Barretts.svg){width=600px}
 
 <br>
 
@@ -480,7 +480,7 @@ BarrettsQuality_AnalysisDocumentation(b,"Findings")
 
 <br>
 
-![Figure 11: Barretts documentation quality function](/home/rstudio/EndoMineR/vignettes/Rplot.png){width=600px}
+![Figure 11: Barretts documentation quality function](Rplot.png){width=600px}
 
 <br>
 
@@ -518,7 +518,7 @@ One of the essential requirements to demonstrate adequate sampling of Barrett's 
 ```
  <br>
  
- ![Figure 12: Barretts quality of biopsying function](/home/rstudio/EndoMineR/vignettes/Barretts_Shortfall.png){width=600px}
+ ![Figure 12: Barretts quality of biopsying function](Barretts_Shortfall.png){width=600px}
  
  <br>
  
@@ -543,7 +543,7 @@ BarrettsSurveillance_PathDetection(b4,'Myplot')
  
 <br>
   
- ![Figure 13: EMR by pathology grade](/home/rstudio/EndoMineR/vignettes/BarrettsEMR_By_Pathology.svg){width=600px}
+ ![Figure 13: EMR by pathology grade](BarrettsEMR_By_Pathology.svg){width=600px}
  
 <br>
  
@@ -572,7 +572,7 @@ Barretts_LesionRecognitionEMR(dataframe,y,z)
 
 <br>
 
- ![Figure 14: Worst grade dysplasia/cancer function](/home/rstudio/EndoMineR/vignettes/GradeBarretts.svg){width=600px}
+ ![Figure 14: Worst grade dysplasia/cancer function](GradeBarretts.svg){width=600px}
 
 <br>
 
@@ -584,7 +584,7 @@ BarrettsBasicNumbers(dataframe)
  
  <br>
 
-![Figure 15: Number of Barrett's therapeutic endoscopies by type](/home/rstudio/EndoMineR/vignettes/BarrettsBasicNumbers.svg){width=600px}
+![Figure 15: Number of Barrett's therapeutic endoscopies by type](BarrettsBasicNumbers.svg){width=600px}
 
 <br>
 
@@ -597,7 +597,7 @@ BarrettsTherapeuticsRFA_ByCatheter(dataframe)
 
 <br>
 
-![Figure 16: Number of Barrett's therapeutic endoscopies by type](/home/rstudio/EndoMineR/vignettes/BarrettsRFA_CatheterType.svg){width=600px}
+![Figure 16: Number of Barrett's therapeutic endoscopies by type](BarrettsRFA_CatheterType.svg){width=600px}
 
 <br>
 
