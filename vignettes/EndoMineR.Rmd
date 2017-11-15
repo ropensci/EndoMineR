@@ -34,7 +34,7 @@ The following described an overview of how data should be structured using both 
 ![Figure 1: Typical starting data set](/home/rstudio/EndoMineR/vignettes/TypicalReportForGastroDSEndoMinerVignette.svg){width=900px}
 
 
-\figure{/home/rstudio/EndoMineR/vignettes/TypicalReportForGastroDSEndoMinerVignette.svg}{options: width=100 alt="R logo"}
+
 \figure{TypicalReportForGastroDSEndoMinerVignette.svg}{options: width=100 alt="R logo"}
 
 ####Assumption 1 (Mandatory)- Data is episodic 
