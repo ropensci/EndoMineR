@@ -35,8 +35,6 @@ The following described an overview of how data should be structured using both 
 
 
 
-\figure{TypicalReportForGastroDSEndoMinerVignette.svg}{options: width=100 alt="R logo"}
-
 ####Assumption 1 (Mandatory)- Data is episodic 
 
 A fundamental assumption is that all patient related data at the departmental level can be viewed as pertaining to a clinical episode recorded as a single timepoint (usually as the day of the episode. A single patient is related to patient timed episodes in a one to many relationship (one patient can have many endoscopies).
