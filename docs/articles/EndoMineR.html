@@ -87,9 +87,8 @@
 <a href="#assumptions-for-practical-gastroenterological-datasets" class="anchor"></a>Assumptions for practical gastroenterological datasets</h2>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/TypicalReportForGastroDSEndoMinerVignette.svg" alt="Figure 1: Typical starting data set" width="900"><p class="caption">Figure 1: Typical starting data set</p>
+<img src="TypicalReportForGastroDSEndoMinerVignette.svg" alt="Figure 1: Typical starting data set" width="900"><p class="caption">Figure 1: Typical starting data set</p>
 </div>
-<p> </p>
 <div id="assumption-1-mandatory--data-is-episodic" class="section level4">
 <h4 class="hasAnchor">
 <a href="#assumption-1-mandatory--data-is-episodic" class="anchor"></a>Assumption 1 (Mandatory)- Data is episodic</h4>
@@ -139,7 +138,7 @@
 <h2 class="hasAnchor">
 <a href="#how-is-the-package-divided" class="anchor"></a>How is the package divided?</h2>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/EndoMineR_FunctionStructure.svg" alt="Figure 2: Overview of all the functions" width="900"><p class="caption">Figure 2: Overview of all the functions</p>
+<img src="EndoMineR_FunctionStructure.svg" alt="Figure 2: Overview of all the functions" width="900"><p class="caption">Figure 2: Overview of all the functions</p>
 </div>
 <p>The package is basically in three parts. How all the functions are connected in Figure 2. Extracts from this figure will be used in sequential sections below.</p>
 <ol style="list-style-type: decimal">
@@ -154,7 +153,7 @@
 <p>Endoscopic and pathological data will come in one of two forms- either as a collection of the whole text report or as spreadsheets with some degree of separation into different columns of the various aspects of that report eg who the Endoscopist was, the patient’s unique identifier etc. For the latter, the package user will not need to Extract information as it is already extracted and so can go straight to cleaning the data. For the former the Extractor function has been provided:</p>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/EndoMineR_Extractor.svg" alt="Figure 3: Extractor function"><p class="caption">Figure 3: Extractor function</p>
+<img src="EndoMineR_Extractor.svg" alt="Figure 3: Extractor function"><p class="caption">Figure 3: Extractor function</p>
 </div>
 <p><br></p>
 <p>One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the ChopperNewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)</p>
@@ -193,7 +192,7 @@ Mypath&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a><
 }</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/EndoMineR_EndoscopyClean.svg" alt="Figure 4: Endoscopy Cleaning functions"><p class="caption">Figure 4: Endoscopy Cleaning functions</p>
+<img src="EndoMineR_EndoscopyClean.svg" alt="Figure 4: Endoscopy Cleaning functions"><p class="caption">Figure 4: Endoscopy Cleaning functions</p>
 </div>
 <p><br></p>
 <p>The EndoscChopperMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted.</p>
@@ -210,7 +209,7 @@ v&lt;-<span class="kw"><a href="../reference/EndoscChopperProcPerformed.html">En
 <p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology reports can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.</p>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/EndoMineR_HistopExtrapol.svg" alt="Figure 5: Histopathology Cleaning functions"><p class="caption">Figure 5: Histopathology Cleaning functions</p>
+<img src="EndoMineR_HistopExtrapol.svg" alt="Figure 5: Histopathology Cleaning functions"><p class="caption">Figure 5: Histopathology Cleaning functions</p>
 </div>
 <p><br></p>
 <p>The histology cleaning functions are based around this. For example, the HistolChopperHistol cleans the Histology text if present. In addition it removes Negative diagnoses using the Negativeremove function. This function is designed to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage.</p>
@@ -250,7 +249,7 @@ v&lt;-<span class="kw"><a href="../reference/HistolChopperAccessionNumber.html">
 <p>Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a load of pre-processing steps</p>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/EndoMineR_Surveillance.svg" alt="Figure 6: Surveillance functions"><p class="caption">Figure 6: Surveillance functions</p>
+<img src="EndoMineR_Surveillance.svg" alt="Figure 6: Surveillance functions"><p class="caption">Figure 6: Surveillance functions</p>
 </div>
 <p><br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em&lt;-<span class="kw"><a href="../reference/SurveillanceTimeByRow.html">SurveillanceTimeByRow</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
@@ -270,14 +269,14 @@ em&lt;-<span class="kw"><a href="../reference/SurveillanceFirstTest.html">Survei
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/SurveySankey.html">SurveySankey</a></span>(Myendo,<span class="st">"ProcPerformed"</span>)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/EndoMineR_Sankey.svg" alt="Figure 7: SurveySankey function" width="600"><p class="caption">Figure 7: SurveySankey function</p>
+<img src="EndoMineR_Sankey.svg" alt="Figure 7: SurveySankey function" width="600"><p class="caption">Figure 7: SurveySankey function</p>
 </div>
 <p><br></p>
 <p>We may was something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flow&lt;-<span class="kw"><a href="../reference/PatientFlow_CircosPlots.html">PatientFlow_CircosPlots</a></span>(v,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,<span class="st">"ProcedurePerformed"</span>)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/EndoMineR_Circos.svg" alt="Figure 8: Circos function" width="600"><p class="caption">Figure 8: Circos function</p>
+<img src="EndoMineR_Circos.svg" alt="Figure 8: Circos function" width="600"><p class="caption">Figure 8: Circos function</p>
 </div>
 <p><br></p>
 </div>
@@ -299,7 +298,7 @@ em&lt;-<span class="kw"><a href="../reference/SurveillanceFirstTest.html">Survei
 <span class="kw"><a href="../reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/MetricByEndoscopist.png" alt="Figure 9: MetricbyEndoscopist function" width="600"><p class="caption">Figure 9: MetricbyEndoscopist function</p>
+<img src="MetricByEndoscopist.png" alt="Figure 9: MetricbyEndoscopist function" width="600"><p class="caption">Figure 9: MetricbyEndoscopist function</p>
 </div>
 <p><br></p>
 <p>Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.</p>
@@ -328,7 +327,7 @@ f&lt;-<span class="kw"><a href="../reference/SampleLocator.html">SampleLocator</
 <p>Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett’s oesophagus itself.</p>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/EndoMineR_Barretts.svg" alt="Figure 10: Barretts cleaning functions" width="600"><p class="caption">Figure 10: Barretts cleaning functions</p>
+<img src="EndoMineR_Barretts.svg" alt="Figure 10: Barretts cleaning functions" width="600"><p class="caption">Figure 10: Barretts cleaning functions</p>
 </div>
 <p><br></p>
 <div id="prague-score" class="section level4">
@@ -395,7 +394,7 @@ b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">
 <span class="kw"><a href="../reference/BarrettsQuality_AnalysisDocumentation.html">BarrettsQuality_AnalysisDocumentation</a></span>(b,<span class="st">"Findings"</span>)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/Rplot.png" alt="Figure 11: Barretts documentation quality function" width="600"><p class="caption">Figure 11: Barretts documentation quality function</p>
+<img src="Rplot.png" alt="Figure 11: Barretts documentation quality function" width="600"><p class="caption">Figure 11: Barretts documentation quality function</p>
 </div>
 <p><br></p>
 </div>
@@ -431,7 +430,7 @@ b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">
                                       <span class="st">'Endoscopist'</span>)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/Barretts_Shortfall.png" alt="Figure 12: Barretts quality of biopsying function" width="600"><p class="caption">Figure 12: Barretts quality of biopsying function</p>
+<img src="Barretts_Shortfall.png" alt="Figure 12: Barretts quality of biopsying function" width="600"><p class="caption">Figure 12: Barretts quality of biopsying function</p>
 </div>
 <p><br></p>
 <p><br></p>
@@ -450,7 +449,7 @@ b4&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">B
 <span class="kw"><a href="../reference/BarrettsSurveillance_PathDetection.html">BarrettsSurveillance_PathDetection</a></span>(b4,<span class="st">'Myplot'</span>)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/BarrettsEMR_By_Pathology.svg" alt="Figure 13: EMR by pathology grade" width="600"><p class="caption">Figure 13: EMR by pathology grade</p>
+<img src="BarrettsEMR_By_Pathology.svg" alt="Figure 13: EMR by pathology grade" width="600"><p class="caption">Figure 13: EMR by pathology grade</p>
 </div>
 <p><br></p>
 <p>This function provides a plot with absolute numbers of pathology detected. This of course doesn’t tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist. The output is provided as a table of proportions per endoscopist</p>
@@ -471,21 +470,21 @@ b4&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">B
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/Barretts_LesionRecognitionEMR.html">Barretts_LesionRecognitionEMR</a></span>(dataframe,y,z)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/GradeBarretts.svg" alt="Figure 14: Worst grade dysplasia/cancer function" width="600"><p class="caption">Figure 14: Worst grade dysplasia/cancer function</p>
+<img src="GradeBarretts.svg" alt="Figure 14: Worst grade dysplasia/cancer function" width="600"><p class="caption">Figure 14: Worst grade dysplasia/cancer function</p>
 </div>
 <p><br></p>
 <p>In order to determine the basic number of EMR, RFA and APC a function called BarrettsBasicNumbers is provided which outputs a geom_line plot with the information on it.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsBasicNumbers.html">BarrettsBasicNumbers</a></span>(dataframe)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/BarrettsBasicNumbers.svg" alt="Figure 15: Number of Barrett’s therapeutic endoscopies by type" width="600"><p class="caption">Figure 15: Number of Barrett’s therapeutic endoscopies by type</p>
+<img src="BarrettsBasicNumbers.svg" alt="Figure 15: Number of Barrett’s therapeutic endoscopies by type" width="600"><p class="caption">Figure 15: Number of Barrett’s therapeutic endoscopies by type</p>
 </div>
 <p><br></p>
 <p>To assess the number of different catheter types used (for renumeration purposes) the following function can be used:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsTherapeuticsRFA_ByCatheter.html">BarrettsTherapeuticsRFA_ByCatheter</a></span>(dataframe)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="/home/rstudio/EndoMineR/vignettes/BarrettsRFA_CatheterType.svg" alt="Figure 16: Number of Barrett’s therapeutic endoscopies by type" width="600"><p class="caption">Figure 16: Number of Barrett’s therapeutic endoscopies by type</p>
+<img src="BarrettsRFA_CatheterType.svg" alt="Figure 16: Number of Barrett’s therapeutic endoscopies by type" width="600"><p class="caption">Figure 16: Number of Barrett’s therapeutic endoscopies by type</p>
 </div>
 <p><br></p>
 <p>One of the most important aspects of therapeutics is the assessment of outcome which is defined as clearance of intestinal metaplasia (CRIM), usually on at least two endoscopies. As most patients undergoing Barrett’s ablation will require radiofrequency ablation after the initial endoscopic mucosal resection, we can define CRIM as being an endoscopy where the therapeutic procedure is listed as ‘nothing’ in the EVENT column (this will only work if the Barrett’s pre-processing functions have been used)</p>
