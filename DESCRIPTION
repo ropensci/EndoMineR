@@ -34,5 +34,5 @@ LazyData: true
 RoxygenNote: 6.0.1.9000
 Suggests: rmarkdown,testthat
 VignetteBuilder: knitr
-URL: https://github.com/sebastiz/EndoMineR
+URL: https://sebastiz.github.io/EndoMineR/index.html
 BugReports: https://github.com/sebastiz/EndoMineR/issues
