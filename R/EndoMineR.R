@@ -221,18 +221,21 @@ HowManyTests <-
     TestNumbers$MonthYear <-
       paste("01_", TestNumbers$month, "_", TestNumbers$year, sep = "")
     TestNumbers$MonthYear <- dmy(TestNumbers$MonthYear)
+    
+    TestNumbers<-data.frame(TestNumbers)
+    TestNumbers2<-TestNumbers%>%select(year,freq) %>% 
+      group_by(year) %>% 
+      summarise(FreqYear=n())
+    
+    
     # # Then just plot it:
-    
-    
     Myplot <-
-      ggplot(data = TestNumbers, aes(x = MonthYear, y = freq)) +
+      ggplot(data = TestNumbers2, aes(x = year, y = FreqYear)) +
       geom_point() +
       geom_line() +
       geom_smooth(method = "loess") +
-      scale_x_date(
-        labels = function(x)
-          format(x, "%d-%b")
-      ) + theme_bw()
+    theme_bw() +
+      labs(title="Number of procedures per year")
     functionResults <-
       list(Myplot = Myplot, TestNumbers = TestNumbers)
     return(functionResults)
@@ -1084,6 +1087,7 @@ GRS_Type_Assess_By_Unit <-
 #'  NumberPerformed(Myendo,'Endoscopist','Indications')
 
 NumberPerformed <- function(x, y, z) {
+  x<-data.frame(x)
   NumByEndoscopist <- data.frame(table(x[, y], x[, z]))
   return(NumByEndoscopist)
 }
