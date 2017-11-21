@@ -40,7 +40,7 @@ b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function simply the the histopathological grades overall for
 # your dataset and then creates a frequency plot of them
-BarrettsSurveillance_PathDetection(b4,'Proportion with dysplasia or cancer')
+
 rm(v)
 }
 \keyword{and}

@@ -435,7 +435,8 @@ BarrettsPatientTracking_UniqueHospNum <- function(x, rule, PatientID) {
 #' @param x dataframe
 #' @param Findings column of interest- usually the main body of the
 #' endoscopic report
-#' @importFrom lattice barchart
+#' @importFrom ggplot2 geom_bar xlab labs coord_flip theme 
+#'element_blank element_line coord_flip
 #' @keywords Documentation
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
@@ -476,32 +477,22 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
     as.numeric(nrow(HerniaSubsetx) / nrow(x)),
     as.numeric(nrow(LesionSubsetx)) / nrow(x)
   )
-  s <- c("On", "On", "On", "On")
   b <- c("Prague",
          "Island",
          "Hernia",
          "Lesion")
-  EndoMinDataSet <- data.frame(s, b, Proportion)
+  EndoMinDataSet <- data.frame(b, Proportion)
   
-  t <-
-    barchart(
-      b ~ Proportion,
-      data = EndoMinDataSet,
-      groups = s,
-      scales = list(
-        x = list(rot = 0, cex = 2),
-        y = list(cex = 2),
-        main = list("Endoscopy documentation for Barrett's PRE DOI", cex = 2.8)
-      )
-      # key = list(
-      #   space = "right",
-      #   lines = list(
-      #     col = c("pink", "lightblue"),
-      #     lty = c(2, 2),
-      #     lwd = 16
-      #   )
-      # )
-    )
+  
+  t <-ggplot(EndoMinDataSet, aes(x=b, y=Proportion)) + 
+    geom_bar(stat="identity",fill="blue")+
+    xlab("Documentation")+
+    labs(title="Proportion of Reports Containing Terms")+
+    coord_flip()+ 
+    theme(panel.border = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+    axis.line = element_line(colour = "black"))
   return(t)
 }
 
@@ -530,7 +521,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' v<-Endomerge2(Myendo,'Dateofprocedure','PatientID',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
@@ -634,7 +625,7 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(x,
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function simply the the histopathological grades overall for
 #' # your dataset and then creates a frequency plot of them
-#' BarrettsSurveillance_PathDetection(b4,'Proportion with dysplasia or cancer')
+#' 
 #' rm(v)
 
 
@@ -790,10 +781,10 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
     ),
     xlab = "Tissue grade",
     ylab = "Number of EMRs",
-    cex.lab = 2,
-    cex.axis = 2.5,
-    cex.main = 2.5,
-    cex.names = 2.5,
+    cex.lab = 2.0,
+    cex.axis = 1.5,
+    cex.main = 1.5,
+    cex.names = 1.5,
     main = "EMR Tissue pathology results"
   )
 }
@@ -808,10 +799,11 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' @param x the dataframe
 #' @param Endo_ResultPerformed the date the endoscopy was performed
 #' @keywords Number of therapies
-#' @importFrom dplyr group_by mutate summarise
+#' @importFrom dplyr filter group_by mutate summarise
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang sym
-#' @importFrom ggplot2 ggplot aes geom_line
+#' @importFrom lubridate year
+#' @importFrom ggplot2 ggplot aes geom_line labs
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
@@ -842,7 +834,7 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 
 BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
   x <- data.frame(x)
-  Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
   xNum <-
     x %>% filter(EVENT != "nothing") %>%
     mutate(year = year(as.Date(!!Endo_ResultPerformeda))) %>%
@@ -853,7 +845,11 @@ BarrettsBasicNumbers <- function(x, Endo_ResultPerformed) {
       y = n,
       group = EVENT,
       colour = EVENT
-    )) + geom_line()
+    )) + 
+    geom_line() + geom_smooth()+
+    labs(title="Number of procedures by type")
+    
+    
   functionResults <-
     list(ProcNumbers = xNum, ProcNumbersPlot = xNumPlot)
   return(functionResults)
@@ -940,10 +936,10 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, y, z) {
     names.arg = c("HALO 90", "HALO 360", "HALO 60", "HALO TTS", "APC"),
     xlab = "Catheter type",
     ylab = "Number of RFA's",
-    cex.lab = 2,
-    cex.axis = 2.5,
+    cex.lab = 1.5,
+    cex.axis = 1.5,
     cex.main = 1.5,
-    cex.names = 2.5,
+    cex.names = 1.5,
     main = "RFA Catheter type usage"
   )
 }
@@ -1125,4 +1121,5 @@ Barretts_CRIM <- function(x, HospNum, EVENT) {
     mutate(ind = (!!EVENTa) == "RFA" &
              lead(!!EVENTa) == "nothing") %>%
     slice(sort(c(which(ind), which(ind) + 1)))
+  return(CRIM)
 }

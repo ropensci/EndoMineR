@@ -20,21 +20,9 @@ BarrettsDataAccord_Prague.
 }
 \examples{
 # Firstly relevant columns are extrapolated from the
-# Mypath demo dataset. These functions are all part of Histology data
-# cleaning as part of the package.
-v<-HistolChopperDx(Mypath,'Diagnosis')
-v<-HistolChopperExtrapolDx(v,'Diagnosis')
-v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-v<-HistolChopperBxSize(v,'Macroscopicdescription')
-# The histology is then merged with the Endoscopy dataset. The merge occurs
-# according to date and Hospital number
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-'HospitalNumber')
-# The pathology stage is then recorded
-b1<-BarrettsDataAccord_Prague(v,'Findings')
-b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+b1<-BarrettsDataAccord_Prague(Myendo,'Findings')
 # The documentation is really from the endoscopic Findings column
-BarrettsQuality_AnalysisDocumentation(b2,'Findings')
+BarrettsQuality_AnalysisDocumentation(b1,'Findings')
 rm(v)
 }
 \keyword{Documentation}
