@@ -522,7 +522,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' v<-HistolChopperBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','PatientID',v,'Dateofprocedure',
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function relies on the other Barrett's functions being run as well:
 #' b1<-BarrettsDataAccord_Prague(v,'Findings')
