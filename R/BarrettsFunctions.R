@@ -507,6 +507,7 @@ BarrettsQuality_AnalysisDocumentation <- function(x, Findings) {
 #' @param Endo_ResultPerformed Date of the Endocscopy
 #' @param PatientID Patient's unique identifier
 #' @param Endoscopist name of the column with the Endoscopist names
+#' @importFrom magrittr '%>%'
 #' @importFrom dplyr summarise group_by filter
 #' @importFrom rlang sym
 #' @importFrom ggplot2 ggplot geom_point labs theme xlab ylab unit element_text

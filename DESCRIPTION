@@ -20,7 +20,6 @@ Imports:
         gplots,
         splitstackshape,
         googleVis,
-        lattice,
         tm,
         lubridate,
         stringr,
