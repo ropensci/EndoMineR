@@ -39,7 +39,8 @@ if (getRversion() >= "2.15.1")
       "region",
       "rgb",
       "setDT",
-      "origin"
+      "origin",
+      "FreqYear"
     )
   )
 
