@@ -2,29 +2,88 @@
 title: "EndoMinerPrinciples"
 author: "Sebastian Zeki"
 date: "12/22/2017"
-output: html_document
+output:
+  rmarkdown::html_vignette:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+##Introduction 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Gastroenterological data can be organised in a manner that allows several questions to be answered with the same data structure. The structure itself is straightforward. It simply rests on the basis that we mainly describe patient episodes so that each row of a dataframe pertains to the data collected at that episode and the index of the row is based on a combination of date and a patient's unique identifier
+The following described an overview of how data should be structured using both and endoscopic dataset and a pathological dataset which we will merge.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
-```
 
-## Including Plots 
 
-You can also embed plots, for example:
+##Assumptions for practical gastroenterological datasets
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
+<br>
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+![Figure 1: Typical starting data set](TypicalReportForGastroDSEndoMinerVignette.svg){width=900px}
+
+
+
+####Assumption 1 (Mandatory)- Data is episodic 
+
+A fundamental assumption is that all patient related data at the departmental level can be viewed as pertaining to a clinical episode recorded as a single timepoint (usually as the day of the episode. A single patient is related to patient timed episodes in a one to many relationship (one patient can have many endoscopies).
+
+####Assumption 2 (Mandatory)- Patients have unique identifiers
+
+All patients have a unique identifier. At the departmental level this is likely to be a Trust specific hospital number.
+
+####Assumption 3 (Optional): Outcome variables are present
+
+A patient episode should have an outcome. In the case of an endoscopy for example, the outcome may be the histopathological diagnosis, or if no biopsies were taken, then the endoscopic diagnosis. The origin of the outcome is not important: it can be a derivative of the dataset itself or can be from a distinct dataset merged into the current one depending on the analysis. What is important is that the outcome relates to the patient episode: if biopsy result is the outcome it should be biopsies taken at the recorded endoscopy. In other words the outcome should be that which is related to the same timepoint as the event.
+
+####Assumption 4 (Optional): Tests should have an indication
+
+A patient episode should have a reason. The indication for the patient episode should be recorded for the same time point as the episode. This is very commonly found in report text of both an endoscopy and histopathology reports. This is optional as other analyses can still be carried out without this being available.
+
+
+####Assumption 5 (Optional): The data is semi-structured.
+
+The data is semi-structured. Structured data is easier to analyse but because it is more cumbersome to input and often lacks flexibility, most endoscopic and histopathology data remains semi-structured. This means that although the text extraction techniques outlined here are the same, the boundaries for extracting each section may differ. For example in our trust a pathology report may contain the subsections ‘Macroscopic specimen’ and ‘Diagnosis’ whereas these sections may have alternative labels in another hospital’s report.
+
+Semi-structured data requires specific language processing techniques depending on what is being extracted. For our purposes the extractible data is likely to be either diagnoses or aspects of the test being performed. The diagnostic data is traditionally the most difficult to extract  but this is often because the object to be extracted is from a large set eg for the purposes of coding for financial remuneration. Because the target set is much smaller for endoscopic-pathological diagnoses language extraction can be more focused whilst being more flexible to accommodate edge cases such as misspellings, plurals.
+
+
+
+
+
+## So what generic questions can we answer in gastroenterology?
+
+The answer to this is really applicable to most areas in medicine. Many fields share the same practical, day to day questions. Although we may focus on specific questions for a specific field, the structure of many questions in medicine is the same. Based on observation and experience I think the main questions are:
+
+**[1. Analysis patient flow](http://gastrodatascience.com/DataAnalysisEventingsSankey.html) **
+
+If we understand the fact that patient's flow through a system, and the way to characterise that flow is by organising data according to the patient's unique identifier and episode date as a combined index, then there are a huge number of questions that can be ansered under this generic question. For example, at a population level analysis, how many patients will need to undergo further colonoscopy surveillance in 5 years based on the procedures already performed. On an individual patient level perhaps you need to know who is due to have further endoscopic follow up based on previous procedure, or which patients have been lost to follow-up. Once data is prepared in a manner that satisfies surveillance tasks, the data structure can be used for many other questions 
+<br><br>
+
+**[2. Diagnostic yields](http://gastrodatascience.com/Cornersteon_EndoPath.html)**
+
+This relates to commonly held performance measures such as the adenoma detection rate or the pathological diagnoses per indication
+
+
+**[3. Analysis of quality](http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html) **
+
+This relates to measures such as the adequacy of sampling and documentation, adherence to minimum standards including lesion recognition performance). 
+
+Having structured our datasets as per the previous pages, we can extract this easily as follows:
+
+
+The figure above is a summary figure of how different aspects of one well constructed dataset can be used to answer questions within the spheres mentioned above
+
+
+The central issue is that data is organised according to time so that the data structure is indexed by a combination of the date and the unique patient identifier. Merging with external datasets can then be done according to either the patient identifier and date or just the patient identifier if there is no need to relate the time of an episode in one data set to another.
+
+**[Surveillance](http://gastrodatascience.com/Cornerstone_Surveillance.html)**
+
+Surveillance programmes rely heavily on the timing of individual tests to find out when a patient is next due to undergo an investigation or to determine whether they have been lost to follow up. Analyses therefore rely on assessment of times for a patient
+
+**[Performance metrics](http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html)**
+
+Performance metrics depend on what is being assessed. There is a natural weighting towards endoscopy on these pages and therefore we often assess endoscopists based on their within procedure performance (how much sedation was given, the patient's comfort score etc.), as well as cross-referenceing with the results of tissue taken at the time of the procedure to assess how good we are at recognising lesions (such as the adenoma detection rate). The following pages assess these areas and given te practical recipes for resolving them in code.

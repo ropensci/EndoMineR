@@ -48,6 +48,12 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/Analysis.html">Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Barrett's Oesophagus</a>
+    </li>
+    <li>
       <a href="../articles/EndoMineRPrinciples.html">EndoMinerPrinciples</a>
     </li>
   </ul>
@@ -81,63 +87,6 @@
 <a href="#aims-of-endominer" class="anchor"></a>Aims of EndoMineR</h2>
 <p>The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens.</p>
 <p>Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.</p>
-</div>
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>Gastroenterological data can be organised in a manner that allows several questions to be answered with the same data structure. The structure itself is straightforward. It simply rests on the basis that we mainly describe patient episodes so that each row of a dataframe pertains to the data collected at that episode and the index of the row is based on a combination of date and a patient’s unique identifier The following described an overview of how data should be structured using both and endoscopic dataset and a pathological dataset which we will merge.</p>
-</div>
-<div id="assumptions-for-practical-gastroenterological-datasets" class="section level2">
-<h2 class="hasAnchor">
-<a href="#assumptions-for-practical-gastroenterological-datasets" class="anchor"></a>Assumptions for practical gastroenterological datasets</h2>
-<p><br></p>
-<div class="figure">
-<img src="TypicalReportForGastroDSEndoMinerVignette.svg" alt="Figure 1: Typical starting data set" width="900"><p class="caption">Figure 1: Typical starting data set</p>
-</div>
-<div id="assumption-1-mandatory--data-is-episodic" class="section level4">
-<h4 class="hasAnchor">
-<a href="#assumption-1-mandatory--data-is-episodic" class="anchor"></a>Assumption 1 (Mandatory)- Data is episodic</h4>
-<p>A fundamental assumption is that all patient related data at the departmental level can be viewed as pertaining to a clinical episode recorded as a single timepoint (usually as the day of the episode. A single patient is related to patient timed episodes in a one to many relationship (one patient can have many endoscopies).</p>
-</div>
-<div id="assumption-2-mandatory--patients-have-unique-identifiers" class="section level4">
-<h4 class="hasAnchor">
-<a href="#assumption-2-mandatory--patients-have-unique-identifiers" class="anchor"></a>Assumption 2 (Mandatory)- Patients have unique identifiers</h4>
-<p>All patients have a unique identifier. At the departmental level this is likely to be a Trust specific hospital number.</p>
-</div>
-<div id="assumption-3-optional-outcome-variables-are-present" class="section level4">
-<h4 class="hasAnchor">
-<a href="#assumption-3-optional-outcome-variables-are-present" class="anchor"></a>Assumption 3 (Optional): Outcome variables are present</h4>
-<p>A patient episode should have an outcome. In the case of an endoscopy for example, the outcome may be the histopathological diagnosis, or if no biopsies were taken, then the endoscopic diagnosis. The origin of the outcome is not important: it can be a derivative of the dataset itself or can be from a distinct dataset merged into the current one depending on the analysis. What is important is that the outcome relates to the patient episode: if biopsy result is the outcome it should be biopsies taken at the recorded endoscopy. In other words the outcome should be that which is related to the same timepoint as the event.</p>
-</div>
-<div id="assumption-4-optional-tests-should-have-an-indication" class="section level4">
-<h4 class="hasAnchor">
-<a href="#assumption-4-optional-tests-should-have-an-indication" class="anchor"></a>Assumption 4 (Optional): Tests should have an indication</h4>
-<p>A patient episode should have a reason. The indication for the patient episode should be recorded for the same time point as the episode. This is very commonly found in report text of both an endoscopy and histopathology reports. This is optional as other analyses can still be carried out without this being available.</p>
-</div>
-<div id="assumption-5-optional-the-data-is-semi-structured-" class="section level4">
-<h4 class="hasAnchor">
-<a href="#assumption-5-optional-the-data-is-semi-structured-" class="anchor"></a>Assumption 5 (Optional): The data is semi-structured.</h4>
-<p>The data is semi-structured. Structured data is easier to analyse but because it is more cumbersome to input and often lacks flexibility, most endoscopic and histopathology data remains semi-structured. This means that although the text extraction techniques outlined here are the same, the boundaries for extracting each section may differ. For example in our trust a pathology report may contain the subsections ‘Macroscopic specimen’ and ‘Diagnosis’ whereas these sections may have alternative labels in another hospital’s report.</p>
-<p>Semi-structured data requires specific language processing techniques depending on what is being extracted. For our purposes the extractible data is likely to be either diagnoses or aspects of the test being performed. The diagnostic data is traditionally the most difficult to extract but this is often because the object to be extracted is from a large set eg for the purposes of coding for financial remuneration. Because the target set is much smaller for endoscopic-pathological diagnoses language extraction can be more focused whilst being more flexible to accommodate edge cases such as misspellings, plurals.</p>
-</div>
-</div>
-<div id="so-what-generic-questions-can-we-answer-in-gastroenterology" class="section level2">
-<h2 class="hasAnchor">
-<a href="#so-what-generic-questions-can-we-answer-in-gastroenterology" class="anchor"></a>So what generic questions can we answer in gastroenterology?</h2>
-<p>The answer to this is really applicable to most areas in medicine. Many fields share the same practical, day to day questions. Although we may focus on specific questions for a specific field, the structure of many questions in medicine is the same. Based on observation and experience I think the main questions are:</p>
-<p><strong><a href="http://gastrodatascience.com/DataAnalysisEventingsSankey.html">1. Analysis patient flow</a> </strong></p>
-<p>If we understand the fact that patient’s flow through a system, and the way to characterise that flow is by organising data according to the patient’s unique identifier and episode date as a combined index, then there are a huge number of questions that can be ansered under this generic question. For example, at a population level analysis, how many patients will need to undergo further colonoscopy surveillance in 5 years based on the procedures already performed. On an individual patient level perhaps you need to know who is due to have further endoscopic follow up based on previous procedure, or which patients have been lost to follow-up. Once data is prepared in a manner that satisfies surveillance tasks, the data structure can be used for many other questions <br><br></p>
-<p><strong><a href="http://gastrodatascience.com/Cornersteon_EndoPath.html">2. Diagnostic yields</a></strong></p>
-<p>This relates to commonly held performance measures such as the adenoma detection rate or the pathological diagnoses per indication</p>
-<p><strong><a href="http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html">3. Analysis of quality</a> </strong></p>
-<p>This relates to measures such as the adequacy of sampling and documentation, adherence to minimum standards including lesion recognition performance).</p>
-<p>Having structured our datasets as per the previous pages, we can extract this easily as follows:</p>
-<p>The figure above is a summary figure of how different aspects of one well constructed dataset can be used to answer questions within the spheres mentioned above</p>
-<p>The central issue is that data is organised according to time so that the data structure is indexed by a combination of the date and the unique patient identifier. Merging with external datasets can then be done according to either the patient identifier and date or just the patient identifier if there is no need to relate the time of an episode in one data set to another.</p>
-<p><strong><a href="http://gastrodatascience.com/Cornerstone_Surveillance.html">Surveillance</a></strong></p>
-<p>Surveillance programmes rely heavily on the timing of individual tests to find out when a patient is next due to undergo an investigation or to determine whether they have been lost to follow up. Analyses therefore rely on assessment of times for a patient</p>
-<p><strong><a href="http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html">Performance metrics</a></strong></p>
-<p>Performance metrics depend on what is being assessed. There is a natural weighting towards endoscopy on these pages and therefore we often assess endoscopists based on their within procedure performance (how much sedation was given, the patient’s comfort score etc.), as well as cross-referenceing with the results of tissue taken at the time of the procedure to assess how good we are at recognising lesions (such as the adenoma detection rate). The following pages assess these areas and given te practical recipes for resolving them in code.</p>
 </div>
 <div id="how-is-the-package-divided" class="section level2">
 <h2 class="hasAnchor">
@@ -319,51 +268,6 @@ f&lt;-<span class="kw"><a href="../reference/SampleLocator.html">SampleLocator</
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html">GRS_Type_Assess_By_Unit</a></span>(v,<span class="st">'ProcedurePerformed'</span>,<span class="st">'Endoscopist'</span>,<span class="st">'Diagnosis'</span>,<span class="st">'Histology'</span>)</code></pre></div>
 </div>
 </div>
-</div>
-<div id="application-to-specific-disease-entities--barretts-oesophagus" class="section level2">
-<h2 class="hasAnchor">
-<a href="#application-to-specific-disease-entities--barretts-oesophagus" class="anchor"></a>Application to specific disease entities- Barrett’s oesophagus</h2>
-<p>The functions above really act as building blocks for the further, more complex analyses we can do for specific Endoscopic-pathological disease sets</p>
-<p>One particular disease, the premalignant oesophageal condition Barrett’s oesophagus, requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 guidelines, means the presence or absence of intestinal metaplasia)</p>
-<p><br></p>
-<div id="pre-processing-barretts-samples" class="section level3">
-<h3 class="hasAnchor">
-<a href="#pre-processing-barretts-samples" class="anchor"></a>Pre-processing Barrett’s samples</h3>
-<p>Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett’s oesophagus itself.</p>
-<p><br></p>
-<div class="figure">
-<img src="EndoMineR_Barretts.svg" alt="Figure 10: Barretts cleaning functions" width="600"><p class="caption">Figure 10: Barretts cleaning functions</p>
-</div>
-<p><br></p>
-<div id="prague-score" class="section level4">
-<h4 class="hasAnchor">
-<a href="#prague-score" class="anchor"></a>Prague score</h4>
-<p>Firstly we need to extract the length of the Barrett’s segment. After filtering for indication (eg “Surveillance-Barrett’s”) the aim of the following function is to extract a C and M stage (Prague score) for Barrett’s samples. This is done using a regex where C and M stages are explicitly mentioned in the free text. Specfically it extracts the Prague score.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Prague.html">BarrettsDataAccord_Prague</a></span>(Myendo,<span class="st">'Findings'</span>)</code></pre></div>
-</div>
-<div id="worst-pathological-stage" class="section level4">
-<h4 class="hasAnchor">
-<a href="#worst-pathological-stage" class="anchor"></a>Worst pathological stage</h4>
-<p>We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using ‘degradation’ so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports tocontain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">BarrettsDataAccord_PathStage</a></span>(v,<span class="st">'Histology'</span>)</code></pre></div>
-</div>
-<div id="therapeutic-events" class="section level4">
-<h4 class="hasAnchor">
-<a href="#therapeutic-events" class="anchor"></a>Therapeutic events</h4>
-<p>We also need to process any endoscopies where an event other than surveillance happened (unless filtered specifically for surveillance. This function extracts the Event- usually a therapeutic event, from the text eg endoscopic mucosal resection, radiofrequency ablation etc. It does not currently include stricture dilatation.Specfically it extracts the event. At the moment the event is extracted from the endoscopy only but for specimen extraction eg endoscopic mucosal resection future iterations may also examine the pathology data as it is likely to describe the presence of EMR more robustly.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
-b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Event.html">BarrettsDataAccord_Event</a></span>(v,<span class="st">'Histology'</span>, <span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)</code></pre></div>
-</div>
-<div id="follow-up-groups" class="section level4">
-<h4 class="hasAnchor">
-<a href="#follow-up-groups" class="anchor"></a>Follow-up groups</h4>
-<p>Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett’s segment length and therefore their follow-up timing, may fluctuate over time) can be determined.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
-b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">BarrettsDataAccord_PathStage</a></span>(v,<span class="st">'Histology'</span>)
-b2&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Event.html">BarrettsDataAccord_Event</a></span>(b,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
-b3&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">BarrettsDataAccord_FUGroup</a></span>(b2,<span class="st">'Findings'</span>)</code></pre></div>
-</div>
-</div>
 <div id="basic-surveillance-questions--who-is-undergoing-endoscopic-surveillance-and-who-should-we-be-surveying" class="section level3">
 <h3 class="hasAnchor">
 <a href="#basic-surveillance-questions--who-is-undergoing-endoscopic-surveillance-and-who-should-we-be-surveying" class="anchor"></a>Basic surveillance questions- who is undergoing endoscopic surveillance and who should we be surveying?</h3>
@@ -505,14 +409,10 @@ b4&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">B
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#aims-of-endominer">Aims of EndoMineR</a></li>
-      <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#assumptions-for-practical-gastroenterological-datasets">Assumptions for practical gastroenterological datasets</a></li>
-      <li><a href="#so-what-generic-questions-can-we-answer-in-gastroenterology">So what generic questions can we answer in gastroenterology?</a></li>
       <li><a href="#how-is-the-package-divided">How is the package divided?</a></li>
       <li><a href="#the-extractor-function">The extractor function</a></li>
       <li><a href="#the-cleaning-functions">The cleaning functions</a></li>
       <li><a href="#the-analysis-functions">The Analysis Functions</a></li>
-      <li><a href="#application-to-specific-disease-entities--barretts-oesophagus">Application to specific disease entities- Barrett’s oesophagus</a></li>
       </ul>
 </div>
       </div>
