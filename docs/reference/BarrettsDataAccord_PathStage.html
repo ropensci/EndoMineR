@@ -63,18 +63,25 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/EndoMineRPrinciples.html">EndoMinerPrinciples</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/sebastiz/EndoMineR">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -129,8 +136,7 @@ Being the procedure done at the time and the follow-up timings</p>
 <span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
 <span class='co'># according to date and Hospital number</span>
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>v</span>,<span class='st'>'Dateofprocedure'</span>,
-<span class='st'>'HospitalNumber'</span>)
-<span class='co'># The function then takes the Histology column from the merged data set (v).</span>
+<span class='st'>'HospitalNumber'</span>)</div><div class='output co'>#&gt; <span class='error'>Error: `PatientName.x` = PatientName must be a symbol or a string, not formula</span></div><div class='input'><span class='co'># The function then takes the Histology column from the merged data set (v).</span>
 <span class='co'># It extracts the worst histological grade for a specimen</span>
 <span class='no'>b</span><span class='kw'>&lt;-</span><span class='fu'>BarrettsDataAccord_PathStage</span>(<span class='no'>v</span>,<span class='st'>'Histology'</span>)
 <span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>

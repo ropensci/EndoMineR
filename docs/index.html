@@ -40,18 +40,23 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/EndoMineRPrinciples.html">EndoMinerPrinciples</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="news/index.html">News</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/sebastiz/EndoMineR">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -94,7 +99,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"sebastiz/Endo
 HistolTree&lt;-<span class="kw">list</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
 <span class="st">"Date of procedure:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,<span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>,<span class="st">""</span>)
 for(i in <span class="dv">1</span>:(<span class="kw">length</span>(HistolTree)-<span class="dv">1</span>)) {
-Mypath&lt;-<span class="kw"><a href="reference/Extractor.html">Extractor</a></span>(Mypath,<span class="st">"PathReportWhole"</span>,<span class="kw">as.character</span>(HistolTree[i]),
+Mypath&lt;-<span class="kw">Extractor</span>(Mypath,<span class="st">"PathReportWhole"</span>,<span class="kw">as.character</span>(HistolTree[i]),
 <span class="kw">as.character</span>(HistolTree[i<span class="dv">+1</span>]),<span class="kw">as.character</span>(HistolTree[i]))
 }</code></pre></div>
 <p>This function can be used for both histology and pathology datasets.</p>
@@ -128,8 +133,6 @@ Fent&lt;-<span class="kw"><a href="reference/MetricByEndoscopist.html">MetricByE
     <h2 class="hasAnchor">
 <a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/sebastiz/EndoMineR">https://​github.com/​sebastiz/​EndoMineR</a>
-</li>
 <li>Report a bug at <br><a href="https://github.com/sebastiz/EndoMineR/issues">https://​github.com/​sebastiz/​EndoMineR/​issues</a>
 </li>
 </ul>

@@ -18,7 +18,7 @@ The package is basically in three parts
 Installation
 ------------
 
-You can install EndoMineR from github with: 
+You can install EndoMineR from github with:
 
 ``` r
 # install.packages("devtools")

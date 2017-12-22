@@ -40,18 +40,23 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/EndoMineRPrinciples.html">EndoMinerPrinciples</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/sebastiz/EndoMineR">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -64,7 +69,7 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>EndoMineR</h1>
-                        <h4 class="author">Sebastian Zeki 2017-11-15</h4>
+                        <h4 class="author">Sebastian Zeki 2017-12-22</h4>
             
           </div>
 
@@ -164,7 +169,7 @@
 HistolTree&lt;-<span class="kw">list</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
 <span class="st">"Date of procedure:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,<span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>,<span class="st">""</span>)
 for(i in <span class="dv">1</span>:(<span class="kw">length</span>(HistolTree)-<span class="dv">1</span>)) {
-Mypath&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(Mypath,<span class="st">"PathReportWhole"</span>,<span class="kw">as.character</span>(HistolTree[i]),
+Mypath&lt;-<span class="kw">Extractor</span>(Mypath,<span class="st">"PathReportWhole"</span>,<span class="kw">as.character</span>(HistolTree[i]),
 <span class="kw">as.character</span>(HistolTree[i<span class="dv">+1</span>]),<span class="kw">as.character</span>(HistolTree[i]))
 }</code></pre></div>
 </div>
