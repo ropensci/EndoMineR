@@ -68,6 +68,68 @@ ChopperNewLines <- function(x, y) {
 
 
 
+##' Extracts the columns from the raw report
+##' 
+##' This is the main extractor for the Endoscopy and Histology report.
+##' This depends on the user creating a list of words or characters that
+##' act as the words that should be split against. The list is then fed to the
+##' Extractor in a loop so that it acts as the beginning and the end of the
+##' regex used to split the text. Whatever has been specified in the list
+##' is used as a column header. Column headers don't tolerate special characters
+##' like : or ? and / and don't allow numbers as the start character so these
+##' have to be dealt with in the text before processing
+##' 
+##' @param x the dataframe
+##' @param y the column to extract from
+##' @param stra the start of the boundary to extract
+##' @param strb the end of the boundary to extract
+##' @param t the column name to create
+##' @importFrom stringr str_extract
+##' @keywords Extraction
+##' @export
+##' @examples
+##' # As column names cant start with a number, one of the dividing
+##' # words has to be converted
+##' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
+##' Myendo$OGDReportWhole)
+##' # A list of dividing words (which will also act as column names)
+##' # is then constructed
+##' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+##' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
+##' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
+##' 'Findings:','Endoscopic Diagnosis:')
+##' # The Extractor function is then used as part of a loop to divide the raw
+##' # report up according to the user-defined words in the extraction list
+##' # defined above
+##' for(i in 1:(length(EndoscTree)-1)) {
+##'  Myendo<-Extractor(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
+##'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
+##' }
+##' res<-Myendo
+
+
+# Extractor <- function(x, y, stra, strb, t) {
+#   x <- data.frame(x)
+#   t <- gsub("[^[:alnum:],]", " ", t)
+#   t <- gsub(" ", "", t, fixed = TRUE)
+#   x[, t] <-
+#     stringr::str_extract(x[, y], stringr::regex(paste(stra,
+#                                                       "(.*)", strb, sep = ""), 
+#                                                 dotall = TRUE))
+#   x[, t] <- gsub("\\\\.*", "", x[, t])
+#   
+#   names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
+#   x[, t] <- gsub("       ", "", x[, t])
+#   x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
+#   if (strb != "") {
+#     x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
+#   }
+#   x[, t] <- gsub("       ", "", x[, t])
+#   x[, t] <- ColumnCleanUp(x, t)
+#   return(x)
+# }
+
+
 #' Extracts the columns from the raw report
 #'
 #' This is the main extractor for the Endoscopy and Histology report.
@@ -79,12 +141,12 @@ ChopperNewLines <- function(x, y) {
 #' like : or ? and / and don't allow numbers as the start character so these
 #' have to be dealt with in the text before processing
 #'
-#' @param x the dataframe
-#' @param y the column to extract from
-#' @param stra the start of the boundary to extract
-#' @param strb the end of the boundary to extract
-#' @param t the column name to create
+#' @param dataframeIn the dataframe
+#' @param Column the column to extract from
+#' @param delim the vector of words that will be used as the boundaries to
+#' extract against
 #' @importFrom stringr str_extract
+#' @importFrom tidyr separate
 #' @keywords Extraction
 #' @export
 #' @examples
@@ -94,40 +156,26 @@ ChopperNewLines <- function(x, y) {
 #' Myendo$OGDReportWhole)
 #' # A list of dividing words (which will also act as column names)
 #' # is then constructed
-#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
-#' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
-#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
-#' 'Findings:','Endoscopic Diagnosis:')
-#' # The Extractor function is then used as part of a loop to divide the raw
-#' # report up according to the user-defined words in the extraction list
-#' # defined above
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
+#' Extractor(Mypath,PathReportWhole,mywords)
 #' res<-Myendo
-
-
-Extractor <- function(x, y, stra, strb, t) {
-  x <- data.frame(x)
-  t <- gsub("[^[:alnum:],]", " ", t)
-  t <- gsub(" ", "", t, fixed = TRUE)
-  x[, t] <-
-    stringr::str_extract(x[, y], stringr::regex(paste(stra,
-                                                      "(.*)", strb, sep = ""), 
-                                                dotall = TRUE))
-  x[, t] <- gsub("\\\\.*", "", x[, t])
+Extractor2 <- function(dataframeIn, Column, delim) {
+  dataframeIn <- data.frame(dataframeIn)
+  dataframeIn<-dataframeIn %>% separate(Column, into = delim, sep = paste(delim, collapse = "|"))
   
-  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
-  x[, t] <- gsub("       ", "", x[, t])
-  x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
-  if (strb != "") {
-    x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
-  }
-  x[, t] <- gsub("       ", "", x[, t])
-  x[, t] <- ColumnCleanUp(x, t)
-  return(x)
+  #Devise function that splits each column into sentences using NLP or other tokenizer non java
+  #dataframeIn[, Column] <- gsub("\\\\.*", "", dataframeIn[, Column])
+  #names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
+  
+  
+  
+  #dataframeIn[, Column] <- gsub("       ", "", dataframeIn[,Column])
+  #dataframeIn[, Column] <- gsub(stra, "", dataframeIn[,Column], fixed = TRUE)
+  #dataframeIn[,Column] <- ColumnCleanUp(dataframeIn,Column)
+  return(dataframeIn)
 }
+
+#Extractr2
+#Extract the columns and thn apply an internal function to each one in turn which does the above and then apply a further COlumnCleanU to each one in turn and then add back to the original
 
 
 
