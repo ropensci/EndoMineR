@@ -5,6 +5,7 @@ date: "12/22/2017"
 output:
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 5
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +21,7 @@ One particular disease, the premalignant oesophageal condition Barrett's oesopha
 
 <br>
 
-###Pre-processing Barrett's samples
+##Pre-processing Barrett's samples
 
 Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett's oesophagus itself. 
 
@@ -30,7 +31,7 @@ Such a dataset needs some processing prior to the analysis so for this we can tu
 
 <br>
 
-####Prague score
+###Prague score
 
 Firstly we need to extract the length of the Barrett's segment. After filtering for indication (eg "Surveillance-Barrett's") the aim of the following function is to extract a C and M stage (Prague score) for Barrett's samples. This is done using a regex where C and M stages are explicitly mentioned in the free text. Specfically it extracts the Prague score.
 
@@ -38,7 +39,7 @@ Firstly we need to extract the length of the Barrett's segment. After filtering 
 v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 ```
 
-####Worst pathological stage
+###Worst pathological stage
 
 We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using 'degradation' so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports tocontain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade. 
 
@@ -48,7 +49,7 @@ b<-BarrettsDataAccord_PathStage(v,'Histology')
 ```
 
 
-####Therapeutic events
+###Therapeutic events
 
 We also need to process any endoscopies where an event other than surveillance happened (unless filtered specifically for surveillance. This function extracts the Event- usually a therapeutic event, from the text eg endoscopic mucosal resection, radiofrequency ablation etc. It does not currently include stricture dilatation.Specfically it extracts the event. At the moment the event is extracted from the endoscopy only but for specimen extraction eg endoscopic mucosal resection future iterations may also examine the pathology data as it is likely to describe the presence of EMR more robustly. 
 
@@ -60,7 +61,7 @@ b<-BarrettsDataAccord_Event(v,'Histology', 'ProcedurePerformed','OGDReportWhole'
 
 
 
-####Follow-up groups
+###Follow-up groups
 
 Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett's segment length and therefore their follow-up timing, may fluctuate over time) can be determined.
 
@@ -71,4 +72,147 @@ b<-BarrettsDataAccord_PathStage(v,'Histology')
 b2<-BarrettsDataAccord_Event(b,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
 b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
 ```
+
+## Assessment of Barrett's therapeutics
+
+Barrett's patients also undergo therapeutic procedures and there are various metrics to analyse the performance of the therapy by endoscopist, as well which catheters are being used etc. To start with we can do simple things like plotting all the pathological grades of the EMRs.This should only be run after all the BarrettsDataAccord functions so that the column event is present in the dataframe.
+
+
+The therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function:
+ 
+```{r exampleBarretts_LesionRecognitionEMR, eval = FALSE} 
+Barretts_LesionRecognitionEMR(dataframe,y,z)
+``` 
+
+<br>
+
+ ![Figure 14: Worst grade dysplasia/cancer function](GradeBarretts.svg){width=600px}
+
+<br>
+
+ In order to determine the basic number of EMR, RFA and APC a function called BarrettsBasicNumbers is provided which outputs a geom_line plot with the information on it.
+ 
+```{r exampleBarrettsBasicNumbers, eval = FALSE} 
+BarrettsBasicNumbers(dataframe)
+``` 
+ 
+ <br>
+
+![Figure 15: Number of Barrett's therapeutic endoscopies by type](BarrettsBasicNumbers.svg){width=600px}
+
+<br>
+
+
+ To assess the number of different catheter types used (for renumeration purposes) the following function can be used:
+ 
+```{r exampleBarrettsTherapeuticsRFA_ByCatheter, eval = FALSE} 
+BarrettsTherapeuticsRFA_ByCatheter(dataframe)
+``` 
+
+<br>
+
+![Figure 16: Number of Barrett's therapeutic endoscopies by type](BarrettsRFA_CatheterType.svg){width=600px}
+
+<br>
+
+One of the most important aspects of therapeutics is the assessment of outcome which is defined as clearance of intestinal metaplasia (CRIM), usually on at least two endoscopies. As most patients undergoing Barrett's ablation will require radiofrequency ablation after the initial endoscopic mucosal resection, we can define CRIM as being an endoscopy where the therapeutic procedure is listed as 'nothing' in the EVENT column (this will only work if the Barrett's pre-processing functions have been used)
+
+```{r exampleBarrettsCRIM, eval = FALSE} 
+BarrettsCRIM(dataframe,HospNum,EVENT)
+``` 
+
+
+##Quality assessment in Barrett's surveillance
+
+###Quality of documentation for Barrett's surveillance endoscopies
+
+As we have done above, we can also assess the documentation used in Barrett's endoscopies. There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett's documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on  Barrett's endoscopic reporting. This should be run after the BarrettsDataAccord_Prague as assessment of the Prague score is a part of this assessment:
+
+```{r exampleBarrettsQuality_AnalysisDocumentation, eval = FALSE}
+v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+b<-BarrettsDataAccord_PathStage(v,'Histology')
+BarrettsQuality_AnalysisDocumentation(b,"Findings")
+```
+
+
+<br>
+
+![Figure 11: Barretts documentation quality function](Rplot.png){width=600px}
+
+<br>
+
+###Quality of perfomance of Barrett's surveillance endoscopies as just by tissue sampling
+
+One of the essential requirements to demonstrate adequate sampling of Barrett's oesophagus during endoscopy is that the endoscopist should adhere to the 'Seattle protocol' for biopsies which is to take  4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett's samples is pre-requisite.
+
+```{r exampleBarrettsQuality_AnalysisBiopsyNumber, eval = FALSE}
+# Firstly relevant columns are extrapolated from the
+ # Mypath demo dataset. These functions are all part of Histology data
+ # cleaning as part of the package.
+ v<-HistolChopperDx(Mypath,'Diagnosis')
+ v<-HistolChopperExtrapolDx(v,'Diagnosis')
+ v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
+ v<-HistolChopperBxSize(v,'Macroscopicdescription')
+ # The histology is then merged with the Endoscopy dataset. The merge occurs
+ # according to date and Hospital number
+ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+ 'HospitalNumber')
+ # The function relies on the other Barrett's functions being run as well:
+ b1<-BarrettsDataAccord_Prague(v,'Findings')
+ b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+ b3<-BarrettsDataAccord_Event(b2,'Histology',
+ 'ProcedurePerformed','OGDReportWhole','Findings')
+ # The follow-up group depends on the histology and the Prague score for a
+ # patient so it takes the processed Barrett's data and then looks in the
+# Findings column for permutations of the Prague score.
+ b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+ # The number of average number of biopsies is then calculated and
+ # compared to the average Prague C score so that those who are taking
+ # too few biopsies can be determined
+ BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
+                                      'Endoscopist')
+```
+ <br>
+ 
+ ![Figure 12: Barretts quality of biopsying function](Barretts_Shortfall.png){width=600px}
+ 
+ <br>
+ 
+ 
+ <br>
+ 
+ This function will again return a list with a ggplot showing the shortfall per endoscopist as well as a table with the same values
+
+###Quality of perfomance of Barrett's surveillance endoscopies
+
+As we discovered with some of the generic functions above, one way to determine quality of endoscopy is to assess the pathology of specimens taken at surveillance per year. This function outputs a plot which determines the the overall number of pathologies (low/high grade dysplasia and cancer) for patients on surveillance.
+
+```{r exampleBarrettsSurveillance_PathDetection, eval = FALSE}
+Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+b1<-BarrettsDataAccord_Prague(v,'Findings')
+b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
+b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+BarrettsSurveillance_PathDetection(b4,'Myplot')
+```
+ 
+<br>
+  
+ ![Figure 13: EMR by pathology grade](BarrettsEMR_By_Pathology.svg){width=600px}
+ 
+<br>
+ 
+ This function provides a plot with absolute numbers of pathology detected. This of course doesn't tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist. The output is provided as a table of proportions per endoscopist
+
+```{r exampleBarrettsSurveillanceDDR, eval = FALSE} 
+ v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
+b1<-BarrettsDataAccord_Prague(v,'Findings')
+b2<-BarrettsDataAccord_PathStage(b1,'Histology')
+b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
+b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
+``` 
 

@@ -56,6 +56,9 @@
     <li>
       <a href="../articles/EndoMineRPrinciples.html">EndoMinerPrinciples</a>
     </li>
+    <li>
+      <a href="../articles/Surveillance.html">Surveillance</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -89,43 +92,151 @@
 <p>The functions above really act as building blocks for the further, more complex analyses we can do for specific Endoscopic-pathological disease sets</p>
 <p>One particular disease, the premalignant oesophageal condition Barrett’s oesophagus, requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 guidelines, means the presence or absence of intestinal metaplasia)</p>
 <p><br></p>
-<div id="pre-processing-barretts-samples" class="section level3">
-<h3 class="hasAnchor">
-<a href="#pre-processing-barretts-samples" class="anchor"></a>Pre-processing Barrett’s samples</h3>
+</div>
+<div id="pre-processing-barretts-samples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#pre-processing-barretts-samples" class="anchor"></a>Pre-processing Barrett’s samples</h2>
 <p>Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett’s oesophagus itself.</p>
 <p><br></p>
 <div class="figure">
 <img src="EndoMineR_Barretts.svg" alt="Figure 10: Barretts cleaning functions" width="600"><p class="caption">Figure 10: Barretts cleaning functions</p>
 </div>
 <p><br></p>
-<div id="prague-score" class="section level4">
-<h4 class="hasAnchor">
-<a href="#prague-score" class="anchor"></a>Prague score</h4>
+<div id="prague-score" class="section level3">
+<h3 class="hasAnchor">
+<a href="#prague-score" class="anchor"></a>Prague score</h3>
 <p>Firstly we need to extract the length of the Barrett’s segment. After filtering for indication (eg “Surveillance-Barrett’s”) the aim of the following function is to extract a C and M stage (Prague score) for Barrett’s samples. This is done using a regex where C and M stages are explicitly mentioned in the free text. Specfically it extracts the Prague score.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Prague.html">BarrettsDataAccord_Prague</a></span>(Myendo,<span class="st">'Findings'</span>)</code></pre></div>
 </div>
-<div id="worst-pathological-stage" class="section level4">
-<h4 class="hasAnchor">
-<a href="#worst-pathological-stage" class="anchor"></a>Worst pathological stage</h4>
+<div id="worst-pathological-stage" class="section level3">
+<h3 class="hasAnchor">
+<a href="#worst-pathological-stage" class="anchor"></a>Worst pathological stage</h3>
 <p>We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using ‘degradation’ so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports tocontain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">BarrettsDataAccord_PathStage</a></span>(v,<span class="st">'Histology'</span>)</code></pre></div>
 </div>
-<div id="therapeutic-events" class="section level4">
-<h4 class="hasAnchor">
-<a href="#therapeutic-events" class="anchor"></a>Therapeutic events</h4>
+<div id="therapeutic-events" class="section level3">
+<h3 class="hasAnchor">
+<a href="#therapeutic-events" class="anchor"></a>Therapeutic events</h3>
 <p>We also need to process any endoscopies where an event other than surveillance happened (unless filtered specifically for surveillance. This function extracts the Event- usually a therapeutic event, from the text eg endoscopic mucosal resection, radiofrequency ablation etc. It does not currently include stricture dilatation.Specfically it extracts the event. At the moment the event is extracted from the endoscopy only but for specimen extraction eg endoscopic mucosal resection future iterations may also examine the pathology data as it is likely to describe the presence of EMR more robustly.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
 b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Event.html">BarrettsDataAccord_Event</a></span>(v,<span class="st">'Histology'</span>, <span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)</code></pre></div>
 </div>
-<div id="follow-up-groups" class="section level4">
-<h4 class="hasAnchor">
-<a href="#follow-up-groups" class="anchor"></a>Follow-up groups</h4>
+<div id="follow-up-groups" class="section level3">
+<h3 class="hasAnchor">
+<a href="#follow-up-groups" class="anchor"></a>Follow-up groups</h3>
 <p>Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett’s segment length and therefore their follow-up timing, may fluctuate over time) can be determined.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
 b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">BarrettsDataAccord_PathStage</a></span>(v,<span class="st">'Histology'</span>)
 b2&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Event.html">BarrettsDataAccord_Event</a></span>(b,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
 b3&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">BarrettsDataAccord_FUGroup</a></span>(b2,<span class="st">'Findings'</span>)</code></pre></div>
 </div>
+</div>
+<div id="assessment-of-barretts-therapeutics" class="section level2">
+<h2 class="hasAnchor">
+<a href="#assessment-of-barretts-therapeutics" class="anchor"></a>Assessment of Barrett’s therapeutics</h2>
+<p>Barrett’s patients also undergo therapeutic procedures and there are various metrics to analyse the performance of the therapy by endoscopist, as well which catheters are being used etc. To start with we can do simple things like plotting all the pathological grades of the EMRs.This should only be run after all the BarrettsDataAccord functions so that the column event is present in the dataframe.</p>
+<p>The therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/Barretts_LesionRecognitionEMR.html">Barretts_LesionRecognitionEMR</a></span>(dataframe,y,z)</code></pre></div>
+<p><br></p>
+<div class="figure">
+<img src="GradeBarretts.svg" alt="Figure 14: Worst grade dysplasia/cancer function" width="600"><p class="caption">Figure 14: Worst grade dysplasia/cancer function</p>
+</div>
+<p><br></p>
+<p>In order to determine the basic number of EMR, RFA and APC a function called BarrettsBasicNumbers is provided which outputs a geom_line plot with the information on it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsBasicNumbers.html">BarrettsBasicNumbers</a></span>(dataframe)</code></pre></div>
+<p><br></p>
+<div class="figure">
+<img src="BarrettsBasicNumbers.svg" alt="Figure 15: Number of Barrett’s therapeutic endoscopies by type" width="600"><p class="caption">Figure 15: Number of Barrett’s therapeutic endoscopies by type</p>
+</div>
+<p><br></p>
+<p>To assess the number of different catheter types used (for renumeration purposes) the following function can be used:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsTherapeuticsRFA_ByCatheter.html">BarrettsTherapeuticsRFA_ByCatheter</a></span>(dataframe)</code></pre></div>
+<p><br></p>
+<div class="figure">
+<img src="BarrettsRFA_CatheterType.svg" alt="Figure 16: Number of Barrett’s therapeutic endoscopies by type" width="600"><p class="caption">Figure 16: Number of Barrett’s therapeutic endoscopies by type</p>
+</div>
+<p><br></p>
+<p>One of the most important aspects of therapeutics is the assessment of outcome which is defined as clearance of intestinal metaplasia (CRIM), usually on at least two endoscopies. As most patients undergoing Barrett’s ablation will require radiofrequency ablation after the initial endoscopic mucosal resection, we can define CRIM as being an endoscopy where the therapeutic procedure is listed as ‘nothing’ in the EVENT column (this will only work if the Barrett’s pre-processing functions have been used)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">BarrettsCRIM</span>(dataframe,HospNum,EVENT)</code></pre></div>
+</div>
+<div id="quality-assessment-in-barretts-surveillance" class="section level2">
+<h2 class="hasAnchor">
+<a href="#quality-assessment-in-barretts-surveillance" class="anchor"></a>Quality assessment in Barrett’s surveillance</h2>
+<div id="quality-of-documentation-for-barretts-surveillance-endoscopies" class="section level3">
+<h3 class="hasAnchor">
+<a href="#quality-of-documentation-for-barretts-surveillance-endoscopies" class="anchor"></a>Quality of documentation for Barrett’s surveillance endoscopies</h3>
+<p>As we have done above, we can also assess the documentation used in Barrett’s endoscopies. There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett’s documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on Barrett’s endoscopic reporting. This should be run after the BarrettsDataAccord_Prague as assessment of the Prague score is a part of this assessment:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,v,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
+b&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">BarrettsDataAccord_PathStage</a></span>(v,<span class="st">'Histology'</span>)
+<span class="kw"><a href="../reference/BarrettsQuality_AnalysisDocumentation.html">BarrettsQuality_AnalysisDocumentation</a></span>(b,<span class="st">"Findings"</span>)</code></pre></div>
+<p><br></p>
+<div class="figure">
+<img src="Rplot.png" alt="Figure 11: Barretts documentation quality function" width="600"><p class="caption">Figure 11: Barretts documentation quality function</p>
+</div>
+<p><br></p>
+</div>
+<div id="quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="section level3">
+<h3 class="hasAnchor">
+<a href="#quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="anchor"></a>Quality of perfomance of Barrett’s surveillance endoscopies as just by tissue sampling</h3>
+<p>One of the essential requirements to demonstrate adequate sampling of Barrett’s oesophagus during endoscopy is that the endoscopist should adhere to the ‘Seattle protocol’ for biopsies which is to take 4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett’s samples is pre-requisite.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Firstly relevant columns are extrapolated from the</span>
+ <span class="co"># Mypath demo dataset. These functions are all part of Histology data</span>
+ <span class="co"># cleaning as part of the package.</span>
+ v&lt;-<span class="kw"><a href="../reference/HistolChopperDx.html">HistolChopperDx</a></span>(Mypath,<span class="st">'Diagnosis'</span>)
+ v&lt;-<span class="kw"><a href="../reference/HistolChopperExtrapolDx.html">HistolChopperExtrapolDx</a></span>(v,<span class="st">'Diagnosis'</span>)
+ v&lt;-<span class="kw"><a href="../reference/HistolChopperNumbOfBx.html">HistolChopperNumbOfBx</a></span>(v,<span class="st">'Macroscopicdescription'</span>,<span class="st">'specimen'</span>)
+ v&lt;-<span class="kw"><a href="../reference/HistolChopperBxSize.html">HistolChopperBxSize</a></span>(v,<span class="st">'Macroscopicdescription'</span>)
+ <span class="co"># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
+ <span class="co"># according to date and Hospital number</span>
+ v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,v,<span class="st">'Dateofprocedure'</span>,
+ <span class="st">'HospitalNumber'</span>)
+ <span class="co"># The function relies on the other Barrett's functions being run as well:</span>
+ b1&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Prague.html">BarrettsDataAccord_Prague</a></span>(v,<span class="st">'Findings'</span>)
+ b2&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">BarrettsDataAccord_PathStage</a></span>(b1,<span class="st">'Histology'</span>)
+ b3&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Event.html">BarrettsDataAccord_Event</a></span>(b2,<span class="st">'Histology'</span>,
+ <span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
+ <span class="co"># The follow-up group depends on the histology and the Prague score for a</span>
+ <span class="co"># patient so it takes the processed Barrett's data and then looks in the</span>
+<span class="co"># Findings column for permutations of the Prague score.</span>
+ b4&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">BarrettsDataAccord_FUGroup</a></span>(b3,<span class="st">'Findings'</span>)
+ <span class="kw">colnames</span>(b4)[<span class="kw">colnames</span>(b4) ==<span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
+ <span class="co"># The number of average number of biopsies is then calculated and</span>
+ <span class="co"># compared to the average Prague C score so that those who are taking</span>
+ <span class="co"># too few biopsies can be determined</span>
+ <span class="kw"><a href="../reference/BarrettsQuality_AnalysisBiopsyNumber.html">BarrettsQuality_AnalysisBiopsyNumber</a></span>(b4,<span class="st">'Date.x'</span>,<span class="st">'HospitalNumber'</span>,
+                                      <span class="st">'Endoscopist'</span>)</code></pre></div>
+<p><br></p>
+<div class="figure">
+<img src="Barretts_Shortfall.png" alt="Figure 12: Barretts quality of biopsying function" width="600"><p class="caption">Figure 12: Barretts quality of biopsying function</p>
+</div>
+<p><br></p>
+<p><br></p>
+<p>This function will again return a list with a ggplot showing the shortfall per endoscopist as well as a table with the same values</p>
+</div>
+<div id="quality-of-perfomance-of-barretts-surveillance-endoscopies" class="section level3">
+<h3 class="hasAnchor">
+<a href="#quality-of-perfomance-of-barretts-surveillance-endoscopies" class="anchor"></a>Quality of perfomance of Barrett’s surveillance endoscopies</h3>
+<p>As we discovered with some of the generic functions above, one way to determine quality of endoscopy is to assess the pathology of specimens taken at surveillance per year. This function outputs a plot which determines the the overall number of pathologies (low/high grade dysplasia and cancer) for patients on surveillance.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,v,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
+b1&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Prague.html">BarrettsDataAccord_Prague</a></span>(v,<span class="st">'Findings'</span>)
+b2&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">BarrettsDataAccord_PathStage</a></span>(b1,<span class="st">'Histology'</span>)
+b3&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Event.html">BarrettsDataAccord_Event</a></span>(b2,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
+b4&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">BarrettsDataAccord_FUGroup</a></span>(b3,<span class="st">'Findings'</span>)
+<span class="kw">colnames</span>(b4)[<span class="kw">colnames</span>(b4) ==<span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
+<span class="kw"><a href="../reference/BarrettsSurveillance_PathDetection.html">BarrettsSurveillance_PathDetection</a></span>(b4,<span class="st">'Myplot'</span>)</code></pre></div>
+<p><br></p>
+<div class="figure">
+<img src="BarrettsEMR_By_Pathology.svg" alt="Figure 13: EMR by pathology grade" width="600"><p class="caption">Figure 13: EMR by pathology grade</p>
+</div>
+<p><br></p>
+<p>This function provides a plot with absolute numbers of pathology detected. This of course doesn’t tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist. The output is provided as a table of proportions per endoscopist</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,v,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
+b1&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Prague.html">BarrettsDataAccord_Prague</a></span>(v,<span class="st">'Findings'</span>)
+b2&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_PathStage.html">BarrettsDataAccord_PathStage</a></span>(b1,<span class="st">'Histology'</span>)
+b3&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_Event.html">BarrettsDataAccord_Event</a></span>(b2,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
+b4&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">BarrettsDataAccord_FUGroup</a></span>(b3,<span class="st">'Findings'</span>)
+<span class="kw">colnames</span>(b4)[<span class="kw">colnames</span>(b4) ==<span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
+<span class="kw"><a href="../reference/BarrettsSurveillanceDDR.html">BarrettsSurveillanceDDR</a></span>(b4,<span class="st">'Endoscopist'</span>,<span class="st">'IMorNoIM'</span>)</code></pre></div>
 </div>
 </div>
 </div>
@@ -137,6 +248,9 @@ b3&lt;-<span class="kw"><a href="../reference/BarrettsDataAccord_FUGroup.html">B
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#application-to-specific-disease-entities--barretts-oesophagus">Application to specific disease entities- Barrett’s oesophagus</a></li>
+      <li><a href="#pre-processing-barretts-samples">Pre-processing Barrett’s samples</a></li>
+      <li><a href="#assessment-of-barretts-therapeutics">Assessment of Barrett’s therapeutics</a></li>
+      <li><a href="#quality-assessment-in-barretts-surveillance">Quality assessment in Barrett’s surveillance</a></li>
       </ul>
 </div>
       </div>

@@ -5,6 +5,7 @@ date: "12/22/2017"
 output:
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 5
 ---
 
 ```{r setup, include=FALSE}
