@@ -4,19 +4,19 @@
 \alias{BarrettsDataAccord_PathStage}
 \title{Worst pathological stage Barrett's}
 \usage{
-BarrettsDataAccord_PathStage(x, y)
+BarrettsDataAccord_PathStage(dataframe, PathColumn)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{PathColumn}{column of interest}
 }
 \description{
 This extracts the pathological stage from the histopathology specimen. It is
 done using 'degradation' so that it will look for the worst overall grade
 in the histology specimen and if not found it will look for the next worst
 and so on. It looks per report not per biopsy (it is more common
-for histopathology reports tocontain the worst overall grade
+for histopathology reports to contain the worst overall grade
 rather than individual biopsy grades).
 Specfically it extracts the histopathology worst grade
 Being the procedure done at the time and the follow-up timings

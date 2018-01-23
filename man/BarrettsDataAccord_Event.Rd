@@ -4,18 +4,19 @@
 \alias{BarrettsDataAccord_Event}
 \title{Therapeutic subtypes}
 \usage{
-BarrettsDataAccord_Event(x, y, z, aa, bb)
+BarrettsDataAccord_Event(dataframe, HistolReportColumn, ProcPerformedColumn,
+  EndoReportColumn, EndoFindingsColumn)
 }
 \arguments{
-\item{x}{the dataframe}
+\item{dataframe}{the dataframe}
 
-\item{y}{The histology main text}
+\item{HistolReportColumn}{The histology main text}
 
-\item{z}{The Procedure Performed column}
+\item{ProcPerformedColumn}{The Procedure Performed column}
 
-\item{aa}{The endoscopic diagnosis column}
+\item{EndoReportColumn}{The endoscopic diagnosis column}
 
-\item{bb}{The endoscopic findings column if different to the Diagnosis column}
+\item{EndoFindingsColumn}{The endoscopic findings column if different to the Diagnosis column}
 }
 \description{
 This function extracts the Event- usually a therapeutic event, from the text

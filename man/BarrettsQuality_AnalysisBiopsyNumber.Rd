@@ -4,11 +4,11 @@
 \alias{BarrettsQuality_AnalysisBiopsyNumber}
 \title{Barrett's number of biopsies}
 \usage{
-BarrettsQuality_AnalysisBiopsyNumber(x, Endo_ResultPerformed, PatientID,
+BarrettsQuality_AnalysisBiopsyNumber(dataframe, Endo_ResultPerformed, PatientID,
   Endoscopist)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{Endo_ResultPerformed}{Date of the Endocscopy}
 

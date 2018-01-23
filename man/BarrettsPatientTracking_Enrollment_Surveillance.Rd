@@ -4,11 +4,11 @@
 \alias{BarrettsPatientTracking_Enrollment_Surveillance}
 \title{How many Barrett's patients had surveillance}
 \usage{
-BarrettsPatientTracking_Enrollment_Surveillance(x, PatientID,
+BarrettsPatientTracking_Enrollment_Surveillance(dataframe, PatientID,
   Endo_ResultPerformed, IndicationsFroExamination)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{PatientID}{column of interest with unique hospital number in it}
 

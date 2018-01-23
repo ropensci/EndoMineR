@@ -4,10 +4,10 @@
 \alias{SurveillanceTimeByRow}
 \title{Extract the time difference between each test in days}
 \usage{
-SurveillanceTimeByRow(x, HospNum_Id, Endo_ResultPerformed)
+SurveillanceTimeByRow(dataframe, HospNum_Id, Endo_ResultPerformed)
 }
 \arguments{
-\item{x}{dataframe,}
+\item{dataframe}{dataframe,}
 
 \item{HospNum_Id}{Patient ID}
 

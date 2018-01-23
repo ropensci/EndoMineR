@@ -4,10 +4,10 @@
 \alias{BarrettsSurveillance_PathDetection}
 \title{Dysplasia detection on surveillance}
 \usage{
-BarrettsSurveillance_PathDetection(x, titlePlot)
+BarrettsSurveillance_PathDetection(dataframe, titlePlot)
 }
 \arguments{
-\item{x}{the dataframe}
+\item{dataframe}{the dataframe}
 
 \item{titlePlot}{The plot title}
 }

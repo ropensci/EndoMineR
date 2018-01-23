@@ -4,12 +4,12 @@
 \alias{SampleLocator}
 \title{Locate where samples are taken from}
 \usage{
-SampleLocator(x, y)
+SampleLocator(dataframe, SampleLocationColumn)
 }
 \arguments{
-\item{x}{The dataframe}
+\item{dataframe}{The dataframe}
 
-\item{y}{SampleLocation from the TermStandardizer}
+\item{SampleLocationColumn}{SampleLocation from the TermStandardizer}
 }
 \description{
 This assess where samples are taken from.

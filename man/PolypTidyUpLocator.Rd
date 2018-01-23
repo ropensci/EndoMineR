@@ -4,12 +4,12 @@
 \alias{PolypTidyUpLocator}
 \title{Clean the polyp location}
 \usage{
-PolypTidyUpLocator(x, SampleLocation)
+PolypTidyUpLocator(dataframe, SampleLocationColumn)
 }
 \arguments{
-\item{x}{The dataframe}
+\item{dataframe}{The dataframe}
 
-\item{SampleLocation}{The column containing the
+\item{SampleLocationColumn}{The column containing the
 SampleLocation from the Term Standardizer}
 }
 \description{

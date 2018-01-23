@@ -4,12 +4,12 @@
 \alias{EndoscChopperMeds}
 \title{Cleans medication column if present}
 \usage{
-EndoscChopperMeds(x, y)
+EndoscChopperMeds(dataframe, MedColumn)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{MedColumn}{column of interest}
 }
 \description{
 This cleans medication column from the report assuming such a column exists.

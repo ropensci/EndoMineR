@@ -4,12 +4,12 @@
 \alias{EndoscChopperInstrument}
 \title{Cleans instrument column if present}
 \usage{
-EndoscChopperInstrument(x, y)
+EndoscChopperInstrument(dataframe, InstrumentColumn)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{InstrumentColumn}{column of interest}
 }
 \description{
 This cleans Instument column from the report assuming such a column exists

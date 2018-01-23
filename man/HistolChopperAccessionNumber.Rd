@@ -4,14 +4,14 @@
 \alias{HistolChopperAccessionNumber}
 \title{Extract histological accession number}
 \usage{
-HistolChopperAccessionNumber(x, y, stra)
+HistolChopperAccessionNumber(dataframe, AccessionColumn, regString)
 }
 \arguments{
-\item{x}{the dataframe name and}
+\item{dataframe}{dataframe name and}
 
-\item{y}{the column name as a string.}
+\item{AccessionColumn}{the column name as a string.}
 
-\item{stra}{regular expression needed as a string}
+\item{regString}{regular expression needed as a string}
 }
 \description{
 This extracts Accession Number data data from the report where one is

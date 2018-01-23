@@ -4,12 +4,12 @@
 \alias{EndoscChopperIndications}
 \title{Cleans indications column if present}
 \usage{
-EndoscChopperIndications(x, y)
+EndoscChopperIndications(dataframe, IndicationColumn)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{IndicationColumn}{column of interest}
 }
 \description{
 This cleans the Indication from the report assuming such a column exists.

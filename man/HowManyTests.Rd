@@ -4,10 +4,10 @@
 \alias{HowManyTests}
 \title{Number of tests done per month and year by indication}
 \usage{
-HowManyTests(x, Indication, Endo_ResultPerformed, StringToSearch)
+HowManyTests(dataframe, Indication, Endo_ResultPerformed, StringToSearch)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{Indication}{Indication column}
 

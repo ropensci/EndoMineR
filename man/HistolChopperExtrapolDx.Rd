@@ -4,12 +4,12 @@
 \alias{HistolChopperExtrapolDx}
 \title{Extract specific diagnoses from the histology report}
 \usage{
-HistolChopperExtrapolDx(x, y)
+HistolChopperExtrapolDx(dataframe, Column)
 }
 \arguments{
-\item{x}{the dataframe containing histology results,}
+\item{dataframe}{dataframe containing histology results,}
 
-\item{y}{the column to extract dysplasia, cancer, and GIST from- often the
+\item{Column}{the column to extract dysplasia, cancer, and GIST from- often the
 Histology diagnosis column}
 }
 \description{

@@ -4,10 +4,10 @@
 \alias{SurveillanceLastTest}
 \title{Extract the last test done by a patient only}
 \usage{
-SurveillanceLastTest(x, HospNum_Id, Endo_ResultPerformed)
+SurveillanceLastTest(dataframe, HospNum_Id, Endo_ResultPerformed)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{HospNum_Id}{Patient ID}
 

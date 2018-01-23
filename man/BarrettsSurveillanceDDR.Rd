@@ -4,12 +4,12 @@
 \alias{BarrettsSurveillanceDDR}
 \title{Dysplasia detection rate on surveillance}
 \usage{
-BarrettsSurveillanceDDR(x, y, IMorNoIM)
+BarrettsSurveillanceDDR(dataframe, EndoscopistReportColumn, IMorNoIM)
 }
 \arguments{
-\item{x}{dataframe,}
+\item{dataframe}{dataframe,}
 
-\item{y}{column with the Endoscopist names}
+\item{EndoscopistReportColumn}{column with the Endoscopist names}
 
 \item{IMorNoIM}{extracted with the function BarrettsDataAccord_PathStage()}
 }

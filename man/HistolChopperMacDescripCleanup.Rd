@@ -4,12 +4,12 @@
 \alias{HistolChopperMacDescripCleanup}
 \title{Clean up histological macroscopic description data}
 \usage{
-HistolChopperMacDescripCleanup(x, y)
+HistolChopperMacDescripCleanup(dataframe, MacroColumn)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest that describes the macroscopic specimen}
+\item{MacroColumn}{column of interest that describes the macroscopic specimen}
 }
 \description{
 This extracts Macroscopic description data from the pathology report.

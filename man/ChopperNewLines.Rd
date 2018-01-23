@@ -4,12 +4,12 @@
 \alias{ChopperNewLines}
 \title{Cleans endoscopy reports and splits sentences into new lines}
 \usage{
-ChopperNewLines(x, y)
+ChopperNewLines(dataframe, EndoReportColumn)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
-\item{y}{The endoscopy report text column}
+\item{EndoReportColumn}{The endoscopy report text column}
 }
 \description{
 Cleans the long lines to separate them into new lines if necessary.

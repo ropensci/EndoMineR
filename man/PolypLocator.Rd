@@ -4,12 +4,12 @@
 \alias{PolypLocator}
 \title{Determine polyp location}
 \usage{
-PolypLocator(x, y)
+PolypLocator(dataframe, SampleLocationColumn)
 }
 \arguments{
-\item{x}{The dataframe}
+\item{dataframe}{The dataframe}
 
-\item{y}{The column containing the SampleLocation from the
+\item{SampleLocationColumn}{The column containing the SampleLocation from the
 TermStandardLocation}
 }
 \description{

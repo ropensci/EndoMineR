@@ -4,10 +4,10 @@
 \alias{BarrettsBasicNumbers}
 \title{Barretts Basic Numbers}
 \usage{
-BarrettsBasicNumbers(x, Endo_ResultPerformed)
+BarrettsBasicNumbers(dataframe, Endo_ResultPerformed)
 }
 \arguments{
-\item{x}{the dataframe}
+\item{dataframe}{the dataframe}
 
 \item{Endo_ResultPerformed}{the date the endoscopy was performed}
 }

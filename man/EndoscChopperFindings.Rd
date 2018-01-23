@@ -4,12 +4,12 @@
 \alias{EndoscChopperFindings}
 \title{Cleans Procedure performed column if present}
 \usage{
-EndoscChopperFindings(x, y)
+EndoscChopperFindings(dataframe, FindingsColumn)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{FindingsColumn}{column of interest}
 }
 \description{
 This cleans the Findings column from the report assuming

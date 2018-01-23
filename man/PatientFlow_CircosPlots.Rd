@@ -4,10 +4,11 @@
 \alias{PatientFlow_CircosPlots}
 \title{Create a Circos plot for patient flow}
 \usage{
-PatientFlow_CircosPlots(x, Endo_ResultPerformed, HospNum_Id, ProcPerformed)
+PatientFlow_CircosPlots(dataframe, Endo_ResultPerformed, HospNum_Id,
+  ProcPerformed)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{Endo_ResultPerformed}{the column containing the date of the procedure}
 

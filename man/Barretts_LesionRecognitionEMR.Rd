@@ -4,14 +4,14 @@
 \alias{Barretts_LesionRecognitionEMR}
 \title{Paris vs histopath Barrett's}
 \usage{
-Barretts_LesionRecognitionEMR(EndoSubsetEMR, y, z)
+Barretts_LesionRecognitionEMR(EndoSubsetEMR, Column, Column2)
 }
 \arguments{
 \item{EndoSubsetEMR}{The dataframe}
 
-\item{y}{Endoscopy report field of interest}
+\item{Column}{Endoscopy report field of interest}
 
-\item{z}{Another endoscopy report field of interest}
+\item{Column2}{Another endoscopy report field of interest}
 }
 \description{
 This looks at the Paris grades of each EMR and then creates a heatmap

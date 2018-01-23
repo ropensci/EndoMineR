@@ -4,10 +4,10 @@
 \alias{SurveillanceCapacity}
 \title{Number of tests done per month}
 \usage{
-SurveillanceCapacity(x, Endo_ResultPerformed)
+SurveillanceCapacity(dataframe, Endo_ResultPerformed)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{Endo_ResultPerformed}{Column with the date the Endoscopy was performed}
 }

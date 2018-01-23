@@ -4,12 +4,13 @@
 \alias{SurveySankey}
 \title{Create a Sankey plot for patient flow}
 \usage{
-SurveySankey(dfw, y, PatientID)
+SurveySankey(dfw, ProcPerformedColumn, PatientID)
 }
 \arguments{
 \item{dfw}{the dataframe extracted using the standard cleanup scripts}
 
-\item{y}{the column containing the test like ProcPerformed for example}
+\item{ProcPerformedColumn}{the column containing the test like P
+rocPerformed for example}
 
 \item{PatientID}{the column containing the patients unique identifier
 eg hostpital number}

@@ -4,12 +4,12 @@
 \alias{HistolChopperDx}
 \title{Extracts histological diagnosis}
 \usage{
-HistolChopperDx(x, y)
+HistolChopperDx(dataframe, HistolColumn)
 }
 \arguments{
-\item{x}{the dataframe}
+\item{dataframe}{dataframe}
 
-\item{y}{column containing the Hisopathology report}
+\item{HistolColumn}{column containing the Hisopathology report}
 }
 \description{
 This extracts Diagnosis data from the report. The Diagnosis is the overall

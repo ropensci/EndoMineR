@@ -4,10 +4,10 @@
 \alias{Barretts_CRIM}
 \title{CRIM status Barrett's}
 \usage{
-Barretts_CRIM(x, HospNum, EVENT)
+Barretts_CRIM(dataframe, HospNum, EVENT)
 }
 \arguments{
-\item{x}{The dataframe}
+\item{dataframe}{The dataframe}
 
 \item{HospNum}{The Hospital Number column}
 

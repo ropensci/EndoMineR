@@ -4,12 +4,12 @@
 \alias{HistolChopperHistol}
 \title{Extract the histology data from the report by removing negative findings}
 \usage{
-HistolChopperHistol(x, y)
+HistolChopperHistol(dataframe, HistolColumn)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{HistolColumn}{column of interest}
 }
 \description{
 This extracts Histology details data from the report. The Histology details

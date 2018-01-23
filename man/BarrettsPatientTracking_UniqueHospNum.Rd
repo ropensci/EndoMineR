@@ -4,10 +4,10 @@
 \alias{BarrettsPatientTracking_UniqueHospNum}
 \title{Unique Hospital Numbers of Barrett's patients}
 \usage{
-BarrettsPatientTracking_UniqueHospNum(x, rule, PatientID)
+BarrettsPatientTracking_UniqueHospNum(dataframe, rule, PatientID)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
 \item{rule}{Rule of interest}
 

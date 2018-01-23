@@ -4,14 +4,14 @@
 \alias{HistolChopperNumbOfBx}
 \title{Extract the number of biopsies taken from histology report}
 \usage{
-HistolChopperNumbOfBx(x, y, z)
+HistolChopperNumbOfBx(dataframe, MacroColumn, regString)
 }
 \arguments{
-\item{x}{the dataframe}
+\item{dataframe}{the dataframe}
 
-\item{y}{Column containing the Macroscopic description text}
+\item{MacroColumn}{Column containing the Macroscopic description text}
 
-\item{z}{The keyword to remove and to stop at in the regex}
+\item{regString}{The keyword to remove and to stop at in the regex}
 }
 \description{
 This extracts the number of biopsies taken from the pathology report.

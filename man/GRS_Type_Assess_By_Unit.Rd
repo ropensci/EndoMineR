@@ -4,10 +4,10 @@
 \alias{GRS_Type_Assess_By_Unit}
 \title{Create GRS metrics by endoscopist (X-ref with pathology)}
 \usage{
-GRS_Type_Assess_By_Unit(x, ProcPerformed, Endo_Endoscopist, Dx, Histol)
+GRS_Type_Assess_By_Unit(dataframe, ProcPerformed, Endo_Endoscopist, Dx, Histol)
 }
 \arguments{
-\item{x}{The dataframe}
+\item{dataframe}{The dataframe}
 
 \item{ProcPerformed}{The column containing the Procedure type performed}
 
@@ -32,27 +32,18 @@ MypathColon<-PathDataFrameFinalColon
 MyendoColon <- ColonFinal
 MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
 MyendoColon$OGDReportWhole)
-EndoscTree <-
-  list("Hospital Number:","Patient Name:","General Practitioner:",
+EndoscTree <-c("Hospital Number:","Patient Name:","General Practitioner:",
        "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
        "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
        "Findings:","Endoscopic Diagnosis:")
-for (i in 1:(length(EndoscTree) - 1)) {
-  MyendoColon <-
-    Extractor(MyendoColon,"OGDReportWhole",  as.character(EndoscTree[i]),
-              as.character(EndoscTree[i + 1]),as.character(EndoscTree[i])
-    )}
-Histoltree <-
-  list(
+MyendoColon<-Extractor(MyendoColon,"OGDReportWhole",EndoscTree)
+Histoltree <-c(
     "Hospital Number:","Patient Name:","General Practitioner:",
     "Date received:","Clinical Details","Nature of specimen","Histology",
-    "Diagnosis","")
-for (i in 1:(length(Histoltree) - 1)) {
-MypathColon <-Extractor(MypathColon,"PathReportWhole",
-                          as.character(Histoltree[i]),
-                          as.character(Histoltree[i + 1]),
-                          gsub(" ", "", as.character(Histoltree[i]))
-  )}
+    "Diagnosis")
+
+MypathColon <-Extractor(MypathColon,"PathReportWhole",Histoltree)
+                          
 names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
 MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",

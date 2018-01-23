@@ -4,10 +4,10 @@
 \alias{SurveillanceLastToNow}
 \title{Extract the last test done by a patient in days and how long ago}
 \usage{
-SurveillanceLastToNow(x, HospNum_Id, Endo_ResultPerformed)
+SurveillanceLastToNow(dataframe, HospNum_Id, Endo_ResultPerformed)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{HospNum_Id}{Patient ID}
 

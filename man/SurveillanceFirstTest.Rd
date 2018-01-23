@@ -4,10 +4,10 @@
 \alias{SurveillanceFirstTest}
 \title{Extracts the first test only per patient}
 \usage{
-SurveillanceFirstTest(x, HospNum_Id, Endo_ResultPerformed)
+SurveillanceFirstTest(dataframe, HospNum_Id, Endo_ResultPerformed)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{HospNum_Id}{Patient ID}
 

@@ -4,12 +4,12 @@
 \alias{NegativeRemove}
 \title{Removes negative and normal sentences}
 \usage{
-NegativeRemove(x, y)
+NegativeRemove(dataframe, Column)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{Column}{column of interest}
 }
 \description{
 Extraction of the Negative sentences so that normal findings can be

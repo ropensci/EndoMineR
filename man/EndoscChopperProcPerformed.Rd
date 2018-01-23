@@ -4,12 +4,12 @@
 \alias{EndoscChopperProcPerformed}
 \title{Cleans Procedure performed column if present}
 \usage{
-EndoscChopperProcPerformed(x, y)
+EndoscChopperProcPerformed(dataframe, ProcPerformed)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{ProcPerformed}{column of interest}
 }
 \description{
 This cleans the Procedure Performed column from the report assuming

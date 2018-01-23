@@ -4,14 +4,14 @@
 \alias{BarrettsTherapeuticsRFA_ByCatheter}
 \title{RFA catheter use}
 \usage{
-BarrettsTherapeuticsRFA_ByCatheter(EndoSubsetRFA, y, z)
+BarrettsTherapeuticsRFA_ByCatheter(EndoSubsetRFA, Column, Column2)
 }
 \arguments{
 \item{EndoSubsetRFA}{The dataframe}
 
-\item{y}{report field of interest}
+\item{Column}{report field of interest}
 
-\item{z}{Another endoscopy report field of interest}
+\item{Column2}{Another endoscopy report field of interest}
 }
 \description{
 This looks at the basic numbers of RFA by catheter type used.

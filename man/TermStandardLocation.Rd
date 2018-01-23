@@ -4,10 +4,10 @@
 \alias{TermStandardLocation}
 \title{Standardise location of biopsies or tissue samples}
 \usage{
-TermStandardLocation(x, SampleLocation)
+TermStandardLocation(dataframe, SampleLocation)
 }
 \arguments{
-\item{x}{The dataframe}
+\item{dataframe}{The dataframe}
 
 \item{SampleLocation}{Column describing the Macroscopic sample from histology}
 }

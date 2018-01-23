@@ -4,12 +4,12 @@
 \alias{BarrettsDataAccord_Prague}
 \title{Prague score extraction}
 \usage{
-BarrettsDataAccord_Prague(x, y)
+BarrettsDataAccord_Prague(dataframe, EndoReportColumn)
 }
 \arguments{
-\item{x}{dataframe with column of interest}
+\item{dataframe}{dataframe with column of interest}
 
-\item{y}{column of interest}
+\item{EndoReportColumn}{column of interest}
 }
 \description{
 The aim is to extract a C and M stage (Prague score) for Barrett's samples.

@@ -4,13 +4,13 @@
 \alias{BarrettsDataAccord_FUGroup}
 \title{Follow up group determination}
 \usage{
-BarrettsDataAccord_FUGroup(x, y)
+BarrettsDataAccord_FUGroup(dataframe, EndoReportColumn)
 }
 \arguments{
-\item{x}{the dataframe(which has to have been processed by the
+\item{dataframe}{the dataframe(which has to have been processed by the
 BarrettsDataAccord_PathStage function first to get IMorNoIM),}
 
-\item{y}{The field to search (endoscopic findings)}
+\item{EndoReportColumn}{The field to search (endoscopic findings)}
 }
 \description{
 This determines the follow up rule a patient should fit in to (according to

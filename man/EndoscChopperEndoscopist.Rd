@@ -4,12 +4,12 @@
 \alias{EndoscChopperEndoscopist}
 \title{Cleans endoscopist column if present}
 \usage{
-EndoscChopperEndoscopist(x, y)
+EndoscChopperEndoscopist(dataframe, EndoReportColumn)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
-\item{y}{The endoscopy text column}
+\item{EndoReportColumn}{The endoscopy text column}
 }
 \description{
 If an endoscopist column is part of the dataset once the extractor

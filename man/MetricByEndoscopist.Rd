@@ -4,14 +4,14 @@
 \alias{MetricByEndoscopist}
 \title{Plot a metric by endoscopist}
 \usage{
-MetricByEndoscopist(x, y, z)
+MetricByEndoscopist(dataframe, Column, EndoscopistColumn)
 }
 \arguments{
-\item{x}{The dataframe}
+\item{dataframe}{The dataframe}
 
-\item{y}{The column (numeric data) of interest}
+\item{Column}{The column (numeric data) of interest}
 
-\item{z}{The endoscopist column}
+\item{EndoscopistColumn}{The endoscopist column}
 }
 \description{
 This takes any numerical metric in the dataset and plots it by endoscopist.

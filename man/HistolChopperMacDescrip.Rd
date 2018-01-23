@@ -4,12 +4,12 @@
 \alias{HistolChopperMacDescrip}
 \title{Cleans spelt numbers in histology report}
 \usage{
-HistolChopperMacDescrip(x, y)
+HistolChopperMacDescrip(dataframe, MacroColumn)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
-\item{y}{column to extract the numbers from. Usually the column
+\item{MacroColumn}{column to extract the numbers from. Usually the column
 with the Nature of the specimen or the Macroscopic description in it}
 }
 \description{

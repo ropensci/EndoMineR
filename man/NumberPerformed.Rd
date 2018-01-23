@@ -4,14 +4,14 @@
 \alias{NumberPerformed}
 \title{Determine overall number of procedures performed}
 \usage{
-NumberPerformed(x, y, z)
+NumberPerformed(dataframe, EndoscopistColumn, IndicationColumn)
 }
 \arguments{
-\item{x}{The dataframe}
+\item{dataframe}{The dataframe}
 
-\item{y}{The column containing the Endoscopists names}
+\item{EndoscopistColumn}{The column containing the Endoscopists names}
 
-\item{z}{The column containing the Indication for the examination}
+\item{IndicationColumn}{The column containing the Indication for the examination}
 }
 \description{
 Determines the number of endoscopies done by an endoscopist

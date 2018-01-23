@@ -4,10 +4,10 @@
 \alias{BarrettsQuality_AnalysisDocumentation}
 \title{Analysis of Barrett's Documentation Quality}
 \usage{
-BarrettsQuality_AnalysisDocumentation(x, Findings)
+BarrettsQuality_AnalysisDocumentation(dataframe, Findings)
 }
 \arguments{
-\item{x}{dataframe}
+\item{dataframe}{dataframe}
 
 \item{Findings}{column of interest- usually the main body of the
 endoscopic report}

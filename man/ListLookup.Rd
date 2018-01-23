@@ -4,12 +4,12 @@
 \alias{ListLookup}
 \title{Extract from report, using words from a list}
 \usage{
-ListLookup(theframe, y, myNotableWords)
+ListLookup(theframe, EndoReportColumn, myNotableWords)
 }
 \arguments{
 \item{theframe}{the dataframe,}
 
-\item{y}{the column of interest,}
+\item{EndoReportColumn}{the column of interest,}
 
 \item{myNotableWords}{list of words you are interested in}
 }

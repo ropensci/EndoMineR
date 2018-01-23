@@ -4,12 +4,12 @@
 \alias{HistolChopperBxSize}
 \title{Determine the largest biopsy size from the histology report}
 \usage{
-HistolChopperBxSize(x, y)
+HistolChopperBxSize(dataframe, MacroColumn)
 }
 \arguments{
-\item{x}{the dataframe}
+\item{dataframe}{dataframe}
 
-\item{y}{Macdescrip}
+\item{MacroColumn}{Macdescrip}
 }
 \description{
 This extracts the biopsy size from the report. If there are multiple
