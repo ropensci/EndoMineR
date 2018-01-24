@@ -580,22 +580,24 @@ HistolChopperAll <- function(dataframe, MacroColumn) {
   
   if("Histology" %in% colnames(dataframe)){
     dataframe<-EndoscChopperMeds(dataframe,'Histology')
+    dataframe<-HistolChopperAccessionNumber(dataframe,'Histology')
+    
     print("Meds")
   }
   
-  if("Instruments" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperInstrument(dataframe,'Instruments')
+  if("Macroscopicdescription" %in% colnames(dataframe)){
+    dataframe<-EndoscChopperInstrument(dataframe,'Macroscopicdescription')
+    dataframe<-HistolChopperMacDescrip(dataframe,'Macroscopicdescription')
+    dataframe<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription',
+                                     'specimen')
+    dataframe<- HistolChopperBxSize(Mypath,'Macroscopicdescription')
   }
-  
-  if("Indications" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperIndications(dataframe,'Indications')
+   
+  if("Diagnosis" %in% colnames(dataframe)){
+    dataframe<-HistolChopperDx(dataframe,'Diagnosis')
+    dataframe<-HistolChopperExtrapolDx(dataframe,'Diagnosis')
   }
-  if("Procedure Performed" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperProcPerformed(dataframe,'ProcedurePerformed')
-  }
-  if("Findings" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperFindings(dataframe,'Findings')
-  }
+   
   return(dataframe)
 }
 
@@ -722,6 +724,7 @@ HistolChopperDx <- function(dataframe, HistolColumn) {
   
 }
 
+
 #' Extract specific diagnoses from the histology report
 #'
 #' This extracts other specific diagnoses from the report. These have been hard
@@ -764,6 +767,7 @@ HistolChopperExtrapolDx <- function(dataframe, Column) {
 #' @importFrom stringr str_replace
 #' @export
 #' @examples t<-HistolChopperMacDescrip(Mypath, 'Macroscopicdescription')
+
 
 HistolChopperMacDescrip <- function(dataframe, MacroColumn) {
   x <- data.frame(dataframe)
