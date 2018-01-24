@@ -102,51 +102,35 @@ Extractor <- function(dataframeIn, Column, delim) {
   dataframeIn <- data.frame(dataframeIn)
   dataframeIn<-dataframeIn %>% tidyr::separate(!!Column, into = c("added_name",delim), 
                                           sep = paste(delim, collapse = "|"))
-  
-  #Devise function that splits each column into sentences using NLP or other 
-  #tokenizer non java
-  names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
+    names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("\\\\.*", "", x))
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("       ", "", x))
+  
   #Convert back to a dataframe as has been converted to a matrix
   dataframeIn<-data.frame(dataframeIn)
-  #dataframeIn <- apply(dataframeIn, 1, function(x) print(names(x)))
+  dataframeIn<-dataframeIn[,-1]
   dataframeIn<-lapply(dataframeIn, ColumnCleanUpAll)
+  names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=T)
   return(dataframeIn)
 }
 
-
-
 #' Extracts the columns from the raw report
 #'
-#' This is the main extractor for the Endoscopy and Histology report.
-#' This depends on the user creating a list of words or characters that
-#' act as the words that should be split against. The list is then fed to the
-#' Extractor in a loop so that it acts as the beginning and the end of the
-#' regex used to split the text. Whatever has been specified in the list
-#' is used as a column header. Column headers don't tolerate special characters
-#' like : or ? and / and don't allow numbers as the start character so these
-#' have to be dealt with in the text before processing
-#'
+#' This is the parent cleaning function for the endoscopy report. It contains
+#' all the other functions for the endoscopy report to be cleaned up. It
+#' relies on the columns being named in a standardised way as below
+dataframe
 #' @param dataframeIn the dataframe
-#' @param Column the column to extract from
-#' @param delim the vector of words that will be used as the boundaries to
-#' extract against
-#' @importFrom stringr str_extract
-#' @importFrom tidyr separate
-#' @importFrom rlang sym
 #' @keywords Extraction
 #' @export
 #' @examples
-#' # As column names cant start with a number, one of the dividing
-#' # words has to be converted
-#' # A list of dividing words (which will also act as column names)
-#' # is then constructed
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
+#' # Rename the columns in whatever endoscopy dataframe you have
+#' names(Myendo)<-c("OGDReportWhole","HospitalNumber","PatientName",
+#' "GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist"
+#' "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed"
+#' "Findings" )
+#' #Now use the function
 #' Myendo<-EndoscChopperAll(Myendo)
-#' res<-Myendo
 
 
 EndoscChopperAll<- function(dataframe) {
@@ -551,8 +535,8 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples pp<-c("The rain in spain falls mainly",".\n",":What")
-#' me<-ColumnCleanUp(pp)
+#' @examples Myendo<-lapply(Myendo, ColumnCleanUpAll)
+#' 
 
 ColumnCleanUpAll <- function(x) {
   # dataframe <- (data.frame(dataframe))
@@ -569,51 +553,80 @@ ColumnCleanUpAll <- function(x) {
 
 ####### Histology Clean Up All functions #######
 
-#' Clean up histological data. Parent function for all the histological
-#' cleaning functions
-#'
-#' This extracts data from full text histoogy reports and cleans it using all 
-#' the histology functions in the package. It is a timesaving function
-#' rather than needing to use all the functions one by one.
-#' @param dataframe dataframe with column of interest
-#' @param MacroColumn column of interest that describes the macroscopic specimen
-#' @keywords Macroscopic
-#' @export
-#' @importFrom stringr str_replace
-#' @examples v<-HistolChopperMacDescripCleanup(Mypath,'Macroscopicdescription')
 
-
-HistolChopperMacDescripCleanup <- function(dataframe, MacroColumn) {
-  dataframe <- data.frame(dataframe)
-  # Column specific cleanup
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Dd]ictated by.*", "")
-  return(dataframe)
-}
 
 
 
 ####### Histology Clean Up functions #######
 
-#' Clean up histological macroscopic description data
+
+#' Clean up all Histology data
 #'
-#' This extracts Macroscopic description data from the pathology report.
-#' Macroscopic description usually relates to the number of specimens
-#' retrieved, the size of each specimen and the location it was taken from.
-#' The cleanup usually relates to the removal of top and tail characters such
-#' as who reported the specimens etc.
+#' This is a parent function for all the functions below
 #' @param dataframe dataframe with column of interest
-#' @param MacroColumn column of interest that describes the macroscopic specimen
 #' @keywords Macroscopic
 #' @export
 #' @importFrom stringr str_replace
-#' @examples v<-HistolChopperMacDescripCleanup(Mypath,'Macroscopicdescription')
+#' @examples names(Mypath)<-c("HospitalNumber","PatientName","DOB",
+#' "GeneralPractitioner","Datereceived","ClinicalDetails",
+#' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
+#' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
+#' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
+#' v<-HistolChopperAll(Mypath)
 
 
-HistolChopperMacDescripCleanup <- function(dataframe, MacroColumn) {
+
+HistolChopperAll <- function(dataframe, MacroColumn) {
+  
+  if("Histology" %in% colnames(dataframe)){
+    dataframe<-EndoscChopperMeds(dataframe,'Histology')
+    print("Meds")
+  }
+  
+  if("Instruments" %in% colnames(dataframe)){
+    dataframe<-EndoscChopperInstrument(dataframe,'Instruments')
+  }
+  
+  if("Indications" %in% colnames(dataframe)){
+    dataframe<-EndoscChopperIndications(dataframe,'Indications')
+  }
+  if("Procedure Performed" %in% colnames(dataframe)){
+    dataframe<-EndoscChopperProcPerformed(dataframe,'ProcedurePerformed')
+  }
+  if("Findings" %in% colnames(dataframe)){
+    dataframe<-EndoscChopperFindings(dataframe,'Findings')
+  }
+  return(dataframe)
+}
+
+
+#' Clean up histological macroscopic description data
+#'
+#' This is the parent cleaning function for the histology report. It contains
+#' all the other functions for the histology report to be cleaned up. It
+#' relies on the columns being named in a standardised way as below:
+#' @param dataframe dataframe with column of interest
+#' @keywords Histology
+#' @export
+#' @examples  names(Mypath)<-c("HospitalNumber","PatientName","DOB",
+#' "GeneralPractitioner","Datereceived","ClinicalDetails",
+#' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
+#' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
+#' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
+
+
+
+HistolChopperMacDescripCleanup <- function(dataframe,MacroColumn) {
+ 
+  
   dataframe <- data.frame(dataframe)
   # Column specific cleanup
   dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Dd]ictated by.*", "")
   return(dataframe)
+  
+  
+  
+  
 }
 
 
