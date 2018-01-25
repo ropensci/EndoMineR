@@ -19,7 +19,7 @@ or as a way of providing a 'positive diagnosis only' type output (see
 HistolChopperDx)
 }
 \examples{
-pp<-c("The rain in spain falls mainly",".\\n",":What")
-me<-ColumnCleanUp(pp)
+Myendo<-lapply(Myendo, ColumnCleanUpAll)
+
 }
 \keyword{Cleaner}

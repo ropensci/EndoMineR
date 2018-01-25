@@ -119,7 +119,7 @@ Extractor <- function(dataframeIn, Column, delim) {
 #' This is the parent cleaning function for the endoscopy report. It contains
 #' all the other functions for the endoscopy report to be cleaned up. It
 #' relies on the columns being named in a standardised way as below
-dataframe
+
 #' @param dataframeIn the dataframe
 #' @keywords Extraction
 #' @export

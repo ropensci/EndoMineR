@@ -8,17 +8,17 @@ HistolChopperMacDescripCleanup(dataframe, MacroColumn)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}
-
-\item{MacroColumn}{column of interest that describes the macroscopic specimen}
 }
 \description{
-This extracts Macroscopic description data from the pathology report.
-Macroscopic description usually relates to the number of specimens
-retrieved, the size of each specimen and the location it was taken from.
-The cleanup usually relates to the removal of top and tail characters such
-as who reported the specimens etc.
+This is the parent cleaning function for the histology report. It contains
+all the other functions for the histology report to be cleaned up. It
+relies on the columns being named in a standardised way as below:
 }
 \examples{
-v<-HistolChopperMacDescripCleanup(Mypath,'Macroscopicdescription')
+ names(Mypath)<-c("HospitalNumber","PatientName","DOB",
+"GeneralPractitioner","Datereceived","ClinicalDetails",
+"Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
+"PatientName","DOB","GeneralPractitioner","Dateofprocedure",
+"ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
 }
-\keyword{Macroscopic}
+\keyword{Histology}
