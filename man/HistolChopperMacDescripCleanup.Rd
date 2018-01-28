@@ -8,6 +8,8 @@ HistolChopperMacDescripCleanup(dataframe, MacroColumn)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}
+
+\item{MacroColumn}{the dataframe column with the Macroscopic description text}
 }
 \description{
 This is the parent cleaning function for the histology report. It contains

@@ -7,7 +7,7 @@
 EndoscChopperAll(dataframe)
 }
 \arguments{
-\item{dataframeIn}{the dataframe}
+\item{dataframe}{the dataframe}
 }
 \description{
 This is the parent cleaning function for the endoscopy report. It contains
@@ -17,8 +17,8 @@ relies on the columns being named in a standardised way as below
 \examples{
 # Rename the columns in whatever endoscopy dataframe you have
 names(Myendo)<-c("OGDReportWhole","HospitalNumber","PatientName",
-"GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist"
-"Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed"
+"GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist",
+"Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
 "Findings" )
 #Now use the function
 Myendo<-EndoscChopperAll(Myendo)

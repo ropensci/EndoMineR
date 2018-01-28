@@ -4,7 +4,7 @@
 \alias{HistolChopperAll}
 \title{Clean up all Histology data}
 \usage{
-HistolChopperAll(dataframe, MacroColumn)
+HistolChopperAll(dataframe)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}

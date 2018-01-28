@@ -32,7 +32,9 @@ if (getRversion() >= "2.15.1")
       "read.table",
       "region",
       "rgb",
-      "setDT"
+      "setDT",
+      "Myendo",
+      "Mypath"
     )
   )
 
@@ -120,14 +122,14 @@ Extractor <- function(dataframeIn, Column, delim) {
 #' all the other functions for the endoscopy report to be cleaned up. It
 #' relies on the columns being named in a standardised way as below
 
-#' @param dataframeIn the dataframe
+#' @param dataframe the dataframe
 #' @keywords Extraction
 #' @export
 #' @examples
 #' # Rename the columns in whatever endoscopy dataframe you have
 #' names(Myendo)<-c("OGDReportWhole","HospitalNumber","PatientName",
-#' "GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist"
-#' "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed"
+#' "GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist",
+#' "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
 #' "Findings" )
 #' #Now use the function
 #' Myendo<-EndoscChopperAll(Myendo)
@@ -474,20 +476,7 @@ NegativeRemove <- function(dataframe, Column) {
   return(dataframe)
 }
 
-#' Cleans up the endoscopy columns 
-#'
-#' This function runs all of the cleaning subfunctions rather than needing to 
-#' run them individually
-#' @param dataframe dataframe with column of interest
-#' @param Column column of interest
-#' @keywords Clean
-#' @export
-#' @importFrom stringr str_replace
-#' @examples v<-EndoClean(Myendo,Findings='Findings2')
 
-EndoClean <- function(dataframe, ...) {
-  print(dataframe$Findings)
-}
 
 #' Tidies up messy columns
 #'
@@ -503,8 +492,8 @@ EndoClean <- function(dataframe, ...) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples pp<-c("The rain in spain falls mainly",".\n",":What")
-#' me<-ColumnCleanUp(pp)
+#' @examples me<-ColumnCleanUp(Myendo,"OGDReportWhole")
+#' 
 
 ColumnCleanUp <- function(dataframe, Column) {
  # dataframe <- (data.frame(dataframe))
@@ -538,16 +527,16 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' @examples Myendo<-lapply(Myendo, ColumnCleanUpAll)
 #' 
 
-ColumnCleanUpAll <- function(x) {
+ColumnCleanUpAll <- function(dataframe) {
   # dataframe <- (data.frame(dataframe))
-  x <- str_replace(x,"^\\.\n", "")
-  x <- str_replace(x,"^:", "")
-  x <- gsub(".", "\n", x, fixed = TRUE)
-  x <- str_replace(x,"\\s{5}", "")
-  x <- str_replace(x,"^\\.", "")
+  dataframe <- str_replace(dataframe,"^\\.\n", "")
+  dataframe <- str_replace(dataframe,"^:", "")
+  dataframe <- gsub(".", "\n", dataframe, fixed = TRUE)
+  dataframe <- str_replace(dataframe,"\\s{5}", "")
+  dataframe <- str_replace(dataframe,"^\\.", "")
   
-  x<- str_replace(x,"$\\.", "")
-  return(x)
+  dataframe<- str_replace(dataframe,"$\\.", "")
+  return(dataframe)
 }
 
 
@@ -576,7 +565,7 @@ ColumnCleanUpAll <- function(x) {
 
 
 
-HistolChopperAll <- function(dataframe, MacroColumn) {
+HistolChopperAll <- function(dataframe) {
   
   if("Histology" %in% colnames(dataframe)){
     dataframe<-EndoscChopperMeds(dataframe,'Histology')
@@ -608,6 +597,7 @@ HistolChopperAll <- function(dataframe, MacroColumn) {
 #' all the other functions for the histology report to be cleaned up. It
 #' relies on the columns being named in a standardised way as below:
 #' @param dataframe dataframe with column of interest
+#' @param MacroColumn the dataframe column with the Macroscopic description text
 #' @keywords Histology
 #' @export
 #' @examples  names(Mypath)<-c("HospitalNumber","PatientName","DOB",

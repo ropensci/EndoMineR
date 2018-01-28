@@ -4,7 +4,7 @@
 \alias{ColumnCleanUpAll}
 \title{Tidies up all columns}
 \usage{
-ColumnCleanUpAll(x)
+ColumnCleanUpAll(dataframe)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}
