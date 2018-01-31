@@ -38,8 +38,8 @@ EndoscTree <-c("Hospital Number:","Patient Name:","General Practitioner:",
        "Findings:","Endoscopic Diagnosis:")
 MyendoColon<-Extractor(MyendoColon,"OGDReportWhole",EndoscTree)
 Histoltree <-c(
-    "Hospital Number:","Patient Name:","General Practitioner:",
-    "Date received:","Clinical Details","Nature of specimen","Histology",
+    "Hospital Number:","Patient Name:","DOB:","General Practitioner:",
+    "Date received:","Clinical Details","Nature of specimen","Macroscopic description:","Histology",
     "Diagnosis")
 
 MypathColon <-Extractor(MypathColon,"PathReportWhole",Histoltree)
