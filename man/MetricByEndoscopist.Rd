@@ -21,7 +21,7 @@ It of course relies on a Endoscopist column being present
 #The function plots any numeric metric by endoscopist
 # and also gives a table with it. In this example we plot medication by
 # endoscopist
-Myendo<-EndoscChopperMeds(Myendo,'Medications')
+Myendo<-EndoscMeds(Myendo,'Medications')
 Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 rm(Myendo)
 }

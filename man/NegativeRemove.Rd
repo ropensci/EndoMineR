@@ -17,9 +17,9 @@ removed and not counted when searching for true diseases. eg remove
 No evidence of candidal infection so it doesn't get included if
 looking for candidal infections.
 It should be used after the Extractor and the optional
-ChopperNewLines has been used. It can be used as part of the other functions
+NewLines has been used. It can be used as part of the other functions
 or as a way of providing a 'positive diagnosis only' type output (see
-HistolChopperDx)
+HistolDx)
 }
 \examples{
 # Build a character vector and then

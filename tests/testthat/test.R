@@ -10,9 +10,7 @@ Myendo$OGDReportWhole <-
   gsub("2nd Endoscopist:",
        "Second endoscopist:",
        Myendo$OGDReportWhole)
-EndoscTree <-
-  list(
-    "Hospital Number:",
+mywords<-c("Hospital Number:",
     "Patient Name:",
     "General Practitioner:",
     "Date of procedure:",
@@ -26,23 +24,14 @@ EndoscTree <-
     "Findings:",
     "Endoscopic Diagnosis:"
   )
-for (i in 1:(length(EndoscTree) - 1)) {
-  Myendo <-
-    Extractor(
-      Myendo,
-      "OGDReportWhole",
-      as.character(EndoscTree[i]),
-      as.character(EndoscTree[i + 1]),
-      as.character(EndoscTree[i])
-    )
-}
-
+  Myendo <-Extractor(Myendo,"OGDReportWhole",mywords)
 
 mywords<-c("Hospital Number","Patient Name","DOB:","General Practitioner:",
            "Date of procedure:","Clinical Details:",
            "Macroscopic description:",
            "Histology:","Diagnosis:")
-           Extractor2(Mypath,PathReportWhole,mywords)
+rm(Mypath)
+           Extractor(Mypath,"PathReportWhole",mywords)
 names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 v <-
@@ -69,7 +58,7 @@ MyendoColon$OGDReportWhole <-
        "Second endoscopist:",
        MyendoColon$OGDReportWhole)
 EndoscTree <-
-  list(
+  c(
     "Hospital Number:",
     "Patient Name:",
     "General Practitioner:",
@@ -84,40 +73,17 @@ EndoscTree <-
     "Findings:",
     "Endoscopic Diagnosis:"
   )
-for (i in 1:(length(EndoscTree) - 1)) {
-  MyendoColon <-
-    Extractor(
-      MyendoColon,
-      "OGDReportWhole",
-      as.character(EndoscTree[i]),
-      as.character(EndoscTree[i + 1]),
-      as.character(EndoscTree[i])
-    )
-}
+
+MyendoColon <-Extractor(MyendoColon,"OGDReportWhole",EndoscTree)
 
 
-Histoltree <-
-  list(
-    "Hospital Number:",
-    "Patient Name:",
-    "General Practitioner:",
-    "Date received:",
-    "Clinical Details",
-    "Nature of specimen",
-    "Histology",
-    "Diagnosis",
-    ""
-  )
-for (i in 1:(length(Histoltree) - 1)) {
-  MypathColon <-
-    Extractor(
-      MypathColon,
-      "PathReportWhole",
-      as.character(Histoltree[i]),
-      as.character(Histoltree[i + 1]),
-      gsub(" ", "", as.character(Histoltree[i]))
-    )
-}
+
+mywords<-c("Hospital Number","Patient Name","DOB:","General Practitioner:",
+           "Date received:","Clinical Details:",
+           "Macroscopic description:",
+           "Histology:","Diagnosis:")
+
+MypathColon <-Extractor(MypathColon,"PathReportWhole",mywords)
 names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
 MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 
@@ -141,8 +107,7 @@ vColon <-
 #### Extractor test ####
 test_that("Extractor", {
   expect_that(names(v), equals(
-    c(
-      "OGDReportWhole",
+    c("Original",
       "pHospitalNum",
       "PatientName.x",
       "GeneralPractitioner.x",
@@ -155,19 +120,20 @@ test_that("Extractor", {
       "Indications",
       "ProcedurePerformed",
       "Findings",
+      "EndoscopicDiagnosis",
       "PathReportWhole",
       "eHospitalNum",
       "PatientName.y",
+      "DOB",
       "GeneralPractitioner.y",
       "Date.y",
       "ClinicalDetails",
-      "Natureofspecimen",
+      "Macroscopicdescription",
       "Histology",
       "Diagnosis",
       "Days"
     )
   ))
-  expect_true(all(!is.na(v$OGDReportWhole)))
   expect_true(all(!is.na(v$pHospitalNum)))
   expect_true(all(!is.na(v$GeneralPractitioner.x)))
   expect_true(all(!is.na(v$Date.x)))
@@ -186,56 +152,63 @@ test_that("Extractor", {
   expect_true(all(!is.na(v$Days)))
 })
 
-#### EndoscChopperEndoscopist test ####
+#### EndoscEndoscopist test ####
 
-test_that("EndoscChopperEndoscopist", {
-  Myendo <- EndoscChopperEndoscopist(Myendo, "Endoscopist")
+test_that("EndoscEndoscopist", {
+  Myendo <- EndoscEndoscopist(Myendo, "Endoscopist")
   Myendo$Endoscopist <-
     gsub("2nd [Ee]ndoscopist",
          "Second endoscopist",
          Myendo$Endoscopist)
   expect_true(all(!is.na(Myendo$Endoscopist)))
-  
+  rm(Myendo)
 })
 
-#### EndoscChopperMeds test ####
+#### EndoscMeds test ####
 
-test_that("EndoscChopperMeds", {
-  Myendo <- EndoscChopperMeds(Myendo, "Medications")
+test_that("EndoscMeds", {
+  Myendo <- EndoscMeds(Myendo, "Medications")
   expect_true(all(!is.na(Myendo$Medications)))
+  rm(Myendo)
 })
 
-#### EndoscChopperInstrument test ####
+#### EndoscInstrument test ####
 
-test_that("EndoscChopperInstrument", {
-  Myendo <- EndoscChopperInstrument(Myendo, "Instrument")
+test_that("EndoscInstrument", {
+  Myendo <- EndoscInstrument(Myendo, "Instrument")
   expect_true(all(!is.na(Myendo$Instrument)))
+  rm(Myendo)
 })
 
-#### EndoscChopperIndications test ####
+#### EndoscIndications test ####
 
-test_that("EndoscChopperIndications", {
-  Myendo <- EndoscChopperIndications(Myendo, "Indications")
+test_that("EndoscIndications", {
+  Myendo <- EndoscIndications(Myendo, "Indications")
   expect_true(all(!is.na(Myendo$Indications)))
+  rm(Myendo)
 })
 
-#### EndoscChopperProcPerformed test ####
+#### EndoscProcPerformed test ####
 
-test_that("EndoscChopperProcPerformed", {
-  Myendo <- EndoscChopperProcPerformed(Myendo, "ProcedurePerformed")
+test_that("EndoscProcPerformed", {
+  Myendo <- EndoscProcPerformed(Myendo, "ProcedurePerformed")
   expect_true(all(!is.na(Myendo$Findings)))
+  rm(Myendo)
 })
 
-#### EndoscChopperFindings test ####
+#### EndoscFindings test ####
 
-test_that("EndoscChopperFindings", {
-  Myendo <- EndoscChopperFindings(Myendo, "Findings")
+test_that("EndoscFindings", {
+  Myendo <- EndoscFindings(Myendo, "Findings")
   expect_true(all(!is.na(Myendo$Findings)))
+  rm(Myendo)
 })
 
-#### ChopperNewLines test ####
-test_that("ChopperNewLines", {
-ChopperNewLines(Myendo,'OGDReportWhole')
+#### NewLines test ####
+test_that("NewLines", {
+  #rm(MyendoColon)
+  browser()
+NewLines(MyendoColon,'Original')
 })
 
 #### NegativeRemove test ####
@@ -261,71 +234,72 @@ test_that("NegativeRemove", {
 
 test_that("ColumnCleanUp", {
   pp<-c("The rain in spain falls mainly",".\n",":What")
-  me<-ColumnCleanUp(pp)
+  pp<-data.frame(pp)
+  me<-ColumnCleanUp(pp,"pp")
   
   me2<-me[grep("What",me)]
   
   expect_true( length(me2)>0)
 })
 
-#### HistolChopperMacDescripCleanup test ####
+#### HistolMacDescripCleanup test ####
 
-test_that("HistolChopperMacDescripCleanup", {
+test_that("HistolMacDescripCleanup", {
   ff<-"The report was Dictated by Dr John Di john"
   ff<-data.frame(ff)
   names(ff)<-"Thecol"
 
-  HistolChopperMacDescripCleanup(ff,"Thecol")
+  HistolMacDescripCleanup(ff,"Thecol")
 })
 
-#### HistolChopperHistol test ####
+#### HistolHistol test ####
 
-test_that("HistolChopperHistol", {
-  HistolChopperHistol(Mypath,'Histology')
+test_that("HistolHistol", {
+  HistolHistol(Mypath,'Histology')
   expect_true(all(!is.na(Mypath$Histol_Simplified)))
 })
 
 
-#### HistolChopperDx test ####
+#### HistolDx test ####
 
-test_that("HistolChopperDx", {
-  Mypath <- HistolChopperDx(Mypath, "Diagnosis")
+test_that("HistolDx", {
+  Mypath <- HistolDx(Mypath, "Diagnosis")
   expect_true(all(!is.na(Mypath$Dx)))
 })
 
-#### HistolChopperExtrapolDx test ####
+#### HistolExtrapolDx test ####
 
-test_that("HistolChopperExtrapolDx", {
-  Mypath <- HistolChopperExtrapolDx(Mypath, "Diagnosis")
+test_that("HistolExtrapolDx", {
+  Mypath <- HistolExtrapolDx(Mypath, "Diagnosis")
   expect_false(all(!is.na(Mypath$Dysplasia)))
 })
 
-#### HistolChopperAccessionNumber test ####
+#### HistolAccessionNumber test ####
 
-test_that("HistolChopperAccessionNumber", {
-  Mypath <- HistolChopperAccessionNumber(Mypath,'PathReportWhole',
+test_that("HistolAccessionNumber", {
+  Mypath <- HistolAccessionNumber(Mypath,'PathReportWhole',
                                          'SP-\\d{2}-\\d{7}')
   expect_true(all(!is.na(Mypath$AccessionNumber)))
 })
 
-#### HistolChopperMacDescrip test ####
+#### HistolMacDescrip test ####
 
-test_that("HistolChopperMacDescrip", {
-  Mypath <- HistolChopperMacDescrip(Mypath, "Natureofspecimen")
+test_that("HistolMacDescrip", {
+  Mypath <- HistolMacDescrip(Mypath, "Macroscopicdescription")
   expect_true(all(!is.na(Mypath$BxSize)))
 })
 
-#### HistolChopperNumbOfBx test ####
+#### HistolNumbOfBx test ####
 
-test_that("HistolChopperNumbOfBx", {
-  Mypath <- HistolChopperNumbOfBx(Mypath, "Natureofspecimen", "specimen")
+test_that("HistolNumbOfBx", {
+  Mypath <- HistolNumbOfBx(Mypath, "Macroscopicdescription", "specimen")
   expect_true(all(!is.na(Mypath$NumbOfBx)))
 })
 
-#### HistolChopperBxSize test ####
+#### HistolBxSize test ####
 
-test_that("HistolChopperBxSize", {
-  Mypath <- HistolChopperBxSize(Mypath,'Natureofspecimen')
+test_that("HistolBxSize", {
+  Mypath <- HistolBxSize(Mypath,'Macroscopicdescription')
   expect_true(all(!is.na(Mypath$BxSize)))
 })
 
@@ -427,7 +401,7 @@ test_that("MetricByEndoscopist", {
 #### MetricByEndoscopist test ####
 
 test_that("MetricByEndoscopist", {
-  Myendo <- EndoscChopperMeds(Myendo, "Medications")
+  Myendo <- EndoscMeds(Myendo, "Medications")
   Fent <- MetricByEndoscopist(Myendo, "Endoscopist", "Fent")
   expect_true(class(Fent[1]) == "list")
   expect_true(class(Fent[2]) == "list")
@@ -436,18 +410,13 @@ test_that("MetricByEndoscopist", {
 #### TermStandardLocation test ####
 
 test_that("TermStandardLocation", {
-  Histoltree <-list("Hospital Number:","Patient Name:",
+  Histoltree <-c("Hospital Number:","Patient Name:",
  "General Practitioner:","Date received:","Clinical Details",
   "Nature of specimen","Histology","Diagnosis",""
 )
 
- for (i in 1:(length(Histoltree) - 1)) {
-   PathDataFrameFinalColon <-Extractor(
-    PathDataFrameFinalColon, "PathReportWhole",as.character(Histoltree[i]),
-      as.character(Histoltree[i + 1]),
-      gsub(" ", "", as.character(Histoltree[i]))
-    )
-}
+
+PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
 names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) == 
                                  'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
@@ -460,18 +429,13 @@ f<-PolypLocator(f,'SampleLocation')
 
 test_that("SampleLocator", {
   
-  Histoltree <-list("Hospital Number:","Patient Name:",
-               "General Practitioner:","Date received:","Clinical Details",
-                "Nature of specimen","Histology","Diagnosis",""
+  Histoltree <-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+                "Date received:","Clinical Details:","Macroscopic description:",
+                "Histology:","Diagnosis:"
   )
   
-  for (i in 1:(length(Histoltree) - 1)) {
-    PathDataFrameFinalColon <-Extractor(
-      PathDataFrameFinalColon, "PathReportWhole",as.character(Histoltree[i]),
-      as.character(Histoltree[i + 1]),
-      gsub(" ", "", as.character(Histoltree[i]))
-    )
-  }
+  
+  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
   names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
                                    'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
@@ -483,18 +447,13 @@ test_that("SampleLocator", {
 #### PolypLocator test ####
 
 test_that("PolypLocator", {
-  Histoltree <-list("Hospital Number:","Patient Name:",
-          "General Practitioner:","Date received:","Clinical Details",
-                    "Nature of specimen","Histology","Diagnosis",""
+  
+  Histoltree <-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+                 "Date received:","Clinical Details:","Macroscopic description:",
+                 "Histology:","Diagnosis:"
   )
   
-  for (i in 1:(length(Histoltree) - 1)) {
-    PathDataFrameFinalColon <-Extractor(
-      PathDataFrameFinalColon, "PathReportWhole",as.character(Histoltree[i]),
-      as.character(Histoltree[i + 1]),
-      gsub(" ", "", as.character(Histoltree[i]))
-    )
-  }
+  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
   names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
                                    'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
@@ -506,18 +465,12 @@ test_that("PolypLocator", {
 #### PolypTidyUpLocator test ####
 
 test_that("PolypTidyUpLocator", {
-  Histoltree <-list("Hospital Number:","Patient Name:",
-              "General Practitioner:","Date received:","Clinical Details",
-                    "Nature of specimen","Histology","Diagnosis",""
-  )
   
-  for (i in 1:(length(Histoltree) - 1)) {
-    PathDataFrameFinalColon <-Extractor(
-      PathDataFrameFinalColon, "PathReportWhole",as.character(Histoltree[i]),
-      as.character(Histoltree[i + 1]),
-      gsub(" ", "", as.character(Histoltree[i]))
-    )
-  }
+  Histoltree <-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+                 "Date received:","Clinical Details:","Macroscopic description:",
+                 "Histology:","Diagnosis:"
+  )
+  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
   names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
                                    'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
@@ -530,10 +483,10 @@ test_that("PolypTidyUpLocator", {
 test_that("GRS_Type_Assess_By_Unit", {
  #  
  
- vColon2<-HistolChopperDx(vColon,'Diagnosis')
- vColon2<-HistolChopperExtrapolDx(vColon2,'Diagnosis')
- vColon2<-HistolChopperNumbOfBx(vColon2,'Natureofspecimen','specimen')
- vColon2<-HistolChopperBxSize(vColon2,'Natureofspecimen')
+ vColon2<-HistolDx(vColon,'Diagnosis')
+ vColon2<-HistolExtrapolDx(vColon2,'Diagnosis')
+ vColon2<-HistolNumbOfBx(vColon2,'Macroscopicdescription','specimen')
+ vColon2<-HistolBxSize(vColon2,'Macroscopicdescription')
  GRSTable<-GRS_Type_Assess_By_Unit(vColon2,'ProcedurePerformed', 
  'Endoscopist','Diagnosis','Histology')
   
@@ -570,7 +523,7 @@ test_that("BarrettsDataAccord_PathStage", {
 
 test_that("BarrettsDataAccord_Event", {
 
-b<-BarrettsDataAccord_Event(v,'Histology','ProcedurePerformed','OGDReportWhole'
+b<-BarrettsDataAccord_Event(v,'Histology','ProcedurePerformed','Original'
                             ,'Findings')
 })
 
@@ -580,7 +533,7 @@ b<-BarrettsDataAccord_Event(v,'Histology','ProcedurePerformed','OGDReportWhole'
 test_that("BarrettsDataAccord_FUGroup", {
   b<-BarrettsDataAccord_PathStage(v,'Histology')
   b2<-BarrettsDataAccord_Event(b,'Histology',
-  'ProcedurePerformed','OGDReportWhole','Findings')
+  'ProcedurePerformed','Original','Findings')
   b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
   
 })
@@ -602,7 +555,7 @@ test_that("BarrettsPatientTracking_UniqueHospNum", {
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-  'ProcedurePerformed','OGDReportWhole','Findings')
+  'ProcedurePerformed','Original','Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
@@ -621,13 +574,13 @@ test_that("BarrettsQuality_AnalysisDocumentation", {
 #### BarrettsQuality_AnalysisBiopsyNumber ####
 
 test_that("BarrettsQuality_AnalysisBiopsyNumber", {
-  v<-HistolChopperExtrapolDx(v,'Diagnosis')
-  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+  v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed',
-                               'OGDReportWhole','Findings')
+                               'Original','Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
@@ -638,14 +591,14 @@ test_that("BarrettsQuality_AnalysisBiopsyNumber", {
 #### BarrettsSurveillance_PathDetection ####
 
 test_that("BarrettsSurveillance_PathDetection", {
-  v<-HistolChopperDx(v,'Diagnosis')
-  v<-HistolChopperExtrapolDx(v,'Diagnosis')
-  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-HistolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+  v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-  'ProcedurePerformed','OGDReportWhole','Findings')
+  'ProcedurePerformed','Original','Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsSurveillance_PathDetection(b4,'Myplot')
@@ -655,14 +608,14 @@ test_that("BarrettsSurveillance_PathDetection", {
 #### BarrettsSurveillanceDDR ####
 
 test_that("BarrettsSurveillanceDDR", {
-  v<-HistolChopperDx(v,'Diagnosis')
-  v<-HistolChopperExtrapolDx(v,'Diagnosis')
-  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-HistolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+  v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-                               'ProcedurePerformed','OGDReportWhole',
+                               'ProcedurePerformed','Original',
                                'Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
@@ -674,14 +627,14 @@ test_that("BarrettsSurveillanceDDR", {
 #### BarrettsTherapy_Numbers_EMRsByGrade ####
 
 test_that("BarrettsTherapy_Numbers_EMRsByGrade", {
-  v<-HistolChopperDx(v,'Diagnosis')
-  v<-HistolChopperExtrapolDx(v,'Diagnosis')
-  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-HistolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+  v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-  'ProcedurePerformed','OGDReportWhole','Findings')
+  'ProcedurePerformed','Original','Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsTherapy_Numbers_EMRsByGrade(b4)
@@ -691,16 +644,16 @@ test_that("BarrettsTherapy_Numbers_EMRsByGrade", {
 #### BarrettsBasicNumbers ####
 
 test_that("BarrettsBasicNumbers", {
-  v<-HistolChopperDx(Mypath,'Diagnosis')
-  v<-HistolChopperExtrapolDx(v,'Diagnosis')
-  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-HistolDx(Mypath,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+  v<-HistolBxSize(v,'Macroscopicdescription')
   v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
                 "Dateofprocedure","HospitalNumber")
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-                         'ProcedurePerformed','OGDReportWhole','Findings')
+                         'ProcedurePerformed','Original','Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsBasicNumbers(b4,"Date.x")
@@ -710,14 +663,14 @@ test_that("BarrettsBasicNumbers", {
 #### BarrettsTherapeuticsRFA_ByCatheter ####
 
 test_that("BarrettsTherapeuticsRFA_ByCatheter", {
-  v<-HistolChopperDx(v,'Diagnosis')
-  v<-HistolChopperExtrapolDx(v,'Diagnosis')
-  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-HistolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+  v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-                       'ProcedurePerformed','OGDReportWhole','Findings')
+                       'ProcedurePerformed','Original','Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsTherapeuticsRFA_ByCatheter(b4,"ProcedurePerformed","Findings")
@@ -727,14 +680,14 @@ test_that("BarrettsTherapeuticsRFA_ByCatheter", {
 #### Barretts_LesionRecognitionEMR ####
 
 test_that("Barretts_LesionRecognitionEMR", {
-  v<-HistolChopperDx(v,'Diagnosis')
-  v<-HistolChopperExtrapolDx(v,'Diagnosis')
-  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-HistolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+  v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-                     'ProcedurePerformed','OGDReportWhole','Findings')
+                     'ProcedurePerformed','Original','Findings')
   b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   Barretts_LesionRecognitionEMR(b4,"ProcedurePerformed","Findings")
@@ -743,14 +696,14 @@ test_that("Barretts_LesionRecognitionEMR", {
 
 #### Barretts_CRIM ####
 test_that("Barretts_CRIM", {
-  v<-HistolChopperDx(v,'Diagnosis')
-  v<-HistolChopperExtrapolDx(v,'Diagnosis')
-  v<-HistolChopperNumbOfBx(v,'Natureofspecimen','specimen')
-  v<-HistolChopperBxSize(v,'Natureofspecimen')
+  v<-HistolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+  v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-BarrettsDataAccord_Prague(v,'Findings')
   b2<-BarrettsDataAccord_PathStage(b1,'Histology')
   b3<-BarrettsDataAccord_Event(b2,'Histology',
-                     'ProcedurePerformed','OGDReportWhole','Findings')
+                     'ProcedurePerformed','Original','Findings')
   colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
   Barretts_CRIM(b3,'HospitalNumber',"EVENT")
 })

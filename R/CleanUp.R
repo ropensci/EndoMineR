@@ -57,10 +57,10 @@ if (getRversion() >= "2.15.1")
 #' # Myendo and searches through the raw
 #' # endoscopy text so that the text is
 #' #divided by sentence into a newline
-#' v<-ChopperNewLines(Myendo,'OGDReportWhole')
+#' v<-NewLines(Myendo,'OGDReportWhole')
 
 
-ChopperNewLines <- function(dataframe, EndoReportColumn) {
+NewLines <- function(dataframe, EndoReportColumn) {
   dataframe <- data.frame(dataframe)
   # Separate long lines with empty space into new lines
   dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],"    ", "\n")
@@ -100,6 +100,8 @@ ChopperNewLines <- function(dataframe, EndoReportColumn) {
 #' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 #' res<-Mypath
 Extractor <- function(dataframeIn, Column, delim) {
+  dataframeInForLater<-dataframeIn
+  ColumnForLater<-Column
   Column <- rlang::sym(Column)
   dataframeIn <- data.frame(dataframeIn)
   dataframeIn<-dataframeIn %>% tidyr::separate(!!Column, into = c("added_name",delim), 
@@ -113,6 +115,10 @@ Extractor <- function(dataframeIn, Column, delim) {
   dataframeIn<-dataframeIn[,-1]
   dataframeIn<-lapply(dataframeIn, ColumnCleanUpAll)
   names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=T)
+  dataframeIn<-data.frame(dataframeIn)
+  #Add the original column back in so have the original reference
+  dataframeIn<-cbind(dataframeInForLater[,ColumnForLater],dataframeIn)
+  colnames(dataframeIn)[1]<-"Original"
   return(dataframeIn)
 }
 
@@ -132,28 +138,28 @@ Extractor <- function(dataframeIn, Column, delim) {
 #' "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
 #' "Findings" )
 #' #Now use the function
-#' Myendo<-EndoscChopperAll(Myendo)
+#' Myendo<-EndoscAll(Myendo)
 
 
-EndoscChopperAll<- function(dataframe) {
+EndoscAll<- function(dataframe) {
 
   if("Medications" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperMeds(Myendo,'Medications')
+    dataframe<-EndoscMeds(Myendo,'Medications')
     print("Meds")
   }
 
   if("Instruments" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperInstrument(dataframe,'Instruments')
+    dataframe<-EndoscInstrument(dataframe,'Instruments')
   }
 
   if("Indications" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperIndications(dataframe,'Indications')
+    dataframe<-EndoscIndications(dataframe,'Indications')
   }
   if("Procedure Performed" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperProcPerformed(dataframe,'ProcedurePerformed')
+    dataframe<-EndoscProcPerformed(dataframe,'ProcedurePerformed')
   }
   if("Findings" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperFindings(dataframe,'Findings')
+    dataframe<-EndoscFindings(dataframe,'Findings')
   }
   return(dataframe)
 }
@@ -168,7 +174,7 @@ EndoscChopperAll<- function(dataframe) {
 #' function has been used this cleans the endoscopist column from the report.
 #' It gets rid of titles
 #' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional ChopperNewLines
+#' It should be used after the Extractor and the optional NewLines
 #' has been used.
 #'
 #' @param dataframe dataframe
@@ -176,9 +182,9 @@ EndoscChopperAll<- function(dataframe) {
 #' @keywords Endoscopist extraction
 #' @export
 #' @importFrom stringr str_replace
-#' @examples v<-EndoscChopperEndoscopist(Myendo,'Endoscopist')
+#' @examples v<-EndoscEndoscopist(Myendo,'Endoscopist')
 
-EndoscChopperEndoscopist <- function(dataframe, EndoReportColumn) {
+EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
   # Extraction of the Endoscopist
   dataframe <- data.frame(dataframe)
   dataframe[, EndoReportColumn] <- gsub("Dr", "", dataframe[, EndoReportColumn], fixed = TRUE)
@@ -198,15 +204,15 @@ EndoscChopperEndoscopist <- function(dataframe, EndoReportColumn) {
 #' It gets rid of common entries that are not needed. It also splits the
 #' medication into fentanyl and midazolam doses for use in the global rating
 #' scale tables later. It should be used after the Extractor and the optional
-#' ChopperNewLines has been used.
+#' NewLines has been used.
 #' @param dataframe dataframe with column of interest
 #' @param MedColumn column of interest
 #' @keywords Endoscopy medications
 #' @importFrom stringr str_extract str_replace
 #' @export
-#' @examples v<-EndoscChopperMeds(Myendo,'Medications')
+#' @examples v<-EndoscMeds(Myendo,'Medications')
 
-EndoscChopperMeds <- function(dataframe, MedColumn) {
+EndoscMeds <- function(dataframe, MedColumn) {
   # Extraction of the Medications: Extract the fentanyl:
   dataframe$Fent <-
     str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d+)\\s*mcg")
@@ -230,15 +236,15 @@ EndoscChopperMeds <- function(dataframe, MedColumn) {
 #' (where instrument usually refers to the endoscope number being used.
 #' It gets rid of common entries that are not needed.
 #' It should be used after the Extractor and the optional
-#' ChopperNewLines has been used.
+#' NewLines has been used.
 #' @param dataframe dataframe with column of interest
 #' @param InstrumentColumn column of interest
 #' @keywords Instrument
 #' @importFrom stringr str_replace
 #' @export
-#' @examples v<-EndoscChopperInstrument(Myendo,'Instrument')
+#' @examples v<-EndoscInstrument(Myendo,'Instrument')
 
-EndoscChopperInstrument <- function(dataframe, InstrumentColumn) {
+EndoscInstrument <- function(dataframe, InstrumentColumn) {
   # Extraction of the Instrument used:
   
   dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],"-.*", "")
@@ -270,17 +276,17 @@ EndoscChopperInstrument <- function(dataframe, InstrumentColumn) {
 #'
 #' This cleans the Indication from the report assuming such a column exists.
 #' It largely gets rid of carriage returns especially if used after the
-#' ChopperNewLinesfunction. There may be multiple indications.
-#' It should be used after the Extractor and the optional ChopperNewLines has
+#' NewLinesfunction. There may be multiple indications.
+#' It should be used after the Extractor and the optional NewLines has
 #' been used.
 #' @param dataframe dataframe with column of interest
 #' @param IndicationColumn column of interest
 #' @keywords Indications
 #' @importFrom stringr str_replace
 #' @export
-#' @examples v<-EndoscChopperIndications(Myendo,'Indications')
+#' @examples v<-EndoscIndications(Myendo,'Indications')
 
-EndoscChopperIndications <- function(dataframe, IndicationColumn) {
+EndoscIndications <- function(dataframe, IndicationColumn) {
   # Extraction of the Indications for examination
   # eg chest pain/ dysphagia etc.
   dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],"\r\n", "\n")
@@ -296,16 +302,16 @@ EndoscChopperIndications <- function(dataframe, IndicationColumn) {
 #' such a column exists. Procedure Performed relates to whether this was a
 #' Gastroscopy or Colonoscopy and or the type of therapy used etc.
 #' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional ChopperNewLines
+#' It should be used after the Extractor and the optional NewLines
 #' has been used.
 #' @param dataframe dataframe with column of interest
 #' @param ProcPerformed column of interest
 #' @keywords Procedure
 #' @importFrom stringr str_replace
 #' @export
-#' @examples v<-EndoscChopperProcPerformed(Myendo,'ProcedurePerformed')
+#' @examples v<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
 
-EndoscChopperProcPerformed <- function(dataframe, ProcPerformed) {
+EndoscProcPerformed <- function(dataframe, ProcPerformed) {
   # Extraction of the eg Colonoscopy or gastroscopy etc:
   dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"Withdrawal.*", "")
   dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"Quality.*", "")
@@ -327,16 +333,16 @@ EndoscChopperProcPerformed <- function(dataframe, ProcPerformed) {
 #' This is usually a separate entry to the overall 'Diagnosis' but any
 #' are in which the description of the endoscopic findings, including
 #' overall diagnosis or not, can be used.
-#' It should be used after the Extractor and the optional ChopperNewLines
+#' It should be used after the Extractor and the optional NewLines
 #' has been used. At present it only cleans cm measurement
 #' @param dataframe dataframe with column of interest
 #' @param FindingsColumn column of interest
 #' @keywords Procedure
 #' @export
 #' @importFrom stringr str_replace
-#' @examples v<-EndoscChopperFindings(Myendo,'Findings')
+#' @examples v<-EndoscFindings(Myendo,'Findings')
 
-EndoscChopperFindings <- function(dataframe, FindingsColumn) {
+EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
   dataframe[, FindingsColumn] <- str_replace(dataframe[, FindingsColumn],"cm\\s+[A-Z]|cm.+\\)", "cm\n")
   return(dataframe)
@@ -351,9 +357,9 @@ EndoscChopperFindings <- function(dataframe, FindingsColumn) {
 #' No evidence of candidal infection so it doesn't get included if
 #' looking for candidal infections.
 #' It should be used after the Extractor and the optional
-#' ChopperNewLines has been used. It can be used as part of the other functions
+#' NewLines has been used. It can be used as part of the other functions
 #' or as a way of providing a 'positive diagnosis only' type output (see
-#' HistolChopperDx)
+#' HistolDx)
 #' @param dataframe dataframe with column of interest
 #' @param Column column of interest
 #' @keywords Negative Sentences
@@ -484,9 +490,9 @@ NegativeRemove <- function(dataframe, Column) {
 #' semi-colons,full stops at the start
 #' of lines and converts end sentence full stops to new lines.
 #' It should be used after the Extractor and the optional
-#' ChopperNewLines has been used. It can be used as part of the other functions
+#' NewLines has been used. It can be used as part of the other functions
 #' or as a way of providing a 'positive diagnosis only' type output (see
-#' HistolChopperDx)
+#' HistolDx)
 #' @param dataframe dataframe with column of interest
 #' @param Column column of interest
 #' @keywords Cleaner
@@ -519,7 +525,7 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' It it used as part of the Extractor function
 #' It can be used as part of the other functions
 #' or as a way of providing a 'positive diagnosis only' type output (see
-#' HistolChopperDx)
+#' HistolDx)
 #' @param dataframe dataframe with column of interest
 #' @keywords Cleaner
 #' @export
@@ -556,36 +562,41 @@ ColumnCleanUpAll <- function(dataframe) {
 #' @keywords Macroscopic
 #' @export
 #' @importFrom stringr str_replace
-#' @examples names(Mypath)<-c("HospitalNumber","PatientName","DOB",
+#' @examples 
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
+#' names(Mypath)<-c("Original","HospitalNumber","PatientName","DOB",
 #' "GeneralPractitioner","Datereceived","ClinicalDetails",
 #' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
 #' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
 #' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-#' v<-HistolChopperAll(Mypath)
+#' v<-HistolAll(Mypath)
+#' rm(Mypath)
 
 
 
-HistolChopperAll <- function(dataframe) {
+HistolAll <- function(dataframe) {
   
   if("Histology" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperMeds(dataframe,'Histology')
-    dataframe<-HistolChopperAccessionNumber(dataframe,'Histology')
-    
+    dataframe<-HistolHistol(dataframe,'Histology')
+    dataframe<-HistolAccessionNumber(dataframe,'Histology','SP-\\d{2}-\\d{7}')
     print("Meds")
   }
   
   if("Macroscopicdescription" %in% colnames(dataframe)){
-    dataframe<-EndoscChopperInstrument(dataframe,'Macroscopicdescription')
-    dataframe<-HistolChopperMacDescrip(dataframe,'Macroscopicdescription')
-    dataframe<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription',
+    dataframe<-HistolMacDescrip(dataframe,'Macroscopicdescription')
+    dataframe<-HistolNumbOfBx(Mypath,'Macroscopicdescription',
                                      'specimen')
-    dataframe<- HistolChopperBxSize(Mypath,'Macroscopicdescription')
+    dataframe<- HistolBxSize(Mypath,'Macroscopicdescription')
   }
    
   if("Diagnosis" %in% colnames(dataframe)){
-    dataframe<-HistolChopperDx(dataframe,'Diagnosis')
-    dataframe<-HistolChopperExtrapolDx(dataframe,'Diagnosis')
+    dataframe<-HistolDx(dataframe,'Diagnosis')
+    dataframe<-HistolExtrapolDx(dataframe,'Diagnosis')
   }
+  dataframe<-data.frame(dataframe)
    
   return(dataframe)
 }
@@ -600,25 +611,29 @@ HistolChopperAll <- function(dataframe) {
 #' @param MacroColumn the dataframe column with the Macroscopic description text
 #' @keywords Histology
 #' @export
-#' @examples  names(Mypath)<-c("HospitalNumber","PatientName","DOB",
+#' @examples  
+#' 
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
+#' names(Mypath)<-c("HospitalNumber","PatientName","DOB",
 #' "GeneralPractitioner","Datereceived","ClinicalDetails",
 #' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
 #' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
 #' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
+#' MacCleanUp<-HistolMacDescripCleanup(Mypath,"Histology")
+#' rm(Mypath)
 
 
 
-HistolChopperMacDescripCleanup <- function(dataframe,MacroColumn) {
+HistolMacDescripCleanup <- function(dataframe,MacroColumn) {
  
   
   dataframe <- data.frame(dataframe)
   # Column specific cleanup
   dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Dd]ictated by.*", "")
   return(dataframe)
-  
-  
-  
-  
 }
 
 
@@ -633,10 +648,10 @@ HistolChopperMacDescripCleanup <- function(dataframe,MacroColumn) {
 #' @keywords Histology
 #' @export
 #' @importFrom stringr str_replace
-#' @examples t<-HistolChopperHistol(Mypath,'Histology')
+#' @examples t<-HistolHistol(Mypath,'Histology')
 
 
-HistolChopperHistol <- function(dataframe, HistolColumn) {
+HistolHistol <- function(dataframe, HistolColumn) {
   # HISTOLOGY
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"\n|\r", " ")
   dataframe[, HistolColumn] <- NegativeRemove(dataframe[, HistolColumn])
@@ -669,10 +684,10 @@ HistolChopperHistol <- function(dataframe, HistolColumn) {
 #' @importFrom stringr str_extract
 #' @keywords Sample Accession number
 #' @export
-#' @examples v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' @examples v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 
-HistolChopperAccessionNumber <- function(dataframe, AccessionColumn, regString) {
+HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
   dataframe <- data.frame(dataframe)
   # Accession number samples- not really necessary to extract:
   dataframe$AccessionNumber <- 
@@ -693,9 +708,9 @@ HistolChopperAccessionNumber <- function(dataframe, AccessionColumn, regString) 
 #' @importFrom stringr str_extract str_replace
 #' @keywords Histology Diagnosis
 #' @export
-#' @examples v<-HistolChopperDx(Mypath,'Diagnosis')
+#' @examples v<-HistolDx(Mypath,'Diagnosis')
 
-HistolChopperDx <- function(dataframe, HistolColumn) {
+HistolDx <- function(dataframe, HistolColumn) {
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"Dr.*", "")
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"[Rr]eported.*", "")
   # Column-generic cleanup
@@ -726,9 +741,9 @@ HistolChopperDx <- function(dataframe, HistolColumn) {
 #' @importFrom stringr str_extract
 #' @keywords Histology diagnosis
 #' @export
-#' @examples v<-HistolChopperExtrapolDx(Mypath,'Diagnosis')
+#' @examples v<-HistolExtrapolDx(Mypath,'Diagnosis')
 
-HistolChopperExtrapolDx <- function(dataframe, Column) {
+HistolExtrapolDx <- function(dataframe, Column) {
   # Some further extraction to get commonly searched for data
   dataframe$Cancer <-
     str_extract(dataframe[, Column], "[Cc]arcin|[Cc]ance|[Ll]ymphoma|
@@ -747,7 +762,7 @@ HistolChopperExtrapolDx <- function(dataframe, Column) {
 #' This extracts numbers from written (spelt) numbers in the Macroscopic
 #' description text. This means the text can then be used to extract the number
 #' and size of biopsies.This is used as part of the
-#' HistolChopperNumOfBx function below and normally not used as a stand alone
+#' HistolNumOfBx function below and normally not used as a stand alone
 #' function.
 #'
 #' @param dataframe dataframe
@@ -756,10 +771,10 @@ HistolChopperExtrapolDx <- function(dataframe, Column) {
 #' @keywords Macroscopic
 #' @importFrom stringr str_replace
 #' @export
-#' @examples t<-HistolChopperMacDescrip(Mypath, 'Macroscopicdescription')
+#' @examples t<-HistolMacDescrip(Mypath, 'Macroscopicdescription')
 
 
-HistolChopperMacDescrip <- function(dataframe, MacroColumn) {
+HistolMacDescrip <- function(dataframe, MacroColumn) {
   x <- data.frame(dataframe)
   # Conversion of text numbers to allow number of biopsies to be extracted
   dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Oo]ne", "1")
@@ -787,12 +802,13 @@ HistolChopperMacDescrip <- function(dataframe, MacroColumn) {
 #' @importFrom stringr str_match_all
 #' @keywords Biopsy number
 #' @export
-#' @examples v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription',
-#' 'specimen')
+#' @examples 
+#' v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 
-HistolChopperNumbOfBx <- function(dataframe, MacroColumn, regString) {
+
+HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
   dataframe <- data.frame(dataframe)
-  dataframe <- HistolChopperMacDescrip(dataframe, MacroColumn)
+  dataframe <- HistolMacDescrip(dataframe, MacroColumn)
   mylist <-
     str_match_all(dataframe[, MacroColumn], paste("[0-9]{1,2}.{0,3}", 
                                                   regString, sep = ""))
@@ -815,9 +831,9 @@ HistolChopperNumbOfBx <- function(dataframe, MacroColumn, regString) {
 #' @importFrom stringr  str_match str_replace
 #' @keywords biopsy size
 #' @export
-#' @examples v<-HistolChopperBxSize(Mypath,'Macroscopicdescription')
+#' @examples v<-HistolBxSize(Mypath,'Macroscopicdescription')
 
-HistolChopperBxSize <- function(dataframe, MacroColumn) {
+HistolBxSize <- function(dataframe, MacroColumn) {
   # What's the average biopsy size this month?
   dataframe$BxSize <- str_extract(dataframe[, MacroColumn], "the largest.*?mm")
   dataframe$BxSize <- str_replace(dataframe$BxSize,"the largest measuring ", "")

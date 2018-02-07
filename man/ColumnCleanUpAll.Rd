@@ -16,7 +16,7 @@ of lines and converts end sentence full stops to new lines.
 It it used as part of the Extractor function
 It can be used as part of the other functions
 or as a way of providing a 'positive diagnosis only' type output (see
-HistolChopperDx)
+HistolDx)
 }
 \examples{
 Myendo<-lapply(Myendo, ColumnCleanUpAll)

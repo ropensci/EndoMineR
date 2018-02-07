@@ -24,18 +24,10 @@ It will tell you the sites sampled without duplication
 \examples{
 #Firstly we extract histology from the raw report
 # using the extractor function
-Histoltree <-list("Hospital Number:","Patient Name:",
-"General Practitioner:","Date received:","Clinical Details",
- "Nature of specimen","Histology","Diagnosis",""
-)
-
-for (i in 1:(length(Histoltree) - 1)) {
- Mypath <-Extractor(
-     Mypath, "PathReportWhole",as.character(Histoltree[i]),
-     as.character(Histoltree[i + 1]),
-     gsub(" ", "", as.character(Histoltree[i]))
-   )
-}
+mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+"Date received:","Clinical Details:","Macroscopic description:",
+"Histology:","Diagnosis:")
+Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 # The function needs all the terms to be standardised first so the

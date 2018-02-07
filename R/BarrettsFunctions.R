@@ -89,12 +89,12 @@ BarrettsDataAccord_Prague <- function(dataframe, EndoReportColumn) {
 #' # Mypath demo dataset. These functions are all part of Histology data cleaning
 #' # as part of the package.
 #'
-#' v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
-#' v<-HistolChopperDx(v,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -176,12 +176,12 @@ BarrettsDataAccord_PathStage <- function(dataframe, PathColumn) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #'
-#' v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
-#' v<-HistolChopperDx(v,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -255,10 +255,10 @@ BarrettsDataAccord_Event <- function(dataframe, HistolReportColumn,
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperDx(Mypath,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -309,6 +309,63 @@ BarrettsDataAccord_FUGroup <- function(dataframe, EndoReportColumn) {
   return(dataframe)
   
 }
+
+
+
+#' Follow up group determination
+#'
+#' This function collects all the Barrett's functions togather as a 
+#' parent function. The function checks the column names and performs
+#' the necessary subfunction as long as the column is named correctly. 
+#' The function follows the Histology function. You can use the same column
+#' names as suggested with the parent function HistolAll
+#' @param dataframe the dataframe(merged endoscopy and histology).
+#' @param EndoReportColumn The field to search (endoscopic findings)
+#' @keywords Barretts
+#' @importFrom stringr str_extract str_replace
+#' @export
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
+#' names(Mypath)<-c("Original","HospitalNumber","PatientName","DOB",
+#' "GeneralPractitioner","Datereceived","ClinicalDetails",
+#' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
+#' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
+#' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
+#' v<-HistolAll(Mypath)
+#' rm(Mypath)
+#' 
+#' #' # Rename the columns in whatever endoscopy dataframe you have
+#' names(Myendo)<-c("OGDReportWhole","HospitalNumber","PatientName",
+#' "GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist",
+#' "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
+#' "Findings" )
+#' #Now use the function
+#' Myendo<-EndoscAll(Myendo)
+#' 
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' 'HospitalNumber')
+#' 
+#' 
+#' #The function relies on the other Barrett's functions being run as well:
+#' b<-BarrettsAll(v)
+
+
+
+BarrettsAll <- function(dataframe) {
+  if("Histology" %in% colnames(dataframe)){
+    dataframe<-HistolHistol(dataframe,'Histology')
+    dataframe<-HistolAccessionNumber(dataframe,'Histology','SP-\\d{2}-\\d{7}')
+    print("Meds")
+  }
+  
+  }
 
 ############## Surveillance functions ########
 
@@ -389,12 +446,12 @@ BarrettsPatientTracking_Enrollment_Surveillance <- function(dataframe,
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
-#' v<-HistolChopperDx(v,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -514,10 +571,10 @@ BarrettsQuality_AnalysisDocumentation <- function(dataframe, Findings) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperDx(Mypath,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -606,10 +663,10 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(dataframe,
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperDx(Mypath,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -664,10 +721,10 @@ BarrettsSurveillance_PathDetection <- function(dataframe, titlePlot) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperDx(Mypath,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -709,10 +766,10 @@ BarrettsSurveillanceDDR <- function(dataframe, EndoscopistReportColumn, IMorNoIM
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperDx(Mypath,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -809,10 +866,10 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperDx(Mypath,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
@@ -868,10 +925,10 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperDx(Mypath,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date #and Hospital number
 #' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
@@ -963,12 +1020,12 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, Column, Column2) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
-#' v<-HistolChopperDx(v,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -1089,12 +1146,12 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, Column, Column2) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolChopperAccessionNumber(Mypath,'Histology',
+#' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
-#' v<-HistolChopperDx(v,'Diagnosis')
-#' v<-HistolChopperExtrapolDx(v,'Diagnosis')
-#' v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolChopperBxSize(v,'Macroscopicdescription')
+#' v<-HistolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',

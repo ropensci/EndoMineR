@@ -19,10 +19,10 @@ This should only be run after all the BarrettsDataAccord functions.
 # Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
-v<-HistolChopperDx(Mypath,'Diagnosis')
-v<-HistolChopperExtrapolDx(v,'Diagnosis')
-v<-HistolChopperNumbOfBx(v,'Macroscopicdescription','specimen')
-v<-HistolChopperBxSize(v,'Macroscopicdescription')
+v<-HistolDx(Mypath,'Diagnosis')
+v<-HistolExtrapolDx(v,'Diagnosis')
+v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,

@@ -528,7 +528,7 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' @examples #The function plots any numeric metric by endoscopist
 #' # and also gives a table with it. In this example we plot medication by
 #' # endoscopist
-#' Myendo<-EndoscChopperMeds(Myendo,'Medications')
+#' Myendo<-EndoscMeds(Myendo,'Medications')
 #' Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 #' rm(Myendo)
 
@@ -564,18 +564,10 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 #' @export
 #' @examples #Firstly we extract histology from the raw report
 #' # using the extractor function
-#' Histoltree <-list("Hospital Number:","Patient Name:",
-#' "General Practitioner:","Date received:","Clinical Details",
-#'  "Nature of specimen","Histology","Diagnosis",""
-#')
-#'
-#' for (i in 1:(length(Histoltree) - 1)) {
-#'  Mypath <-Extractor(
-#'      Mypath, "PathReportWhole",as.character(Histoltree[i]),
-#'      as.character(Histoltree[i + 1]),
-#'      gsub(" ", "", as.character(Histoltree[i]))
-#'    )
-#' }
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 #' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 #' # The function then standardises the histology terms through a series of
@@ -586,6 +578,7 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 
 
 TermStandardLocation <- function(dataframe, SampleLocation) {
+  dataframe<-as.data.frame(dataframe)
   dataframe$SampleLocation <- tolower(dataframe[, SampleLocation])
   dataframe$SampleLocation <-
     gsub(
@@ -710,18 +703,10 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
 #' @export
 #' @examples #Firstly we extract histology from the raw report
 #' # using the extractor function
-#' Histoltree <-list("Hospital Number:","Patient Name:",
-#' "General Practitioner:","Date received:","Clinical Details",
-#'  "Nature of specimen","Histology","Diagnosis",""
-#')
-#'
-#' for (i in 1:(length(Histoltree) - 1)) {
-#'  Mypath <-Extractor(
-#'      Mypath, "PathReportWhole",as.character(Histoltree[i]),
-#'      as.character(Histoltree[i + 1]),
-#'      gsub(" ", "", as.character(Histoltree[i]))
-#'    )
-#' }
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 #' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 #' # The function needs all the terms to be standardised first so the
@@ -784,18 +769,11 @@ SampleLocator <- function(dataframe, SampleLocationColumn) {
 #' @keywords Withdrawal
 #' @importFrom stringr str_match_all
 #' @export
-#' @examples Histoltree <-list("Hospital Number:","Patient Name:",
-#' "General Practitioner:","Date received:","Clinical Details",
-#'  "Nature of specimen","Histology","Diagnosis",""
-#')
-#'
-#' for (i in 1:(length(Histoltree) - 1)) {
-#'  Mypath <-Extractor(
-#'      Mypath, "PathReportWhole",as.character(Histoltree[i]),
-#'      as.character(Histoltree[i + 1]),
-#'      gsub(" ", "", as.character(Histoltree[i]))
-#'    )
-#' }
+#' @examples 
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 #' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 #' # The polyp locator then determines where the biopsies were taken from
