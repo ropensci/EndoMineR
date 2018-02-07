@@ -58,10 +58,10 @@ if (getRversion() >= "2.15.1")
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples em<-SurveillanceTimeByRow(Myendo,'HospitalNumber',
+#' @examples em<-SurveilTimeByRow(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
-SurveillanceTimeByRow <-
+SurveilTimeByRow <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
@@ -85,10 +85,10 @@ SurveillanceTimeByRow <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples em<-SurveillanceLastToNow(Myendo,'HospitalNumber',
+#' @examples em<-SurveilLastToNow(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
-SurveillanceLastToNow <-
+SurveilLastToNow <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
@@ -111,11 +111,11 @@ SurveillanceLastToNow <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+#' @examples em<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 
 
 
-SurveillanceLastTest <-
+SurveilLastTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
@@ -136,11 +136,11 @@ SurveillanceLastTest <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples em<-SurveillanceFirstTest(Myendo,'HospitalNumber',
+#' @examples em<-SurveilFirstTest(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
 
-SurveillanceFirstTest <-
+SurveilFirstTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
@@ -161,9 +161,9 @@ SurveillanceFirstTest <-
 #' @importFrom rlang sym
 #' @keywords cats
 #' @export
-#' @examples em<-SurveillanceCapacity(Myendo,'Dateofprocedure')
+#' @examples em<-SurveilCapacity(Myendo,'Dateofprocedure')
 
-SurveillanceCapacity <- function(dataframe, Endo_ResultPerformed) {
+SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
   dataframe %>% mutate(month = format(as.Date(!!Endo_ResultPerformeda), "%m")) %>%
     group_by(month) %>% summarise(n = n())
@@ -173,7 +173,7 @@ SurveillanceCapacity <- function(dataframe, Endo_ResultPerformed) {
 #'
 #' Get an overall idea of how many endoscopies have been done for an indication
 #' by year and month. This is a more involved version of
-#' SurveillanceCapacity function. It takes string for
+#' SurveilCapacity function. It takes string for
 #' the Indication for the test
 #'
 #' This returns a list which contains a plot (number of tests for that

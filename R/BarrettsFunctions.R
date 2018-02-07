@@ -58,10 +58,10 @@ if (getRversion() >= "2.15.1")
 #' # too
 #'
 #'
-#' v<-BarrettsDataAccord_Prague(Myendo,'Findings')
+#' v<-Barretts_PragueScore(Myendo,'Findings')
 
-#Change to BarrPrague nee BarrettsDataAccord_Prague
-BarrettsDataAccord_Prague <- function(dataframe, EndoReportColumn) {
+#Change to BarrPrague nee Barretts_PragueScore
+Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
   dataframe <- data.frame(dataframe)
   dataframe$CStage <- str_extract(dataframe[, EndoReportColumn], "(C(\\s|=)*\\d+)")
   dataframe$CStage <- as.numeric(str_replace(dataframe$CStage,"C", ""))
@@ -101,10 +101,10 @@ BarrettsDataAccord_Prague <- function(dataframe, EndoReportColumn) {
 #' 'HospitalNumber')
 #' # The function then takes the Histology column from the merged data set (v).
 #' # It extracts the worst histological grade for a specimen
-#' b<-BarrettsDataAccord_PathStage(v,'Histology')
+#' b<-Barretts_PathStage(v,'Histology')
 #' rm(v)
 
-BarrettsDataAccord_PathStage <- function(dataframe, PathColumn) {
+Barretts_PathStage <- function(dataframe, PathColumn) {
   # Get the worst pathology for that sample
   dataframe <- data.frame(dataframe)
   dataframe$IMorNoIM <-
@@ -190,11 +190,11 @@ BarrettsDataAccord_PathStage <- function(dataframe, PathColumn) {
 #' # Procedure performed, free text endoscopic Findings and the original
 #' # whole endoscopy report columns from the merged data set (v) for
 #' # EMR/APC/RFA/HALO so that the event for the procedure is recorded.
-#' b<-BarrettsDataAccord_Event(v,'Histology',
+#' b<-Barretts_EventType(v,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' rm(v)
 #'
-BarrettsDataAccord_Event <- function(dataframe, HistolReportColumn, 
+Barretts_EventType <- function(dataframe, HistolReportColumn, 
                   ProcPerformedColumn, EndoReportColumn, EndoFindingsColumn) {
   dataframe <- data.frame(dataframe)
   # Get all the EVENTS in:
@@ -242,12 +242,12 @@ BarrettsDataAccord_Event <- function(dataframe, HistolReportColumn,
 #' Specfically it combines the presence of intestinal metaplasia with
 #' Prague score so the follow-up group can be determined. It relies on the
 #' presence of a Prague score. It should be run after
-#' BarrettsDAtaAccord_PathStage which looks for the worst stage of a
+#' Barretts_PathStage which looks for the worst stage of a
 #' specimen and which will determine the presence or absence of intestinal
 #' metaplasia if the sample is non-dysplastic.
 #' Being the procedure done at the time and the follow-up timings
 #' @param dataframe the dataframe(which has to have been processed by the
-#' BarrettsDataAccord_PathStage function first to get IMorNoIM),
+#' Barretts_PathStage function first to get IMorNoIM),
 #' @param EndoReportColumn The field to search (endoscopic findings)
 #' @keywords Follow-Up
 #' @importFrom stringr str_extract str_replace
@@ -264,16 +264,16 @@ BarrettsDataAccord_Event <- function(dataframe, HistolReportColumn,
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' #The function relies on the other Barrett's functions being run as well:
-#' b<-BarrettsDataAccord_PathStage(v,'Histology')
-#' b2<-BarrettsDataAccord_Event(b,'Histology',
+#' b<-Barretts_PathStage(v,'Histology')
+#' b2<-Barretts_EventType(b,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' #The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
+#' b3<-Barretts_FUType(b2,'Findings')
 #' rm(v)
 
-BarrettsDataAccord_FUGroup <- function(dataframe, EndoReportColumn) {
+Barretts_FUType <- function(dataframe, EndoReportColumn) {
   dataframe <- data.frame(dataframe)
   # Do the follow-up groupings
   try(dataframe$MStage <-
@@ -375,8 +375,8 @@ BarrettsAll <- function(dataframe) {
 #' This function graphs the patients who were not on surveillance programmes and
 #' sees how many then had an endoscopy.This allows us to determine how many
 #' index Barrett's detections went on to undergo surveillance.
-#' This should be run after the BarrettsDataAccord_Prague and
-#' BarrettsDataAccord_PathStage.
+#' This should be run after the Barretts_PragueScore and
+#' Barretts_PathStage.
 #' @param dataframe dataframe
 #' @param PatientID column of interest with unique hospital number in it
 #' @param Endo_ResultPerformed column of interest with date endiscopy performed
@@ -392,11 +392,11 @@ BarrettsAll <- function(dataframe) {
 #' # and then groups the Barrett's endoscopies by patient (as defined by their
 #' # unique hospital identifier and then orders by the date of procedure. It
 #' # should look in the Indications column for Barrett's related indication
-#' Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,
+#' Enroll<-BarrettsSurveil(Myendo,
 #' 'HospitalNumber',
 #' 'Dateofprocedure','Indications')
 
-BarrettsPatientTracking_Enrollment_Surveillance <- function(dataframe,
+BarrettsSurveil <- function(dataframe,
                                               PatientID,
                                               Endo_ResultPerformed,
                                               IndicationsFroExamination) {
@@ -436,8 +436,8 @@ BarrettsPatientTracking_Enrollment_Surveillance <- function(dataframe,
 #' for each rule. It lists the unique PatientIDs assocaited with a rule
 #' ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many
 #' patients will need follow up at specific time intervals.
-#' This should be run after the BarrettsDataAccord_Prague and
-#' BarrettsDataAccord_PathStage.
+#' This should be run after the Barretts_PragueScore and
+#' Barretts_PathStage.
 #' @param dataframe dataframe with column of interest
 #' @param rule Rule of interest
 #' @param PatientID Column containing patient numbers
@@ -457,21 +457,21 @@ BarrettsPatientTracking_Enrollment_Surveillance <- function(dataframe,
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' #Finally the unique hospital numbers are obtained according to the follow-up
 #' # rule you are looking for
-#' Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
+#' Rule<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
 #' rm(v)
 
-BarrettsPatientTracking_UniqueHospNum <- function(dataframe, rule, PatientID) {
+BarrettsSurveil_HospNum <- function(dataframe, rule, PatientID) {
   dataframe <- data.frame(dataframe)
   dataframe <- subset(dataframe, dataframe$FU_Group == rule)
   dataframe <- data.frame(unique(dataframe[, PatientID]))
@@ -487,7 +487,7 @@ BarrettsPatientTracking_UniqueHospNum <- function(dataframe, rule, PatientID) {
 #' This function assesses the Barrett's documentation. This notes how many
 #' reports contain the mandatory report fields as specified in the BSG standards
 #'  on Barrett's endoscopic reporting. This should be run after the
-#' BarrettsDataAccord_Prague.
+#' Barretts_PragueScore.
 #' @param dataframe dataframe
 #' @param Findings column of interest- usually the main body of the
 #' endoscopic report
@@ -496,14 +496,14 @@ BarrettsPatientTracking_UniqueHospNum <- function(dataframe, rule, PatientID) {
 #' @keywords Documentation
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
-#' b1<-BarrettsDataAccord_Prague(Myendo,'Findings')
+#' b1<-Barretts_PragueScore(Myendo,'Findings')
 #' # The documentation is really from the endoscopic Findings column
-#' BarrettsQuality_AnalysisDocumentation(b1,'Findings')
+#' BarrettsDocumentQual(b1,'Findings')
 #' rm(v)
 
 
 
-BarrettsQuality_AnalysisDocumentation <- function(dataframe, Findings) {
+BarrettsDocumentQual <- function(dataframe, Findings) {
   dataframe <- data.frame(dataframe)
   # Is Surveillance documentation done properly?
   PragueSubsetx <- subset(dataframe, !is.na(dataframe$MStage))
@@ -580,23 +580,23 @@ BarrettsQuality_AnalysisDocumentation <- function(dataframe, Findings) {
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The number of average number of biopsies is then calculated and
 #' # compared to the average Prague C score so that those who are taking
 #' # too few biopsies can be determined
-#' BarrettsQuality_AnalysisBiopsyNumber(b4,'Date.x','HospitalNumber',
+#' BarrettsBxQual(b4,'Date.x','HospitalNumber',
 #'                                      'Endoscopist')
 #' rm(v)
 
-BarrettsQuality_AnalysisBiopsyNumber <- function(dataframe,
+BarrettsBxQual <- function(dataframe,
                                                  Endo_ResultPerformed,
                                                  PatientID,
                                                  Endoscopist) {
@@ -672,14 +672,14 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(dataframe,
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function simply the the histopathological grades overall for
 #' # your dataset and then creates a frequency plot of them
@@ -687,7 +687,7 @@ BarrettsQuality_AnalysisBiopsyNumber <- function(dataframe,
 #' rm(v)
 
 
-BarrettsSurveillance_PathDetection <- function(dataframe, titlePlot) {
+BarrettsPathDetectQual <- function(dataframe, titlePlot) {
   dataframe <- data.frame(dataframe)
   
   LGD <- dataframe[grepl("LGD", dataframe$IMorNoIM), ]
@@ -715,7 +715,7 @@ BarrettsSurveillance_PathDetection <- function(dataframe, titlePlot) {
 #' This function assesses the dysplasia detection rate per endoscopist.
 #' @param dataframe dataframe,
 #' @param EndoscopistReportColumn column with the Endoscopist names
-#' @param IMorNoIM extracted with the function BarrettsDataAccord_PathStage()
+#' @param IMorNoIM extracted with the function Barretts_PathStage()
 #' @keywords dysplasia detection rate
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
@@ -730,25 +730,25 @@ BarrettsSurveillance_PathDetection <- function(dataframe, titlePlot) {
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' #The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function takes the column with the extracted worst grade of
 #' # histopathology and returns the proportion of each finding (ie
 #' # proportion with low grade dysplasia, high grade etc.) for each
 #' # endoscopist
-#' BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
+#' BarrettsDDRQual(b4,'Endoscopist','IMorNoIM')
 #' rm(v)
 
 
 
-BarrettsSurveillanceDDR <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
+BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
   dataframe <- data.frame(dataframe)
   
   # Need to include indefinite for dysplasia
@@ -775,22 +775,22 @@ BarrettsSurveillanceDDR <- function(dataframe, EndoscopistReportColumn, IMorNoIM
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' #The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function extracts only those rows for patients who have undergone
 #' # EMR and then extracts the EMR grade from the extracted worst histopath
 #' # column (called IMorNoIM). This is then plotted out.
-#' BarrettsTherapy_Numbers_EMRsByGrade(b4)
+#' BarrettsEMRGrades(b4)
 #' rm(v)
 
-BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
+BarrettsEMRGrades <- function(EndoSubsetEMR) {
   EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
   AllEMRs <- nrow(EndoSubsetEMR)
   SM2 <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "SM2", ])
@@ -875,14 +875,14 @@ BarrettsTherapy_Numbers_EMRsByGrade <- function(EndoSubsetEMR) {
 #' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
 #' "Dateofprocedure","HospitalNumber")
 #' # The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #'  'ProcedurePerformed','OGDReportWhole','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function groups the overall number of surveillance cases over time
 #' # The endoscopic episodes should be selected according to surveillance
@@ -934,21 +934,21 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
 #' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
 #' "Dateofprocedure","HospitalNumber")
 #' # The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function takes the RFA cases by looking in any free text column where
 #' # endoscopy fingings are described and then summarising by RFA subtype
-#' BarrettsTherapeuticsRFA_ByCatheter(b4,"ProcedurePerformed","Findings")
+#' BarrettssRFACath(b4,"ProcedurePerformed","Findings")
 #' rm(v)
 
-BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, Column, Column2) {
+BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
   EndoSubsetRFA <- EndoSubsetRFA[EndoSubsetRFA$EVENT == "RFA", ]
   HALO90a <-
     EndoSubsetRFA[grepl("90", EndoSubsetRFA[, Column], perl = TRUE), ]
@@ -1031,22 +1031,22 @@ BarrettsTherapeuticsRFA_ByCatheter <- function(EndoSubsetRFA, Column, Column2) {
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' #The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+#' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function compares the Paris score from the endoscopy report free text to
 #' # the histopathology scores for the same endoscopies so you can see what the
 #' # lesion recognition is like overall
-#' Barretts_LesionRecognitionEMR(b4,"ProcedurePerformed","Findings")
+#' BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
 #' rm(v)
 
-Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, Column, Column2) {
+BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
   EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
   
   EndoSubsetEMR$ParisClass <-
@@ -1157,9 +1157,9 @@ Barretts_LesionRecognitionEMR <- function(EndoSubsetEMR, Column, Column2) {
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function relies on the other Barrett's functions being run as well:
-#' b1<-BarrettsDataAccord_Prague(v,'Findings')
-#' b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-#' b3<-BarrettsDataAccord_Event(b2,'Histology',
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' b3<-Barretts_EventType(b2,'Histology',
 #' 'ProcedurePerformed','OGDReportWhole','Findings')
 #' colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function groups the procedures by patient and then looks at those which
