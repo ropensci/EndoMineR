@@ -9,7 +9,8 @@ HistolExtrapolDx(dataframe, Column)
 \arguments{
 \item{dataframe}{dataframe containing histology results,}
 
-\item{Column}{the column to extract dysplasia, cancer, and GIST from- often the
+\item{Column}{the column to extract dysplasia, cancer, and GIST from- 
+often the
 Histology diagnosis column}
 }
 \description{

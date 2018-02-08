@@ -4,3 +4,5 @@
 ^\.travis\.yml$
 ^README\.Rmd$
 ^README-.*\.png$
+^Hold_deleteIfNotNeeded$
+^docs$

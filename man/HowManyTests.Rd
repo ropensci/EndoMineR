@@ -19,7 +19,7 @@ performed}
 \description{
 Get an overall idea of how many endoscopies have been done for an indication
 by year and month. This is a more involved version of
-SurveillanceCapacity function. It takes string for
+SurveilCapacity function. It takes string for
 the Indication for the test
 }
 \details{

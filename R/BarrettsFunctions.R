@@ -63,9 +63,11 @@ if (getRversion() >= "2.15.1")
 #Change to BarrPrague nee Barretts_PragueScore
 Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
   dataframe <- data.frame(dataframe)
-  dataframe$CStage <- str_extract(dataframe[, EndoReportColumn], "(C(\\s|=)*\\d+)")
+  dataframe$CStage <- str_extract(dataframe[, EndoReportColumn],
+                                  "(C(\\s|=)*\\d+)")
   dataframe$CStage <- as.numeric(str_replace(dataframe$CStage,"C", ""))
-  dataframe$MStage <- str_extract(dataframe[, EndoReportColumn], "(M(\\s|=)*\\d+)")
+  dataframe$MStage <- str_extract(dataframe[, EndoReportColumn],
+                                  "(M(\\s|=)*\\d+)")
   dataframe$MStage <- as.numeric(str_replace(dataframe$MStage,"M", ""))
   return(dataframe)
 }
@@ -86,15 +88,11 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
 #' @keywords Pathology extraction
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data cleaning
+#' # Mypath demo dataset. These functions are all part of Histology data 
+#' # cleaning
 #' # as part of the package.
 #'
-#' v<-HistolAccessionNumber(Mypath,'Histology',
-#' 'SP-\\d{2}-\\d{7}')
-#' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
+#' v<-HistolAll(Mypath)
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -121,10 +119,10 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
                        dataframe[, PathColumn], perl = TRUE),
                  "T1a",
                  ifelse(
-                   grepl("[Hh]igh grade ", dataframe[, PathColumn], perl = TRUE),
+                  grepl("[Hh]igh grade ", dataframe[, PathColumn], perl = TRUE),
                    "HGD",
                    ifelse(
-                     grepl("[Ll]ow grade", dataframe[, PathColumn], perl = TRUE),
+                    grepl("[Ll]ow grade", dataframe[, PathColumn], perl = TRUE),
                      "LGD",
                      ifelse(
                        grepl("[Ii]ndef", dataframe[, PathColumn], perl = TRUE),
@@ -145,7 +143,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
                            perl = TRUE
                        ),
                        "IM",
-                       ifelse(is.na(dataframe[, PathColumn]), "No tissue", "No_IM")
+                  ifelse(is.na(dataframe[, PathColumn]), "No tissue", "No_IM")
                        )
                        )
                        )
@@ -169,7 +167,8 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' @param HistolReportColumn The histology main text
 #' @param ProcPerformedColumn The Procedure Performed column
 #' @param EndoReportColumn The endoscopic diagnosis column
-#' @param EndoFindingsColumn The endoscopic findings column if different to the Diagnosis column
+#' @param EndoFindingsColumn The endoscopic findings column if different 
+#' to the Diagnosis column
 #' @keywords Event extraction
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
@@ -191,7 +190,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' # whole endoscopy report columns from the merged data set (v) for
 #' # EMR/APC/RFA/HALO so that the event for the procedure is recorded.
 #' b<-Barretts_EventType(v,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' rm(v)
 #'
 Barretts_EventType <- function(dataframe, HistolReportColumn, 
@@ -206,24 +205,24 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
                    dataframe[, HistolReportColumn], perl = TRUE),
              "EMR",
              ifelse(
-               grepl("ndomucosal", dataframe[, HistolReportColumn], perl = TRUE),
+            grepl("ndomucosal", dataframe[, HistolReportColumn], perl = TRUE),
                "EMR",
                ifelse(
-                 grepl("HALO|RFA", dataframe[, ProcPerformedColumn], perl = TRUE),
+              grepl("HALO|RFA", dataframe[, ProcPerformedColumn], perl = TRUE),
                  "RFA",
                  ifelse(
-                   grepl("APC", dataframe[, ProcPerformedColumn], perl = TRUE),
+                  grepl("APC", dataframe[, ProcPerformedColumn], perl = TRUE),
                    "APC",
                    ifelse(
-                     grepl("HALO|RFA", dataframe[, EndoReportColumn], perl = TRUE),
+                grepl("HALO|RFA", dataframe[, EndoReportColumn], perl = TRUE),
                      "RFA",
                      ifelse(
                        grepl("APC", dataframe[, EndoReportColumn], perl = TRUE),
                        "RFA",
                        ifelse(
-                         grepl("HALO|RFA", dataframe[, EndoFindingsColumn], perl = TRUE),
+                grepl("HALO|RFA", dataframe[, EndoFindingsColumn], perl = TRUE),
                          "RFA",
-                         ifelse(grepl("APC", dataframe[, EndoFindingsColumn], perl = TRUE), "APC",
+      ifelse(grepl("APC", dataframe[, EndoFindingsColumn], perl = TRUE), "APC",
                                 "nothing")
                        )
                      )
@@ -266,7 +265,7 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 #' #The function relies on the other Barrett's functions being run as well:
 #' b<-Barretts_PathStage(v,'Histology')
 #' b2<-Barretts_EventType(b,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' #The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -281,11 +280,14 @@ Barretts_FUType <- function(dataframe, EndoReportColumn) {
           grepl("(C(\\s|=)*\\d+)", dataframe[, EndoReportColumn], perl = TRUE),
           str_extract(dataframe[, EndoReportColumn], "(M(\\s|=)*\\d+)"),
           ifelse(
-            grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall", dataframe[, EndoReportColumn], perl = TRUE),
+grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall", 
+      dataframe[, EndoReportColumn], perl = TRUE),
             "0",
             ifelse(
-              grepl("[1-3]{1}(\\s)*?[cC][mM]", dataframe[, EndoReportColumn], perl = TRUE),
-              str_extract(dataframe[, EndoReportColumn], "[1-3]{1}(\\s)*?[cC][mM]"),
+              grepl("[1-3]{1}(\\s)*?[cC][mM]",
+                    dataframe[, EndoReportColumn], perl = TRUE),
+              str_extract(dataframe[, EndoReportColumn], 
+                          "[1-3]{1}(\\s)*?[cC][mM]"),
               NA
             )
           )
@@ -320,7 +322,6 @@ Barretts_FUType <- function(dataframe, EndoReportColumn) {
 #' The function follows the Histology function. You can use the same column
 #' names as suggested with the parent function HistolAll
 #' @param dataframe the dataframe(merged endoscopy and histology).
-#' @param EndoReportColumn The field to search (endoscopic findings)
 #' @keywords Barretts
 #' @importFrom stringr str_extract str_replace
 #' @export
@@ -460,7 +461,7 @@ BarrettsSurveil <- function(dataframe,
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -583,7 +584,7 @@ BarrettsDocumentQual <- function(dataframe, Findings) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -675,7 +676,7 @@ BarrettsBxQual <- function(dataframe,
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -733,7 +734,7 @@ BarrettsPathDetectQual <- function(dataframe, titlePlot) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -752,7 +753,8 @@ BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
   dataframe <- data.frame(dataframe)
   
   # Need to include indefinite for dysplasia
-  myDDR <- prop.table(table(dataframe[, EndoscopistReportColumn], dataframe[, IMorNoIM]))
+  myDDR <- prop.table(table(dataframe[, EndoscopistReportColumn],
+                            dataframe[, IMorNoIM]))
   return(myDDR)
 }
 
@@ -778,7 +780,7 @@ BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -878,7 +880,7 @@ BarrettsEMRGrades <- function(EndoSubsetEMR) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#'  'ProcedurePerformed','OGDReportWhole','Findings')
+#'  'ProcedurePerformed','Original','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -937,7 +939,7 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -963,15 +965,19 @@ BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
   HALO360c <- rbind(HALO360a, HALO360b)
   
   HALO60a <-
-    EndoSubsetRFA[grepl("HALO60| 60", EndoSubsetRFA[, Column], perl = TRUE), ]
+    EndoSubsetRFA[grepl("HALO60| 60",
+                        EndoSubsetRFA[, Column], perl = TRUE), ]
   HALO60b <-
-    EndoSubsetRFA[grepl("HALO60| 60", EndoSubsetRFA[, Column2], perl = TRUE), ]
+    EndoSubsetRFA[grepl("HALO60| 60", 
+                        EndoSubsetRFA[, Column2], perl = TRUE), ]
   HALO60c <- rbind(HALO60a, HALO60b)
   
   HALOTTSa <-
-    EndoSubsetRFA[grepl("TTS|[Cc]hannel", EndoSubsetRFA[, Column], perl = TRUE), ]
+    EndoSubsetRFA[grepl("TTS|[Cc]hannel", 
+                        EndoSubsetRFA[, Column], perl = TRUE), ]
   HALOTTSb <-
-    EndoSubsetRFA[grepl("TTS|[Cc]hannel", EndoSubsetRFA[, Column2], perl = TRUE), ]
+    EndoSubsetRFA[grepl("TTS|[Cc]hannel", 
+                        EndoSubsetRFA[, Column2], perl = TRUE), ]
   HALOTTSc <- rbind(HALOTTSa, HALOTTSb)
   
   HALOAPCa <-
@@ -1034,13 +1040,14 @@ BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function compares the Paris score from the endoscopy report free text to
+#' # The function compares the Paris score 
+#' # from the endoscopy report free text to
 #' # the histopathology scores for the same endoscopies so you can see what the
 #' # lesion recognition is like overall
 #' BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
@@ -1066,12 +1073,14 @@ BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
           "2b",
           ifelse(
             grepl("[Ii][Ii]c|2c|11c", EndoSubsetEMR[, Column], perl = TRUE) |
-              grepl("[Ii][Ii]c|2c|11c", EndoSubsetEMR[, Column2], perl = TRUE),
+              grepl("[Ii][Ii]c|2c|11c", 
+                    EndoSubsetEMR[, Column2], perl = TRUE),
             "2c",
             ifelse(
               grepl("[Ii][Ii][Ii]|III",
                     EndoSubsetEMR[, Column], perl = TRUE) |
-                grepl("[Ii][Ii][Ii]|III", EndoSubsetEMR[, Column2], perl = TRUE),
+                grepl("[Ii][Ii][Ii]|III", 
+                      EndoSubsetEMR[, Column2], perl = TRUE),
               "3",
               ifelse(
                 grepl("Paris [Tt]ype [Ii]s|1s "
@@ -1160,7 +1169,7 @@ BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','OGDReportWhole','Findings')
+#' 'ProcedurePerformed','Original','Findings')
 #' colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function groups the procedures by patient and then looks at those which
 #' # have 'nothing' in the event column (which means biopsies only) which was

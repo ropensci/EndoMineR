@@ -36,10 +36,10 @@ v<-HistolBxSize(v,'Macroscopicdescription')
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 'HospitalNumber')
 # The function relies on the other Barrett's functions being run as well:
-b1<-BarrettsDataAccord_Prague(v,'Findings')
-b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-b3<-BarrettsDataAccord_Event(b2,'Histology',
-'ProcedurePerformed','OGDReportWhole','Findings')
+b1<-Barretts_PragueScore(v,'Findings')
+b2<-Barretts_PathStage(b1,'Histology')
+b3<-Barretts_EventType(b2,'Histology',
+'ProcedurePerformed','Original','Findings')
 colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function groups the procedures by patient and then looks at those which
 # have 'nothing' in the event column (which means biopsies only) which was

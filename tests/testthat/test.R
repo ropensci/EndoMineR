@@ -416,7 +416,8 @@ test_that("TermStandardLocation", {
 )
 
 
-PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
+PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",
+                                    Histoltree)
 names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) == 
                                  'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
@@ -429,13 +430,16 @@ f<-PolypLocator(f,'SampleLocation')
 
 test_that("SampleLocator", {
   
-  Histoltree <-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-                "Date received:","Clinical Details:","Macroscopic description:",
+  Histoltree <-c("Hospital Number","Patient Name:","DOB:",
+                 "General Practitioner:",
+                "Date received:","Clinical Details:",
+                "Macroscopic description:",
                 "Histology:","Diagnosis:"
   )
   
   
-  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
+  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole"
+                                      ,Histoltree)
   names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
                                    'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
@@ -448,12 +452,15 @@ test_that("SampleLocator", {
 
 test_that("PolypLocator", {
   
-  Histoltree <-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-                 "Date received:","Clinical Details:","Macroscopic description:",
+  Histoltree <-c("Hospital Number","Patient Name:","DOB:",
+                 "General Practitioner:",
+                 "Date received:","Clinical Details:",
+                 "Macroscopic description:",
                  "Histology:","Diagnosis:"
   )
   
-  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
+  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole"
+                                      ,Histoltree)
   names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
                                    'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
@@ -466,11 +473,14 @@ test_that("PolypLocator", {
 
 test_that("PolypTidyUpLocator", {
   
-  Histoltree <-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-                 "Date received:","Clinical Details:","Macroscopic description:",
+  Histoltree <-c("Hospital Number","Patient Name:","DOB:",
+                 "General Practitioner:",
+                 "Date received:","Clinical Details:",
+                 "Macroscopic description:",
                  "Histology:","Diagnosis:"
   )
-  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
+  PathDataFrameFinalColon <-
+    Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
   names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
                                    'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
@@ -624,9 +634,9 @@ test_that("BarrettsDDRQual", {
 
 
 
-#### BarrettsParisEMR ####
+#### BarrettsEMRGrades  ####
 
-test_that("BarrettsParisEMR", {
+test_that("BarrettsEMRGrades", {
   v<-HistolDx(v,'Diagnosis')
   v<-HistolExtrapolDx(v,'Diagnosis')
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -637,7 +647,7 @@ test_that("BarrettsParisEMR", {
   'ProcedurePerformed','Original','Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-  BarrettsParisEMR(b4)
+  BarrettsEMRGrades(b4)
 })
 
 
@@ -677,9 +687,9 @@ test_that("BarrettssRFACath", {
 })
 
 
-#### BarrettsEMRGrades ####
+#### BarrettsParisEMR ####
 
-test_that("BarrettsEMRGrades", {
+test_that("BarrettsParisEMR", {
   v<-HistolDx(v,'Diagnosis')
   v<-HistolExtrapolDx(v,'Diagnosis')
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -690,7 +700,7 @@ test_that("BarrettsEMRGrades", {
                      'ProcedurePerformed','Original','Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-  BarrettsEMRGrades(b4,"ProcedurePerformed","Findings")
+  BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
 })
 
 

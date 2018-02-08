@@ -57,15 +57,18 @@ if (getRversion() >= "2.15.1")
 #' # Myendo and searches through the raw
 #' # endoscopy text so that the text is
 #' #divided by sentence into a newline
-#' v<-NewLines(Myendo,'OGDReportWhole')
+#' v<-NewLines(Myendo,'Original')
 
 
 NewLines <- function(dataframe, EndoReportColumn) {
   dataframe <- data.frame(dataframe)
   # Separate long lines with empty space into new lines
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],"    ", "\n")
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],"(\n|\r){2,8}", "\\.")
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],"(\n|\r)", "\\." )
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
+                                               "    ", "\n")
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
+                                               "(\n|\r){2,8}", "\\.")
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
+                                               "(\n|\r)", "\\." )
   return(dataframe)
 }
 
@@ -104,7 +107,8 @@ Extractor <- function(dataframeIn, Column, delim) {
   ColumnForLater<-Column
   Column <- rlang::sym(Column)
   dataframeIn <- data.frame(dataframeIn)
-  dataframeIn<-dataframeIn %>% tidyr::separate(!!Column, into = c("added_name",delim), 
+  dataframeIn<-dataframeIn %>% 
+    tidyr::separate(!!Column, into = c("added_name",delim), 
                                           sep = paste(delim, collapse = "|"))
     names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("\\\\.*", "", x))
@@ -114,7 +118,7 @@ Extractor <- function(dataframeIn, Column, delim) {
   dataframeIn<-data.frame(dataframeIn)
   dataframeIn<-dataframeIn[,-1]
   dataframeIn<-lapply(dataframeIn, ColumnCleanUpAll)
-  names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=T)
+  names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=TRUE)
   dataframeIn<-data.frame(dataframeIn)
   #Add the original column back in so have the original reference
   dataframeIn<-cbind(dataframeInForLater[,ColumnForLater],dataframeIn)
@@ -187,14 +191,21 @@ EndoscAll<- function(dataframe) {
 EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
   # Extraction of the Endoscopist
   dataframe <- data.frame(dataframe)
-  dataframe[, EndoReportColumn] <- gsub("Dr", "", dataframe[, EndoReportColumn], fixed = TRUE)
-  dataframe[, EndoReportColumn] <- gsub("Mr", "", dataframe[, EndoReportColumn], fixed = TRUE)
-  dataframe[, EndoReportColumn] <- gsub("Professor|Prof", "", dataframe[, EndoReportColumn], fixed = TRUE)
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],"[^[:alnum:],]", "")
+  dataframe[, EndoReportColumn] <- gsub("Dr", "",
+                                  dataframe[, EndoReportColumn], fixed = TRUE)
+  dataframe[, EndoReportColumn] <- gsub("Mr", "", 
+                                  dataframe[, EndoReportColumn], fixed = TRUE)
+  dataframe[, EndoReportColumn] <- gsub("Professor|Prof", "", 
+                                  dataframe[, EndoReportColumn], fixed = TRUE)
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
+                                               "[^[:alnum:],]", "")
   # Put gaps between names
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],"([a-z])([A-Z])", "\\1 \\2")
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],"2nd.*", "")
-  dataframe[, EndoReportColumn] <- trimws(dataframe[, EndoReportColumn], which = c("both"))
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
+                                               "([a-z])([A-Z])", "\\1 \\2")
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
+                                               "2nd.*", "")
+  dataframe[, EndoReportColumn] <- trimws(dataframe[, EndoReportColumn], 
+                                          which = c("both"))
   return(dataframe)
 }
 
@@ -247,20 +258,26 @@ EndoscMeds <- function(dataframe, MedColumn) {
 EndoscInstrument <- function(dataframe, InstrumentColumn) {
   # Extraction of the Instrument used:
   
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],"-.*", "")
-  dataframe[, InstrumentColumn] <- gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
+  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
+                                               "-.*", "")
+  dataframe[, InstrumentColumn] <- 
+gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
     Loan Scope \\(specify serial no:|
     Loan Scope \\(specify\\s*serial no|\\)|-.*",
     "",dataframe[, InstrumentColumn]
     )
   dataframe[, InstrumentColumn] <-
-    str_replace(dataframe[, InstrumentColumn],",.*|:|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |
+    str_replace(dataframe[, InstrumentColumn],
+",.*|:|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |
          ^,",
          ""
          )
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],"FC ", "FC")
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],"^\\s*([1-9])", "A\\1")
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],"[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]
+  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
+                                               "FC ", "FC")
+  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
+                                               "^\\s*([1-9])", "A\\1")
+  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
+"[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]
                  \\(specify serial no\\)\\s*",
                  "")
   dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
@@ -289,8 +306,10 @@ EndoscInstrument <- function(dataframe, InstrumentColumn) {
 EndoscIndications <- function(dataframe, IndicationColumn) {
   # Extraction of the Indications for examination
   # eg chest pain/ dysphagia etc.
-  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],"\r\n", "\n")
-  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],"\\.\n\\.\n|\\.\r\\.\r", "\\.")
+  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],
+                                               "\r\n", "\n")
+  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],
+                                               "\\.\n\\.\n|\\.\r\\.\r", "\\.")
   return(dataframe)
   
 }
@@ -313,15 +332,24 @@ EndoscIndications <- function(dataframe, IndicationColumn) {
 
 EndoscProcPerformed <- function(dataframe, ProcPerformed) {
   # Extraction of the eg Colonoscopy or gastroscopy etc:
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"Withdrawal.*", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"Quality.*", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"Adequate.*|Good.*|Poor.*|None.*", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"FINDINGS", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"-\\s*$|-$|-\\s+$", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"([A-Z])-", "\\1 -")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"\\.", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"-([A-Z])", "-\\1")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],"\\)-", ") -")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                            "Withdrawal.*", "")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                            "Quality.*", "")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                       "Adequate.*|Good.*|Poor.*|None.*", "")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                            "FINDINGS", "")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                            "-\\s*$|-$|-\\s+$", "")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                            "([A-Z])-", "\\1 -")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                            "\\.", "")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                            "-([A-Z])", "-\\1")
+  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+                                            "\\)-", ") -")
   return(dataframe)
 }
 
@@ -344,7 +372,8 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
 
 EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
-  dataframe[, FindingsColumn] <- str_replace(dataframe[, FindingsColumn],"cm\\s+[A-Z]|cm.+\\)", "cm\n")
+  dataframe[, FindingsColumn] <- str_replace(dataframe[, FindingsColumn],
+                                             "cm\\s+[A-Z]|cm.+\\)", "cm\n")
   return(dataframe)
 }
 
@@ -447,7 +476,8 @@ NegativeRemove <- function(dataframe, Column) {
       ignore.case = TRUE
     )
   # Keep abnormal in- don't ignore case as it messes it up
-  dataframe[, Column] <- str_replace(dataframe[, Column],".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "")
+  dataframe[, Column] <- str_replace(dataframe[, Column],
+                                     ".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "")
   # Other negatives
   dataframe[, Column] <- gsub(
     ".*there (is|are) \\bno\\b .*?(\\.|
@@ -498,7 +528,7 @@ NegativeRemove <- function(dataframe, Column) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples me<-ColumnCleanUp(Myendo,"OGDReportWhole")
+#' @examples me<-ColumnCleanUp(Myendo,"Original")
 #' 
 
 ColumnCleanUp <- function(dataframe, Column) {
@@ -632,7 +662,8 @@ HistolMacDescripCleanup <- function(dataframe,MacroColumn) {
   
   dataframe <- data.frame(dataframe)
   # Column specific cleanup
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Dd]ictated by.*", "")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Dd]ictated by.*", "")
   return(dataframe)
 }
 
@@ -653,7 +684,8 @@ HistolMacDescripCleanup <- function(dataframe,MacroColumn) {
 
 HistolHistol <- function(dataframe, HistolColumn) {
   # HISTOLOGY
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"\n|\r", " ")
+  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
+                                           "\n|\r", " ")
   dataframe[, HistolColumn] <- NegativeRemove(dataframe[, HistolColumn])
   dataframe$Histol_Simplified <- dataframe[, HistolColumn]
   # Negative extraction- may merge this with the function
@@ -661,7 +693,8 @@ HistolHistol <- function(dataframe, HistolColumn) {
   #phrases below could undoubetdly be simplified with more intelligent regex
   dataframe$Histol_Simplified <- gsub("- ", "\n", dataframe$Histol_Simplified,
                               fixed = TRUE)
-  dataframe$Histol_Simplified <- gsub("-[A-Z]", "\n", dataframe$Histol_Simplified
+  dataframe$Histol_Simplified <- gsub("-[A-Z]", "\n", 
+                                      dataframe$Histol_Simplified
                               , fixed = TRUE)
   dataframe$Histol_Simplified <-
     str_replace(dataframe$Histol_Simplified,".*biopsies.*\n", "")
@@ -712,7 +745,8 @@ HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
 
 HistolDx <- function(dataframe, HistolColumn) {
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"Dr.*", "")
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"[Rr]eported.*", "")
+  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
+                                           "[Rr]eported.*", "")
   # Column-generic cleanup
   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
   dataframe[, HistolColumn] <- NegativeRemove(dataframe, HistolColumn)
@@ -736,7 +770,8 @@ HistolDx <- function(dataframe, HistolColumn) {
 #' coded to look for dysplasia cancer and GIST. Optional use.
 #'
 #' @param dataframe dataframe containing histology results,
-#' @param Column the column to extract dysplasia, cancer, and GIST from- often the
+#' @param Column the column to extract dysplasia, cancer, and GIST from- 
+#' often the
 #' Histology diagnosis column
 #' @importFrom stringr str_extract
 #' @keywords Histology diagnosis
@@ -777,15 +812,24 @@ HistolExtrapolDx <- function(dataframe, Column) {
 HistolMacDescrip <- function(dataframe, MacroColumn) {
   x <- data.frame(dataframe)
   # Conversion of text numbers to allow number of biopsies to be extracted
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Oo]ne", "1")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Ss]ingle", "1")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Tt]wo", "2")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Tt]hree", "3")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Ff]our", "4")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Ff]ive", "5")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Ss]ix", "6")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Ss]even", "7")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],"[Ee]ight", "8")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Oo]ne", "1")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ss]ingle", "1")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Tt]wo", "2")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Tt]hree", "3")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ff]our", "4")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ff]ive", "5")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ss]ix", "6")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ss]even", "7")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ee]ight", "8")
   return(x)
 }
 

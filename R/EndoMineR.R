@@ -144,7 +144,8 @@ SurveilFirstTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    dataframe %>% group_by(!!HospNum_Ida) %>% arrange(!!Endo_ResultPerformeda) %>%
+    dataframe %>% group_by(!!HospNum_Ida) %>% 
+      arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == 1)
   }
 
@@ -165,7 +166,8 @@ SurveilFirstTest <-
 
 SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-  dataframe %>% mutate(month = format(as.Date(!!Endo_ResultPerformeda), "%m")) %>%
+  dataframe %>% mutate(month = 
+                         format(as.Date(!!Endo_ResultPerformeda), "%m")) %>%
     group_by(month) %>% summarise(n = n())
 }
 
@@ -210,7 +212,8 @@ HowManyTests <-
            StringToSearch) {
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     TestNumbers <-
-      dataframe %>% filter(str_detect(dataframe[, Indication], StringToSearch)) %>%
+      dataframe %>% filter(
+        str_detect(dataframe[, Indication], StringToSearch)) %>%
       arrange(as.Date(!!Endo_ResultPerformeda)) %>% group_by(
         day = day(as.Date(!!Endo_ResultPerformeda)),
         week = week(as.Date(!!Endo_ResultPerformeda)),
@@ -390,7 +393,8 @@ PatientFlow_CircosPlots <-
     ProcPerformeda <- sym(ProcPerformed)
     
     mydf <-
-      dataframe %>% arrange(!!Endo_ResultPerformeda) %>% group_by(!!HospNum_Ida) %>%
+      dataframe %>% arrange(!!Endo_ResultPerformeda) %>% 
+      group_by(!!HospNum_Ida) %>%
       mutate(origin = lag(!!ProcPerformeda, 1),
              destination = !!ProcPerformeda) %>%
       select(origin, destination, PatientID) %>%
@@ -649,8 +653,10 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
     gsub("IleoAnal([a-zA-Z]+)", "Ileoanal \\1 ", dataframe$SampleLocation)
   dataframe$SampleLocation <-
     gsub("[Aa]nastomosis", "Anastomosis", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("[Xx]\\s*[1-9]|", "", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("[1-9]\\s*[Xx]|", "", dataframe$SampleLocation)
+  dataframe$SampleLocation <- gsub("[Xx]\\s*[1-9]|", "", 
+                                   dataframe$SampleLocation)
+  dataframe$SampleLocation <- gsub("[1-9]\\s*[Xx]|", "", 
+                                   dataframe$SampleLocation)
   dataframe$SampleLocation <-
     gsub("[Hh]yperplastic", "", dataframe$SampleLocation)
   dataframe$SampleLocation <-
@@ -749,7 +755,8 @@ SampleLocator <- function(dataframe, SampleLocationColumn) {
       ),
       collapse = "|"
     )
-  dataframe$AllSampleLocator <- str_match_all(dataframe[, SampleLocationColumn], tofind)
+  dataframe$AllSampleLocator <- 
+    str_match_all(dataframe[, SampleLocationColumn], tofind)
   dataframe$AllSampleLocator <-
     lapply(dataframe$AllSampleLocator, function(p)
       unique(p))
@@ -816,7 +823,8 @@ PolypLocator <- function(dataframe, SampleLocationColumn) {
       ),
       collapse = "|"
     )
-  dataframe$PolypLocator <- str_match_all(dataframe[, SampleLocationColumn], tofind)
+  dataframe$PolypLocator <- str_match_all(dataframe[, SampleLocationColumn]
+                                          , tofind)
   dataframe$PolypLocator <- lapply(dataframe$PolypLocator, function(p)
     unique(p))
   return(dataframe)
@@ -1009,7 +1017,8 @@ GRS_Type_Assess_By_Unit <-
     
     # Hyperplastic detection rate by endoscopist (from whole dataset) ====
     MyColonDataHyperplasticDetectionByEndoscopist <-
-      dataframe[grep(".*yperplastic.*", dataframe[, Dx]),] %>% group_by_(Endo_Endoscopist) %>%
+      dataframe[grep(".*yperplastic.*", dataframe[, Dx]),] %>% 
+      group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumHyperplastics = nrow(.)))
     
     MyColonDataColonoscopiesByEndoscopist <-
@@ -1059,6 +1068,7 @@ GRS_Type_Assess_By_Unit <-
 
 NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
   dataframe<-data.frame(dataframe)
-  NumByEndoscopist <- data.frame(table(dataframe[, EndoscopistColumn], dataframe[, IndicationColumn]))
+  NumByEndoscopist <- data.frame(table(dataframe[, EndoscopistColumn], 
+                                       dataframe[, IndicationColumn]))
   return(NumByEndoscopist)
 }
