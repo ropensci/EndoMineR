@@ -39,7 +39,7 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 b1<-Barretts_PragueScore(v,'Findings')
 b2<-Barretts_PathStage(b1,'Histology')
 b3<-Barretts_EventType(b2,'Histology',
-'ProcedurePerformed','Original','Findings')
+'ProcedurePerformed','Indications','Findings')
 colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function groups the procedures by patient and then looks at those which
 # have 'nothing' in the event column (which means biopsies only) which was

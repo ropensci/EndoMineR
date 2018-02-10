@@ -188,9 +188,9 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' # The function then looks within the Histology and the
 #' # Procedure performed, free text endoscopic Findings and the original
 #' # whole endoscopy report columns from the merged data set (v) for
-#' # EMR/APC/RFA/HALO so that the event for the procedure is recorded.
+#' # EMR/APC/RFA/HALO so that the event for the procedure, is recorded.
 #' b<-Barretts_EventType(v,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' rm(v)
 #'
 Barretts_EventType <- function(dataframe, HistolReportColumn, 
@@ -265,7 +265,7 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 #' #The function relies on the other Barrett's functions being run as well:
 #' b<-Barretts_PathStage(v,'Histology')
 #' b2<-Barretts_EventType(b,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' #The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -461,7 +461,7 @@ BarrettsSurveil <- function(dataframe,
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -583,8 +583,8 @@ BarrettsDocumentQual <- function(dataframe, Findings) {
 #' # The function relies on the other Barrett's functions being run as well:
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
-#' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' b3<-Barretts_EventType(b2,'Histology','ProcedurePerformed',
+#' 'Indications','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -676,7 +676,7 @@ BarrettsBxQual <- function(dataframe,
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -734,7 +734,7 @@ BarrettsPathDetectQual <- function(dataframe, titlePlot) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -780,7 +780,7 @@ BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -879,15 +879,17 @@ BarrettsEMRGrades <- function(EndoSubsetEMR) {
 #' # The function relies on the other Barrett's functions being run as well:
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
+#' browser(b2)
 #' b3<-Barretts_EventType(b2,'Histology',
-#'  'ProcedurePerformed','Original','Findings')
+#'  'ProcedurePerformed','Indications','Findings')
+#'  
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b4<-Barretts_FUType(b3,'Findings')
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function groups the overall number of surveillance cases over time
-#' # The endoscopic episodes should be selected according to surveillance
+#' # The endoscopic episodes should be selected,according to surveillance
 #' # being the indication prior to using this function
 #' BarrettsBasicNumbers(b4,"Date.x")
 #' rm(v)
@@ -939,7 +941,7 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -1040,7 +1042,7 @@ BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
@@ -1169,7 +1171,7 @@ BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
 #' b3<-Barretts_EventType(b2,'Histology',
-#' 'ProcedurePerformed','Original','Findings')
+#' 'ProcedurePerformed','Indications','Findings')
 #' colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function groups the procedures by patient and then looks at those which
 #' # have 'nothing' in the event column (which means biopsies only) which was

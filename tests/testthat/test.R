@@ -533,7 +533,7 @@ test_that("Barretts_PathStage", {
 
 test_that("Barretts_EventType", {
 
-b<-Barretts_EventType(v,'Histology','ProcedurePerformed','Original'
+b<-Barretts_EventType(v,'Histology','ProcedurePerformed','EndoscopicDiagnosis'
                             ,'Findings')
 })
 

@@ -21,7 +21,6 @@ or as a way of providing a 'positive diagnosis only' type output (see
 HistolDx)
 }
 \examples{
-me<-ColumnCleanUp(Myendo,"Original")
-
+me<-ColumnCleanUp(Myendo,"OGDReportWhole")
 }
 \keyword{Cleaner}

@@ -20,6 +20,7 @@ HistolDx)
 }
 \examples{
 Myendo<-lapply(Myendo, ColumnCleanUpAll)
+rm(Myendo)
 
 }
 \keyword{Cleaner}

@@ -1065,6 +1065,7 @@ GRS_Type_Assess_By_Unit <-
 #' @export
 #' @examples Myendo<-Myendo[grepl('Gastroscopy',Myendo$ProcedurePerformed),]
 #'  NumberPerformed(Myendo,'Endoscopist','Indications')
+#'  rm(Myendo)
 
 NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
   dataframe<-data.frame(dataframe)

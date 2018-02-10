@@ -22,5 +22,6 @@ names(Myendo)<-c("OGDReportWhole","HospitalNumber","PatientName",
 "Findings" )
 #Now use the function
 Myendo<-EndoscAll(Myendo)
+rm(Myendo)
 }
 \keyword{Extraction}

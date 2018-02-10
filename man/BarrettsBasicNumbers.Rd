@@ -30,15 +30,17 @@ v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
 # The function relies on the other Barrett's functions being run as well:
 b1<-Barretts_PragueScore(v,'Findings')
 b2<-Barretts_PathStage(b1,'Histology')
+browser(b2)
 b3<-Barretts_EventType(b2,'Histology',
- 'ProcedurePerformed','Original','Findings')
+ 'ProcedurePerformed','Indications','Findings')
+ 
 # The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
 b4<-Barretts_FUType(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function groups the overall number of surveillance cases over time
-# The endoscopic episodes should be selected according to surveillance
+# The endoscopic episodes should be selected,according to surveillance
 # being the indication prior to using this function
 BarrettsBasicNumbers(b4,"Date.x")
 rm(v)

@@ -43,9 +43,9 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 # The function then looks within the Histology and the
 # Procedure performed, free text endoscopic Findings and the original
 # whole endoscopy report columns from the merged data set (v) for
-# EMR/APC/RFA/HALO so that the event for the procedure is recorded.
+# EMR/APC/RFA/HALO so that the event for the procedure, is recorded.
 b<-Barretts_EventType(v,'Histology',
-'ProcedurePerformed','Original','Findings')
+'ProcedurePerformed','Indications','Findings')
 rm(v)
 
 }

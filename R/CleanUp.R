@@ -57,7 +57,7 @@ if (getRversion() >= "2.15.1")
 #' # Myendo and searches through the raw
 #' # endoscopy text so that the text is
 #' #divided by sentence into a newline
-#' v<-NewLines(Myendo,'Original')
+#' v<-NewLines(Myendo,'OGDReportWhole')
 
 
 NewLines <- function(dataframe, EndoReportColumn) {
@@ -143,6 +143,7 @@ Extractor <- function(dataframeIn, Column, delim) {
 #' "Findings" )
 #' #Now use the function
 #' Myendo<-EndoscAll(Myendo)
+#' rm(Myendo)
 
 
 EndoscAll<- function(dataframe) {
@@ -528,8 +529,8 @@ NegativeRemove <- function(dataframe, Column) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples me<-ColumnCleanUp(Myendo,"Original")
-#' 
+#' @examples me<-ColumnCleanUp(Myendo,"OGDReportWhole")
+
 
 ColumnCleanUp <- function(dataframe, Column) {
  # dataframe <- (data.frame(dataframe))
@@ -541,11 +542,6 @@ ColumnCleanUp <- function(dataframe, Column) {
   dataframe[, Column] <- str_replace(dataframe[, Column],"$\\.", "")
   return(dataframe[, Column])
 }
-
-
-
-
-
 
 #' Tidies up all columns
 #'
@@ -561,6 +557,7 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' @export
 #' @importFrom stringr str_replace
 #' @examples Myendo<-lapply(Myendo, ColumnCleanUpAll)
+#' rm(Myendo)
 #' 
 
 ColumnCleanUpAll <- function(dataframe) {
@@ -570,7 +567,6 @@ ColumnCleanUpAll <- function(dataframe) {
   dataframe <- gsub(".", "\n", dataframe, fixed = TRUE)
   dataframe <- str_replace(dataframe,"\\s{5}", "")
   dataframe <- str_replace(dataframe,"^\\.", "")
-  
   dataframe<- str_replace(dataframe,"$\\.", "")
   return(dataframe)
 }
