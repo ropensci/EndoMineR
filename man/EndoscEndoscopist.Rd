@@ -21,6 +21,7 @@ has been used.
 }
 \examples{
 v<-EndoscEndoscopist(Myendo,'Endoscopist')
+rm(v)
 }
 \keyword{Endoscopist}
 \keyword{extraction}

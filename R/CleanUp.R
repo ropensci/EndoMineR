@@ -152,11 +152,9 @@ EndoscAll<- function(dataframe) {
     dataframe<-EndoscMeds(Myendo,'Medications')
     print("Meds")
   }
-
   if("Instruments" %in% colnames(dataframe)){
     dataframe<-EndoscInstrument(dataframe,'Instruments')
   }
-
   if("Indications" %in% colnames(dataframe)){
     dataframe<-EndoscIndications(dataframe,'Indications')
   }
@@ -166,10 +164,11 @@ EndoscAll<- function(dataframe) {
   if("Findings" %in% colnames(dataframe)){
     dataframe<-EndoscFindings(dataframe,'Findings')
   }
+  if("Endoscopist" %in% colnames(dataframe)){
+    dataframe<-EndoscEndoscopist(dataframe,'Endoscopist')
+  }
   return(dataframe)
 }
-
-
 
 
 
@@ -188,15 +187,12 @@ EndoscAll<- function(dataframe) {
 #' @export
 #' @importFrom stringr str_replace
 #' @examples v<-EndoscEndoscopist(Myendo,'Endoscopist')
+#' rm(v)
 
 EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
   # Extraction of the Endoscopist
   dataframe <- data.frame(dataframe)
-  dataframe[, EndoReportColumn] <- gsub("Dr", "",
-                                  dataframe[, EndoReportColumn], fixed = TRUE)
-  dataframe[, EndoReportColumn] <- gsub("Mr", "", 
-                                  dataframe[, EndoReportColumn], fixed = TRUE)
-  dataframe[, EndoReportColumn] <- gsub("Professor|Prof", "", 
+  dataframe[, EndoReportColumn] <- gsub("Mr|Professor|Prof|Dr", "", 
                                   dataframe[, EndoReportColumn], fixed = TRUE)
   dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
                                                "[^[:alnum:],]", "")
@@ -654,7 +650,6 @@ HistolAll <- function(dataframe) {
 
 
 HistolMacDescripCleanup <- function(dataframe,MacroColumn) {
- 
   
   dataframe <- data.frame(dataframe)
   # Column specific cleanup

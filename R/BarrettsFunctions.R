@@ -356,15 +356,35 @@ grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall",
 #' 
 #' #The function relies on the other Barrett's functions being run as well:
 #' b<-BarrettsAll(v)
+#' rm(v)
+#' rm(Myendo)
 
 
 
 BarrettsAll <- function(dataframe) {
   if("Histology" %in% colnames(dataframe)){
-    dataframe<-HistolHistol(dataframe,'Histology')
-    dataframe<-HistolAccessionNumber(dataframe,'Histology','SP-\\d{2}-\\d{7}')
-    print("Meds")
+    dataframe<-Barretts_PathStage(dataframe,'Histology')
   }
+  
+  
+  if("Findings" %in% colnames(dataframe)){
+    dataframe<-Barretts_PragueScore(dataframe,'Findings')
+    dataframe<-Barretts_FUType(dataframe,'Findings')
+  }
+  
+  if("Histology" %in% colnames(dataframe)){
+    if("ProcedurePerformed" %in% colnames(dataframe)){
+      if("Indications" %in% colnames(dataframe)){
+        if("Findings" %in% colnames(dataframe)){
+          dataframe<-Barretts_EventType(dataframe,'Histology',
+                       'ProcedurePerformed','Indications','Findings')
+        }
+      }
+    }
+  }
+  dataframe<-data.frame(dataframe)
+  
+  return(dataframe)
   
   }
 
