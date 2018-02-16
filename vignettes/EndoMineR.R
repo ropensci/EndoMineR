@@ -1,32 +1,48 @@
-## ----exampleChopperNewLines, eval = FALSE--------------------------------
-#  v<-ChopperNewLines(Myendo,'OGDReportWhole')
+## ----setup, include=FALSE------------------------------------------------
+library(pander)
+library(EndoMineR)
+knitr::opts_chunk$set(echo = TRUE)
 
-## ----exampleExtractor, eval = FALSE--------------------------------------
-#  Mypath<-data(PathDataFrameFinalColon)
-#  HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-#  "Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-#  for(i in 1:(length(HistolTree)-1)) {
-#  Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-#  as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-#  }
+## ----exampleNewLines, eval = FALSE---------------------------------------
+#  v<-NewLines(Myendo,'OGDReportWhole')
 
-## ----exampleEndoscChopperEndoscopist, eval = FALSE-----------------------
-#  EndoscChopperEndoscopist(Myendo,'Endoscopist')
+## ----exampleExtractor,echo=FALSE-----------------------------------------
+PathDataFrameFinalColon2<-PathDataFrameFinalColon
+#pander(head(Mypath,3))
+
+names(PathDataFrameFinalColon2)<-"PathReportWhole"
+pander(head(PathDataFrameFinalColon2,1))
+
+## ----exampleExtractor2---------------------------------------------------
+mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+"Date received:","Clinical Details:","Macroscopic description:",
+"Histology:","Diagnosis:")
+PathDataFrameFinalColon2<-Extractor(PathDataFrameFinalColon2,"PathReportWhole",mywords)
+
+
+## ----exampleExtractor3,echo=FALSE----------------------------------------
+PathDataFrameFinalColon2<-head(PathDataFrameFinalColon2[2:10],1)
+pander::panderOptions('table.split.table', Inf)
+pander::panderOptions('table.split.cells', Inf)
+pander(head(PathDataFrameFinalColon2,1))
+
+## ----exampleEndoscEndoscopist, eval = FALSE------------------------------
+#  EndoscEndoscopist(Myendo,'Endoscopist')
 
 ## ----exampleEndoCleaningFunc, eval = FALSE-------------------------------
-#  v<-EndoscChopperMeds(Myendo,'Medications')
-#  v<-EndoscChopperInstrument(Myendo,'Instrument')
-#  v<-EndoscChopperIndications(Myendo,'Indications')
-#  v<-EndoscChopperProcPerformed(Myendo,'ProcedurePerformed')
+#  v<-EndoscMeds(Myendo,'Medications')
+#  v<-EndoscInstrument(Myendo,'Instrument')
+#  v<-EndoscIndications(Myendo,'Indications')
+#  v<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
 
-## ----exampleEHistolChopperHistol, eval = FALSE---------------------------
-#  t<-HistolChopperHistol(Mypath,'Histology')
+## ----exampleEHistolHistol, eval = FALSE----------------------------------
+#  t<-HistolHistol(Mypath,'Histology')
 
-## ----exampleHistolChopperNumbOfBx, eval = FALSE--------------------------
-#  v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+## ----exampleHistolNumbOfBx, eval = FALSE---------------------------------
+#  v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 
 ## ----exampleOtherFunctionsHistology, eval = FALSE------------------------
-#  v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
-#  v<-HistolChopperExtrapolDx(Mypath,"Diagnosis")
-#  v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+#  v<-HistolMacDescripCleanup(Mypath,"Macroscopicdescription")
+#  v<-HistolExtrapolDx(Mypath,"Diagnosis")
+#  v<-HistolAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 

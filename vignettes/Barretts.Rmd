@@ -10,12 +10,14 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+
 ```
 ##Application to specific disease entities- Barrett's oesophagus
 
 The functions above really act as building blocks for the further, more complex analyses we can do for specific Endoscopic-pathological disease sets
 
-One particular disease, the premalignant oesophageal condition Barrett's oesophagus, requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 guidelines, means the presence or absence of intestinal metaplasia)
+One particular disease, the premalignant oesophageal condition Barrett's oesophagus, requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 UK guidelines, means the presence or absence of intestinal metaplasia)
 
 
 
@@ -35,8 +37,10 @@ Such a dataset needs some processing prior to the analysis so for this we can tu
 
 Firstly we need to extract the length of the Barrett's segment. After filtering for indication (eg "Surveillance-Barrett's") the aim of the following function is to extract a C and M stage (Prague score) for Barrett's samples. This is done using a regex where C and M stages are explicitly mentioned in the free text. Specfically it extracts the Prague score.
 
-```{r exampleBarrettsDataAccord_Prague, eval = FALSE}
-v<-BarrettsDataAccord_Prague(Myendo,'Findings')
+```{r exampleBarretts_PragueScore}
+library(EndoMineR)
+library(pander)
+v<-Barretts_PragueScore(Myendo,'Findings')
 ```
 
 ###Worst pathological stage
@@ -44,8 +48,9 @@ v<-BarrettsDataAccord_Prague(Myendo,'Findings')
 We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using 'degradation' so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports tocontain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade. 
 
 
-```{r exampleBarrettsDataAccord_PathStage, eval = FALSE}
-b<-BarrettsDataAccord_PathStage(v,'Histology')
+```{r exampleBarretts_PathStage, eval = FALSE}
+
+b<-Barretts_PathStage(v,'Histology')
 ```
 
 
@@ -54,9 +59,9 @@ b<-BarrettsDataAccord_PathStage(v,'Histology')
 We also need to process any endoscopies where an event other than surveillance happened (unless filtered specifically for surveillance. This function extracts the Event- usually a therapeutic event, from the text eg endoscopic mucosal resection, radiofrequency ablation etc. It does not currently include stricture dilatation.Specfically it extracts the event. At the moment the event is extracted from the endoscopy only but for specimen extraction eg endoscopic mucosal resection future iterations may also examine the pathology data as it is likely to describe the presence of EMR more robustly. 
 
 
-```{r exampleBarrettsDataAccord_Event, eval = FALSE}
+```{r exampleBarretts_Event, eval = FALSE}
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
-b<-BarrettsDataAccord_Event(v,'Histology', 'ProcedurePerformed','OGDReportWhole','Findings')
+b<-Barretts_Event(v,'Histology', 'ProcedurePerformed','OGDReportWhole','Findings')
 ```
 
 
@@ -66,16 +71,16 @@ b<-BarrettsDataAccord_Event(v,'Histology', 'ProcedurePerformed','OGDReportWhole'
 Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett's segment length and therefore their follow-up timing, may fluctuate over time) can be determined.
 
 
-```{r exampleBarrettsDataAccord_FUGroup, eval = FALSE}
+```{r exampleBarretts_FUGroup, eval = FALSE}
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
-b<-BarrettsDataAccord_PathStage(v,'Histology')
-b2<-BarrettsDataAccord_Event(b,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-b3<-BarrettsDataAccord_FUGroup(b2,'Findings')
+b<-Barretts_PathStage(v,'Histology')
+b2<-Barretts_Event(b,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
+b3<-Barretts_FUGroup(b2,'Findings')
 ```
 
 ## Assessment of Barrett's therapeutics
 
-Barrett's patients also undergo therapeutic procedures and there are various metrics to analyse the performance of the therapy by endoscopist, as well which catheters are being used etc. To start with we can do simple things like plotting all the pathological grades of the EMRs.This should only be run after all the BarrettsDataAccord functions so that the column event is present in the dataframe.
+Barrett's patients also undergo therapeutic procedures and there are various metrics to analyse the performance of the therapy by endoscopist, as well which catheters are being used etc. To start with we can do simple things like plotting all the pathological grades of the EMRs.This should only be run after all the Barretts functions so that the column event is present in the dataframe.
 
 
 The therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsTherapy_Numbers_EMRsByGrade with correlation with the endoscopists Paris classification provided for with the function:
@@ -126,11 +131,11 @@ BarrettsCRIM(dataframe,HospNum,EVENT)
 
 ###Quality of documentation for Barrett's surveillance endoscopies
 
-As we have done above, we can also assess the documentation used in Barrett's endoscopies. There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett's documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on  Barrett's endoscopic reporting. This should be run after the BarrettsDataAccord_Prague as assessment of the Prague score is a part of this assessment:
+As we have done above, we can also assess the documentation used in Barrett's endoscopies. There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett's documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on  Barrett's endoscopic reporting. This should be run after the Barretts_Prague as assessment of the Prague score is a part of this assessment:
 
 ```{r exampleBarrettsQuality_AnalysisDocumentation, eval = FALSE}
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-b<-BarrettsDataAccord_PathStage(v,'Histology')
+b<-Barretts_PathStage(v,'Histology')
 BarrettsQuality_AnalysisDocumentation(b,"Findings")
 ```
 
@@ -158,14 +163,14 @@ One of the essential requirements to demonstrate adequate sampling of Barrett's 
  v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
  'HospitalNumber')
  # The function relies on the other Barrett's functions being run as well:
- b1<-BarrettsDataAccord_Prague(v,'Findings')
- b2<-BarrettsDataAccord_PathStage(b1,'Histology')
- b3<-BarrettsDataAccord_Event(b2,'Histology',
+ b1<-Barretts_Prague(v,'Findings')
+ b2<-Barretts_PathStage(b1,'Histology')
+ b3<-Barretts_Event(b2,'Histology',
  'ProcedurePerformed','OGDReportWhole','Findings')
  # The follow-up group depends on the histology and the Prague score for a
  # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
- b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+ b4<-Barretts_FUGroup(b3,'Findings')
  colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
  # The number of average number of biopsies is then calculated and
  # compared to the average Prague C score so that those who are taking
@@ -190,10 +195,10 @@ As we discovered with some of the generic functions above, one way to determine 
 
 ```{r exampleBarrettsSurveillance_PathDetection, eval = FALSE}
 Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-b1<-BarrettsDataAccord_Prague(v,'Findings')
-b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+b1<-Barretts_Prague(v,'Findings')
+b2<-Barretts_PathStage(b1,'Histology')
+b3<-Barretts_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
+b4<-Barretts_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 BarrettsSurveillance_PathDetection(b4,'Myplot')
 ```
@@ -208,10 +213,10 @@ BarrettsSurveillance_PathDetection(b4,'Myplot')
 
 ```{r exampleBarrettsSurveillanceDDR, eval = FALSE} 
  v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-b1<-BarrettsDataAccord_Prague(v,'Findings')
-b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+b1<-Barretts_Prague(v,'Findings')
+b2<-Barretts_PathStage(b1,'Histology')
+b3<-Barretts_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
+b4<-Barretts_FUGroup(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 BarrettsSurveillanceDDR(b4,'Endoscopist','IMorNoIM')
 ``` 

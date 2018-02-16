@@ -429,7 +429,7 @@ BarrettsSurveil <- function(dataframe,
   # So you want all those whose last endoscopy was non surveillance but who
   # have
   # a difftime between now and the last of > 3years So get the last endoscopy
-  # for each patient Filter out the endoscopiesthat were surveillance Get the
+  # for each patient Filter out the endoscopies that were surveillance Get the
   # difftime between now and the last endoscopy
   # Filter for those who have been waiting >3 years post non surveillance
   # endoscopy

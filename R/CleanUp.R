@@ -102,6 +102,7 @@ NewLines <- function(dataframe, EndoReportColumn) {
 #' "Histology:","Diagnosis:")
 #' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 #' res<-Mypath
+#' 
 Extractor <- function(dataframeIn, Column, delim) {
   dataframeInForLater<-dataframeIn
   ColumnForLater<-Column
@@ -110,7 +111,7 @@ Extractor <- function(dataframeIn, Column, delim) {
   dataframeIn<-dataframeIn %>% 
     tidyr::separate(!!Column, into = c("added_name",delim), 
                                           sep = paste(delim, collapse = "|"))
-    names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
+  names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("\\\\.*", "", x))
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("       ", "", x))
   
@@ -123,6 +124,7 @@ Extractor <- function(dataframeIn, Column, delim) {
   #Add the original column back in so have the original reference
   dataframeIn<-cbind(dataframeInForLater[,ColumnForLater],dataframeIn)
   colnames(dataframeIn)[1]<-"Original"
+  dataframeIn<-data.frame(dataframeIn)
   return(dataframeIn)
 }
 
@@ -193,7 +195,7 @@ EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
   # Extraction of the Endoscopist
   dataframe <- data.frame(dataframe)
   dataframe[, EndoReportColumn] <- gsub("Mr|Professor|Prof|Dr", "", 
-                                  dataframe[, EndoReportColumn], fixed = TRUE)
+                                  dataframe[, EndoReportColumn])
   dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
                                                "[^[:alnum:],]", "")
   # Put gaps between names

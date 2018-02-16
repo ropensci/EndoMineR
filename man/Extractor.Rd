@@ -34,5 +34,6 @@ mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Histology:","Diagnosis:")
 Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 res<-Mypath
+
 }
 \keyword{Extraction}

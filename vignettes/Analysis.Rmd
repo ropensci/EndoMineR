@@ -9,7 +9,10 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+library(pander)
+library(EndoMineR)
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 ## The Analysis Functions
 
@@ -17,41 +20,50 @@ The analysis functions are split according to the cornerstone questions in day t
 
 ###Surveillance functions
 
-Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a load of pre-processing steps
+Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps
 
 <br>
 
-![Figure 6: Surveillance functions](EndoMineR_Surveillance.svg)
+![Figure 6: Surveillance functions: Each colour represents a patient and each row an endoscopic episode with associated outcome (defined by the user, but often means the pathology outcome)](EndoMineR_Surveillance.svg)
 
 <br>
 
-```{r exampleSurveillanceTimeByRow, eval = FALSE}
-em<-SurveillanceTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
-em<-SurveillanceLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
-em<-SurveillanceLastTest(Myendo,'HospitalNumber','Dateofprocedure')
-em<-SurveillanceFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
+The basic surveillance functions are simple but are the most often used. SurveillanceTimeByRow will extract the time difference between each individual endoscopy for an individual patient. THis is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.
+SurveilLastTest simply extracts the last and first test respectively for each patient 
+
+```{r exampleSurveillanceTimeByRow, eval = TRUE}
+em1<-SurveilTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
+pander(head(data.frame(em1[2],em1[ncol(em1)]),5))
+em2<-SurveilLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
+pander(head(data.frame(em2[2],em2[ncol(em2)]),5))
+em3<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+pander(head(data.frame(em3[2],em3[5]),5))
+em4<-SurveilFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
+pander(head(data.frame(em4[2],em4[5]),5))
 ```
 
 Of course we also want to know how many tests have been done over a time period and this is provided by two functions
 
-```{r exampleSurveillanceCapacity, eval = FALSE}
-em<-SurveillanceCapacity(Myendo,"Dateofprocedure)
+```{r exampleSurveillanceCapacity}
+em5<-SurveilCapacity(Myendo,"Dateofprocedure")
+pander(head(em5))
 ```
 
 
 This function will return the number of tests by month. The more detailed function is:
 
-```{r exampleHowManyTests, eval = FALSE}
+```{r exampleHowManyTests}
 how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+how[1]
 ```
 
 
-This will provide the number of tests by month and year as a table as well as a ggplot. It returns aa list so this can be accessed with how[1] and how[2]
+This will provide the number of tests by month and year as a table as well as a ggplot. It returns a list containing both the ggplot and a dataframe so this can be accessed with how[1] and how[2]
 
 ###Patient flow functions
 
 We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. 
-For example, if we have a dataset with events such as 'radiofrequency ablation' and 'endoscopic mucosal resection' or 'nothing' we can use the Sankey plot to determine the order of events over a large patient population:
+For example, if we have a dataset with events such as 'radiofrequency ablation' and 'endoscopic mucosal resection' or 'nothing' we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type ("EMR","RFA","nothing" in this case)
 
 
 ```{r exampleSurveySankey, eval = FALSE}
@@ -64,7 +76,7 @@ how<-SurveySankey(Myendo,"ProcPerformed")
 
 <br>
 
-We may was something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
+We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
 
 ```{r examplePatientFlow_CircosPlots, eval = FALSE}
 flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed")
@@ -78,45 +90,73 @@ flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePer
 
 ###Assessment of quality functions
 
-Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to standards for endoscopic documentation as well as detection of certain pathological conditions such as dysplasia.
+Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)
 
 
 ####Documentation Quality
 As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised on terms that should be mentioned in a report.
 
-```{r exampleListLookup, eval = FALSE}
-tt<-ListLookup(Myendo,'Findings',myNotableWords)
+**_Input_**
+                      
+```{r exampleListLookup, eval = TRUE}
+pander(head(data.frame(Myendo[2:3],Myendo[13])))
 ```
 
-####Endoscopic Quality
-Another measure of quality is by looking at those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table
+<br>
 
-```{r exampleEndoscChopperMeds, eval = FALSE}
-Myendo<-EndoscChopperMeds(Myendo,'Medications')
+In this example we are looking for the words Barrett's and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscope report
+
+```{r exampleListLookup2, eval = TRUE}
+myNotableWords <- c("arrett", "oeliac")
+tt<-ListLookup(Myendo,'Findings',myNotableWords)
+pander(head(tt))
+```
+
+<br>
+
+So we can see that the terms are present in the minority of reports across endoscopists, so perhaps we can look into this further..
+
+<br>
+
+####Endoscopic Quality
+
+#####Sedation Usage
+Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:
+
+```{r exampleEndoscChopperMeds}
+Myendo<-EndoscMeds(Myendo,'Medications')
+pander(head(data.frame(Myendo$HospitalNumber,Myendo$Fent,Myendo$Midaz),10))
 MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 ```
 
-<br>
-
-![Figure 9: MetricbyEndoscopist function](MetricByEndoscopist.png){width=600px}
 
 <br>
+
+
+
+<br>
+
+#####Polyp and sample location
+
+<br>
+
 
 Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.
 
-To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings.
+To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings in histology. This also attempts to extract the sample location into a separate column
 
-```{r exampleTermStandardLocation, eval = FALSE}
+```{r exampleTermStandardLocation}
 f<-TermStandardLocation(Mypath,'Histology')
+fgg<-data.frame(f[(ncol(f)-1)],f[(ncol(f))])
+pander(head(fgg,10))
 ```
 
-Once this is done, a column called SampleLocation is appended to the existing dataset. If polyps need to be located then the PolypLocator function can be used. Alternatively the SampleLocator can be used. As they append differently named columns to the existing dataset, both can be used together. The polyps text often need a bit of tidying up and this can be done with the function PolypTidyUpLocator prior to using PolypLocator
+Once this is done, a column called SampleLocation is appended to the existing dataset. This will attempt to state the location of all samples whether they are resections/ biopsies or polyps. If polyps specifically need to be located then the PolypLocator function can be used (after the TermStandardLocation function).
 
-```{r examplePolypTidyUpLocator, eval = FALSE}
-
-f<-PolypTidyUpLocator(f,'SampleLocation')
-f<-PolypLocator(f,'SampleLocation') 
-f<-SampleLocator(f,'SampleLocation')
+```{r examplePolypTidyUpLocator}
+fgg<-PolypLocator(fgg,'SampleLocation') 
+fg<-data.frame(fgg[(ncol(fgg)-2)],fgg[(ncol(fgg)-1)],fgg[(ncol(fgg))])
+pander(head(fg,3))
 ```
 
 
@@ -126,6 +166,10 @@ A further difficult area is the assessment of endoscopic quality by looking at t
 A particularly well developed area to look at is that of the Global Rating Scale for assessing the quality of colonoscopy. One of the metrics- the adenoma detection rate assesses the number of colonoscopies where at least one adenoma was detected.
 
 One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS reqquirement for the ADR as well as provding further metrics alongside
+
+
+#####Adenoma Detection Rates
+
 
 ```{r exampleGRS_Type_Assess_By_Unit, eval = FALSE}
 GRSTable<-GRS_Type_Assess_By_Unit(v,'ProcedurePerformed','Endoscopist','Diagnosis','Histology')

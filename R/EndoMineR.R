@@ -201,7 +201,7 @@ SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
 #' # POSIX format) is also necessary.  Finally the string which indicates the text
 #' # indication needs to be inpoutted. In this case we are looking for all
 #' # endoscopies done
-#' # where the indication is surveillance (so grepping on 'Surv' will do fine) .
+#' # where the indication is surveillance (so searching on 'Surv' will do fine) .
 #' how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 
 
@@ -688,44 +688,11 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
          dataframe$SampleLocation)
   dataframe$SampleLocation <-
     gsub("[Ff]undal|[Ff]undic|[Ff]undus", "GOJ", dataframe$SampleLocation)
-  return(dataframe)
-}
-
-
-#' Locate where samples are taken from
-#'
-#' This assess where samples are taken from.
-#' This should be used after the TermStandardLocation
-#' as it relies on the presence of a SampleLocation column
-#' which the TermStandardLocation produces.
-#' It can be used after the PolypTidyUpLocator
-#' although you could just run it after the TermStandardLocation
-#' to get an overview of where samples were taken from.
-#' It will tell you the sites sampled without duplication
-#' @param dataframe The dataframe
-#' @param SampleLocationColumn SampleLocation from the TermStandardizer
-#' @importFrom stringr str_match_all
-#' @keywords Sample location
-#' @export
-#' @examples #Firstly we extract histology from the raw report
-#' # using the extractor function
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
-#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
-#' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
-#' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
-#' # The function needs all the terms to be standardised first so the
-#' # function TermStandardLocation needs to be run first
-#' f<-TermStandardLocation(Mypath,'Histology')
-#' # The sample locator then determines where the biopsies were taken from
-#' # by assessing the SampleLocation column which comes from the
-#' # TermStandardLocation function.
-#' f<-SampleLocator(f,'SampleLocation')
-#' rm(Mypath)
-
-SampleLocator <- function(dataframe, SampleLocationColumn) {
-  dataframe <- data.frame(dataframe)
+  
+#Extract the locations into a separate column
+  
+  
+  
   tofind <-
     paste(
       c(
@@ -756,7 +723,7 @@ SampleLocator <- function(dataframe, SampleLocationColumn) {
       collapse = "|"
     )
   dataframe$AllSampleLocator <- 
-    str_match_all(dataframe[, SampleLocationColumn], tofind)
+    str_match_all(dataframe$SampleLocation, tofind)
   dataframe$AllSampleLocator <-
     lapply(dataframe$AllSampleLocator, function(p)
       unique(p))
@@ -764,12 +731,13 @@ SampleLocator <- function(dataframe, SampleLocationColumn) {
 }
 
 
+
+
 #' Determine polyp location
 #'
 #' This should be used after the TermStandardizer
 #' as it relies on the presence of a SampleLocation column
 #' which the TermStandardLocation produces.
-#' It should be used after the PolypTidyUpLocator
 #' @param dataframe The dataframe
 #' @param SampleLocationColumn The column containing the SampleLocation from the
 #' TermStandardLocation
@@ -823,39 +791,21 @@ PolypLocator <- function(dataframe, SampleLocationColumn) {
       ),
       collapse = "|"
     )
-  dataframe$PolypLocator <- str_match_all(dataframe[, SampleLocationColumn]
+  
+  dataframe$PolypLocator <-
+    str_match_all(dataframe[, SampleLocationColumn], ".*[Pp]olyp.*")
+  
+  dataframe$PolypLocator <- str_match_all(dataframe$PolypLocator
                                           , tofind)
   dataframe$PolypLocator <- lapply(dataframe$PolypLocator, function(p)
     unique(p))
-  return(dataframe)
-}
-
-
-
-
-#' Clean the polyp location
-#'
-#' This cleans up the polyps from the TermStandardLocation function
-#' @param dataframe The dataframe
-#' @param SampleLocationColumn The column containing the
-#' SampleLocation from the Term Standardizer
-#' @keywords Withdrawal
-#' @export
-#' @examples #' # The polyp locator then determines where the biopsies were taken from
-#' # by assessing the SampleLocation column which comes from the
-#' # TermStandardLocation function. This should also be run before the polyp
-#' # locator function
-#' f<-TermStandardLocation(Mypath,'Histology')
-#' f<-PolypTidyUpLocator(f,'SampleLocation')
-
-PolypTidyUpLocator <- function(dataframe, SampleLocationColumn) {
-  # Get all the polyps and tidy up the polyp data- Function 5
-  dataframe$Polyp <-
-    str_match_all(dataframe[, SampleLocationColumn], ".*[Pp]olyp.*")
-  dataframe <- PolypLocator(dataframe, "Polyp")
   
+ 
   return(dataframe)
 }
+
+
+
 
 ########################### Diagnostic yield functions #######
 

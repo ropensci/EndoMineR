@@ -10,10 +10,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
+```{r setup, include=FALSE}
+library(pander)
+library(EndoMineR)
+knitr::opts_chunk$set(echo = TRUE)
+```
 ## Aims of EndoMineR
 
-The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens. 
+The goal of EndoMineR is to extract as much information as possible from free or semi-structured endoscopy reports and their associated pathology specimens. 
 
 Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.
 
@@ -49,38 +53,61 @@ For the latter, the package user will not need to Extract information as it is a
 
 <br>
 
-One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the ChopperNewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)
+One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the NewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)
 
-```{r exampleChopperNewLines, eval = FALSE}
-v<-ChopperNewLines(Myendo,'OGDReportWhole')
+```{r exampleNewLines, eval = FALSE}
+v<-NewLines(Myendo,'OGDReportWhole')
 ```
 
 <br>
 
 A list of keywords is then constructed. This list is made up of the words that will be used to split the document. The Extractor then does the splitting for each pair of words, with some cleaning up and then returns the split dataframe:
 
-```{r exampleExtractor, eval = FALSE}
-Mypath<-data(PathDataFrameFinalColon)
-HistolTree<-list("Hospital Number","Patient Name","DOB:","General Practitioner:",
-"Date of procedure:","Clinical Details:","Macroscopic description:","Histology:","Diagnosis:","")
-for(i in 1:(length(HistolTree)-1)) {
-Mypath<-Extractor(Mypath,"PathReportWhole",as.character(HistolTree[i]),
-as.character(HistolTree[i+1]),as.character(HistolTree[i]))
-}
+```{r exampleExtractor,echo=FALSE}
+PathDataFrameFinalColon2<-PathDataFrameFinalColon
+#pander(head(Mypath,3))
+
+names(PathDataFrameFinalColon2)<-"PathReportWhole"
+pander(head(PathDataFrameFinalColon2,1))
 ```
 
+```{r exampleExtractor2}
+mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+"Date received:","Clinical Details:","Macroscopic description:",
+"Histology:","Diagnosis:")
+PathDataFrameFinalColon2<-Extractor(PathDataFrameFinalColon2,"PathReportWhole",mywords)
+
+```
+
+```{r exampleExtractor3,echo=FALSE}
+PathDataFrameFinalColon2<-head(PathDataFrameFinalColon2[2:10],1)
+pander::panderOptions('table.split.table', Inf)
+pander::panderOptions('table.split.cells', Inf)
+pander(head(PathDataFrameFinalColon2,1))
+```
 
 
 ## The cleaning functions
 
 ### Endoscopic cleaning
 
-Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscChopperEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up
-```{r exampleEndoscChopperEndoscopist, eval = FALSE}
-EndoscChopperEndoscopist(Myendo,'Endoscopist')
+Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. The endoscopist column initially looks like this:
+
+```{r exampleEndoscEndoscopist, echo = FALSE}
+pander(head(Myendo[2:6],10))
 ```
 
-This function performs the cleaning of common things found in the text that may cause confusion. 
+
+```{r exampleEndoscEndoscopist2,echo = TRUE}
+Myendo2<-EndoscEndoscopist(Myendo,'Endoscopist')
+```
+
+This function performs the cleaning of common things found in the text that may cause confusion. The result is as follows:
+
+```{r exampleEndoscEndoscopist3, echo = FALSE}
+pander(head(Myendo2[2:6],10))
+```
+
 
 <br>
 
@@ -88,14 +115,14 @@ This function performs the cleaning of common things found in the text that may 
 
 <br>
 
-The EndoscChopperMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted. 
+The EndoscMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted. 
 
 Several other similar clean up functions are available for Endoscopy as follows:
 ```{r exampleEndoCleaningFunc, eval = FALSE}
-v<-EndoscChopperMeds(Myendo,'Medications')
-v<-EndoscChopperInstrument(Myendo,'Instrument')
-v<-EndoscChopperIndications(Myendo,'Indications')
-v<-EndoscChopperProcPerformed(Myendo,'ProcedurePerformed')
+v<-EndoscMeds(Myendo,'Medications')
+v<-EndoscInstrument(Myendo,'Instrument')
+v<-EndoscIndications(Myendo,'Indications')
+v<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
 ```
 
 Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases
@@ -112,41 +139,41 @@ In general, each histology reports can be divided into the Macroscopic descripti
 <br>
 
 
-The histology cleaning functions are based around this. For example, the HistolChopperHistol cleans the Histology text if present. In addition it removes Negative diagnoses using the Negativeremove function. This function is designed to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage.
+The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present. In addition it removes Negative diagnoses using the Negativeremove function. This function is designed to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage.
 
-This NegativeRemove function has also been applied to the HistolChopperDx
+This NegativeRemove function has also been applied to the HistolDx
 
-```{r exampleEHistolChopperHistol, eval = FALSE}
-t<-HistolChopperHistol(Mypath,'Histology')
+```{r exampleEHistolHistol, eval = FALSE}
+t<-HistolHistol(Mypath,'Histology')
 ```
 
-Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolChopperNumOfBx which extracts the number of biopsies taken.
+Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.
 
 
 
 In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.
 
-```{r exampleHistolChopperNumbOfBx, eval = FALSE}
-v<-HistolChopperNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+```{r exampleHistolNumbOfBx, eval = FALSE}
+v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 ```
 
 Other less useful functions include:
 
-1. HistolChopperAccessionNumber which extracts Accession Number  data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.
+1. HistolAccessionNumber which extracts Accession Number  data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.
 
-2. HistolChopperExtrapolDx which extracts other specific diagnoses from the report. These have been hard coded to 
+2. HistolExtrapolDx which extracts other specific diagnoses from the report. These have been hard coded to 
 look for dysplasia cancer and GIST. 
 
-3. HistolChopperMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc. 
+3. HistolMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc. 
 
 These are all called in the same way:
 
 ```{r exampleOtherFunctionsHistology, eval = FALSE}
-v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
-v<-HistolChopperExtrapolDx(Mypath,"Diagnosis")
-v<-HistolChopperAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
+v<-HistolMacDescripCleanup(Mypath,"Macroscopicdescription")
+v<-HistolExtrapolDx(Mypath,"Diagnosis")
+v<-HistolAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 ```
-v<-HistolChopperMacDescripCleanup(Mypath,"Macroscopicdescription")
+v<-HistolMacDescripCleanup(Mypath,"Macroscopicdescription")
 
 <br>
 <br>

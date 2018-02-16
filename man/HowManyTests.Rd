@@ -34,7 +34,7 @@ by month and year).
 # POSIX format) is also necessary.  Finally the string which indicates the text
 # indication needs to be inpoutted. In this case we are looking for all
 # endoscopies done
-# where the indication is surveillance (so grepping on 'Surv' will do fine) .
+# where the indication is surveillance (so searching on 'Surv' will do fine) .
 how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 }
 \keyword{Tests}

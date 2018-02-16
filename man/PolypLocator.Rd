@@ -16,7 +16,6 @@ TermStandardLocation}
 This should be used after the TermStandardizer
 as it relies on the presence of a SampleLocation column
 which the TermStandardLocation produces.
-It should be used after the PolypTidyUpLocator
 }
 \examples{
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
