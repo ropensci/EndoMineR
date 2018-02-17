@@ -113,13 +113,13 @@ equal to 'nothing' when the patient had undergone radiofrequency ablation at
 some point</p>
     
 
-    <pre class="usage"><span class='fu'>Barretts_CRIM</span>(<span class='no'>x</span>, <span class='no'>HospNum</span>, <span class='no'>EVENT</span>)</pre>
+    <pre class="usage"><span class='fu'>Barretts_CRIM</span>(<span class='no'>dataframe</span>, <span class='no'>HospNum</span>, <span class='no'>EVENT</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
+      <th>dataframe</th>
       <td><p>The dataframe</p></td>
     </tr>
     <tr>
@@ -138,47 +138,49 @@ patient had at that endoscopy</p></td>
     <pre class="examples"><div class='input'><span class='co'># Firstly relevant columns are extrapolated from the</span>
 <span class='co'># Mypath demo dataset. These functions are all part of Histology data</span>
 <span class='co'># cleaning as part of the package.</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolChopperAccessionNumber.html'>HistolChopperAccessionNumber</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Histology'</span>,
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAccessionNumber.html'>HistolAccessionNumber</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Histology'</span>,
 <span class='st'>'SP-\\d{2}-\\d{7}'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolChopperDx.html'>HistolChopperDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 11 variables to replace 1 variables</span></div><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolChopperExtrapolDx.html'>HistolChopperExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolChopperNumbOfBx.html'>HistolChopperNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolChopperBxSize.html'>HistolChopperBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 11 variables to replace 1 variables</span></div><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
 <span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
 <span class='co'># according to date and Hospital number</span>
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>v</span>,<span class='st'>'Dateofprocedure'</span>,
-<span class='st'>'HospitalNumber'</span>)</div><div class='output co'>#&gt; <span class='error'>Error: `PatientName.x` = PatientName must be a symbol or a string, not formula</span></div><div class='input'><span class='co'># The function relies on the other Barrett's functions being run as well:</span>
-<span class='no'>b1</span><span class='kw'>&lt;-</span><span class='fu'><a href='BarrettsDataAccord_Prague.html'>BarrettsDataAccord_Prague</a></span>(<span class='no'>v</span>,<span class='st'>'Findings'</span>)</div><div class='output co'>#&gt; <span class='error'>Error in `[.data.frame`(x, , y): undefined columns selected</span></div><div class='input'><span class='no'>b2</span><span class='kw'>&lt;-</span><span class='fu'><a href='BarrettsDataAccord_PathStage.html'>BarrettsDataAccord_PathStage</a></span>(<span class='no'>b1</span>,<span class='st'>'Histology'</span>)
-<span class='no'>b3</span><span class='kw'>&lt;-</span><span class='fu'><a href='BarrettsDataAccord_Event.html'>BarrettsDataAccord_Event</a></span>(<span class='no'>b2</span>,<span class='st'>'Histology'</span>,
-<span class='st'>'ProcedurePerformed'</span>,<span class='st'>'OGDReportWhole'</span>,<span class='st'>'Findings'</span>)
+<span class='st'>'HospitalNumber'</span>)
+<span class='co'># The function relies on the other Barrett's functions being run as well:</span>
+<span class='no'>b1</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PragueScore.html'>Barretts_PragueScore</a></span>(<span class='no'>v</span>,<span class='st'>'Findings'</span>)
+<span class='no'>b2</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PathStage.html'>Barretts_PathStage</a></span>(<span class='no'>b1</span>,<span class='st'>'Histology'</span>)
+<span class='no'>b3</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_EventType.html'>Barretts_EventType</a></span>(<span class='no'>b2</span>,<span class='st'>'Histology'</span>,
+<span class='st'>'ProcedurePerformed'</span>,<span class='st'>'Indications'</span>,<span class='st'>'Findings'</span>)
 <span class='fu'>colnames</span>(<span class='no'>b3</span>)[<span class='fu'>colnames</span>(<span class='no'>b3</span>) <span class='kw'>==</span> <span class='st'>'pHospitalNum'</span>] <span class='kw'>&lt;-</span> <span class='st'>'HospitalNumber'</span>
 <span class='co'># The function groups the procedures by patient and then looks at those which</span>
 <span class='co'># have 'nothing' in the event column (which means biopsies only) which was</span>
 <span class='co'># preceded by radiofrequency ablation (RFA) so that these patients are</span>
 <span class='co'># labelled as having clearance of intestinal metaplasia</span>
-<span class='fu'>Barretts_CRIM</span>(<span class='no'>b3</span>,<span class='st'>'HospitalNumber'</span>,<span class='st'>"EVENT"</span>)</div><div class='output co'>#&gt; # A tibble: 752 x 35
-#&gt; # Groups:   HospitalNumber [100]
-#&gt;                                                                     PathReportWhole
-#&gt;                                                                               &lt;chr&gt;
-#&gt;  1 "SP-22-4817508\nHospital: Random NHS Foundation Trust\nHospital Number: A1648588
-#&gt;  2 "SP-24-9461967\nHospital: Random NHS Foundation Trust\nHospital Number: A1648588
-#&gt;  3 "SP-77-2775965\nHospital: Random NHS Foundation Trust\nHospital Number: A1648588
-#&gt;  4 "SP-72-6139190\nHospital: Random NHS Foundation Trust\nHospital Number: A1648588
-#&gt;  5 "SP-83-6838873\nHospital: Random NHS Foundation Trust\nHospital Number: A1648588
-#&gt;  6 "SP-29-1590254\nHospital: Random NHS Foundation Trust\nHospital Number: A1648588
-#&gt;  7 "SP-79-1431892\nHospital: Random NHS Foundation Trust\nHospital Number: A3962018
-#&gt;  8 "SP-84-9745332\nHospital: Random NHS Foundation Trust\nHospital Number: A3962018
-#&gt;  9 "SP-96-7908356\nHospital: Random NHS Foundation Trust\nHospital Number: A3962018
-#&gt; 10 "SP-74-3934567\nHospital: Random NHS Foundation Trust\nHospital Number: A3962018
-#&gt; # ... with 742 more rows, and 34 more variables: HospitalNumber &lt;chr&gt;,
-#&gt; #   PatientName.x &lt;chr&gt;, DOB &lt;chr&gt;, GeneralPractitioner.x &lt;chr&gt;, Date.x &lt;date&gt;,
+<span class='fu'>Barretts_CRIM</span>(<span class='no'>b3</span>,<span class='st'>'HospitalNumber'</span>,<span class='st'>"EVENT"</span>)</div><div class='output co'>#&gt; # A tibble: 584 x 36
+#&gt; # Groups:   HospitalNumber [97]
+#&gt;    PathReportWhole          HospitalNumber PatientName.x DOB   GeneralPractiti…
+#&gt;    &lt;chr&gt;                    &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;           
+#&gt;  1 "SP-22-4817508\nHospita… " A1648588\n"  "  Page, Aie… "  1… " Dr\n Kane, Sa…
+#&gt;  2 "SP-24-9461967\nHospita… " A1648588\n"  "  al-Zafar,… "  1… " Dr\n Gavin, L…
+#&gt;  3 "SP-77-2775965\nHospita… " A1648588\n"  "  al-Ebrahi… "  1… " Dr\n Sands, M…
+#&gt;  4 "SP-72-6139190\nHospita… " A1648588\n"  "  Jamerson,… "  1… " Dr\n al-Korom…
+#&gt;  5 "SP-83-6838873\nHospita… " A1648588\n"  "  Fitzpatri… "  1… " Dr\n Miller, …
+#&gt;  6 "SP-29-1590254\nHospita… " A1648588\n"  "  el-Radwan… "  1… " Dr\n al-Radwa…
+#&gt;  7 "SP-79-1431892\nHospita… " A3962018\n"  "  el-Sadri,… "  1… " Dr\n Baker, E…
+#&gt;  8 "SP-84-9745332\nHospita… " A3962018\n"  "  Vaughan, … "  1… " Dr\n Lopez Co…
+#&gt;  9 "SP-57-5567005\nHospita… " A3962018\n"  "  Thomas-Mo… "  1… " Dr\n Grano, K…
+#&gt; 10 "SP-59-7507017\nHospita… " A3962018\n"  "  el-Murad,… "  1… " Dr\n Ten, Che…
+#&gt; # ... with 574 more rows, and 31 more variables: Date.x &lt;date&gt;,
 #&gt; #   ClinicalDetails &lt;chr&gt;, Macroscopicdescription &lt;chr&gt;, Histology &lt;chr&gt;,
-#&gt; #   Diagnosis &lt;chr&gt;, Dx_Simplified &lt;chr&gt;, Cancer &lt;chr&gt;, Dysplasia &lt;chr&gt;,
-#&gt; #   GIST &lt;chr&gt;, NumbOfBx &lt;dbl&gt;, BxSize &lt;dbl&gt;, OGDReportWhole &lt;chr&gt;,
-#&gt; #   eHospitalNum &lt;chr&gt;, PatientName.y &lt;chr&gt;, GeneralPractitioner.y &lt;chr&gt;,
-#&gt; #   Date.y &lt;date&gt;, Endoscopist &lt;chr&gt;, Secondendoscopist &lt;chr&gt;,
-#&gt; #   Medications &lt;chr&gt;, Instrument &lt;chr&gt;, ExtentofExam &lt;chr&gt;, Indications &lt;chr&gt;,
-#&gt; #   ProcedurePerformed &lt;chr&gt;, Findings &lt;chr&gt;, Days &lt;time&gt;, CStage &lt;dbl&gt;,
-#&gt; #   MStage &lt;dbl&gt;, IMorNoIM &lt;chr&gt;, EVENT &lt;chr&gt;, ind &lt;lgl&gt;</div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
+#&gt; #   Diagnosis &lt;chr&gt;, AccessionNumber &lt;chr&gt;, Dx_Simplified &lt;chr&gt;, Cancer &lt;chr&gt;,
+#&gt; #   Dysplasia &lt;chr&gt;, GIST &lt;chr&gt;, NumbOfBx &lt;dbl&gt;, BxSize &lt;dbl&gt;,
+#&gt; #   OGDReportWhole &lt;chr&gt;, eHospitalNum &lt;chr&gt;, PatientName.y &lt;chr&gt;,
+#&gt; #   GeneralPractitioner.y &lt;chr&gt;, Date.y &lt;date&gt;, Endoscopist &lt;chr&gt;,
+#&gt; #   Secondendoscopist &lt;chr&gt;, Medications &lt;chr&gt;, Instrument &lt;chr&gt;,
+#&gt; #   ExtentofExam &lt;chr&gt;, Indications &lt;chr&gt;, ProcedurePerformed &lt;chr&gt;,
+#&gt; #   Findings &lt;chr&gt;, Days &lt;time&gt;, CStage &lt;dbl&gt;, MStage &lt;dbl&gt;, IMorNoIM &lt;chr&gt;,
+#&gt; #   EVENT &lt;chr&gt;, ind &lt;lgl&gt;</div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

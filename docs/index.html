@@ -108,7 +108,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"sebastiz/Endo
 HistolTree&lt;-<span class="kw">list</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
 <span class="st">"Date of procedure:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,<span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>,<span class="st">""</span>)
 for(i in <span class="dv">1</span>:(<span class="kw">length</span>(HistolTree)-<span class="dv">1</span>)) {
-Mypath&lt;-<span class="kw">Extractor</span>(Mypath,<span class="st">"PathReportWhole"</span>,<span class="kw">as.character</span>(HistolTree[i]),
+Mypath&lt;-<span class="kw"><a href="reference/Extractor.html">Extractor</a></span>(Mypath,<span class="st">"PathReportWhole"</span>,<span class="kw">as.character</span>(HistolTree[i]),
 <span class="kw">as.character</span>(HistolTree[i<span class="dv">+1</span>]),<span class="kw">as.character</span>(HistolTree[i]))
 }</code></pre></div>
 <p>This function can be used for both histology and pathology datasets.</p>
@@ -117,14 +117,14 @@ Mypath&lt;-<span class="kw">Extractor</span>(Mypath,<span class="st">"PathReport
 <h2 class="hasAnchor">
 <a href="#the-cleaning-function" class="anchor"></a>The cleaning function</h2>
 <p>Data cleaning is tricky so that the cleaning functions have been developed on the basis of recurring patterns of cleaning that needs to be done for these kinds of reports. For example, when cleaning the endoscopist name the following function can be used:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/EndoscChopperEndoscopist.html">EndoscChopperEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">EndoscChopperEndoscopist</span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
 <p>Many such functions for both endoscopy and histology are provided</p>
 </div>
 <div id="the-analyses" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-analyses" class="anchor"></a>The analyses</h2>
 <p>The overall aim is to provide functions that allow the user to perform complex analyses on the endoscopic-pathological datasets. As far as possible the analyses are based on guidelines developed by the British Society of Gastroenterology. These analyses will expand in further iterations. Generic analyses functions are provided for example, as various numeric analyses plotted by endoscopist.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo&lt;-<span class="kw"><a href="reference/EndoscChopperMeds.html">EndoscChopperMeds</a></span>(Myendo,<span class="st">'Medications'</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo&lt;-<span class="kw">EndoscChopperMeds</span>(Myendo,<span class="st">'Medications'</span>)
 Fent&lt;-<span class="kw"><a href="reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)</code></pre></div>
 <p>More specific analyses, ie those relating to a specific guidelines are also provided. For example in the case of Barrett’s oesophagus, the follow-up timing for the next endoscopy in those who have non dysplastic mucosa, can be determined as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#' v&lt;-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")</span>

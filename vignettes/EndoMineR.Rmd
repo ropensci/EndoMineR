@@ -56,7 +56,7 @@ For the latter, the package user will not need to Extract information as it is a
 One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the NewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)
 
 ```{r exampleNewLines, eval = FALSE}
-v<-NewLines(Myendo,'OGDReportWhole')
+v<-NewLines(TheOGDReportFinal,'OGDReportWhole')
 ```
 
 <br>
@@ -117,20 +117,32 @@ pander(head(Myendo2[2:6],10))
 
 The EndoscMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted. 
 
-Several other similar clean up functions are available for Endoscopy as follows:
-```{r exampleEndoCleaningFunc, eval = FALSE}
-v<-EndoscMeds(Myendo,'Medications')
-v<-EndoscInstrument(Myendo,'Instrument')
-v<-EndoscIndications(Myendo,'Indications')
-v<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
+Several other similar clean up functions are available for Endoscopy as follows. We will extract from the Raw endoscopy data first:
+
+```{r exampleRawEndoExtract, echo = TRUE}
+mywords<-c("Hospital:","Hospital Number:","Patient Name:","General Practitioner:","Date of procedure:","Endoscopist:","Second Endoscopist",
+           "Medications:","Instrument:","Extent of Exam:","Indications:","Procedure Performed:",
+"Findings:","Diagnosis:")
+TheOGDReportFinal2<-Extractor(TheOGDReportFinal,"OGDReportWhole",mywords)
+
 ```
 
-Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases
+
+
+```{r exampleEndoCleaningFuncMed, echo = TRUE}
+TheOGDReportFinal2df<-data.frame(TheOGDReportFinal2["HospitalNumber"],TheOGDReportFinal2["Instrument"],TheOGDReportFinal2["Indications"],TheOGDReportFinal2["Medications"],TheOGDReportFinal2["ProcedurePerformed"])
+pander(head(TheOGDReportFinal2df,10))
+v<-EndoscMeds(TheOGDReportFinal2df,'Medications')
+pander(head(v,10))
+```
+
+
+EndoscInstrument,EndoscIndications and EndoscProcPerformed all perform similar cleaning functions with the endoscope number, the indication for the investigation and the actual procedure performed respectively. Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases
 
 ### Histological cleaning
 
 The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting.
-In general, each histology reports can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.
+In general, each histology report can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.
 
 <br>
 
@@ -138,10 +150,11 @@ In general, each histology reports can be divided into the Macroscopic descripti
 
 <br>
 
-
-The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present. In addition it removes Negative diagnoses using the Negativeremove function. This function is designed to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage.
-
 This NegativeRemove function has also been applied to the HistolDx
+The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present.
+In addition, if there is a need to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. This is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text.
+
+
 
 ```{r exampleEHistolHistol, eval = FALSE}
 t<-HistolHistol(Mypath,'Histology')

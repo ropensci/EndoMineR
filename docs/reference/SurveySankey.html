@@ -114,7 +114,7 @@ the procedure type (eg EMR,
  Note the Hospital Number column MUST be called PatientID.</p>
     
 
-    <pre class="usage"><span class='fu'>SurveySankey</span>(<span class='no'>dfw</span>, <span class='no'>y</span>, <span class='no'>PatientID</span>)</pre>
+    <pre class="usage"><span class='fu'>SurveySankey</span>(<span class='no'>dfw</span>, <span class='no'>ProcPerformedColumn</span>, <span class='no'>PatientID</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -124,8 +124,9 @@ the procedure type (eg EMR,
       <td><p>the dataframe extracted using the standard cleanup scripts</p></td>
     </tr>
     <tr>
-      <th>y</th>
-      <td><p>the column containing the test like ProcPerformed for example</p></td>
+      <th>ProcPerformedColumn</th>
+      <td><p>the column containing the test like P
+rocPerformed for example</p></td>
     </tr>
     <tr>
       <th>PatientID</th>

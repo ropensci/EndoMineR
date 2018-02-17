@@ -78,7 +78,7 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>EndoMineR</h1>
-                        <h4 class="author">Sebastian Zeki 2017-12-22</h4>
+                        <h4 class="author">Sebastian Zeki 2018-02-17</h4>
             
           </div>
 
@@ -88,7 +88,7 @@
 <div id="aims-of-endominer" class="section level2">
 <h2 class="hasAnchor">
 <a href="#aims-of-endominer" class="anchor"></a>Aims of EndoMineR</h2>
-<p>The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens.</p>
+<p>The goal of EndoMineR is to extract as much information as possible from free or semi-structured endoscopy reports and their associated pathology specimens.</p>
 <p>Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.</p>
 </div>
 <div id="how-is-the-package-divided" class="section level2">
@@ -113,17 +113,58 @@
 <img src="EndoMineR_Extractor.svg" alt="Figure 3: Extractor function"><p class="caption">Figure 3: Extractor function</p>
 </div>
 <p><br></p>
-<p>One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the ChopperNewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/ChopperNewLines.html">ChopperNewLines</a></span>(Myendo,<span class="st">'OGDReportWhole'</span>)</code></pre></div>
+<p>One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the NewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/NewLines.html">NewLines</a></span>(TheOGDReportFinal,<span class="st">'OGDReportWhole'</span>)</code></pre></div>
 <p><br></p>
 <p>A list of keywords is then constructed. This list is made up of the words that will be used to split the document. The Extractor then does the splitting for each pair of words, with some cleaning up and then returns the split dataframe:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath&lt;-<span class="kw">data</span>(PathDataFrameFinalColon)
-HistolTree&lt;-<span class="kw">list</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
-<span class="st">"Date of procedure:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,<span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>,<span class="st">""</span>)
-for(i in <span class="dv">1</span>:(<span class="kw">length</span>(HistolTree)-<span class="dv">1</span>)) {
-Mypath&lt;-<span class="kw">Extractor</span>(Mypath,<span class="st">"PathReportWhole"</span>,<span class="kw">as.character</span>(HistolTree[i]),
-<span class="kw">as.character</span>(HistolTree[i<span class="dv">+1</span>]),<span class="kw">as.character</span>(HistolTree[i]))
-}</code></pre></div>
+<table style="width:44%;" class="table">
+<colgroup><col width="44%"></colgroup>
+<thead><tr class="header">
+<th align="center">PathReportWhole</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: H2890235 Patient Name: al-Bilal, Widdad DOB: 1922-05-04 General Practitioner: Dr. Mondragon, Amber Date received: 2002-11-10 Clinical Details: Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen. Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’| Macroscopic description: 1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm Histology: The appearances are of a hyperplastic polyp.,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3.,Completeness of excision is uncertain as the base is not clearly visualised.,There is no ulceration.,Kikuchi level: sm2. Diagnosis: Colon, biopsy - Normal.,- Focal granulomatous inflammation, non-necrotising.,Duodenum, biopsy - within normal histological limits.,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia.,- Hyperplastic polyp .,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia.,- Mild chronic inflammation within the oesophageal mucosa.,Sigmoid colon biopsies:- normal mucosa.,Sigmoid polyp excision:- tubular adenoma.</td>
+</tr></tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw">c</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
+<span class="st">"Date received:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,
+<span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>)
+PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(PathDataFrameFinalColon2,<span class="st">"PathReportWhole"</span>,mywords)</code></pre></div>
+<table class="table">
+<colgroup>
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="1%">
+<col width="30%">
+<col width="7%">
+<col width="20%">
+<col width="35%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">PatientName</th>
+<th align="center">DOB</th>
+<th align="center">GeneralPractitioner</th>
+<th align="center">Datereceived</th>
+<th align="center">ClinicalDetails</th>
+<th align="center">Macroscopicdescription</th>
+<th align="center">Histology</th>
+<th align="center">Diagnosis</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="center">H2890235</td>
+<td align="center">al-Bilal, Widdad</td>
+<td align="center">1922-05-04</td>
+<td align="center">Dr Mondragon, Amber</td>
+<td align="center">2002-11-10</td>
+<td align="center">Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’|</td>
+<td align="center">1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm</td>
+<td align="center">The appearances are of a hyperplastic polyp ,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3 ,Completeness of excision is uncertain as the base is not clearly visualised ,There is no ulceration ,Kikuchi level: sm2</td>
+<td align="center">Colon, biopsy - Normal ,- Focal granulomatous inflammation, non-necrotising ,Duodenum, biopsy - within normal histological limits ,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia ,- Hyperplastic polyp ,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia ,- Mild chronic inflammation within the oesophageal mucosa ,Sigmoid colon biopsies:- normal mucosa ,Sigmoid polyp excision:- tubular adenoma</td>
+</tr></tbody>
+</table>
 </div>
 <div id="the-cleaning-functions" class="section level2">
 <h2 class="hasAnchor">
@@ -131,48 +172,427 @@ Mypath&lt;-<span class="kw">Extractor</span>(Mypath,<span class="st">"PathReport
 <div id="endoscopic-cleaning" class="section level3">
 <h3 class="hasAnchor">
 <a href="#endoscopic-cleaning" class="anchor"></a>Endoscopic cleaning</h3>
-<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscChopperEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/EndoscChopperEndoscopist.html">EndoscChopperEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
-<p>This function performs the cleaning of common things found in the text that may cause confusion.</p>
+<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. The endoscopist column initially looks like this:</p>
+<table class="table">
+<colgroup>
+<col width="15%">
+<col width="20%">
+<col width="21%">
+<col width="16%">
+<col width="26%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">PatientName</th>
+<th align="center">GeneralPractitioner</th>
+<th align="center">Dateofprocedure</th>
+<th align="center">Endoscopist</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Jargon, Victoria</td>
+<td align="center">Dr Martin, Marche</td>
+<td align="center">2009-11-11</td>
+<td align="center">Dr Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Powell, Destiny</td>
+<td align="center">Dr al-Safi, Lutfiyya</td>
+<td align="center">2008-06-15</td>
+<td align="center">Dr Kekich, Annabelle</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">Martinez-Santos, Ana</td>
+<td align="center">Dr Rogers, Monica</td>
+<td align="center">2007-10-27</td>
+<td align="center">Dr Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Lopez, Maria</td>
+<td align="center">Dr Heilman, Lisa</td>
+<td align="center">2002-03-17</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">Dr Krumland, Lisa</td>
+<td align="center">2011-12-05</td>
+<td align="center">Dr Greimann, Phoua</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">Forrest, Dazheea</td>
+<td align="center">Dr Millman, Arianna</td>
+<td align="center">2014-09-19</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">Naperola, Breanna</td>
+<td align="center">Dr Vigil, Lidia</td>
+<td align="center">2002-05-28</td>
+<td align="center">Dr Martinez, Maegen</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">Zuni, Shannon</td>
+<td align="center">Dr Merced, Essence</td>
+<td align="center">2009-09-19</td>
+<td align="center">Dr Anderson, Alana</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">Gomez Barron, Erin</td>
+<td align="center">Dr Ursery, Dezire</td>
+<td align="center">2003-10-02</td>
+<td align="center">Dr Anderson, Alana</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">Hamm, Shebra</td>
+<td align="center">Dr Bauman, Caitlin</td>
+<td align="center">2016-11-22</td>
+<td align="center">Dr Ives, Rashiah</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo2&lt;-<span class="kw"><a href="../reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
+<p>This function performs the cleaning of common things found in the text that may cause confusion. The result is as follows:</p>
+<table class="table">
+<colgroup>
+<col width="15%">
+<col width="21%">
+<col width="22%">
+<col width="16%">
+<col width="23%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">PatientName</th>
+<th align="center">GeneralPractitioner</th>
+<th align="center">Dateofprocedure</th>
+<th align="center">Endoscopist</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Jargon, Victoria</td>
+<td align="center">Dr Martin, Marche</td>
+<td align="center">2009-11-11</td>
+<td align="center">Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Powell, Destiny</td>
+<td align="center">Dr al-Safi, Lutfiyya</td>
+<td align="center">2008-06-15</td>
+<td align="center">Kekich, Annabelle</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">Martinez-Santos, Ana</td>
+<td align="center">Dr Rogers, Monica</td>
+<td align="center">2007-10-27</td>
+<td align="center">Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Lopez, Maria</td>
+<td align="center">Dr Heilman, Lisa</td>
+<td align="center">2002-03-17</td>
+<td align="center">Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">Dr Krumland, Lisa</td>
+<td align="center">2011-12-05</td>
+<td align="center">Greimann, Phoua</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">Forrest, Dazheea</td>
+<td align="center">Dr Millman, Arianna</td>
+<td align="center">2014-09-19</td>
+<td align="center">Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">Naperola, Breanna</td>
+<td align="center">Dr Vigil, Lidia</td>
+<td align="center">2002-05-28</td>
+<td align="center">Martinez, Maegen</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">Zuni, Shannon</td>
+<td align="center">Dr Merced, Essence</td>
+<td align="center">2009-09-19</td>
+<td align="center">Anderson, Alana</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">Gomez Barron, Erin</td>
+<td align="center">Dr Ursery, Dezire</td>
+<td align="center">2003-10-02</td>
+<td align="center">Anderson, Alana</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">Hamm, Shebra</td>
+<td align="center">Dr Bauman, Caitlin</td>
+<td align="center">2016-11-22</td>
+<td align="center">Ives, Rashiah</td>
+</tr>
+</tbody>
+</table>
 <p><br></p>
 <div class="figure">
 <img src="EndoMineR_EndoscopyClean.svg" alt="Figure 4: Endoscopy Cleaning functions"><p class="caption">Figure 4: Endoscopy Cleaning functions</p>
 </div>
 <p><br></p>
-<p>The EndoscChopperMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted.</p>
-<p>Several other similar clean up functions are available for Endoscopy as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/EndoscChopperMeds.html">EndoscChopperMeds</a></span>(Myendo,<span class="st">'Medications'</span>)
-v&lt;-<span class="kw"><a href="../reference/EndoscChopperInstrument.html">EndoscChopperInstrument</a></span>(Myendo,<span class="st">'Instrument'</span>)
-v&lt;-<span class="kw"><a href="../reference/EndoscChopperIndications.html">EndoscChopperIndications</a></span>(Myendo,<span class="st">'Indications'</span>)
-v&lt;-<span class="kw"><a href="../reference/EndoscChopperProcPerformed.html">EndoscChopperProcPerformed</a></span>(Myendo,<span class="st">'ProcedurePerformed'</span>)</code></pre></div>
-<p>Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases</p>
+<p>The EndoscMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted.</p>
+<p>Several other similar clean up functions are available for Endoscopy as follows. We will extract from the Raw endoscopy data first:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw">c</span>(<span class="st">"Hospital:"</span>,<span class="st">"Hospital Number:"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"General Practitioner:"</span>,<span class="st">"Date of procedure:"</span>,<span class="st">"Endoscopist:"</span>,<span class="st">"Second Endoscopist"</span>,
+           <span class="st">"Medications:"</span>,<span class="st">"Instrument:"</span>,<span class="st">"Extent of Exam:"</span>,<span class="st">"Indications:"</span>,<span class="st">"Procedure Performed:"</span>,
+<span class="st">"Findings:"</span>,<span class="st">"Diagnosis:"</span>)
+TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(TheOGDReportFinal,<span class="st">"OGDReportWhole"</span>,mywords)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TheOGDReportFinal2df&lt;-<span class="kw">data.frame</span>(TheOGDReportFinal2[<span class="st">"HospitalNumber"</span>],TheOGDReportFinal2[<span class="st">"Instrument"</span>],TheOGDReportFinal2[<span class="st">"Indications"</span>],TheOGDReportFinal2[<span class="st">"Medications"</span>],TheOGDReportFinal2[<span class="st">"ProcedurePerformed"</span>])
+<span class="kw">pander</span>(<span class="kw">head</span>(TheOGDReportFinal2df,<span class="dv">10</span>))</code></pre></div>
+<table class="table">
+<colgroup>
+<col width="14%">
+<col width="11%">
+<col width="26%">
+<col width="30%">
+<col width="17%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">Instrument</th>
+<th align="center">Indications</th>
+<th align="center">Medications</th>
+<th align="center">ProcedurePerformed</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">FG5</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">FG6</td>
+<td align="center">Weight Loss</td>
+<td align="center">Fentanyl 125mcg Midazolam 7mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">FG2</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Fentanyl 125mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">FG1</td>
+<td align="center">Other-</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">FG2</td>
+<td align="center">Previous OGD ? 8 months ago</td>
+<td align="center">Fentanyl 75mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">FG6</td>
+<td align="center">Surveillance-Barrett’s</td>
+<td align="center">Fentanyl 150mcg Midazolam 3mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">FG5</td>
+<td align="center">Dyspepsia</td>
+<td align="center">Fentanyl 125mcg Midazolam 5mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">FG2</td>
+<td align="center">Oesophagus- Dysplasia</td>
+<td align="center">Fentanyl 75mcg Midazolam 3mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">FG4</td>
+<td align="center">Oesophagus- Dysplasia</td>
+<td align="center">Fentanyl 25mcg Midazolam 1mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">FG7</td>
+<td align="center">Therapeutic- Dilatation</td>
+<td align="center">Fentanyl 150mcg Midazolam 1mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(TheOGDReportFinal2df,<span class="st">'Medications'</span>)
+<span class="kw">pander</span>(<span class="kw">head</span>(v,<span class="dv">10</span>))</code></pre></div>
+<table class="table">
+<colgroup>
+<col width="13%">
+<col width="10%">
+<col width="23%">
+<col width="26%">
+<col width="16%">
+<col width="5%">
+<col width="5%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">Instrument</th>
+<th align="center">Indications</th>
+<th align="center">Medications</th>
+<th align="center">ProcedurePerformed</th>
+<th align="center">Fent</th>
+<th align="center">Midaz</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">FG5</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">NA</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">FG6</td>
+<td align="center">Weight Loss</td>
+<td align="center">Fentanyl 125mcg Midazolam 7mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">125</td>
+<td align="center">7</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">FG2</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Fentanyl 125mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">125</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">FG1</td>
+<td align="center">Other-</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">NA</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">FG2</td>
+<td align="center">Previous OGD ? 8 months ago</td>
+<td align="center">Fentanyl 75mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">75</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">FG6</td>
+<td align="center">Surveillance-Barrett’s</td>
+<td align="center">Fentanyl 150mcg Midazolam 3mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">150</td>
+<td align="center">3</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">FG5</td>
+<td align="center">Dyspepsia</td>
+<td align="center">Fentanyl 125mcg Midazolam 5mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">125</td>
+<td align="center">5</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">FG2</td>
+<td align="center">Oesophagus- Dysplasia</td>
+<td align="center">Fentanyl 75mcg Midazolam 3mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">75</td>
+<td align="center">3</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">FG4</td>
+<td align="center">Oesophagus- Dysplasia</td>
+<td align="center">Fentanyl 25mcg Midazolam 1mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">25</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">FG7</td>
+<td align="center">Therapeutic- Dilatation</td>
+<td align="center">Fentanyl 150mcg Midazolam 1mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">150</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>EndoscInstrument,EndoscIndications and EndoscProcPerformed all perform similar cleaning functions with the endoscope number, the indication for the investigation and the actual procedure performed respectively. Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases</p>
 </div>
 <div id="histological-cleaning" class="section level3">
 <h3 class="hasAnchor">
 <a href="#histological-cleaning" class="anchor"></a>Histological cleaning</h3>
-<p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology reports can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.</p>
+<p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology report can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.</p>
 <p><br></p>
 <div class="figure">
 <img src="EndoMineR_HistopExtrapol.svg" alt="Figure 5: Histopathology Cleaning functions"><p class="caption">Figure 5: Histopathology Cleaning functions</p>
 </div>
 <p><br></p>
-<p>The histology cleaning functions are based around this. For example, the HistolChopperHistol cleans the Histology text if present. In addition it removes Negative diagnoses using the Negativeremove function. This function is designed to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage.</p>
-<p>This NegativeRemove function has also been applied to the HistolChopperDx</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw"><a href="../reference/HistolChopperHistol.html">HistolChopperHistol</a></span>(Mypath,<span class="st">'Histology'</span>)</code></pre></div>
-<p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolChopperNumOfBx which extracts the number of biopsies taken.</p>
+<p>This NegativeRemove function has also been applied to the HistolDx The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present. In addition, if there is a need to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. This is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw"><a href="../reference/HistolHistol.html">HistolHistol</a></span>(Mypath,<span class="st">'Histology'</span>)</code></pre></div>
+<p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.</p>
 <p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/HistolChopperNumbOfBx.html">HistolChopperNumbOfBx</a></span>(Mypath,<span class="st">'Macroscopicdescription'</span>,<span class="st">'specimen'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(Mypath,<span class="st">'Macroscopicdescription'</span>,<span class="st">'specimen'</span>)</code></pre></div>
 <p>Other less useful functions include:</p>
 <ol style="list-style-type: decimal">
-<li><p>HistolChopperAccessionNumber which extracts Accession Number data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.</p></li>
-<li><p>HistolChopperExtrapolDx which extracts other specific diagnoses from the report. These have been hard coded to look for dysplasia cancer and GIST.</p></li>
-<li><p>HistolChopperMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc.</p></li>
+<li><p>HistolAccessionNumber which extracts Accession Number data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.</p></li>
+<li><p>HistolExtrapolDx which extracts other specific diagnoses from the report. These have been hard coded to look for dysplasia cancer and GIST.</p></li>
+<li><p>HistolMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc.</p></li>
 </ol>
 <p>These are all called in the same way:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/HistolChopperMacDescripCleanup.html">HistolChopperMacDescripCleanup</a></span>(Mypath,<span class="st">"Macroscopicdescription"</span>)
-v&lt;-<span class="kw"><a href="../reference/HistolChopperExtrapolDx.html">HistolChopperExtrapolDx</a></span>(Mypath,<span class="st">"Diagnosis"</span>)
-v&lt;-<span class="kw"><a href="../reference/HistolChopperAccessionNumber.html">HistolChopperAccessionNumber</a></span>(Mypath,<span class="st">"Histology"</span>,<span class="st">"SP-</span><span class="ch">\\</span><span class="st">d{2}-</span><span class="ch">\\</span><span class="st">d{7}"</span>)</code></pre></div>
-<p>v&lt;-HistolChopperMacDescripCleanup(Mypath,“Macroscopicdescription”)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/HistolMacDescripCleanup.html">HistolMacDescripCleanup</a></span>(Mypath,<span class="st">"Macroscopicdescription"</span>)
+v&lt;-<span class="kw"><a href="../reference/HistolExtrapolDx.html">HistolExtrapolDx</a></span>(Mypath,<span class="st">"Diagnosis"</span>)
+v&lt;-<span class="kw"><a href="../reference/HistolAccessionNumber.html">HistolAccessionNumber</a></span>(Mypath,<span class="st">"Histology"</span>,<span class="st">"SP-</span><span class="ch">\\</span><span class="st">d{2}-</span><span class="ch">\\</span><span class="st">d{7}"</span>)</code></pre></div>
+<p>v&lt;-HistolMacDescripCleanup(Mypath,“Macroscopicdescription”)</p>
 <p><br><br></p>
 </div>
 </div>

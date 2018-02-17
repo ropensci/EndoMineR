@@ -664,8 +664,7 @@ HistolMacDescripCleanup <- function(dataframe,MacroColumn) {
 #' Extract the histology data from the report by removing negative findings
 #'
 #' This extracts Histology details data from the report. The Histology details
-#' usually relate to the description of the histological report. This implements
-#'  the negative remover and also adds further negative removing regexes. This
+#' usually relate to the description of the histological report. This
 #' may be refined in further iterations.
 #' @param dataframe dataframe with column of interest
 #' @param HistolColumn column of interest
@@ -679,11 +678,7 @@ HistolHistol <- function(dataframe, HistolColumn) {
   # HISTOLOGY
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
                                            "\n|\r", " ")
-  dataframe[, HistolColumn] <- NegativeRemove(dataframe[, HistolColumn])
   dataframe$Histol_Simplified <- dataframe[, HistolColumn]
-  # Negative extraction- may merge this with the function
-  # NegativeRemove() above and some of the
-  #phrases below could undoubetdly be simplified with more intelligent regex
   dataframe$Histol_Simplified <- gsub("- ", "\n", dataframe$Histol_Simplified,
                               fixed = TRUE)
   dataframe$Histol_Simplified <- gsub("-[A-Z]", "\n", 

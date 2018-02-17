@@ -110,21 +110,21 @@
 It of course relies on a Endoscopist column being present</p>
     
 
-    <pre class="usage"><span class='fu'>MetricByEndoscopist</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>z</span>)</pre>
+    <pre class="usage"><span class='fu'>MetricByEndoscopist</span>(<span class='no'>dataframe</span>, <span class='no'>Column</span>, <span class='no'>EndoscopistColumn</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
+      <th>dataframe</th>
       <td><p>The dataframe</p></td>
     </tr>
     <tr>
-      <th>y</th>
+      <th>Column</th>
       <td><p>The column (numeric data) of interest</p></td>
     </tr>
     <tr>
-      <th>z</th>
+      <th>EndoscopistColumn</th>
       <td><p>The endoscopist column</p></td>
     </tr>
     </table>
@@ -134,7 +134,7 @@ It of course relies on a Endoscopist column being present</p>
     <pre class="examples"><div class='input'><span class='co'>#The function plots any numeric metric by endoscopist</span>
 <span class='co'># and also gives a table with it. In this example we plot medication by</span>
 <span class='co'># endoscopist</span>
-<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'><a href='EndoscChopperMeds.html'>EndoscChopperMeds</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Medications'</span>)
+<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'><a href='EndoscMeds.html'>EndoscMeds</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Medications'</span>)
 <span class='no'>Fent</span><span class='kw'>&lt;-</span><span class='fu'>MetricByEndoscopist</span>(<span class='no'>Myendo</span>,<span class='st'>'Endoscopist'</span>,<span class='st'>'Fent'</span>)
 <span class='fu'>rm</span>(<span class='no'>Myendo</span>)</div></pre>
   </div>

@@ -10,6 +10,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(EndoMineR)
+library(pander)
 ```
 
 ##Basic surveillance questions- who is undergoing endoscopic surveillance and who should we be surveying?
@@ -17,9 +19,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##Enrollment rates to surveillance programme
 
-This article uses some of the data from the Barret's oesopaghus page. We can determine how many patients who underwent endoscopy for reasons that was not Barrett's surveillance, and in whom Barrett's oesophagus was found, have had further follow-up endoscopies ie what the enrollment to surveillance rate is in those who weren't known to have Barrett's when their endoscopy was performed.
+This article uses some of the data from the Barret's oesophagus page. We can determine how many patients who underwent endoscopy for reasons that was not Barrett's surveillance, and in whom Barrett's oesophagus was found, have had further follow-up endoscopies ie what the enrollment to surveillance rate is in those who weren't known to have Barrett's when their endoscopy was performed.
 
-This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy. This should be run after the BarrettsDataAccord_Prague and BarrettsDataAccord_PathStage.
+This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy. This should be run after the Barretts_Prague and Barretts_PathStage.
 
 ```{r exampleBarrettsPatientTracking_Enrollment_Surveillance, eval = FALSE}
 Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber','Dateofprocedure','Indications')
@@ -28,14 +30,13 @@ Enroll<-BarrettsPatientTracking_Enrollment_Surveillance(Myendo,'HospitalNumber',
 
 ##Patients undergoing surveillance
 
-Perhaps we are also interested in how many patients fall under each follow-up category so we can plan how many Barrett's surveillance endoscopies we are going to have to do. The function to do this gets the unique patient ID's for each patient, for each rule. It lists the unique PatientIDs assocaited with a rule ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many patients will need follow up at specific time intervals. This should be run after the BarrettsDataAccord_Prague and BarrettsDataAccord_PathStage.
+Perhaps we are also interested in how many patients fall under each follow-up category so we can plan how many Barrett's surveillance endoscopies we are going to have to do. The function to do this gets the unique patient ID's for each patient, for each rule. It lists the unique PatientIDs assocaited with a rule ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many patients will need follow up at specific time intervals. This should be run after the Barretts_Prague and Barretts_PathStage. It gives a all the hospital numbers of the patients who need a follow up at a certain time (according to Rule1 which is defined in the Barretts_FUType function (part of the BarrettsAll function but it can be used on its own))
 
-```{r exampleBarrettsPatientTracking_UniqueHospNum, eval = FALSE}
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,"Dateofprocedure","HospitalNumber")
-b1<-BarrettsDataAccord_Prague(v,'Findings')
-b2<-BarrettsDataAccord_PathStage(b1,'Histology')
-b3<-BarrettsDataAccord_Event(b2,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-b4<-BarrettsDataAccord_FUGroup(b3,'Findings')
+```{r exampleBarrettsPatientTracking_UniqueHospNum, eval = TRUE}
+v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
+b4<-BarrettsAll(v)
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-Rule<-BarrettsPatientTracking_UniqueHospNum(b4,'Rule1','HospitalNumber')
+Rule<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
+
+pander(head(Rule,10))
 ```

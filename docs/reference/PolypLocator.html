@@ -108,21 +108,20 @@
     
     <p>This should be used after the TermStandardizer
 as it relies on the presence of a SampleLocation column
-which the TermStandardLocation produces.
-It should be used after the PolypTidyUpLocator</p>
+which the TermStandardLocation produces.</p>
     
 
-    <pre class="usage"><span class='fu'>PolypLocator</span>(<span class='no'>x</span>, <span class='no'>y</span>)</pre>
+    <pre class="usage"><span class='fu'>PolypLocator</span>(<span class='no'>dataframe</span>, <span class='no'>SampleLocationColumn</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
+      <th>dataframe</th>
       <td><p>The dataframe</p></td>
     </tr>
     <tr>
-      <th>y</th>
+      <th>SampleLocationColumn</th>
       <td><p>The column containing the SampleLocation from the
 TermStandardLocation</p></td>
     </tr>
@@ -130,18 +129,11 @@ TermStandardLocation</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>Histoltree</span> <span class='kw'>&lt;-</span><span class='fu'>list</span>(<span class='st'>"Hospital Number:"</span>,<span class='st'>"Patient Name:"</span>,
-<span class='st'>"General Practitioner:"</span>,<span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details"</span>,
- <span class='st'>"Nature of specimen"</span>,<span class='st'>"Histology"</span>,<span class='st'>"Diagnosis"</span>,<span class='st'>""</span>
-)
-
-<span class='kw'>for</span> (<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>:(<span class='fu'>length</span>(<span class='no'>Histoltree</span>) - <span class='fl'>1</span>)) {
- <span class='no'>Mypath</span> <span class='kw'>&lt;-</span><span class='fu'>Extractor</span>(
-     <span class='no'>Mypath</span>, <span class='st'>"PathReportWhole"</span>,<span class='fu'>as.character</span>(<span class='no'>Histoltree</span>[<span class='no'>i</span>]),
-     <span class='fu'>as.character</span>(<span class='no'>Histoltree</span>[<span class='no'>i</span> + <span class='fl'>1</span>]),
-     <span class='fu'>gsub</span>(<span class='st'>" "</span>, <span class='st'>""</span>, <span class='fu'>as.character</span>(<span class='no'>Histoltree</span>[<span class='no'>i</span>]))
-   )
-}</div><div class='output co'>#&gt; <span class='error'>Error in Extractor(Mypath, "PathReportWhole", as.character(Histoltree[i]),     as.character(Histoltree[i + 1]), gsub(" ", "", as.character(Histoltree[i]))): could not find function "Extractor"</span></div><div class='input'><span class='fu'>names</span>(<span class='no'>Mypath</span>)[<span class='fu'>names</span>(<span class='no'>Mypath</span>) <span class='kw'>==</span> <span class='st'>'Datereceived'</span>] <span class='kw'>&lt;-</span> <span class='st'>'Dateofprocedure'</span>
+    <pre class="examples"><div class='input'><span class='no'>mywords</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Hospital Number"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"DOB:"</span>,<span class='st'>"General Practitioner:"</span>,
+<span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details:"</span>,<span class='st'>"Macroscopic description:"</span>,
+<span class='st'>"Histology:"</span>,<span class='st'>"Diagnosis:"</span>)
+<span class='no'>Mypath</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>Mypath</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)
+<span class='fu'>names</span>(<span class='no'>Mypath</span>)[<span class='fu'>names</span>(<span class='no'>Mypath</span>) <span class='kw'>==</span> <span class='st'>'Datereceived'</span>] <span class='kw'>&lt;-</span> <span class='st'>'Dateofprocedure'</span>
 <span class='no'>Mypath</span>$<span class='no'>Dateofprocedure</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='no'>Mypath</span>$<span class='no'>Dateofprocedure</span>)
 <span class='co'># The polyp locator then determines where the biopsies were taken from</span>
 <span class='co'># by assessing the SampleLocation column which comes from the</span>

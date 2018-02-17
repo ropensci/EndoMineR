@@ -108,17 +108,17 @@
     
     <p>Get an overall idea of how many endoscopies have been done for an indication
 by year and month. This is a more involved version of
-SurveillanceCapacity function. It takes string for
+SurveilCapacity function. It takes string for
 the Indication for the test</p>
     
 
-    <pre class="usage"><span class='fu'>HowManyTests</span>(<span class='no'>x</span>, <span class='no'>Indication</span>, <span class='no'>Endo_ResultPerformed</span>, <span class='no'>StringToSearch</span>)</pre>
+    <pre class="usage"><span class='fu'>HowManyTests</span>(<span class='no'>dataframe</span>, <span class='no'>Indication</span>, <span class='no'>Endo_ResultPerformed</span>, <span class='no'>StringToSearch</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
+      <th>dataframe</th>
       <td><p>dataframe</p></td>
     </tr>
     <tr>
@@ -150,7 +150,7 @@ by month and year).</p>
 <span class='co'># POSIX format) is also necessary.  Finally the string which indicates the text</span>
 <span class='co'># indication needs to be inpoutted. In this case we are looking for all</span>
 <span class='co'># endoscopies done</span>
-<span class='co'># where the indication is surveillance (so grepping on 'Surv' will do fine) .</span>
+<span class='co'># where the indication is surveillance (so searching on 'Surv' will do fine) .</span>
 <span class='no'>how</span><span class='kw'>&lt;-</span><span class='fu'>HowManyTests</span>(<span class='no'>Myendo</span>,<span class='st'>'Indications'</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'Surv'</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

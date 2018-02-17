@@ -63,18 +63,34 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/Analysis.html">Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Barrett's Oesophagus</a>
+    </li>
+    <li>
+      <a href="../articles/EndoMineRPrinciples.html">EndoMinerPrinciples</a>
+    </li>
+    <li>
+      <a href="../articles/Surveillance.html">Surveillance</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../news/index.html">News</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li>
-  <a href="https://github.com/sebastiz/EndoMineR">
-    <span class="fa fa-github fa-lg"></span>
-     
-  </a>
-</li>
+        
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -100,30 +116,23 @@ like : or ? and / and don't allow numbers as the start character so these
 have to be dealt with in the text before processing</p>
     
 
-    <pre class="usage"><span class='fu'>Extractor</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>stra</span>, <span class='no'>strb</span>, <span class='no'>t</span>)</pre>
+    <pre class="usage"><span class='fu'>Extractor</span>(<span class='no'>dataframeIn</span>, <span class='no'>Column</span>, <span class='no'>delim</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
+      <th>dataframeIn</th>
       <td><p>the dataframe</p></td>
     </tr>
     <tr>
-      <th>y</th>
+      <th>Column</th>
       <td><p>the column to extract from</p></td>
     </tr>
     <tr>
-      <th>stra</th>
-      <td><p>the start of the boundary to extract</p></td>
-    </tr>
-    <tr>
-      <th>strb</th>
-      <td><p>the end of the boundary to extract</p></td>
-    </tr>
-    <tr>
-      <th>t</th>
-      <td><p>the column name to create</p></td>
+      <th>delim</th>
+      <td><p>the vector of words that will be used as the boundaries to
+extract against</p></td>
     </tr>
     </table>
     
@@ -131,22 +140,13 @@ have to be dealt with in the text before processing</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># As column names cant start with a number, one of the dividing</span>
 <span class='co'># words has to be converted</span>
-<span class='no'>Myendo</span>$<span class='no'>OGDReportWhole</span><span class='kw'>&lt;-</span><span class='fu'>gsub</span>(<span class='st'>'2nd Endoscopist:'</span>,<span class='st'>'Second endoscopist:'</span>,
-<span class='no'>Myendo</span>$<span class='no'>OGDReportWhole</span>)
 <span class='co'># A list of dividing words (which will also act as column names)</span>
 <span class='co'># is then constructed</span>
-<span class='no'>EndoscTree</span><span class='kw'>&lt;-</span><span class='fu'>list</span>(<span class='st'>'Hospital Number:'</span>,<span class='st'>'Patient Name:'</span>,<span class='st'>'General Practitioner:'</span>,
-<span class='st'>'Date of procedure:'</span>,<span class='st'>'Endoscopist:'</span>,<span class='st'>'Second Endoscopist:'</span>,<span class='st'>'Medications'</span>,
-<span class='st'>'Instrument'</span>,<span class='st'>'Extent of Exam:'</span>,<span class='st'>'Indications:'</span>,<span class='st'>'Procedure Performed:'</span>,
-<span class='st'>'Findings:'</span>,<span class='st'>'Endoscopic Diagnosis:'</span>)
-<span class='co'># The Extractor function is then used as part of a loop to divide the raw</span>
-<span class='co'># report up according to the user-defined words in the extraction list</span>
-<span class='co'># defined above</span>
-<span class='kw'>for</span>(<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>:(<span class='fu'>length</span>(<span class='no'>EndoscTree</span>)-<span class='fl'>1</span>)) {
- <span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'>Extractor</span>(<span class='no'>Myendo</span>,<span class='st'>'OGDReportWhole'</span>,<span class='fu'>as.character</span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>]),
- <span class='fu'>as.character</span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>+<span class='fl'>1</span>]),<span class='fu'>as.character</span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>]))
-}
-<span class='no'>res</span><span class='kw'>&lt;-</span><span class='no'>Myendo</span></div></pre>
+<span class='no'>mywords</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Hospital Number"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"DOB:"</span>,<span class='st'>"General Practitioner:"</span>,
+<span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details:"</span>,<span class='st'>"Macroscopic description:"</span>,
+<span class='st'>"Histology:"</span>,<span class='st'>"Diagnosis:"</span>)
+<span class='no'>Mypath</span><span class='kw'>&lt;-</span><span class='fu'>Extractor</span>(<span class='no'>Mypath</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)
+<span class='no'>res</span><span class='kw'>&lt;-</span><span class='no'>Mypath</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
