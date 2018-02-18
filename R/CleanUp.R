@@ -102,6 +102,7 @@ NewLines <- function(dataframe, EndoReportColumn) {
 #' "Histology:","Diagnosis:")
 #' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 #' res<-Mypath
+#' rm(Mypath)
 #' 
 Extractor <- function(dataframeIn, Column, delim) {
   dataframeInForLater<-dataframeIn
@@ -152,7 +153,7 @@ EndoscAll<- function(dataframe) {
 
   if("Medications" %in% colnames(dataframe)){
     dataframe<-EndoscMeds(Myendo,'Medications')
-    print("Meds")
+   
   }
   if("Instruments" %in% colnames(dataframe)){
     dataframe<-EndoscInstrument(dataframe,'Instruments')

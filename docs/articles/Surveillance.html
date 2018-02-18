@@ -86,79 +86,11 @@
     
     
 <div class="contents">
-<div id="basic-surveillance-questions--who-is-undergoing-endoscopic-surveillance-and-who-should-we-be-surveying" class="section level2">
-<h2 class="hasAnchor">
-<a href="#basic-surveillance-questions--who-is-undergoing-endoscopic-surveillance-and-who-should-we-be-surveying" class="anchor"></a>Basic surveillance questions- who is undergoing endoscopic surveillance and who should we be surveying?</h2>
-</div>
-<div id="enrollment-rates-to-surveillance-programme" class="section level2">
-<h2 class="hasAnchor">
-<a href="#enrollment-rates-to-surveillance-programme" class="anchor"></a>Enrollment rates to surveillance programme</h2>
-<p>This article uses some of the data from the Barret’s oesophagus page. We can determine how many patients who underwent endoscopy for reasons that was not Barrett’s surveillance, and in whom Barrett’s oesophagus was found, have had further follow-up endoscopies ie what the enrollment to surveillance rate is in those who weren’t known to have Barrett’s when their endoscopy was performed.</p>
-<p>This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy. This should be run after the Barretts_Prague and Barretts_PathStage.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Enroll&lt;-<span class="kw">BarrettsPatientTracking_Enrollment_Surveillance</span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Indications'</span>)</code></pre></div>
-</div>
-<div id="patients-undergoing-surveillance" class="section level2">
-<h2 class="hasAnchor">
-<a href="#patients-undergoing-surveillance" class="anchor"></a>Patients undergoing surveillance</h2>
-<p>Perhaps we are also interested in how many patients fall under each follow-up category so we can plan how many Barrett’s surveillance endoscopies we are going to have to do. The function to do this gets the unique patient ID’s for each patient, for each rule. It lists the unique PatientIDs assocaited with a rule (‘Rule1’,‘Rule2’,‘Rule3’,‘NoRules’). This allows us to determine how many patients will need follow up at specific time intervals. This should be run after the Barretts_Prague and Barretts_PathStage. It gives a all the hospital numbers of the patients who need a follow up at a certain time (according to Rule1 which is defined in the Barretts_FUType function (part of the BarrettsAll function but it can be used on its own))</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
-b4&lt;-<span class="kw"><a href="../reference/BarrettsAll.html">BarrettsAll</a></span>(v)
-<span class="kw">colnames</span>(b4)[<span class="kw">colnames</span>(b4) ==<span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
-Rule&lt;-<span class="kw"><a href="../reference/BarrettsSurveil_HospNum.html">BarrettsSurveil_HospNum</a></span>(b4,<span class="st">'Rule1'</span>,<span class="st">'HospitalNumber'</span>)
 
-<span class="kw">pander</span>(<span class="kw">head</span>(Rule,<span class="dv">10</span>))</code></pre></div>
-<table style="width:14%;" class="table">
-<colgroup><col width="13%"></colgroup>
-<thead><tr class="header">
-<th align="center">x</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">J6044658</td>
-</tr>
-<tr class="even">
-<td align="center">Y6417773</td>
-</tr>
-<tr class="odd">
-<td align="center">B6072011</td>
-</tr>
-<tr class="even">
-<td align="center">G1449886</td>
-</tr>
-<tr class="odd">
-<td align="center">O7163832</td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-</tr>
-<tr class="odd">
-<td align="center">K2657390</td>
-</tr>
-<tr class="even">
-<td align="center">N4378127</td>
-</tr>
-<tr class="odd">
-<td align="center">R8004923</td>
-</tr>
-<tr class="even">
-<td align="center">M5148114</td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#basic-surveillance-questions--who-is-undergoing-endoscopic-surveillance-and-who-should-we-be-surveying">Basic surveillance questions- who is undergoing endoscopic surveillance and who should we be surveying?</a></li>
-      <li><a href="#enrollment-rates-to-surveillance-programme">Enrollment rates to surveillance programme</a></li>
-      <li><a href="#patients-undergoing-surveillance">Patients undergoing surveillance</a></li>
-      </ul>
-</div>
       </div>
 
 </div>

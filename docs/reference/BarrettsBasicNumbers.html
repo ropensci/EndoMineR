@@ -130,7 +130,7 @@ This should only be run after all the BarrettsDataAccord functions.</p>
     <pre class="examples"><div class='input'><span class='co'># Firstly relevant columns are extrapolated from the</span>
 <span class='co'># Mypath demo dataset. These functions are all part of Histology data</span>
 <span class='co'># cleaning as part of the package.</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Diagnosis'</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Diagnosis'</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 19 variables to replace 1 variables</span></div><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
 <span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
@@ -168,7 +168,7 @@ This should only be run after all the BarrettsDataAccord functions.</p>
 #&gt; 10 APC    2010     3
 #&gt; # ... with 33 more rows
 #&gt; 
-#&gt; $ProcNumbersPlot</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using method = 'loess'</span></div><div class='img'><img src='BarrettsBasicNumbers-1.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt; </div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
+#&gt; $ProcNumbersPlot</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using method = 'loess'</span></div><div class='img'><img src='BarrettsBasicNumbers-2.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt; </div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

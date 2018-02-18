@@ -2,9 +2,12 @@
 title: "EndoMineR"
 author: "Sebastian Zeki `r Sys.Date()`"
 output:
-  rmarkdown::html_vignette:
+  prettydoc::html_pretty:
     toc: true
-    toc_depth: 4
+    theme: architect
+    highlight: github
+    css: 
+    - style.css
 vignette: >
   %\VignetteIndexEntry{EndoMineR}
   %\VignetteEngine{knitr::rmarkdown}

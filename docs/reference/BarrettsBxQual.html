@@ -138,7 +138,7 @@ Prague score for that endoscopy.</p>
     <pre class="examples"><div class='input'><span class='co'># Firstly relevant columns are extrapolated from the</span>
 <span class='co'># Mypath demo dataset. These functions are all part of Histology data</span>
 <span class='co'># cleaning as part of the package.</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Diagnosis'</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 10 variables to replace 1 variables</span></div><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Diagnosis'</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 19 variables to replace 1 variables</span></div><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
 <span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
@@ -160,19 +160,19 @@ Prague score for that endoscopy.</p>
 <span class='co'># too few biopsies can be determined</span>
 <span class='fu'>BarrettsBxQual</span>(<span class='no'>b4</span>,<span class='st'>'Date.x'</span>,<span class='st'>'HospitalNumber'</span>,
                                      <span class='st'>'Endoscopist'</span>)</div><div class='output co'>#&gt; $BxShortfallPre
-#&gt;                        Endoscopist    MeanDiff
-#&gt; 1    Dr\n al-Arif, Ummu Kulthoom\n -12.8888889
-#&gt; 2           Dr\n Anderson, Alana\n  -1.8500000
-#&gt; 3   Dr\n Avitia-Ramirez, Alondra\n  -6.3181818
-#&gt; 4           Dr\n Greimann, Phoua\n  -2.7222222
-#&gt; 5             Dr\n Ives, Rashiah\n  -8.5416667
-#&gt; 6         Dr\n Kekich, Annabelle\n  -0.8333333
-#&gt; 7     Dr\n Kola-Kehinde, Karisma\n   0.7619048
-#&gt; 8          Dr\n Martinez, Maegen\n -11.9090909
-#&gt; 9            Dr\n Moreno, Lauren\n  -0.3478261
-#&gt; 10         Dr\n Sullivan, Shelby\n  -9.8333333
+#&gt;                Endoscopist    MeanDiff
+#&gt; 1   al-Arif, Ummu Kulthoom -12.8888889
+#&gt; 2          Anderson, Alana  -1.8500000
+#&gt; 3  Avitia-Ramirez, Alondra  -6.3181818
+#&gt; 4          Greimann, Phoua  -2.7222222
+#&gt; 5            Ives, Rashiah  -8.5416667
+#&gt; 6        Kekich, Annabelle  -0.8333333
+#&gt; 7    Kola-Kehinde, Karisma   0.7619048
+#&gt; 8         Martinez, Maegen -11.9090909
+#&gt; 9           Moreno, Lauren  -0.3478261
+#&gt; 10        Sullivan, Shelby  -9.8333333
 #&gt; 
-#&gt; $t</div><div class='img'><img src='BarrettsBxQual-1.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt; </div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
+#&gt; $t</div><div class='img'><img src='BarrettsBxQual-2.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt; </div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

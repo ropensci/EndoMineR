@@ -132,13 +132,12 @@ names as suggested with the parent function HistolAll</p>
 <span class='no'>mywords</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Hospital Number"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"DOB:"</span>,<span class='st'>"General Practitioner:"</span>,
 <span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details:"</span>,<span class='st'>"Macroscopic description:"</span>,
 <span class='st'>"Histology:"</span>,<span class='st'>"Diagnosis:"</span>)
-<span class='no'>Mypath</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>Mypath</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)
-<span class='fu'>names</span>(<span class='no'>Mypath</span>)<span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Original"</span>,<span class='st'>"HospitalNumber"</span>,<span class='st'>"PatientName"</span>,<span class='st'>"DOB"</span>,
+<span class='no'>Mypath</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>Mypath</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval_tidy(enquo(var), var_env): object 'PathReportWhole' not found</span></div><div class='input'><span class='fu'>names</span>(<span class='no'>Mypath</span>)<span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Original"</span>,<span class='st'>"HospitalNumber"</span>,<span class='st'>"PatientName"</span>,<span class='st'>"DOB"</span>,
 <span class='st'>"GeneralPractitioner"</span>,<span class='st'>"Datereceived"</span>,<span class='st'>"ClinicalDetails"</span>,
 <span class='st'>"Macroscopicdescription"</span>,<span class='st'>"Histology"</span>,<span class='st'>"Diagnosis"</span>,<span class='st'>"HospitalNumber"</span>,
 <span class='st'>"PatientName"</span>,<span class='st'>"DOB"</span>,<span class='st'>"GeneralPractitioner"</span>,<span class='st'>"Dateofprocedure"</span>,
 <span class='st'>"ClinicalDetails"</span>,<span class='st'>"Macroscopicdescription"</span>,<span class='st'>"Histology"</span>,<span class='st'>"Diagnosis"</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAll.html'>HistolAll</a></span>(<span class='no'>Mypath</span>)</div><div class='output co'>#&gt; [1] "Meds"</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 11 variables to replace 1 variables</span></div><div class='input'><span class='fu'>rm</span>(<span class='no'>Mypath</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAll.html'>HistolAll</a></span>(<span class='no'>Mypath</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 20 variables to replace 1 variables</span></div><div class='input'><span class='fu'>rm</span>(<span class='no'>Mypath</span>)
 
 <span class='co'>#' # Rename the columns in whatever endoscopy dataframe you have</span>
 <span class='fu'>names</span>(<span class='no'>Myendo</span>)<span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"OGDReportWhole"</span>,<span class='st'>"HospitalNumber"</span>,<span class='st'>"PatientName"</span>,
@@ -146,7 +145,8 @@ names as suggested with the parent function HistolAll</p>
 <span class='st'>"Medications"</span>,<span class='st'>"Instrument"</span>,<span class='st'>"ExtentofExam"</span>,<span class='st'>"Indications"</span>,<span class='st'>"ProcedurePerformed"</span>,
 <span class='st'>"Findings"</span> )
 <span class='co'>#Now use the function</span>
-<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'><a href='EndoscAll.html'>EndoscAll</a></span>(<span class='no'>Myendo</span>)</div><div class='output co'>#&gt; [1] "Meds"</div><div class='input'>
+<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'><a href='EndoscAll.html'>EndoscAll</a></span>(<span class='no'>Myendo</span>)
+
 <span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
 <span class='co'># according to date and Hospital number</span>
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>v</span>,<span class='st'>'Dateofprocedure'</span>,

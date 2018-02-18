@@ -148,23 +148,23 @@
 <tbody>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">790 days</td>
+<td align="center">791 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">790 days</td>
+<td align="center">791 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">790 days</td>
+<td align="center">791 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">790 days</td>
+<td align="center">791 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">790 days</td>
+<td align="center">791 days</td>
 </tr>
 </tbody>
 </table>
@@ -557,12 +557,263 @@ fg&lt;-<span class="kw">data.frame</span>(fgg[(<span class="kw">ncol</span>(fgg)
 </table>
 <p>A further difficult area is the assessment of endoscopic quality by looking at the pathology processed from an endoscopy. This package is excellent at dealing with this kind of question because of its ability to merge the datasets together:</p>
 <p>A particularly well developed area to look at is that of the Global Rating Scale for assessing the quality of colonoscopy. One of the metrics- the adenoma detection rate assesses the number of colonoscopies where at least one adenoma was detected.</p>
-<p>One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS reqquirement for the ADR as well as provding further metrics alongside</p>
+<p>One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS requirement for the ADR as well as providing further metrics alongside</p>
 </div>
 <div id="adenoma-detection-rates" class="section level5">
 <h5 class="hasAnchor">
 <a href="#adenoma-detection-rates" class="anchor"></a>Adenoma Detection Rates</h5>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html">GRS_Type_Assess_By_Unit</a></span>(v,<span class="st">'ProcedurePerformed'</span>,<span class="st">'Endoscopist'</span>,<span class="st">'Diagnosis'</span>,<span class="st">'Histology'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Import the endoscopy and pathology datasets for colonoscopy</span>
+ MypathColon&lt;-PathDataFrameFinalColon
+ MyendoColon &lt;-<span class="st"> </span>ColonFinal
+ <span class="co">#Rename the columns so that numbers do not lead the column titles</span>
+ MyendoColon$OGDReportWhole &lt;-<span class="kw">gsub</span>(<span class="st">"2nd Endoscopist:"</span>,<span class="st">"Second endoscopist:"</span>,
+ MyendoColon$OGDReportWhole)
+ <span class="co">#Extract the columns needed from endoscopy</span>
+ EndoscTree &lt;-<span class="kw">c</span>(<span class="st">"Hospital Number:"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"General Practitioner:"</span>,
+        <span class="st">"Date of procedure:"</span>,<span class="st">"Endoscopist:"</span>,<span class="st">"Second endoscopist:"</span>,<span class="st">"Medications"</span>,
+        <span class="st">"Instrument"</span>,<span class="st">"Extent of Exam:"</span>,<span class="st">"Indications:"</span>,<span class="st">"Procedure Performed:"</span>,
+        <span class="st">"Findings:"</span>,<span class="st">"Endoscopic Diagnosis:"</span>)
+ MyendoColon&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(MyendoColon,<span class="st">"OGDReportWhole"</span>,EndoscTree)</code></pre></div>
+<pre><code>## Warning: Expected 14 pieces. Additional pieces discarded in 26 rows [92,
+## 153, 189, 350, 357, 397, 419, 701, 782, 796, 814, 921, 1045, 1049, 1138,
+## 1161, 1238, 1269, 1283, 1305, ...].</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="co">#Extract the columns needed from Histology</span>
+ Histoltree &lt;-<span class="kw">c</span>(
+     <span class="st">"Hospital Number:"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
+     <span class="st">"Date received:"</span>,<span class="st">"Clinical Details"</span>,<span class="st">"Nature of specimen"</span>,<span class="st">"Macroscopic description:"</span>,<span class="st">"Histology"</span>,
+     <span class="st">"Diagnosis"</span>)
+<span class="co">#Tidy up to allow merge</span>
+ MypathColon &lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(MypathColon,<span class="st">"PathReportWhole"</span>,Histoltree)</code></pre></div>
+<pre><code>## Warning: Expected 11 pieces. Additional pieces discarded in 2000 rows [1,
+## 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...].</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="kw">names</span>(MypathColon)[<span class="kw">names</span>(MypathColon) ==<span class="st"> 'Datereceived'</span>] &lt;-<span class="st"> 'Dateofprocedure'</span>
+ MypathColon$Dateofprocedure &lt;-<span class="st"> </span><span class="kw">as.Date</span>(MypathColon$Dateofprocedure)
+ <span class="co">#Do the merge</span>
+ vColon &lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(MypathColon, <span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,
+                     MyendoColon, <span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
+
+ 
+ <span class="co">#Use the function</span>
+GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html">GRS_Type_Assess_By_Unit</a></span>(vColon,<span class="st">'ProcedurePerformed'</span>,<span class="st">'Endoscopist'</span>,<span class="st">'Diagnosis'</span>,<span class="st">'Histology'</span>)
+<span class="kw">pander</span>(GRSTable)</code></pre></div>
+<table style="width:97%;" class="table">
+<caption>Table continues below</caption>
+<colgroup>
+<col width="38%">
+<col width="19%">
+<col width="19%">
+<col width="19%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">Endoscopist</th>
+<th align="center">NumAdenomas</th>
+<th align="center">NumColons.x</th>
+<th align="center">PropAdenomas</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">Dr al-Huda, Ummu Kulthoom</td>
+<td align="center">3</td>
+<td align="center">204</td>
+<td align="center">1.471</td>
+</tr>
+<tr class="even">
+<td align="center">Dr al-Saade, Waajida</td>
+<td align="center">2</td>
+<td align="center">215</td>
+<td align="center">0.9302</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Confer, Mouneek</td>
+<td align="center">6</td>
+<td align="center">216</td>
+<td align="center">2.778</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Gebregzabheir, Kiara</td>
+<td align="center">4</td>
+<td align="center">190</td>
+<td align="center">2.105</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Hasling, Emily</td>
+<td align="center">6</td>
+<td align="center">218</td>
+<td align="center">2.752</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Monroe, Danjai</td>
+<td align="center">7</td>
+<td align="center">230</td>
+<td align="center">3.043</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Phillips, Harlie</td>
+<td align="center">6</td>
+<td align="center">233</td>
+<td align="center">2.575</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Rahat, Janisa</td>
+<td align="center">1</td>
+<td align="center">217</td>
+<td align="center">0.4608</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Rubio, Jessica</td>
+<td align="center">2</td>
+<td align="center">180</td>
+<td align="center">1.111</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Steinbach, Lindsey</td>
+<td align="center">6</td>
+<td align="center">191</td>
+<td align="center">3.141</td>
+</tr>
+</tbody>
+</table>
+<table class="table">
+<caption>Table continues below</caption>
+<colgroup>
+<col width="25%">
+<col width="21%">
+<col width="25%">
+<col width="27%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">NumHyperplastics</th>
+<th align="center">Colons(Count)</th>
+<th align="center">PropHyperplastic</th>
+<th align="center">NumAdenocarcinomas</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">204</td>
+<td align="center">0.9804</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">NA</td>
+<td align="center">215</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">216</td>
+<td align="center">1.389</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="center">190</td>
+<td align="center">1.579</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">5</td>
+<td align="center">218</td>
+<td align="center">2.294</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">230</td>
+<td align="center">0.8696</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">3</td>
+<td align="center">233</td>
+<td align="center">1.288</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">2</td>
+<td align="center">217</td>
+<td align="center">0.9217</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">2</td>
+<td align="center">180</td>
+<td align="center">1.111</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">3</td>
+<td align="center">191</td>
+<td align="center">1.571</td>
+<td align="center">NA</td>
+</tr>
+</tbody>
+</table>
+<table style="width:86%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="30%">
+<col width="38%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">NumColons</th>
+<th align="center">PropAdenocarcinomas</th>
+<th align="center">HyperplasticToAdenomaRatio</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">204</td>
+<td align="center">NA</td>
+<td align="center">1.5</td>
+</tr>
+<tr class="even">
+<td align="center">215</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">216</td>
+<td align="center">NA</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="center">190</td>
+<td align="center">NA</td>
+<td align="center">1.333</td>
+</tr>
+<tr class="odd">
+<td align="center">218</td>
+<td align="center">NA</td>
+<td align="center">1.2</td>
+</tr>
+<tr class="even">
+<td align="center">230</td>
+<td align="center">NA</td>
+<td align="center">3.5</td>
+</tr>
+<tr class="odd">
+<td align="center">233</td>
+<td align="center">NA</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="center">217</td>
+<td align="center">NA</td>
+<td align="center">0.5</td>
+</tr>
+<tr class="odd">
+<td align="center">180</td>
+<td align="center">NA</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">191</td>
+<td align="center">NA</td>
+<td align="center">2</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>

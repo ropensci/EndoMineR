@@ -3,9 +3,11 @@ title: "Analysis"
 author: "Sebastian Zeki"
 date: "12/22/2017"
 output:
-  rmarkdown::html_vignette:
+  prettydoc::html_pretty:
     toc: true
-    toc_depth: 5
+    theme: architect
+    highlight: github
+    css: style.css
 ---
 
 ```{r setup, include=FALSE}
