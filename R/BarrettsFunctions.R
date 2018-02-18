@@ -704,7 +704,7 @@ BarrettsBxQual <- function(dataframe,
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function simply the the histopathological grades overall for
 #' # your dataset and then creates a frequency plot of them
-#' 
+#' BarrettsPathDetectQual(b4,'Myplot')
 #' rm(v)
 
 
@@ -1196,7 +1196,8 @@ BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
 #' # The function groups the procedures by patient and then looks at those which
 #' # have 'nothing' in the event column (which means biopsies only) which was
 #' # preceded by radiofrequency ablation (RFA) so that these patients are
-#' # labelled as having clearance of intestinal metaplasia
+#' # labelled as having clearance of intestinal metaplasia. The result is a true
+#' or false column.
 #' Barretts_CRIM(b3,'HospitalNumber',"EVENT")
 #' rm(v)
 

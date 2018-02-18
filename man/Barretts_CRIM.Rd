@@ -44,7 +44,8 @@ colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function groups the procedures by patient and then looks at those which
 # have 'nothing' in the event column (which means biopsies only) which was
 # preceded by radiofrequency ablation (RFA) so that these patients are
-# labelled as having clearance of intestinal metaplasia
+# labelled as having clearance of intestinal metaplasia. The result is a true
+or false column.
 Barretts_CRIM(b3,'HospitalNumber',"EVENT")
 rm(v)
 }

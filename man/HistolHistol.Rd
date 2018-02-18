@@ -13,8 +13,7 @@ HistolHistol(dataframe, HistolColumn)
 }
 \description{
 This extracts Histology details data from the report. The Histology details
-usually relate to the description of the histological report. This implements
- the negative remover and also adds further negative removing regexes. This
+usually relate to the description of the histological report. This
 may be refined in further iterations.
 }
 \examples{

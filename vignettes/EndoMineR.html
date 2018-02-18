@@ -10,7 +10,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="author" content="Sebastian Zeki 2018-02-13" />
+<meta name="author" content="Sebastian Zeki 2018-02-18" />
 
 
 <title>EndoMineR</title>
@@ -68,7 +68,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">EndoMineR</h1>
-<h4 class="author"><em>Sebastian Zeki 2018-02-13</em></h4>
+<h4 class="author"><em>Sebastian Zeki 2018-02-18</em></h4>
 
 
 <div id="TOC">
@@ -77,8 +77,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#how-is-the-package-divided">How is the package divided?</a></li>
 <li><a href="#the-extractor-function">The extractor function</a></li>
 <li><a href="#the-cleaning-functions">The cleaning functions</a><ul>
-<li><a href="#endoscopic-cleaning">Endoscopic cleaning</a></li>
-<li><a href="#histological-cleaning">Histological cleaning</a></li>
+<li><a href="#endoscopic-cleaning">Endoscopic cleaning</a><ul>
+<li><a href="#endoscopist-cleaning">Endoscopist cleaning</a></li>
+<li><a href="#medication-cleaning">Medication cleaning</a></li>
+<li><a href="#instrumentindications-and-procedure-type-cleaning">Instrument,Indications and Procedure type cleaning</a></li>
+</ul></li>
+<li><a href="#histological-cleaning">Histological cleaning</a><ul>
+<li><a href="#basic-histology-cleaning">Basic Histology Cleaning</a></li>
+<li><a href="#removal-of-negatives">Removal of negatives</a></li>
+<li><a href="#extraction-of-macroscopic-description">Extraction of Macroscopic Description</a></li>
+<li><a href="#extraction-of-specific-disease-entities">Extraction of Specific Disease Entities</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -111,7 +120,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <p><br></p>
 <p>One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the NewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">NewLines</span>(Myendo,<span class="st">'OGDReportWhole'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">NewLines</span>(TheOGDReportFinal,<span class="st">'OGDReportWhole'</span>)</code></pre></div>
 <p><br></p>
 <p>A list of keywords is then constructed. This list is made up of the words that will be used to split the document. The Extractor then does the splitting for each pair of words, with some cleaning up and then returns the split dataframe:</p>
 <table style="width:44%;">
@@ -177,50 +186,621 @@ PathDataFrameFinalColon2&lt;-<span class="kw">Extractor</span>(PathDataFrameFina
 <h2>The cleaning functions</h2>
 <div id="endoscopic-cleaning" class="section level3">
 <h3>Endoscopic cleaning</h3>
-<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">EndoscEndoscopist</span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
-<p>This function performs the cleaning of common things found in the text that may cause confusion.</p>
+<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. The endoscopist column initially looks like this:</p>
+<table>
+<colgroup>
+<col width="15%"></col>
+<col width="20%"></col>
+<col width="21%"></col>
+<col width="16%"></col>
+<col width="26%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">PatientName</th>
+<th align="center">GeneralPractitioner</th>
+<th align="center">Dateofprocedure</th>
+<th align="center">Endoscopist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Jargon, Victoria</td>
+<td align="center">Dr Martin, Marche</td>
+<td align="center">2009-11-11</td>
+<td align="center">Dr Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Powell, Destiny</td>
+<td align="center">Dr al-Safi, Lutfiyya</td>
+<td align="center">2008-06-15</td>
+<td align="center">Dr Kekich, Annabelle</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">Martinez-Santos, Ana</td>
+<td align="center">Dr Rogers, Monica</td>
+<td align="center">2007-10-27</td>
+<td align="center">Dr Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Lopez, Maria</td>
+<td align="center">Dr Heilman, Lisa</td>
+<td align="center">2002-03-17</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">Dr Krumland, Lisa</td>
+<td align="center">2011-12-05</td>
+<td align="center">Dr Greimann, Phoua</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">Forrest, Dazheea</td>
+<td align="center">Dr Millman, Arianna</td>
+<td align="center">2014-09-19</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">Naperola, Breanna</td>
+<td align="center">Dr Vigil, Lidia</td>
+<td align="center">2002-05-28</td>
+<td align="center">Dr Martinez, Maegen</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">Zuni, Shannon</td>
+<td align="center">Dr Merced, Essence</td>
+<td align="center">2009-09-19</td>
+<td align="center">Dr Anderson, Alana</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">Gomez Barron, Erin</td>
+<td align="center">Dr Ursery, Dezire</td>
+<td align="center">2003-10-02</td>
+<td align="center">Dr Anderson, Alana</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">Hamm, Shebra</td>
+<td align="center">Dr Bauman, Caitlin</td>
+<td align="center">2016-11-22</td>
+<td align="center">Dr Ives, Rashiah</td>
+</tr>
+</tbody>
+</table>
+<div id="endoscopist-cleaning" class="section level4">
+<h4>Endoscopist cleaning</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo2&lt;-<span class="kw">EndoscEndoscopist</span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
+<p>This function performs the cleaning of common things found in the text that may cause confusion. The result is as follows:</p>
+<table>
+<colgroup>
+<col width="15%"></col>
+<col width="21%"></col>
+<col width="22%"></col>
+<col width="16%"></col>
+<col width="23%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">PatientName</th>
+<th align="center">GeneralPractitioner</th>
+<th align="center">Dateofprocedure</th>
+<th align="center">Endoscopist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Jargon, Victoria</td>
+<td align="center">Dr Martin, Marche</td>
+<td align="center">2009-11-11</td>
+<td align="center">Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Powell, Destiny</td>
+<td align="center">Dr al-Safi, Lutfiyya</td>
+<td align="center">2008-06-15</td>
+<td align="center">Kekich, Annabelle</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">Martinez-Santos, Ana</td>
+<td align="center">Dr Rogers, Monica</td>
+<td align="center">2007-10-27</td>
+<td align="center">Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Lopez, Maria</td>
+<td align="center">Dr Heilman, Lisa</td>
+<td align="center">2002-03-17</td>
+<td align="center">Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">Dr Krumland, Lisa</td>
+<td align="center">2011-12-05</td>
+<td align="center">Greimann, Phoua</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">Forrest, Dazheea</td>
+<td align="center">Dr Millman, Arianna</td>
+<td align="center">2014-09-19</td>
+<td align="center">Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">Naperola, Breanna</td>
+<td align="center">Dr Vigil, Lidia</td>
+<td align="center">2002-05-28</td>
+<td align="center">Martinez, Maegen</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">Zuni, Shannon</td>
+<td align="center">Dr Merced, Essence</td>
+<td align="center">2009-09-19</td>
+<td align="center">Anderson, Alana</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">Gomez Barron, Erin</td>
+<td align="center">Dr Ursery, Dezire</td>
+<td align="center">2003-10-02</td>
+<td align="center">Anderson, Alana</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">Hamm, Shebra</td>
+<td align="center">Dr Bauman, Caitlin</td>
+<td align="center">2016-11-22</td>
+<td align="center">Ives, Rashiah</td>
+</tr>
+</tbody>
+</table>
 <p><br></p>
 <div class="figure">
 <img src="data:image/svg+xml;base64,PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1OTBweCIgaGVpZ2h0PSIyMzRweCIgdmVyc2lvbj0iMS4xIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgY29udGVudD0iJmx0O214ZmlsZSB0eXBlPSZxdW90O2dvb2dsZSZxdW90OyB2ZXJzaW9uPSZxdW90OzcuNi43JnF1b3Q7IHVzZXJBZ2VudD0mcXVvdDtNb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvNDYuMC4yNDg2LjAgU2FmYXJpLzUzNy4zNiBFZGdlLzEzLjEwNTg2JnF1b3Q7IGVkaXRvcj0mcXVvdDt3d3cuZHJhdy5pbyZxdW90OyZndDsmbHQ7ZGlhZ3JhbSZndDs3WnRkYjZNNEZJWi9UUzViWWI0U0xxZVpkbll1dXFxMld1M09KUXNuQ1JyQWtYR2FkSC85SG9JSllCTVNKK3lFU0VTcUZKLzRBODd6MnZnYzA0azFUM2JmbUw5ZXZkSVE0b2xwTEZrVVRxeXZFOU1rK0llR2NGY1VUY2V3aGVWVFdBeFgxTWtidlVmL2dtaG9DT3NtQ2lGcmRNWXBqWG0wYmhvRG1xWVE4SWJOWjR4dW05VVdORzVlMmRwZmdtSjREL3hZdGY0VmhYeFZXR2VtVzlsL2cyaTVLa2NtcmxmOGt2aGxaWEVuMmNvUDZiWm1zcDRuMXB4UnlvdHZ5VzRPY2U2OTBuZWkzY1I4T1ZMaGNHME1VbjVtRzdPbzhPSEhHM0dIejJsSXMyQytvdXMxc0tKQTExSEd4Vlh6ejlJVkhIWTR5dE9LSnpFYUNIN05PS00vWVU1anl0Q1MwaFJyUGkyaU9KWk1maHd0VXl3R2VKMkE5cWNQWUR4Q0ozOFJQeVJSR09iRFBHMVhFWWYzdFIva1kyNVJVMmhqZEpPR2tGKy9rWGRQVXk1a1FreFJMb2VibU5iTGk0V2ZzcDY0K0JaSENWTitJYkNybVlUWHZnRk5nTE5QckxLcTRTMzl1NjJrWUF1VEw0UzJQTFRNclVMbHRqVXR5bUtvQjJKN0VpbjhJbUMxZzdPNndiMUNtSTNFZWlUbVNNU21qaVl3dXh2WTl4UlpiSkw4OWs1anU2a0xMZFdGaEp6bHczS1ZMTWR5TlYzb25ISmhpSkxrRVUxSDZmY3AvVmxUK2tTVG10dE43WTNSNEEzWWdySUUvVFJ5NjQrYmJUYTVlYnBMMXJTYjNFdUVFeTVkanBPdFQyaUdOTmtNM2VrMlU2RDlEa3RjRlQvZ0Qwam9CNHkwK3FObEdVYURsbVY0ajE3OVkydkM4eFI0NklOTmtzNWo4Tk0vMXlPN0h0bVpFanNpQjB1bllKVU5hclFVUUpXanlCRlhLdXpLdUpKSTROQ1RvUSt6UmREaThaSm1EQXV1aUFBYnVzRU0vbG5nTDMxNS9iRGpxN25kbXA3amQzTnFOL3orUUJ6ZDJJZVEwNDZITlB5U3gvdVY0bXVPRHYxc2RZQWkreEk5d3o3L3pxWDlTSEFDQzhNUE5Ed1lqNGJobFJiY3RFUjRlL25rMmM4QzJFVzgwUXpMUC9abHIyaUVaYm5OVVJ3UU52SVEzVEFjbFlYVGlZSkJ2SDhpcUNPODBTaVBRQTd0TXJwaEFRaHJmZmJNREltaUlWTlVPK00rV3dKWE96T24zcW5POXBJNDNQNTVLbEZ6RzZOS2ZyVktwTG51eUE5RURaSE1yQk45WGFJUk5ZMHlhdVRHSzBtUDYwZ2ZxNGlhdHhrVmNsdUYySEpJZExsQ2xLNHVVWWlhbGhvVmNsdUZlT3E1eDZVS1VicTZSQ0ZxQ214VXlHMFZRbnBjUk5TK0x0R0ltbXg3dzN0R1AzLy9xb2hsY0dHLzJ4NjlEaW5lTitXOXFQNlpHMUZ6YTNkMVFPb09ub21ualVUTm1MMUNlUXcwRXJtZVNIdVUxVUdrSExsRzVLNE81b2FQUkp1SW1pN1RPbTBlZ1hRRHNYWFBzY3Z0WC8xWnoyZ0E0WVlCbXUvb05IVHdiSTdzemJyZ3FDbWgrem5vSER3UFQzdXU2T1ZmZ3RqUHNpZzRMM3h5N3p1aWNSdG5qWTcwbEpnUkRQNnFqeTBmL3A4Zjc5aFc5MGpldEkycFh2alQ4bTVQcjVpcllOZkNYWHdWN0tLVDBEUFhCYnQ0a1h0R3dtUU1VeTZlL0FMYjVRR3diWGNMZ3ZTUWQyMTViZWptZ3FobFdreW5ubWpSVTB2aFZvRjltR0tSVm0xNWd1dEl4V3owcEx5UmZJazAxRlRKa0tSQnBsWkRHNCtHT3oyV2c3dE1OUFpkaU1hOVlvR1JYamwwVzk5YzAxU05tcnk1dVdydWVQUGhOQUFSNWExUURkaEUycktUMWkyN0ptMDFML1EvMGZhSTNhUjlOSGxlV3lPdWVIcW9lNDNtNHVBT1V6Q2VKQmpyQ3NHWVRjRWNlU1c1VXpCWXJQN1ZwcWhlL2NlUzlmd2YmbHQ7L2RpYWdyYW0mZ3Q7Jmx0Oy9teGZpbGUmZ3Q7Ij48ZGVmcyAvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuNSAwLjUpIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC41IDE2Ni41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjE2NSIgaGVpZ2h0PSIxMiI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAxNjZweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDI1NSwgNTEsIDUxKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkVuZG9zY0Nob3BwZXJFbmRvc2NvcGlzdDwvZGl2PjwvZGl2PjwvZm9yZWlnbk9iamVjdD48dGV4dCBmb250LWZhbWlseT0iSGVsdmV0aWNhIiBmb250LXNpemU9IjEycHgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZmYzMzMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI4MyIgeT0iMTIiPkVuZG9zY0Nob3BwZXJFbmRvc2NvcGlzdDwvdGV4dD48L3N3aXRjaD48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOTQuNSAxODYuNSkiPjxzd2l0Y2g+PGZvcmVpZ25PYmplY3Qgc3R5bGU9Im92ZXJmbG93OnZpc2libGU7IiBwb2ludGVyLWV2ZW50cz0iYWxsIiByZXF1aXJlZEZlYXR1cmVzPSJodHRwOi8vd3d3LnczLm9yZy9UUi9TVkcxMS9mZWF0dXJlI0V4dGVuc2liaWxpdHkiIHdpZHRoPSIxMjMiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMTI0cHg7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYigyNTUsIDUxLCA1MSk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5FbmRvc2NDaG9wcGVyTWVkczwvZGl2PjwvZGl2PjwvZm9yZWlnbk9iamVjdD48dGV4dCBmb250LWZhbWlseT0iSGVsdmV0aWNhIiBmb250LXNpemU9IjEycHgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZmYzMzMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI2MiIgeT0iMTIiPkVuZG9zY0Nob3BwZXJNZWRzPC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMjguNSAxNTguNSkiPjxzd2l0Y2g+PGZvcmVpZ25PYmplY3Qgc3R5bGU9Im92ZXJmbG93OnZpc2libGU7IiBwb2ludGVyLWV2ZW50cz0iYWxsIiByZXF1aXJlZEZlYXR1cmVzPSJodHRwOi8vd3d3LnczLm9yZy9UUi9TVkcxMS9mZWF0dXJlI0V4dGVuc2liaWxpdHkiIHdpZHRoPSIxNTUiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJjb2xvcjogcmdiKDI1NSwgNTEsIDUxKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+RW5kb3NjQ2hvcHBlckluc3RydW1lbnQ8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSIxMnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNzgiIHk9IjEyIj5FbmRvc2NDaG9wcGVySW5zdHJ1bWVudDwvdGV4dD48L3N3aXRjaD48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTUzLjUgMjE2LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMTU2IiBoZWlnaHQ9IjEyIj48ZGl2IHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzdHlsZT0id2lkdGg6IDE1N3B4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMjU1LCA1MSwgNTEpOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDEycHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+RW5kb3NjQ2hvcHBlckluZGljYXRpb25zPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iMTJweCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZjMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijc4IiB5PSIxMiI+RW5kb3NjQ2hvcHBlckluZGljYXRpb25zPC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMzYuNSAxNzEuNSkiPjxzd2l0Y2g+PGZvcmVpZ25PYmplY3Qgc3R5bGU9Im92ZXJmbG93OnZpc2libGU7IiBwb2ludGVyLWV2ZW50cz0iYWxsIiByZXF1aXJlZEZlYXR1cmVzPSJodHRwOi8vd3d3LnczLm9yZy9UUi9TVkcxMS9mZWF0dXJlI0V4dGVuc2liaWxpdHkiIHdpZHRoPSIxNzkiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMTgwcHg7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYigyNTUsIDUxLCA1MSk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5FbmRvc2NDaG9wcGVyUHJvY1BlcmZvcm1lZDwvZGl2PjwvZGl2PjwvZm9yZWlnbk9iamVjdD48dGV4dCBmb250LWZhbWlseT0iSGVsdmV0aWNhIiBmb250LXNpemU9IjEycHgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZmYzMzMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI5MCIgeT0iMTIiPkVuZG9zY0Nob3BwZXJQcm9jUGVyZm9ybWVkPC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNjAuNSAxMzYuNSkiPjxzd2l0Y2g+PGZvcmVpZ25PYmplY3Qgc3R5bGU9Im92ZXJmbG93OnZpc2libGU7IiBwb2ludGVyLWV2ZW50cz0iYWxsIiByZXF1aXJlZEZlYXR1cmVzPSJodHRwOi8vd3d3LnczLm9yZy9UUi9TVkcxMS9mZWF0dXJlI0V4dGVuc2liaWxpdHkiIHdpZHRoPSIxNDMiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMTQ0cHg7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYigyNTUsIDUxLCA1MSk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5FbmRvc2NDaG9wcGVyRmluZGluZ3M8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSIxMnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNzIiIHk9IjEyIj5FbmRvc2NDaG9wcGVyRmluZGluZ3M8L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQ5Mi41IDI5LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iOTciIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogOThweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDI1NSwgNTEsIDUxKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPk5lZ2F0aXZlUmVtb3ZlPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iMTJweCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZjMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjQ5IiB5PSIxMiI+TmVnYXRpdmVSZW1vdmU8L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQ5NC41IDQ5LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iOTMiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogOTRweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDI1NSwgNTEsIDUxKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkNvbHVtbkNsZWFuVXA8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSIxMnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNDciIHk9IjEyIj5Db2x1bW5DbGVhblVwPC90ZXh0Pjwvc3dpdGNoPjwvZz48cmVjdCBmaWxsPSIjZGFlOGZjIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjNmM4ZWJmIiB4PSI1MiIgeT0iMCIgd2lkdGg9IjM3MCIgaGVpZ2h0PSIxMTAiIHJ4PSIxNi41IiByeT0iMTYuNSIgLz48cGF0aCBmaWxsPSJub25lIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtZGFzaGFycmF5PSIzLCAzIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gMTAyIDEwNiBMIDEwMiA1IiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAxNTcgMTEwIEwgMTU3IDkiIC8+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDIwMiAxMDYgTCAyMDIgNSIgLz48cGF0aCBmaWxsPSJub25lIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtZGFzaGFycmF5PSIzLCAzIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gMjUyIDEwNiBMIDI1MiA1IiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAzMDEgMTA2IEwgMzAxIDUiIC8+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDM1MiAxMDYgTCAzNTIgNSIgLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2OC41IDE3LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMjYiIGhlaWdodD0iNSI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAyN3B4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMCwgMCwgMCk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogNnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPlBhdGllbnRJRDwvZGl2PjwvZGl2PjwvZm9yZWlnbk9iamVjdD48dGV4dCBmb250LWZhbWlseT0iSGVsdmV0aWNhIiBmb250LXNpemU9IjZweCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwMDAwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjEzIiB5PSI2Ij5QYXRpZW50SUQ8L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDExMy41IDE3LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMzYiIGhlaWdodD0iNSI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAzN3B4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMCwgMCwgMCk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogNnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkVuZG9zY29waXN0PC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTgiIHk9IjYiPkVuZG9zY29waXN0PC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNjEuNSAxNy41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjMxIiBoZWlnaHQ9IjUiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMzJweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5NZWRpY2F0aW9uPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTYiIHk9IjYiPk1lZGljYXRpb248L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIxMC41IDE3LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMzIiIGhlaWdodD0iNSI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAzM3B4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMCwgMCwgMCk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogNnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkluZGljYXRpb25zPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTYiIHk9IjYiPkluZGljYXRpb25zPC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNjEuNSAxNy41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjMxIiBoZWlnaHQ9IjUiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMzJweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5JbnN0cnVtZW50PC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTYiIHk9IjYiPkluc3RydW1lbnQ8L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM1Mi41IDEzLjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMzgiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMzhweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vcm1hbDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5Qcm9jZWR1cmUgUGVyZm9ybWVkPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTkiIHk9IjkiPlByb2NlZHVyZSBQZXJmb3JtZWQ8L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMxNC41IDE3LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMjUiIGhlaWdodD0iNSI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAyNnB4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMCwgMCwgMCk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogNnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkZpbmRpbmdzPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTMiIHk9IjYiPkZpbmRpbmdzPC90ZXh0Pjwvc3dpdGNoPjwvZz48cGF0aCBmaWxsPSJub25lIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtZGFzaGFycmF5PSIzLCAzIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gMTMwIDExMyBMIDExNS45NCAxNTYuOTMiIC8+PHBhdGggZmlsbD0iIzAwMDAwMCIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDExNC4zNCAxNjEuOTQgTCAxMTMuMTQgMTU0LjIgTCAxMTUuOTQgMTU2LjkzIEwgMTE5LjgxIDE1Ni4zMyBaIiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAxNjkuMzUgMTE0LjQxIEwgMTg5LjcgMTY3LjA2IiAvPjxwYXRoIGZpbGw9IiMwMDAwMDAiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAxOTEuNiAxNzEuOTYgTCAxODUuODEgMTY2LjY5IEwgMTg5LjcgMTY3LjA2IEwgMTkyLjM0IDE2NC4xNyBaIiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAyMTggMTEwIEwgMjIyLjAzIDIwNi44NyIgLz48cGF0aCBmaWxsPSIjMDAwMDAwIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gMjIyLjI1IDIxMi4xMiBMIDIxOC40NiAyMDUuMjcgTCAyMjIuMDMgMjA2Ljg3IEwgMjI1LjQ1IDIwNC45OCBaIiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAyNzIgMTEwIEwgMjQ5LjA2IDE0OC45MyIgLz48cGF0aCBmaWxsPSIjMDAwMDAwIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gMjQ2LjM5IDE1My40NSBMIDI0Ni45MyAxNDUuNjQgTCAyNDkuMDYgMTQ4LjkzIEwgMjUyLjk2IDE0OS4yIFoiIC8+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDMzMiAxMTEgTCAzMjQuMDggMTMzLjk4IiAvPjxwYXRoIGZpbGw9IiMwMDAwMDAiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAzMjIuMzYgMTM4Ljk0IEwgMzIxLjM0IDEzMS4xOCBMIDMyNC4wOCAxMzMuOTggTCAzMjcuOTYgMTMzLjQ3IFoiIC8+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDM5MC41MyAxMTAuODggTCA0MjIuNSAxNjMuMSIgLz48cGF0aCBmaWxsPSIjMDAwMDAwIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gNDI1LjI0IDE2Ny41OCBMIDQxOC42IDE2My40MyBMIDQyMi41IDE2My4xIEwgNDI0LjU3IDE1OS43OCBaIiAvPjwvZz48L3N2Zz4=" alt="Figure 4: Endoscopy Cleaning functions" />
 <p class="caption">Figure 4: Endoscopy Cleaning functions</p>
 </div>
 <p><br></p>
+</div>
+<div id="medication-cleaning" class="section level4">
+<h4>Medication cleaning</h4>
 <p>The EndoscMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted.</p>
-<p>Several other similar clean up functions are available for Endoscopy as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">EndoscMeds</span>(Myendo,<span class="st">'Medications'</span>)
-v&lt;-<span class="kw">EndoscInstrument</span>(Myendo,<span class="st">'Instrument'</span>)
-v&lt;-<span class="kw">EndoscIndications</span>(Myendo,<span class="st">'Indications'</span>)
-v&lt;-<span class="kw">EndoscProcPerformed</span>(Myendo,<span class="st">'ProcedurePerformed'</span>)</code></pre></div>
-<p>Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases</p>
+<p>Several other similar clean up functions are available for Endoscopy as follows. We will extract from the Raw endoscopy data first:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw">c</span>(<span class="st">&quot;Hospital:&quot;</span>,<span class="st">&quot;Hospital Number:&quot;</span>,<span class="st">&quot;Patient Name:&quot;</span>,<span class="st">&quot;General Practitioner:&quot;</span>,<span class="st">&quot;Date of procedure:&quot;</span>,<span class="st">&quot;Endoscopist:&quot;</span>,<span class="st">&quot;Second Endoscopist&quot;</span>,
+           <span class="st">&quot;Medications:&quot;</span>,<span class="st">&quot;Instrument:&quot;</span>,<span class="st">&quot;Extent of Exam:&quot;</span>,<span class="st">&quot;Indications:&quot;</span>,<span class="st">&quot;Procedure Performed:&quot;</span>,
+<span class="st">&quot;Findings:&quot;</span>,<span class="st">&quot;Diagnosis:&quot;</span>)
+TheOGDReportFinal2&lt;-<span class="kw">Extractor</span>(TheOGDReportFinal,<span class="st">&quot;OGDReportWhole&quot;</span>,mywords)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TheOGDReportFinal2df&lt;-<span class="kw">data.frame</span>(TheOGDReportFinal2[<span class="st">&quot;HospitalNumber&quot;</span>],TheOGDReportFinal2[<span class="st">&quot;Instrument&quot;</span>],TheOGDReportFinal2[<span class="st">&quot;Indications&quot;</span>],TheOGDReportFinal2[<span class="st">&quot;Medications&quot;</span>],TheOGDReportFinal2[<span class="st">&quot;ProcedurePerformed&quot;</span>])
+<span class="kw">pander</span>(<span class="kw">head</span>(TheOGDReportFinal2df,<span class="dv">10</span>))</code></pre></div>
+<table>
+<colgroup>
+<col width="14%"></col>
+<col width="11%"></col>
+<col width="26%"></col>
+<col width="30%"></col>
+<col width="17%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">Instrument</th>
+<th align="center">Indications</th>
+<th align="center">Medications</th>
+<th align="center">ProcedurePerformed</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">FG5</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">FG6</td>
+<td align="center">Weight Loss</td>
+<td align="center">Fentanyl 125mcg Midazolam 7mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">FG2</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Fentanyl 125mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">FG1</td>
+<td align="center">Other-</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">FG2</td>
+<td align="center">Previous OGD ? 8 months ago</td>
+<td align="center">Fentanyl 75mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">FG6</td>
+<td align="center">Surveillance-Barrett’s</td>
+<td align="center">Fentanyl 150mcg Midazolam 3mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">FG5</td>
+<td align="center">Dyspepsia</td>
+<td align="center">Fentanyl 125mcg Midazolam 5mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">FG2</td>
+<td align="center">Oesophagus- Dysplasia</td>
+<td align="center">Fentanyl 75mcg Midazolam 3mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">FG4</td>
+<td align="center">Oesophagus- Dysplasia</td>
+<td align="center">Fentanyl 25mcg Midazolam 1mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">FG7</td>
+<td align="center">Therapeutic- Dilatation</td>
+<td align="center">Fentanyl 150mcg Midazolam 1mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">EndoscMeds</span>(TheOGDReportFinal2df,<span class="st">'Medications'</span>)
+<span class="kw">pander</span>(<span class="kw">head</span>(v,<span class="dv">10</span>))</code></pre></div>
+<table>
+<colgroup>
+<col width="13%"></col>
+<col width="10%"></col>
+<col width="23%"></col>
+<col width="26%"></col>
+<col width="16%"></col>
+<col width="5%"></col>
+<col width="5%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">Instrument</th>
+<th align="center">Indications</th>
+<th align="center">Medications</th>
+<th align="center">ProcedurePerformed</th>
+<th align="center">Fent</th>
+<th align="center">Midaz</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">FG5</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">NA</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">FG6</td>
+<td align="center">Weight Loss</td>
+<td align="center">Fentanyl 125mcg Midazolam 7mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">125</td>
+<td align="center">7</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">FG2</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Fentanyl 125mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">125</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">FG1</td>
+<td align="center">Other-</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">NA</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">FG2</td>
+<td align="center">Previous OGD ? 8 months ago</td>
+<td align="center">Fentanyl 75mcg Midazolam 6mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">75</td>
+<td align="center">6</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">FG6</td>
+<td align="center">Surveillance-Barrett’s</td>
+<td align="center">Fentanyl 150mcg Midazolam 3mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">150</td>
+<td align="center">3</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">FG5</td>
+<td align="center">Dyspepsia</td>
+<td align="center">Fentanyl 125mcg Midazolam 5mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">125</td>
+<td align="center">5</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">FG2</td>
+<td align="center">Oesophagus- Dysplasia</td>
+<td align="center">Fentanyl 75mcg Midazolam 3mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">75</td>
+<td align="center">3</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">FG4</td>
+<td align="center">Oesophagus- Dysplasia</td>
+<td align="center">Fentanyl 25mcg Midazolam 1mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">25</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">FG7</td>
+<td align="center">Therapeutic- Dilatation</td>
+<td align="center">Fentanyl 150mcg Midazolam 1mg</td>
+<td align="center">Gastroscopy (OGD)</td>
+<td align="center">150</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="instrumentindications-and-procedure-type-cleaning" class="section level4">
+<h4>Instrument,Indications and Procedure type cleaning</h4>
+<p>EndoscInstrument,EndoscIndications and EndoscProcPerformed all perform similar cleaning functions with the endoscope number, the indication for the investigation and the actual procedure performed respectively. Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases</p>
+</div>
 </div>
 <div id="histological-cleaning" class="section level3">
 <h3>Histological cleaning</h3>
-<p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology reports can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.</p>
+<p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology report can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.</p>
 <p><br></p>
 <div class="figure">
 <img src="data:image/svg+xml;base64,PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj4KPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3NTBweCIgaGVpZ2h0PSIyNzhweCIgdmVyc2lvbj0iMS4xIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgY29udGVudD0iJmx0O214ZmlsZSB0eXBlPSZxdW90O2dvb2dsZSZxdW90OyB2ZXJzaW9uPSZxdW90OzcuNi43JnF1b3Q7IHVzZXJBZ2VudD0mcXVvdDtNb3ppbGxhLzUuMCAoV2luZG93cyBOVCAxMC4wOyBXaW42NDsgeDY0KSBBcHBsZVdlYktpdC81MzcuMzYgKEtIVE1MLCBsaWtlIEdlY2tvKSBDaHJvbWUvNDYuMC4yNDg2LjAgU2FmYXJpLzUzNy4zNiBFZGdlLzEzLjEwNTg2JnF1b3Q7IGVkaXRvcj0mcXVvdDt3d3cuZHJhdy5pbyZxdW90OyZndDsmbHQ7ZGlhZ3JhbSZndDs3VnhSYjZzMkZQNDFlVnlGTVRqd2VKdTI5KzZoVzZWcTJ1NGpCU2V4QmhnWjBpYjc5VFBGVGpBbUJCUFNwaHVSV3VHRGJmRDVQcHR6dnBqTTRDTFpmbWRCdG42a0VZNW50clZpSkpyQnU1bHRBLzdIRGRHMkt0cXU1UWpMVGxnc0pPcVVqWjdKUDFnMHRJUjFReUtjSzUwVmxNWUZ5VlJqU05NVWg0VmlDeGlqYjJxMUpZM1ZPOHVDRmRZTXoyRVE2OVkvU1ZTc0s2dG5vNFA5QnlhcnRid3lRSDUxSmdsa1pUR1NmQjFFOUsxbWd2Y3p1R0NVRnRWUnNsM2d1UFNlOUoxb043TWZqbFRZM3h2RGFkR3pqVjFWZUEzaWpSaWh1THRpSjRmTTZDYU5jRmtmek9EdDI1b1UrRGtMd3ZMc0cwZVoyOVpGRW92VGVjSG8zM3ZYbEpZbGllTUZqU25qNVpTbXVEVFJ0QkRRSWw0TVlySksrWEdNbC95MmIvVlJpSUc5WWxiZ2JjMGtodlFkMHdRWGJNZXJyT3UrUjJMMGJ3ZWdvTzBKTGdnZXJQWnRTK3R1VDh1cUxDNDJkKzJHSC9tQmNHVzdXNkhtMWg4a0wyaThXTk1zdyt3eENPOXd6a2kyaUhHUS9wRnBQdWZqTE5vYzIzU2s3bHZwekpCN0QzUDdiZWsxd2duOFRaeElTQlNWbDJsRjhvQzFwZUlFYkZHV2w1dlo4T0VCOG8rc0oyNitoWVRENExOMTlCeXJCM2lPZEw2NEZIS2JrK0FVZUU0M2VGVmhnbXc4eUZ4cnJrRG1BZFA1NW5aRDlpME1jWjRUbXY2MlNWNjRpeWZzeHB0dTBGT3c4MzNIRUR2VWpkM2Rkb0pyUkxoa2VDV25tdU1id2pYdmh1dCtXM0JuMFhpQ2JWVFlQRnVkWmRBVU5xOVBSQkx5a0dTQ2JVVFlIQlUySkJmTDNyRDUzYkR4NTludnk5dHBxbDF3aFFRQW1BYVFzc0VIWlZYY2xWR0F2V1hZNHZKR2JxV3lnRGRFb1lkZmxtTm1YVUQzT3dKOUhHOTdhdGJsR0FmdUFKejJPMDZqYjZVT2NHQjh6YzlSa0svM21EUmR5UjNEZG4rVjFMNEJQTWdSaHAvYzhJdDFZMW0rdER4aFJ2am95c256UGd2d2xoUktNMTcrK1Y3MnEwYTgzR3h6RkEwY0tmcEVOeGF1RG9YYmlRVERjVkNRMTVZclBGSEM3K1RRTHFjYkZtSmhyWUVJUGFTQTZGcTZCTkhzcXdqWUNoZDZYN2JubnVqcm5SRDd3ZmZqU0EvRlkrTElaVG5pcXhQZGRkMHpPT0tmNkdzSVIzVDVadUxJNTY0alNKTUVocThqZWw5RE9LS3JSQk5IUHBrak1uSWJneU5hWDBNNG9zdFNFMGMrbHlQekVkY1J2YThoSE5IbHJ5YytadTduWCs4MHNseGRXb2ZhazVOcnl1ZnNSclRoSU9PMDRwamtSVmU3cndIUlZRUGltdWZYdXBoMVI0SlZTbk9TVDRDY0R3aWFtd0tpeTFTUFFjaG9IdEtNaERNYnhTVUVFWG5saDZ2eVVHaU5CYUdwUE11dlVhc3d3WGcyakFpWXdpaXZYSDhXTVJyaWFNTXdOL09nWUVsWndwMHhnWE11T0VkaWh5NXdkSEhyZ2FRUlNWZlRtamZDWkRGZTgyUXMzek80RCtNZ3owbllMNzVIU3BqdWczcVlEbVJzLzU4SzAzMVZkRWR3ZUpqdTJBMW8yM1Zrc3pDOVpVZFBGOXBUS25mNVZNNUR6Uy9UaHFkeWVsOURPREpKUXRmR0VSL0FHNy8yT1Vkb2RvMTZIc0tmU1M2Nk92NTRGK1BQaVo2SDhPZllUcXAzblVMTHdaNUprc1ZrU2NwNC91dW1ZSituUHNGZVc0bWJjZi9jVk94bzJYQWw5MWdGeFFHN2VuSmRhU0U0LzhxNFhuVzI0TWxkL2YxUjFDV3IvYVpVYnBiN1VqVXNwZW1GTlMwVHFNZEJsVi9lR0lIcUEyTlFkZGxMQW1uUkpmOTNTMmlXay9lSkdDU2xkOUtYUEp2UWFxQTFkL3FncFQwL1RSZFMyR05YMWhSZVhUak5iendOMGZBMHY3bnpRKzlyUUFnRnpYYVFtWXM2QjVaWTdyek9FdXZHUS9OakpPa0x1RzFWM2hJZXVrb083SGR4eVdmcEdUdkVtdnRyUGRpcTRobHl3UDR3RGlCWFdTbEExMEl4akFQVmQydFhSd0lIcVM5cGVjZ2JLYytDYnFQbjloY2NEQ2xocHY2ZFE0azVUeXZxbFBoLzBLR3g5ZGVIbzlHaEdibTNodzJHZERBVCtzNlEvdDE2UktBU3hiTzhDNndkRlVJQzlhL0RIMGQ5Q1ExWTluQnRHTHFOTjlyYWt6MUR5dWphWGkxTnQvS2FGak9sQnVkbTUxSUk2NThhNk1wWjE0U2VVb1BMZndQb3RmeDJRZS9VUUNQRUdJdStyc05kWk5FSE5hUTVQNEE3Zk5rL2h5RHFvOEMvU3M0NE1sUS8vcXFXd2JMZkVCaUFkU0lJR2NJaFhRVlV0VndycFBFbVNiL0Fqbzc5QzMwZjhSZ0FUaStKcVBtekhkNko1d0F2SG41dnBZTHo4TE0xOFA1ZiZsdDsvZGlhZ3JhbSZndDsmbHQ7L214ZmlsZSZndDsiPjxkZWZzIC8+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC41IDAuNSkiPjxyZWN0IGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHg9IjMwMiIgeT0iMCIgd2lkdGg9IjMyOCIgaGVpZ2h0PSIxNjAiIHJ4PSIyNCIgcnk9IjI0IiAvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEyMy41IDE3Ni41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxMiI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAxOTNweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDI1NSwgNTEsIDUxKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkhpc3RvbENob3BwZXJNYWNEZXNyaXBDbGVhblVwPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iMTJweCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZjMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijk2IiB5PSIxMiI+SGlzdG9sQ2hvcHBlck1hY0Rlc3JpcENsZWFuVXA8L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDMyMy41IDI2MC41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjExNiIgaGVpZ2h0PSIxMiI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAxMTdweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDI1NSwgNTEsIDUxKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkhpc3RvbENob3BwZXJIaXN0b2w8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSIxMnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNTgiIHk9IjEyIj5IaXN0b2xDaG9wcGVySGlzdG9sPC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0NjkuNSAxOTEuNSkiPjxzd2l0Y2g+PGZvcmVpZ25PYmplY3Qgc3R5bGU9Im92ZXJmbG93OnZpc2libGU7IiBwb2ludGVyLWV2ZW50cz0iYWxsIiByZXF1aXJlZEZlYXR1cmVzPSJodHRwOi8vd3d3LnczLm9yZy9UUi9TVkcxMS9mZWF0dXJlI0V4dGVuc2liaWxpdHkiIHdpZHRoPSIxODgiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMTg5cHg7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYigyNTUsIDUxLCA1MSk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogMTJweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5IaXN0b2xDaG9wcGVyQWNjZXNzaW9uTnVtYmVyPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iMTJweCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNmZjMzMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijk0IiB5PSIxMiI+SGlzdG9sQ2hvcHBlckFjY2Vzc2lvbk51bWJlcjwvdGV4dD48L3N3aXRjaD48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMzY5LjUgMjE0LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iOTgiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogOTlweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDI1NSwgNTEsIDUxKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiAxMnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkhpc3RvbENob3BwZXJEeDwvZGl2PjwvZGl2PjwvZm9yZWlnbk9iamVjdD48dGV4dCBmb250LWZhbWlseT0iSGVsdmV0aWNhIiBmb250LXNpemU9IjEycHgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZmYzMzMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI0OSIgeT0iMTIiPkhpc3RvbENob3BwZXJEeDwvdGV4dD48L3N3aXRjaD48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNDM1LjUgMjM1LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMTQ2IiBoZWlnaHQ9IjEyIj48ZGl2IHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzdHlsZT0id2lkdGg6IDE0N3B4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMjU1LCA1MSwgNTEpOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDEycHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+SGlzdG9sQ2hvcHBlckV4dHJhcG9sRHg8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSIxMnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNzMiIHk9IjEyIj5IaXN0b2xDaG9wcGVyRXh0cmFwb2xEeDwvdGV4dD48L3N3aXRjaD48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTMyLjUgMTk1LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjEyIj48ZGl2IHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzdHlsZT0id2lkdGg6IDE1MXB4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMjU1LCA1MSwgNTEpOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDEycHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+SGlzdG9sQ2hvcHBlck1hY0Rlc2NyaXA8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSIxMnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNzUiIHk9IjEyIj5IaXN0b2xDaG9wcGVyTWFjRGVzY3JpcDwvdGV4dD48L3N3aXRjaD48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjEwLjUgMjE0LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMTM4IiBoZWlnaHQ9IjEyIj48ZGl2IHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzdHlsZT0id2lkdGg6IDEzOXB4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMjU1LCA1MSwgNTEpOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDEycHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+SGlzdG9sQ2hvcHBlck51bU9mQng8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSIxMnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2ZmMzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNjkiIHk9IjEyIj5IaXN0b2xDaG9wcGVyTnVtT2ZCeDwvdGV4dD48L3N3aXRjaD48L2c+PHJlY3QgZmlsbD0iI2RhZThmYyIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzZjOGViZiIgeD0iMCIgeT0iMzAiIHdpZHRoPSI2MTAiIGhlaWdodD0iMTEwIiByeD0iMTYuNSIgcnk9IjE2LjUiIC8+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDUwIDEzNiBMIDUwIDM1IiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAxMDUgMTQwIEwgMTA1IDM5IiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAxNjIgMTM2IEwgMTYyIDM1IiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAyMTEgMTM2IEwgMjExIDM1IiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAyNjIgMTM2IEwgMjYyIDM1IiAvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE2LjUgNDcuNSkiPjxzd2l0Y2g+PGZvcmVpZ25PYmplY3Qgc3R5bGU9Im92ZXJmbG93OnZpc2libGU7IiBwb2ludGVyLWV2ZW50cz0iYWxsIiByZXF1aXJlZEZlYXR1cmVzPSJodHRwOi8vd3d3LnczLm9yZy9UUi9TVkcxMS9mZWF0dXJlI0V4dGVuc2liaWxpdHkiIHdpZHRoPSIyNiIgaGVpZ2h0PSI1Ij48ZGl2IHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzdHlsZT0id2lkdGg6IDI3cHg7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYigwLCAwLCAwKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiA2cHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+UGF0aWVudElEPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTMiIHk9IjYiPlBhdGllbnRJRDwvdGV4dD48L3N3aXRjaD48L2c+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjYuNSA0Ny41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjI3IiBoZWlnaHQ9IjUiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMjhweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5IaXN0b2xvZ3k8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSI2cHgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDAwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIxNCIgeT0iNiI+SGlzdG9sb2d5PC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMjIuNSA0Ny41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjI5IiBoZWlnaHQ9IjUiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMzBweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5EaWFnbm9zaXM8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSI2cHgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMDAwMDAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIxNSIgeT0iNiI+RGlhZ25vc2lzPC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNjguNSA0My41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjM3IiBoZWlnaHQ9IjEyIj48ZGl2IHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzdHlsZT0id2lkdGg6IDM4cHg7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYigwLCAwLCAwKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiA2cHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+TWFjcm9zY29waWM8ZGl2PkRlc2NyaXB0aW9uPC9kaXY+PC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTkiIHk9IjkiPltOb3Qgc3VwcG9ydGVkIGJ5IHZpZXdlcl08L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDI2Mi41IDQzLjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMzgiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMzhweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vcm1hbDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5Qcm9jZWR1cmUgUGVyZm9ybWVkPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTkiIHk9IjkiPlByb2NlZHVyZSBQZXJmb3JtZWQ8L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIyNC41IDQ3LjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMjUiIGhlaWdodD0iNSI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAyNnB4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMCwgMCwgMCk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogNnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPkZpbmRpbmdzPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTMiIHk9IjYiPkZpbmRpbmdzPC90ZXh0Pjwvc3dpdGNoPjwvZz48cGF0aCBmaWxsPSJub25lIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtZGFzaGFycmF5PSIzLCAzIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gMTgyIDE0MSBMIDE5Ni42NCAxNjQuNTkiIC8+PHBhdGggZmlsbD0iIzAwMDAwMCIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDE5OS40MSAxNjkuMDUgTCAxOTIuNzUgMTY0Ljk1IEwgMTk2LjY0IDE2NC41OSBMIDE5OC42OSAxNjEuMjYgWiIgLz48cGF0aCBmaWxsPSJub25lIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtZGFzaGFycmF5PSIzLCAzIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gNDE4IDEzNiBMIDQxOCAzNSIgLz48cGF0aCBmaWxsPSJub25lIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtZGFzaGFycmF5PSIzLCAzIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gNDY0IDEzNiBMIDQ2NCAzNSIgLz48cGF0aCBmaWxsPSJub25lIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtZGFzaGFycmF5PSIzLCAzIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gNTM0IDEzNiBMIDUzNCAzNSIgLz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgzMjQuNSA0My41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjI5IiBoZWlnaHQ9IjEyIj48ZGl2IHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzdHlsZT0id2lkdGg6IDMwcHg7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYigwLCAwLCAwKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiA2cHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+SGlzdG9sb2d5PGRpdj5TaW1wbGlmaWVkPC9kaXY+PC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTUiIHk9IjkiPltOb3Qgc3VwcG9ydGVkIGJ5IHZpZXdlcl08L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQyMC41IDQzLjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMzYiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMzdweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vd3JhcDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5FeHRyYXBvbGF0ZWQ8ZGl2PkRpYWdub3NlczwvZGl2PjwvZGl2PjwvZGl2PjwvZm9yZWlnbk9iamVjdD48dGV4dCBmb250LWZhbWlseT0iSGVsdmV0aWNhIiBmb250LXNpemU9IjZweCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwMDAwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjE4IiB5PSI5Ij5bTm90IHN1cHBvcnRlZCBieSB2aWV3ZXJdPC90ZXh0Pjwvc3dpdGNoPjwvZz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0NzIuNSA0My41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjU0IiBoZWlnaHQ9IjEyIj48ZGl2IHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hodG1sIiBzdHlsZT0id2lkdGg6IDU1cHg7IHRleHQtYWxpZ246IGNlbnRlcjsgY29sb3I6IHJnYigwLCAwLCAwKTsgbGluZS1oZWlnaHQ6IDEuMjsgZm9udC1mYW1pbHk6IEhlbHZldGljYTsgZm9udC1zaXplOiA2cHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+QWNjZXNzaW9uIE51bWJlcjxkaXY+PGJyIC8+PC9kaXY+PC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjciIHk9IjkiPkFjY2Vzc2lvbiBOdW1iZXImbHQ7ZGl2Jmd0OyZsdDticiZndDsmbHQ7L2RpdiZndDs8L3RleHQ+PC9zd2l0Y2g+PC9nPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDUzNy41IDQyLjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iNTgiIGhlaWdodD0iNSI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiA1OXB4OyB0ZXh0LWFsaWduOiBjZW50ZXI7IGNvbG9yOiByZ2IoMCwgMCwgMCk7IGxpbmUtaGVpZ2h0OiAxLjI7IGZvbnQtZmFtaWx5OiBIZWx2ZXRpY2E7IGZvbnQtc2l6ZTogNnB4OyBmb250LXdlaWdodDogYm9sZDsgdmVydGljYWwtYWxpZ246IHRvcDsgZGlzcGxheTogaW5saW5lLWJsb2NrOyB3aGl0ZS1zcGFjZTogbm93cmFwOyB3b3JkLXdyYXA6IG5vcm1hbDsiPjxkaXYgc3R5bGU9ImRpc3BsYXk6aW5saW5lLWJsb2NrO3RleHQtYWxpZ246aW5oZXJpdDt0ZXh0LWRlY29yYXRpb246aW5oZXJpdDsiPk51bWJlciBvZiBCaW9wc2llc8KgPC9kaXY+PC9kaXY+PC9mb3JlaWduT2JqZWN0Pjx0ZXh0IGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjkiIHk9IjYiPk51bWJlciBvZiBCaW9wc2llcyZhbXA7bmJzcDs8L3RleHQ+PC9zd2l0Y2g+PC9nPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAzMTIgMTQwIEwgMzEyIDM5IiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSAzNTAgMjUwIEwgMzIxLjc2IDE0NC41NiIgLz48cGF0aCBmaWxsPSIjMDAwMDAwIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gMzIwLjQxIDEzOS40OSBMIDMyNS42IDE0NS4zNSBMIDMyMS43NiAxNDQuNTYgTCAzMTguODQgMTQ3LjE2IFoiIC8+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDQxOSAyMTMgTCA0MDAuNjUgMTQ2LjkiIC8+PHBhdGggZmlsbD0iIzAwMDAwMCIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDM5OS4yNCAxNDEuODQgTCA0MDQuNDkgMTQ3LjY1IEwgNDAwLjY1IDE0Ni45IEwgMzk3Ljc0IDE0OS41MiBaIiAvPjxwYXRoIGZpbGw9Im5vbmUiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1kYXNoYXJyYXk9IjMsIDMiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSA0ODkgMjMwIEwgNDUzLjE5IDE0NS40NSIgLz48cGF0aCBmaWxsPSIjMDAwMDAwIiBwb2ludGVyLWV2ZW50cz0ibm9uZSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIGQ9Ik0gNDUxLjE0IDE0MC42MiBMIDQ1Ny4wOSAxNDUuNyBMIDQ1My4xOSAxNDUuNDUgTCA0NTAuNjUgMTQ4LjQzIFoiIC8+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDU2My42NSAxODcuODIgTCA0OTguMzYgMTQ0LjMiIC8+PHBhdGggZmlsbD0iIzAwMDAwMCIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDQ5My45OSAxNDEuMzggTCA1MDEuNzUgMTQyLjM2IEwgNDk4LjM2IDE0NC4zIEwgNDk3Ljg3IDE0OC4xOCBaIiAvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDM3Ni41IDQzLjUpIj48c3dpdGNoPjxmb3JlaWduT2JqZWN0IHN0eWxlPSJvdmVyZmxvdzp2aXNpYmxlOyIgcG9pbnRlci1ldmVudHM9ImFsbCIgcmVxdWlyZWRGZWF0dXJlcz0iaHR0cDovL3d3dy53My5vcmcvVFIvU1ZHMTEvZmVhdHVyZSNFeHRlbnNpYmlsaXR5IiB3aWR0aD0iMzgiIGhlaWdodD0iMTIiPjxkaXYgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGh0bWwiIHN0eWxlPSJ3aWR0aDogMzhweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDZweDsgZm9udC13ZWlnaHQ6IGJvbGQ7IHZlcnRpY2FsLWFsaWduOiB0b3A7IGRpc3BsYXk6IGlubGluZS1ibG9jazsgd2hpdGUtc3BhY2U6IG5vcm1hbDsgd29yZC13cmFwOiBub3JtYWw7Ij48ZGl2IHN0eWxlPSJkaXNwbGF5OmlubGluZS1ibG9jazt0ZXh0LWFsaWduOmluaGVyaXQ7dGV4dC1kZWNvcmF0aW9uOmluaGVyaXQ7Ij5EaWFnbm9zZXMgc2ltcGxpZmllZDwvZGl2PjwvZGl2PjwvZm9yZWlnbk9iamVjdD48dGV4dCBmb250LWZhbWlseT0iSGVsdmV0aWNhIiBmb250LXNpemU9IjZweCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwMDAwMDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjE5IiB5PSI5Ij5EaWFnbm9zZXMgc2ltcGxpZmllZDwvdGV4dD48L3N3aXRjaD48L2c+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDM3MCAxNDEgTCAzNzAgNDAiIC8+PHBhdGggZmlsbD0ibm9uZSIgcG9pbnRlci1ldmVudHM9Im5vbmUiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLWRhc2hhcnJheT0iMywgMyIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBkPSJNIDcwMC4xMiAyMDcuODIgTCA1OTQuMzMgMTM4LjQ5IiAvPjxwYXRoIGZpbGw9IiMwMDAwMDAiIHBvaW50ZXItZXZlbnRzPSJub25lIiBzdHJva2U9IiMwMDAwMDAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgZD0iTSA1ODkuOTQgMTM1LjYxIEwgNTk3LjcxIDEzNi41MiBMIDU5NC4zMyAxMzguNDkgTCA1OTMuODcgMTQyLjM4IFoiIC8+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMzQ1LjUgMy41KSI+PHN3aXRjaD48Zm9yZWlnbk9iamVjdCBzdHlsZT0ib3ZlcmZsb3c6dmlzaWJsZTsiIHBvaW50ZXItZXZlbnRzPSJhbGwiIHJlcXVpcmVkRmVhdHVyZXM9Imh0dHA6Ly93d3cudzMub3JnL1RSL1NWRzExL2ZlYXR1cmUjRXh0ZW5zaWJpbGl0eSIgd2lkdGg9IjEyNSIgaGVpZ2h0PSIxMiI+PGRpdiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94aHRtbCIgc3R5bGU9IndpZHRoOiAxMjZweDsgdGV4dC1hbGlnbjogY2VudGVyOyBjb2xvcjogcmdiKDAsIDAsIDApOyBsaW5lLWhlaWdodDogMS4yOyBmb250LWZhbWlseTogSGVsdmV0aWNhOyBmb250LXNpemU6IDEycHg7IGZvbnQtd2VpZ2h0OiBib2xkOyB2ZXJ0aWNhbC1hbGlnbjogdG9wOyBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7IHdoaXRlLXNwYWNlOiBub3dyYXA7IHdvcmQtd3JhcDogbm9ybWFsOyI+PGRpdiBzdHlsZT0iZGlzcGxheTppbmxpbmUtYmxvY2s7dGV4dC1hbGlnbjppbmhlcml0O3RleHQtZGVjb3JhdGlvbjppbmhlcml0OyI+RXh0cmFwb2xhdGVkIGNvbHVtbnM8L2Rpdj48L2Rpdj48L2ZvcmVpZ25PYmplY3Q+PHRleHQgZm9udC1mYW1pbHk9IkhlbHZldGljYSIgZm9udC1zaXplPSIxMnB4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzAwMDAwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNjMiIHk9IjEyIj5FeHRyYXBvbGF0ZWQgY29sdW1uczwvdGV4dD48L3N3aXRjaD48L2c+PC9nPjwvc3ZnPg==" alt="Figure 5: Histopathology Cleaning functions" />
 <p class="caption">Figure 5: Histopathology Cleaning functions</p>
 </div>
 <p><br></p>
-<p>The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present. In addition it removes Negative diagnoses using the Negativeremove function. This function is designed to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage.</p>
-<p>This NegativeRemove function has also been applied to the HistolDx</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw">HistolHistol</span>(Mypath,<span class="st">'Histology'</span>)</code></pre></div>
+<div id="basic-histology-cleaning" class="section level4">
+<h4>Basic Histology Cleaning</h4>
+<p>The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present.</p>
+<p><br> The original input example can be seen here</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pander</span>(<span class="kw">head</span>(Mypath$Histology,<span class="dv">2</span>))</code></pre></div>
+<p>_ Two biopsies consist of small bowel mucosa and are within normal histological limits</p>
+<p>_ and _ modified giemsa stain ,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease ,The nuclei are hyperchromatic, ,There is no granulomatous inflammation ,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying ,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation ,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation</p>
+<p>_</p>
+<p>And once the function is run the result is here:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw">HistolHistol</span>(Mypath,<span class="st">'Histology'</span>)
+<span class="kw">pander</span>(<span class="kw">head</span>(t$Histology,<span class="dv">2</span>))</code></pre></div>
+<p>_ Two biopsies consist of small bowel mucosa and are within normal histological limits _ and _ modified giemsa stain ,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease ,The nuclei are hyperchromatic, ,There is no granulomatous inflammation ,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying ,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation ,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation</p>
+<p>_ <br></p>
+</div>
+<div id="removal-of-negatives" class="section level4">
+<h4>Removal of negatives</h4>
+<p>In addition, if there is a need to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. This is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text.</p>
+<p><br> The original input example can be seen here</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath[<span class="dv">7</span>,<span class="dv">10</span>]</code></pre></div>
+<pre><code>## [1] &quot;  - Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal\n,Ileum and colon biopsies:- normal mucosa\n,Oesophagus, EMR 43P - Barrett 's oesophagus without intestinal metaplasia\n,Sigmoid colon, biopsy - Adenocarcinoma\n,- Chronic active inflammation,Duodenum biopsies:- normal mucosa\n,- Low grade dysplasia&quot;</code></pre>
+<p>If we apply the function NegativeRemove we see this changes to:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MypathNegRem&lt;-<span class="kw">NegativeRemove</span>(Mypath,<span class="st">&quot;Diagnosis&quot;</span>)
+MypathNegRem[<span class="dv">7</span>,<span class="dv">10</span>]</code></pre></div>
+<pre><code>## [1] &quot;,Ileum and colon biopsies:- normal mucosa\n,Oesophagus, EMR 43P - Barrett 's oesophagus without intestinal metaplasia\n,Sigmoid colon, biopsy - Adenocarcinoma\n,- Chronic active inflammation,Duodenum biopsies:- normal mucosa\n,- Low grade dysplasia&quot;</code></pre>
+<p><br></p>
+</div>
+<div id="extraction-of-macroscopic-description" class="section level4">
+<h4>Extraction of Macroscopic Description</h4>
 <p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.</p>
 <p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">HistolNumbOfBx</span>(Mypath,<span class="st">'Macroscopicdescription'</span>,<span class="st">'specimen'</span>)</code></pre></div>
-<p>Other less useful functions include:</p>
+</div>
+<div id="extraction-of-specific-disease-entities" class="section level4">
+<h4>Extraction of Specific Disease Entities</h4>
+<p>The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but may be user defined in future iterations</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw">data.frame</span>(Mypath[<span class="st">&quot;HospitalNumber&quot;</span>],Mypath[<span class="st">&quot;Diagnosis&quot;</span>])
+<span class="kw">pander</span>(<span class="kw">head</span>(Mypath3,<span class="dv">10</span>))</code></pre></div>
+<table>
+<colgroup>
+<col width="3%"></col>
+<col width="96%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">Diagnosis</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Distal transverse colon polyp excision:- tubular adenoma, low grade dysplasia ,Ileo-caecal valve, biopsies: ,Stomach antrum biopsies:- normal mucosa ,- Up to 34 eosinophils per high power field,Stomach, biopsy - Mild chronic inflammation</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Raised intra-epithelial lymphocytes ,Duodenum, biopsies - within normal histological limits ,B GI biopsy - DISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2 ,Oesophagus, biopsies : - Minimal chronic inflammation,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:- 2 x papillomas ,Duodenum biopsies:- normal</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">- Background Barrett ‘s oesophagus,Sigmoid colon, biopsy - Adenocarcinoma ,- Gastric metaplasia,Oesophagus 36cm ’papilloma’ biopsy:- normal squamous mucosa ,- Chronic active inflammation,Oesophagus, biopsy - Barrett ’s oesophagus with moderate chronic inflammation ,- Minimal chronic inflammation</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Stomach, biopsy - Mild chronic inflammation and reactive changes ,- Normal,- note: biopsies put into the wrong pots ,Oesophagus, biopsy - Poorly differentiated tumour ,Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Mild chronic inflammation and oedema,-Inflammatory fibroid polyp,- within normal histological limits,- Negative for HLO</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">Nodule GOJ, biopsies:- acute and chronic inflammation with Helicobacter ,Stomach, biopsy -Mild acute and chronic inflammation ,Oesophagus polyps biopsies:- 2 x papillomas ,- &lt;1 mm from lateral margin,Duodenum biopsies:- patchy increase in IELs ,Duodenum, biopsy - Normal</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">Duodenum and stomach, polyp biopsies - Consistent with hamartomatous polyps ,Gastric oesophageal junction, biopsies : - Chronic inflammation,Stomach, biopsy - Mild chronic inflammation ,- Gastric HER2 negative,- Minimal chronic inflammation,Oesophagus, biopsy - Acute inflammation in presumed proximal biopsies only ,Gastro-osophageal junction, biopsy - Squamocolumnar mucosa ,Descending colon biopsies:- normal mucosa ,- Within normalhistological limits,The biopsies of gastric oesophageal junction type squamo-columnar mucosa show mild chronic</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">- Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal ,Ileum and colon biopsies:- normal mucosa ,Oesophagus, EMR 43P - Barrett ’s oesophagus without intestinal metaplasia ,Sigmoid colon, biopsy - Adenocarcinoma ,- Chronic active inflammation,Duodenum biopsies:- normal mucosa ,- Low grade dysplasia</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">- possible eosinophilic oesophagitis,- Mild chronic gastritis,A -E) Stomach, polyps, biopsies: ,- Mild chronic inflammation and oedema,- Focal mild chronic inflammation,- Gastric HER2 negative,Ileum and colon biopsies:- normal mucosa ,Adjacent mucosa, biopsy - Normal small bowel mucosa</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">- Chronic active gastritis,Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,Oesophaguas biopsies:- normal mucosa ,- Acute inflammatory exudate,Right and left colon, biopsies: - Within normal histological limits</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,- tubular adenoma, low grade dysplasia x 1 ,- Tubular adenoma,- Tubular adenoma,Sigmoid colon, polyp biopsy - Hyperplastic polyp ,Stomach, biopsy - Reactive gastritis and intestinal metaplasia ,- Chronic inflammation,- Mild chronic inflammation</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw">HistolExtrapolDx</span>(Mypath3,<span class="st">&quot;Diagnosis&quot;</span>)
+<span class="kw">pander</span>(<span class="kw">head</span>(Mypath3,<span class="dv">10</span>))</code></pre></div>
+<table>
+<colgroup>
+<col width="2%"></col>
+<col width="92%"></col>
+<col width="1%"></col>
+<col width="2%"></col>
+<col width="1%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">Diagnosis</th>
+<th align="center">Cancer</th>
+<th align="center">Dysplasia</th>
+<th align="center">GIST</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Distal transverse colon polyp excision:- tubular adenoma, low grade dysplasia ,Ileo-caecal valve, biopsies: ,Stomach antrum biopsies:- normal mucosa ,- Up to 34 eosinophils per high power field,Stomach, biopsy - Mild chronic inflammation</td>
+<td align="center">NA</td>
+<td align="center">dyspla</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Raised intra-epithelial lymphocytes ,Duodenum, biopsies - within normal histological limits ,B GI biopsy - DISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2 ,Oesophagus, biopsies : - Minimal chronic inflammation,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:- 2 x papillomas ,Duodenum biopsies:- normal</td>
+<td align="center">NA</td>
+<td align="center">dyspla</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">- Background Barrett ‘s oesophagus,Sigmoid colon, biopsy - Adenocarcinoma ,- Gastric metaplasia,Oesophagus 36cm ’papilloma’ biopsy:- normal squamous mucosa ,- Chronic active inflammation,Oesophagus, biopsy - Barrett ’s oesophagus with moderate chronic inflammation ,- Minimal chronic inflammation</td>
+<td align="center">carcin</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Stomach, biopsy - Mild chronic inflammation and reactive changes ,- Normal,- note: biopsies put into the wrong pots ,Oesophagus, biopsy - Poorly differentiated tumour ,Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Mild chronic inflammation and oedema,-Inflammatory fibroid polyp,- within normal histological limits,- Negative for HLO</td>
+<td align="center">NA</td>
+<td align="center">dyspla</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">Nodule GOJ, biopsies:- acute and chronic inflammation with Helicobacter ,Stomach, biopsy -Mild acute and chronic inflammation ,Oesophagus polyps biopsies:- 2 x papillomas ,- &lt;1 mm from lateral margin,Duodenum biopsies:- patchy increase in IELs ,Duodenum, biopsy - Normal</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">Duodenum and stomach, polyp biopsies - Consistent with hamartomatous polyps ,Gastric oesophageal junction, biopsies : - Chronic inflammation,Stomach, biopsy - Mild chronic inflammation ,- Gastric HER2 negative,- Minimal chronic inflammation,Oesophagus, biopsy - Acute inflammation in presumed proximal biopsies only ,Gastro-osophageal junction, biopsy - Squamocolumnar mucosa ,Descending colon biopsies:- normal mucosa ,- Within normalhistological limits,The biopsies of gastric oesophageal junction type squamo-columnar mucosa show mild chronic</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">- Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal ,Ileum and colon biopsies:- normal mucosa ,Oesophagus, EMR 43P - Barrett ’s oesophagus without intestinal metaplasia ,Sigmoid colon, biopsy - Adenocarcinoma ,- Chronic active inflammation,Duodenum biopsies:- normal mucosa ,- Low grade dysplasia</td>
+<td align="center">carcin</td>
+<td align="center">dyspla</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">- possible eosinophilic oesophagitis,- Mild chronic gastritis,A -E) Stomach, polyps, biopsies: ,- Mild chronic inflammation and oedema,- Focal mild chronic inflammation,- Gastric HER2 negative,Ileum and colon biopsies:- normal mucosa ,Adjacent mucosa, biopsy - Normal small bowel mucosa</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">- Chronic active gastritis,Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,Oesophaguas biopsies:- normal mucosa ,- Acute inflammatory exudate,Right and left colon, biopsies: - Within normal histological limits</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,- tubular adenoma, low grade dysplasia x 1 ,- Tubular adenoma,- Tubular adenoma,Sigmoid colon, polyp biopsy - Hyperplastic polyp ,Stomach, biopsy - Reactive gastritis and intestinal metaplasia ,- Chronic inflammation,- Mild chronic inflammation</td>
+<td align="center">NA</td>
+<td align="center">dyspla</td>
+<td align="center">NA</td>
+</tr>
+</tbody>
+</table>
+<p>Other less useful functions include but which may be useful in certain hospitals and certain situations in</p>
 <ol style="list-style-type: decimal">
 <li><p>HistolAccessionNumber which extracts Accession Number data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.</p></li>
-<li><p>HistolExtrapolDx which extracts other specific diagnoses from the report. These have been hard coded to look for dysplasia cancer and GIST.</p></li>
 <li><p>HistolMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc.</p></li>
 </ol>
-<p>These are all called in the same way:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">HistolMacDescripCleanup</span>(Mypath,<span class="st">&quot;Macroscopicdescription&quot;</span>)
-v&lt;-<span class="kw">HistolExtrapolDx</span>(Mypath,<span class="st">&quot;Diagnosis&quot;</span>)
-v&lt;-<span class="kw">HistolAccessionNumber</span>(Mypath,<span class="st">&quot;Histology&quot;</span>,<span class="st">&quot;SP-</span><span class="ch">\\</span><span class="st">d{2}-</span><span class="ch">\\</span><span class="st">d{7}&quot;</span>)</code></pre></div>
-<p>v&lt;-HistolMacDescripCleanup(Mypath,“Macroscopicdescription”)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw">HistolAccessionNumber</span>(Mypath,<span class="st">&quot;Histology&quot;</span>,<span class="st">&quot;SP-</span><span class="ch">\\</span><span class="st">d{2}-</span><span class="ch">\\</span><span class="st">d{7}&quot;</span>)
+v&lt;-<span class="kw">HistolMacDescripCleanup</span>(Mypath,<span class="st">&quot;Macroscopicdescription&quot;</span>)</code></pre></div>
 <p><br> <br></p>
+</div>
 </div>
 </div>
 

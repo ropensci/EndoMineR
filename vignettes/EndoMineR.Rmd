@@ -4,6 +4,7 @@ author: "Sebastian Zeki `r Sys.Date()`"
 output:
   rmarkdown::html_vignette:
     toc: true
+    toc_depth: 4
 vignette: >
   %\VignetteIndexEntry{EndoMineR}
   %\VignetteEngine{knitr::rmarkdown}
@@ -97,6 +98,7 @@ Once the extraction has been done there are various cleaning functions provided 
 pander(head(Myendo[2:6],10))
 ```
 
+#### Endoscopist cleaning
 
 ```{r exampleEndoscEndoscopist2,echo = TRUE}
 Myendo2<-EndoscEndoscopist(Myendo,'Endoscopist')
@@ -114,6 +116,9 @@ pander(head(Myendo2[2:6],10))
 ![Figure 4: Endoscopy Cleaning functions](EndoMineR_EndoscopyClean.svg)
 
 <br>
+
+#### Medication cleaning
+
 
 The EndoscMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted. 
 
@@ -136,6 +141,7 @@ v<-EndoscMeds(TheOGDReportFinal2df,'Medications')
 pander(head(v,10))
 ```
 
+#### Instrument,Indications and Procedure type cleaning
 
 EndoscInstrument,EndoscIndications and EndoscProcPerformed all perform similar cleaning functions with the endoscope number, the indication for the investigation and the actual procedure performed respectively. Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases
 
@@ -150,15 +156,48 @@ In general, each histology report can be divided into the Macroscopic descriptio
 
 <br>
 
-This NegativeRemove function has also been applied to the HistolDx
+#### Basic Histology Cleaning
+
 The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present.
+ 
+<br>
+The original input example can be seen here
+
+
+```{r exampleEHistolHistol, echo = TRUE}
+pander(head(Mypath$Histology,2))
+```
+
+
+And once the function is run the result is here:
+
+```{r exampleEHistolHistol2, echo = TRUE}
+t<-HistolHistol(Mypath,'Histology')
+pander(head(t$Histology,2))
+```
+<br>
+
+#### Removal of negatives
+
 In addition, if there is a need to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. This is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text.
 
+<br>
+The original input example can be seen here
 
-
-```{r exampleEHistolHistol, eval = FALSE}
-t<-HistolHistol(Mypath,'Histology')
+```{r exampleNeg, echo = TRUE}
+Mypath[7,10]
 ```
+
+If we apply the function NegativeRemove we see this changes to:
+
+```{r exampleNeg2, echo = TRUE}
+MypathNegRem<-NegativeRemove(Mypath,"Diagnosis")
+MypathNegRem[7,10]
+```
+
+<br>
+
+#### Extraction of Macroscopic Description
 
 Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.
 
@@ -170,23 +209,32 @@ In order to extract the numbers, the limit of what has to be extracted has to be
 v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 ```
 
-Other less useful functions include:
+
+#### Extraction of Specific Disease Entities
+
+The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but may be user defined in future iterations
+```{r exampleHistolExtrapolDx, echo = TRUE}
+Mypath3<-data.frame(Mypath["HospitalNumber"],Mypath["Diagnosis"])
+pander(head(Mypath3,10))
+```
+
+```{r exampleHistolExtrapolDx2, echo = TRUE}
+Mypath3<-HistolExtrapolDx(Mypath3,"Diagnosis")
+pander(head(Mypath3,10))
+```
+
+Other less useful functions include but which may be useful in certain hospitals and certain situations in
 
 1. HistolAccessionNumber which extracts Accession Number  data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.
 
-2. HistolExtrapolDx which extracts other specific diagnoses from the report. These have been hard coded to 
-look for dysplasia cancer and GIST. 
 
-3. HistolMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc. 
-
-These are all called in the same way:
+2. HistolMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc. 
 
 ```{r exampleOtherFunctionsHistology, eval = FALSE}
-v<-HistolMacDescripCleanup(Mypath,"Macroscopicdescription")
-v<-HistolExtrapolDx(Mypath,"Diagnosis")
+
 v<-HistolAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
-```
 v<-HistolMacDescripCleanup(Mypath,"Macroscopicdescription")
+```
 
 <br>
 <br>

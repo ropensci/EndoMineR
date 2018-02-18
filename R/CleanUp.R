@@ -606,7 +606,6 @@ HistolAll <- function(dataframe) {
   if("Histology" %in% colnames(dataframe)){
     dataframe<-HistolHistol(dataframe,'Histology')
     dataframe<-HistolAccessionNumber(dataframe,'Histology','SP-\\d{2}-\\d{7}')
-    print("Meds")
   }
   
   if("Macroscopicdescription" %in% colnames(dataframe)){
