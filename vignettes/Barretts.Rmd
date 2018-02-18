@@ -7,8 +7,7 @@ output:
     toc: true
     theme: architect
     highlight: github
-    css: 
-    - style.css
+    css: style.css
 ---
 
 
