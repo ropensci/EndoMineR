@@ -3,10 +3,9 @@ title: "Barrett's Oesophagus"
 author: "Sebastian Zeki"
 date: "12/22/2017"
 output:
-  prettydoc::html_pretty:
+  rmarkdown::html_document:
+    theme: lumen
     toc: true
-    theme: architect
-    highlight: github
     css: style.css
 ---
 
@@ -18,7 +17,6 @@ library(knitr)
 library(EndoMineR)
 library(pander)
 library(prettydoc)
-
 ```
 ##Specific diseases - Barrett's oesophagus
 
@@ -38,7 +36,8 @@ Such a dataset needs some processing prior to the analysis so for this we can tu
 
 ###Prague score
 
-Firstly we need to extract the length of the Barrett's segment. After filtering for indication (eg "Surveillance-Barrett's") the aim of the following function is to extract a C and M stage (Prague score) for Barrett's samples. This is done using a regex where C and M stages are explicitly mentioned in the free text. Specfically it extracts the Prague score.
+Firstly we need to extract the length of the Barrett’s segment. 
+After filtering for endoscopic indication (eg “Surveillance-Barrett’s”- this is stored in the 'Indication' column in our data set) the aim of the following function is to extract a C and M stage (Prague score) for Barrett’s samples. This is done using a regular express where C and M stages are explicitly mentioned in the free text. Specfically it extracts the Prague score. This is usually mentoned in the 'Findings' column in our dataset.
 
 ```{r exampleBarretts_PragueScore,echo = TRUE,message=FALSE, warning=FALSE}
 v<-Barretts_PragueScore(Myendo,'Findings')
@@ -154,7 +153,7 @@ BarrettsEMRGrades(b3)
 
 <br>
 
-Figure 2: Worst grade dysplasia/cancer function]
+Figure 2: Worst grade dysplasia/cancer function
 
 <br>
 
@@ -260,7 +259,7 @@ BarrettsDDRQual(b3,'Endoscopist','IMorNoIM')
 ##Surveillance enrollment and lost to follow-ups
 
 
-##Enrollment rates to surveillance programme
+###Enrollment rates to surveillance programme
 
 This article uses some of the data from the Barret's oesophagus page. We can determine how many patients who underwent endoscopy for reasons that was not Barrett's surveillance, and in whom Barrett's oesophagus was found, have had further follow-up endoscopies ie what the enrollment to surveillance rate is in those who weren't known to have Barrett's when their endoscopy was performed.
 
@@ -273,7 +272,7 @@ pander(MyEnroll)
 ```
 
 
-##Patients undergoing surveillance
+###Patients undergoing surveillance
 
 Perhaps we are also interested in how many patients fall under each follow-up category so we can plan how many Barrett's surveillance endoscopies we are going to have to do. The function to do this gets the unique patient ID's for each patient, for each rule. It lists the unique PatientIDs assocaited with a rule ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many patients will need follow up at specific time intervals. This should be run after the Barretts_Prague and Barretts_PathStage. It gives a all the hospital numbers of the patients who need a follow up at a certain time (according to Rule1 which is defined in the Barretts_FUType function (part of the BarrettsAll function but it can be used on its own))
 

@@ -19,7 +19,7 @@ opposed to mentioning 'diagnosis' as part of a sentence.  Column specific
 cleanup and negative remover have also been implemented here.
 }
 \examples{
-v<-HistolDx(Mypath,'Diagnosis')
+HistolDx(Mypath,'Diagnosis')
 }
 \keyword{Diagnosis}
 \keyword{Histology}

@@ -20,7 +20,7 @@ It should be used after the Extractor and the optional NewLines
 has been used.
 }
 \examples{
-v<-EndoscEndoscopist(Myendo,'Endoscopist')
+EndoscEndoscopist(Myendo,'Endoscopist')
 rm(v)
 }
 \keyword{Endoscopist}

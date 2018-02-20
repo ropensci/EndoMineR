@@ -6,17 +6,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EndoMineR • EndoMineR</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
     <div class="container template-vignette">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -29,16 +30,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/EndoMineR.html">Get Started</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -48,24 +43,25 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/Analysis.html">Analysis</a>
+      <a href="../articles/EndoMineRPrinciples.html">EndoMineR Principles</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's Oesophagus</a>
+      <a href="../articles/EndoMineR.html">Package overview</a>
     </li>
     <li>
-      <a href="../articles/EndoMineRPrinciples.html">EndoMinerPrinciples</a>
-    </li>
-    <li>
-      <a href="../articles/Surveillance.html">Surveillance</a>
+      <a href="../articles/Barretts.html">Barrett's</a>
     </li>
   </ul>
 </li>
+      </ul>
+<ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="../news/index.html">News</a>
+  <a href="https://example.com">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -78,7 +74,7 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>EndoMineR</h1>
-                        <h4 class="author">Sebastian Zeki 2018-02-18</h4>
+                        <h4 class="author">Sebastian Zeki 2018-02-20</h4>
             
           </div>
 
@@ -166,12 +162,9 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 </tr></tbody>
 </table>
 </div>
-<div id="the-cleaning-functions" class="section level2">
+<div id="endoscopic-cleaning" class="section level2">
 <h2 class="hasAnchor">
-<a href="#the-cleaning-functions" class="anchor"></a>The cleaning functions</h2>
-<div id="endoscopic-cleaning" class="section level3">
-<h3 class="hasAnchor">
-<a href="#endoscopic-cleaning" class="anchor"></a>Endoscopic cleaning</h3>
+<a href="#endoscopic-cleaning" class="anchor"></a>Endoscopic cleaning</h2>
 <p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. The endoscopist column initially looks like this:</p>
 <table class="table">
 <colgroup>
@@ -261,9 +254,9 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 </tr>
 </tbody>
 </table>
-<div id="endoscopist-cleaning" class="section level4">
-<h4 class="hasAnchor">
-<a href="#endoscopist-cleaning" class="anchor"></a>Endoscopist cleaning</h4>
+<div id="endoscopist-cleaning" class="section level3">
+<h3 class="hasAnchor">
+<a href="#endoscopist-cleaning" class="anchor"></a>Endoscopist cleaning</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo2&lt;-<span class="kw"><a href="../reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
 <p>This function performs the cleaning of common things found in the text that may cause confusion. The result is as follows:</p>
 <table class="table">
@@ -360,9 +353,9 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 </div>
 <p><br></p>
 </div>
-<div id="medication-cleaning" class="section level4">
-<h4 class="hasAnchor">
-<a href="#medication-cleaning" class="anchor"></a>Medication cleaning</h4>
+<div id="medication-cleaning" class="section level3">
+<h3 class="hasAnchor">
+<a href="#medication-cleaning" class="anchor"></a>Medication cleaning</h3>
 <p>The EndoscMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted.</p>
 <p>Several other similar clean up functions are available for Endoscopy as follows. We will extract from the Raw endoscopy data first:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw">c</span>(<span class="st">"Hospital:"</span>,<span class="st">"Hospital Number:"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"General Practitioner:"</span>,<span class="st">"Date of procedure:"</span>,<span class="st">"Endoscopist:"</span>,<span class="st">"Second Endoscopist"</span>,
@@ -459,8 +452,7 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(TheOGDReportFinal2df,<span class="st">'Medications'</span>)
-<span class="kw">pander</span>(<span class="kw">head</span>(v,<span class="dv">10</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(TheOGDReportFinal2df,<span class="st">'Medications'</span>)</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="13%">
@@ -574,62 +566,57 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 </tbody>
 </table>
 </div>
-<div id="instrumentindications-and-procedure-type-cleaning" class="section level4">
-<h4 class="hasAnchor">
-<a href="#instrumentindications-and-procedure-type-cleaning" class="anchor"></a>Instrument,Indications and Procedure type cleaning</h4>
+<div id="instrumentindications-and-procedure-type-cleaning" class="section level3">
+<h3 class="hasAnchor">
+<a href="#instrumentindications-and-procedure-type-cleaning" class="anchor"></a>Instrument,Indications and Procedure type cleaning</h3>
 <p>EndoscInstrument,EndoscIndications and EndoscProcPerformed all perform similar cleaning functions with the endoscope number, the indication for the investigation and the actual procedure performed respectively. Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases</p>
 </div>
 </div>
-<div id="histological-cleaning" class="section level3">
-<h3 class="hasAnchor">
-<a href="#histological-cleaning" class="anchor"></a>Histological cleaning</h3>
+<div id="histological-cleaning" class="section level2">
+<h2 class="hasAnchor">
+<a href="#histological-cleaning" class="anchor"></a>Histological cleaning</h2>
 <p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology report can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.</p>
 <p><br></p>
 <div class="figure">
 <img src="EndoMineR_HistopExtrapol.svg" alt="Figure 5: Histopathology Cleaning functions"><p class="caption">Figure 5: Histopathology Cleaning functions</p>
 </div>
 <p><br></p>
-<div id="basic-histology-cleaning" class="section level4">
-<h4 class="hasAnchor">
-<a href="#basic-histology-cleaning" class="anchor"></a>Basic Histology Cleaning</h4>
+<div id="basic-histology-cleaning" class="section level3">
+<h3 class="hasAnchor">
+<a href="#basic-histology-cleaning" class="anchor"></a>Basic Histology Cleaning</h3>
 <p>The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present.</p>
-<p><br> The original input example can be seen here</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pander</span>(<span class="kw">head</span>(Mypath$Histology,<span class="dv">2</span>))</code></pre></div>
-<p>_ Two biopsies consist of small bowel mucosa and are within normal histological limits</p>
-<p>_ and _ modified giemsa stain ,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease ,The nuclei are hyperchromatic, ,There is no granulomatous inflammation ,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying ,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation ,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation</p>
-<p>_</p>
+<p><br> The original input example can be seen here:</p>
+<pre><code>## [1] "  Two biopsies consist of small bowel mucosa and are within normal histological limits\n\n"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+## [2] "  modified giemsa stain\n,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease\n,The nuclei are hyperchromatic,\n,There is no granulomatous inflammation\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n\n"</code></pre>
 <p>And once the function is run the result is here:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw"><a href="../reference/HistolHistol.html">HistolHistol</a></span>(Mypath,<span class="st">'Histology'</span>)
-<span class="kw">pander</span>(<span class="kw">head</span>(t$Histology,<span class="dv">2</span>))</code></pre></div>
-<p>_ Two biopsies consist of small bowel mucosa and are within normal histological limits _ and _ modified giemsa stain ,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease ,The nuclei are hyperchromatic, ,There is no granulomatous inflammation ,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying ,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation ,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation</p>
-<p>_ <br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw"><a href="../reference/HistolHistol.html">HistolHistol</a></span>(Mypath,<span class="st">'Histology'</span>)</code></pre></div>
+<pre><code>## [1] "  Two biopsies consist of small bowel mucosa and are within normal histological limits \n"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+## [2] "  modified giemsa stain ,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease\n,The nuclei are hyperchromatic,\n,There is no granulomatous inflammation\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n\n"</code></pre>
+<p><br></p>
 </div>
-<div id="removal-of-negatives" class="section level4">
-<h4 class="hasAnchor">
-<a href="#removal-of-negatives" class="anchor"></a>Removal of negatives</h4>
+<div id="removal-of-negatives" class="section level3">
+<h3 class="hasAnchor">
+<a href="#removal-of-negatives" class="anchor"></a>Removal of negatives</h3>
 <p>In addition, if there is a need to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. This is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text.</p>
 <p><br> The original input example can be seen here</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath[<span class="dv">7</span>,<span class="dv">10</span>]</code></pre></div>
 <pre><code>## [1] "  - Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal\n,Ileum and colon biopsies:- normal mucosa\n,Oesophagus, EMR 43P - Barrett 's oesophagus without intestinal metaplasia\n,Sigmoid colon, biopsy - Adenocarcinoma\n,- Chronic active inflammation,Duodenum biopsies:- normal mucosa\n,- Low grade dysplasia"</code></pre>
 <p>If we apply the function NegativeRemove we see this changes to:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MypathNegRem&lt;-<span class="kw"><a href="../reference/NegativeRemove.html">NegativeRemove</a></span>(Mypath,<span class="st">"Diagnosis"</span>)
-MypathNegRem[<span class="dv">7</span>,<span class="dv">10</span>]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MypathNegRem&lt;-<span class="kw"><a href="../reference/NegativeRemove.html">NegativeRemove</a></span>(Mypath,<span class="st">"Diagnosis"</span>)</code></pre></div>
 <pre><code>## [1] ",Ileum and colon biopsies:- normal mucosa\n,Oesophagus, EMR 43P - Barrett 's oesophagus without intestinal metaplasia\n,Sigmoid colon, biopsy - Adenocarcinoma\n,- Chronic active inflammation,Duodenum biopsies:- normal mucosa\n,- Low grade dysplasia"</code></pre>
 <p><br></p>
 </div>
-<div id="extraction-of-macroscopic-description" class="section level4">
-<h4 class="hasAnchor">
-<a href="#extraction-of-macroscopic-description" class="anchor"></a>Extraction of Macroscopic Description</h4>
+<div id="extraction-of-macroscopic-description" class="section level3">
+<h3 class="hasAnchor">
+<a href="#extraction-of-macroscopic-description" class="anchor"></a>Extraction of Macroscopic Description</h3>
 <p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.</p>
 <p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(Mypath,<span class="st">'Macroscopicdescription'</span>,<span class="st">'specimen'</span>)</code></pre></div>
 </div>
-<div id="extraction-of-specific-disease-entities" class="section level4">
-<h4 class="hasAnchor">
-<a href="#extraction-of-specific-disease-entities" class="anchor"></a>Extraction of Specific Disease Entities</h4>
+<div id="extraction-of-specific-disease-entities" class="section level3">
+<h3 class="hasAnchor">
+<a href="#extraction-of-specific-disease-entities" class="anchor"></a>Extraction of Specific Disease Entities</h3>
 <p>The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but may be user defined in future iterations</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw">data.frame</span>(Mypath[<span class="st">"HospitalNumber"</span>],Mypath[<span class="st">"Diagnosis"</span>])
-<span class="kw">pander</span>(<span class="kw">head</span>(Mypath3,<span class="dv">10</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw">data.frame</span>(Mypath[<span class="st">"HospitalNumber"</span>],Mypath[<span class="st">"Diagnosis"</span>])</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="3%">
@@ -682,8 +669,7 @@ MypathNegRem[<span class="dv">7</span>,<span class="dv">10</span>]</code></pre><
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw"><a href="../reference/HistolExtrapolDx.html">HistolExtrapolDx</a></span>(Mypath3,<span class="st">"Diagnosis"</span>)
-<span class="kw">pander</span>(<span class="kw">head</span>(Mypath3,<span class="dv">10</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw"><a href="../reference/HistolExtrapolDx.html">HistolExtrapolDx</a></span>(Mypath3,<span class="st">"Diagnosis"</span>)</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="2%">
@@ -783,7 +769,6 @@ v&lt;-<span class="kw"><a href="../reference/HistolMacDescripCleanup.html">Histo
 </div>
 </div>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -794,7 +779,8 @@ v&lt;-<span class="kw"><a href="../reference/HistolMacDescripCleanup.html">Histo
 <li><a href="#aims-of-endominer">Aims of EndoMineR</a></li>
       <li><a href="#how-is-the-package-divided">How is the package divided?</a></li>
       <li><a href="#the-extractor-function">The extractor function</a></li>
-      <li><a href="#the-cleaning-functions">The cleaning functions</a></li>
+      <li><a href="#endoscopic-cleaning">Endoscopic cleaning</a></li>
+      <li><a href="#histological-cleaning">Histological cleaning</a></li>
       </ul>
 </div>
       </div>

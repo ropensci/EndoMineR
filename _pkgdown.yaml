@@ -1,0 +1,23 @@
+template:
+  params:
+    bootswatch: simplex
+    
+navbar:
+  type: inverse
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Functions"
+      href: reference/index.html
+    - text: "Articles"
+      menu:
+        - text: "EndoMineR Principles"
+          href: articles/EndoMineRPrinciples.html
+        - text: "Package overview"
+          href: articles/EndoMineR.html
+        - text: "Barrett's"
+          href: articles/Barretts.html
+
+  right:
+    - icon: fa-github fa-lg
+      href: http://gastrodatascience.com

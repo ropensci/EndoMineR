@@ -21,6 +21,6 @@ It should be used after the Extractor and the optional NewLines
 has been used. At present it only cleans cm measurement
 }
 \examples{
-v<-EndoscFindings(Myendo,'Findings')
+EndoscFindings(Myendo,'Findings')
 }
 \keyword{Procedure}

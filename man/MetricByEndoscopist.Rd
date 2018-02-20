@@ -22,7 +22,7 @@ It of course relies on a Endoscopist column being present
 # and also gives a table with it. In this example we plot medication by
 # endoscopist
 Myendo<-EndoscMeds(Myendo,'Medications')
-Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 rm(Myendo)
 }
 \keyword{Endoscopist}

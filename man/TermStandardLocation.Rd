@@ -26,7 +26,7 @@ names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
 Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 # The function then standardises the histology terms through a series of
 # regular expressions
-f<-TermStandardLocation(Mypath,'Histology')
+TermStandardLocation(Mypath,'Histology')
 rm(Mypath)
 }
 \keyword{Withdrawal}

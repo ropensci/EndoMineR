@@ -17,6 +17,6 @@ usually relate to the description of the histological report. This
 may be refined in further iterations.
 }
 \examples{
-t<-HistolHistol(Mypath,'Histology')
+HistolHistol(Mypath,'Histology')
 }
 \keyword{Histology}

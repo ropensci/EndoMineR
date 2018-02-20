@@ -3,10 +3,9 @@ title: "Analysis"
 author: "Sebastian Zeki"
 date: "12/22/2017"
 output:
-  prettydoc::html_pretty:
+  rmarkdown::html_document:
+    theme: lumen
     toc: true
-    theme: architect
-    highlight: github
     css: style.css
 ---
 

@@ -57,7 +57,7 @@ if (getRversion() >= "2.15.1")
 #' # Myendo and searches through the raw
 #' # endoscopy text so that the text is
 #' #divided by sentence into a newline
-#' v<-NewLines(Myendo,'OGDReportWhole')
+#' NewLines(Myendo,'OGDReportWhole')
 
 
 NewLines <- function(dataframe, EndoReportColumn) {
@@ -101,7 +101,7 @@ NewLines <- function(dataframe, EndoReportColumn) {
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
 #' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
-#' res<-Mypath
+#' Mypath
 #' rm(Mypath)
 #' 
 Extractor <- function(dataframeIn, Column, delim) {
@@ -145,7 +145,7 @@ Extractor <- function(dataframeIn, Column, delim) {
 #' "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
 #' "Findings" )
 #' #Now use the function
-#' Myendo<-EndoscAll(Myendo)
+#' EndoscAll(Myendo)
 #' rm(Myendo)
 
 
@@ -189,7 +189,7 @@ EndoscAll<- function(dataframe) {
 #' @keywords Endoscopist extraction
 #' @export
 #' @importFrom stringr str_replace
-#' @examples v<-EndoscEndoscopist(Myendo,'Endoscopist')
+#' @examples EndoscEndoscopist(Myendo,'Endoscopist')
 #' rm(v)
 
 EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
@@ -221,7 +221,7 @@ EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
 #' @keywords Endoscopy medications
 #' @importFrom stringr str_extract str_replace
 #' @export
-#' @examples v<-EndoscMeds(Myendo,'Medications')
+#' @examples EndoscMeds(Myendo,'Medications')
 
 EndoscMeds <- function(dataframe, MedColumn) {
   # Extraction of the Medications: Extract the fentanyl:
@@ -253,7 +253,7 @@ EndoscMeds <- function(dataframe, MedColumn) {
 #' @keywords Instrument
 #' @importFrom stringr str_replace
 #' @export
-#' @examples v<-EndoscInstrument(Myendo,'Instrument')
+#' @examples EndoscInstrument(Myendo,'Instrument')
 
 EndoscInstrument <- function(dataframe, InstrumentColumn) {
   # Extraction of the Instrument used:
@@ -301,7 +301,7 @@ gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
 #' @keywords Indications
 #' @importFrom stringr str_replace
 #' @export
-#' @examples v<-EndoscIndications(Myendo,'Indications')
+#' @examples EndoscIndications(Myendo,'Indications')
 
 EndoscIndications <- function(dataframe, IndicationColumn) {
   # Extraction of the Indications for examination
@@ -328,7 +328,7 @@ EndoscIndications <- function(dataframe, IndicationColumn) {
 #' @keywords Procedure
 #' @importFrom stringr str_replace
 #' @export
-#' @examples v<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
+#' @examples EndoscProcPerformed(Myendo,'ProcedurePerformed')
 
 EndoscProcPerformed <- function(dataframe, ProcPerformed) {
   # Extraction of the eg Colonoscopy or gastroscopy etc:
@@ -368,7 +368,7 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
 #' @keywords Procedure
 #' @export
 #' @importFrom stringr str_replace
-#' @examples v<-EndoscFindings(Myendo,'Findings')
+#' @examples EndoscFindings(Myendo,'Findings')
 
 EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
@@ -528,7 +528,7 @@ NegativeRemove <- function(dataframe, Column) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples me<-ColumnCleanUp(Myendo,"OGDReportWhole")
+#' @examples ColumnCleanUp(Myendo,"OGDReportWhole")
 
 
 ColumnCleanUp <- function(dataframe, Column) {
@@ -555,7 +555,7 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples Myendo<-lapply(Myendo, ColumnCleanUpAll)
+#' @examples lapply(Myendo, ColumnCleanUpAll)
 #' rm(Myendo)
 #' 
 
@@ -597,7 +597,7 @@ ColumnCleanUpAll <- function(dataframe) {
 #' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
 #' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
 #' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-#' v<-HistolAll(Mypath)
+#' HistolAll(Mypath)
 #' rm(Mypath)
 
 
@@ -646,7 +646,7 @@ HistolAll <- function(dataframe) {
 #' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
 #' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
 #' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-#' MacCleanUp<-HistolMacDescripCleanup(Mypath,"Histology")
+#' HistolMacDescripCleanup(Mypath,"Histology")
 #' rm(Mypath)
 
 
@@ -671,7 +671,7 @@ HistolMacDescripCleanup <- function(dataframe,MacroColumn) {
 #' @keywords Histology
 #' @export
 #' @importFrom stringr str_replace
-#' @examples t<-HistolHistol(Mypath,'Histology')
+#' @examples HistolHistol(Mypath,'Histology')
 
 
 HistolHistol <- function(dataframe, HistolColumn) {
@@ -705,7 +705,7 @@ HistolHistol <- function(dataframe, HistolColumn) {
 #' @importFrom stringr str_extract
 #' @keywords Sample Accession number
 #' @export
-#' @examples v<-HistolAccessionNumber(Mypath,'Histology',
+#' @examples HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 
 HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
@@ -729,7 +729,7 @@ HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
 #' @importFrom stringr str_extract str_replace
 #' @keywords Histology Diagnosis
 #' @export
-#' @examples v<-HistolDx(Mypath,'Diagnosis')
+#' @examples HistolDx(Mypath,'Diagnosis')
 
 HistolDx <- function(dataframe, HistolColumn) {
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"Dr.*", "")
@@ -764,7 +764,7 @@ HistolDx <- function(dataframe, HistolColumn) {
 #' @importFrom stringr str_extract
 #' @keywords Histology diagnosis
 #' @export
-#' @examples v<-HistolExtrapolDx(Mypath,'Diagnosis')
+#' @examples HistolExtrapolDx(Mypath,'Diagnosis')
 
 HistolExtrapolDx <- function(dataframe, Column) {
   # Some further extraction to get commonly searched for data
@@ -794,7 +794,7 @@ HistolExtrapolDx <- function(dataframe, Column) {
 #' @keywords Macroscopic
 #' @importFrom stringr str_replace
 #' @export
-#' @examples t<-HistolMacDescrip(Mypath, 'Macroscopicdescription')
+#' @examples HistolMacDescrip(Mypath, 'Macroscopicdescription')
 
 
 HistolMacDescrip <- function(dataframe, MacroColumn) {
@@ -835,7 +835,7 @@ HistolMacDescrip <- function(dataframe, MacroColumn) {
 #' @keywords Biopsy number
 #' @export
 #' @examples 
-#' v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+#' HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 
 
 HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
@@ -863,7 +863,7 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
 #' @importFrom stringr  str_match str_replace
 #' @keywords biopsy size
 #' @export
-#' @examples v<-HistolBxSize(Mypath,'Macroscopicdescription')
+#' @examples HistolBxSize(Mypath,'Macroscopicdescription')
 
 HistolBxSize <- function(dataframe, MacroColumn) {
   # What's the average biopsy size this month?

@@ -42,7 +42,7 @@ b2<-Barretts_EventType(b,'Histology',
 #The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-b3<-Barretts_FUType(b2,'Findings')
+Barretts_FUType(b2,'Findings')
 rm(v)
 }
 \keyword{Follow-Up}

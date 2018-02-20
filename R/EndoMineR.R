@@ -58,7 +58,7 @@ if (getRversion() >= "2.15.1")
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples em<-SurveilTimeByRow(Myendo,'HospitalNumber',
+#' @examples SurveilTimeByRow(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
 SurveilTimeByRow <-
@@ -85,7 +85,7 @@ SurveilTimeByRow <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples em<-SurveilLastToNow(Myendo,'HospitalNumber',
+#' @examples SurveilLastToNow(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
 SurveilLastToNow <-
@@ -111,7 +111,7 @@ SurveilLastToNow <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples em<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+#' @examples SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 
 
 
@@ -136,7 +136,7 @@ SurveilLastTest <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples em<-SurveilFirstTest(Myendo,'HospitalNumber',
+#' @examples SurveilFirstTest(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
 
@@ -162,7 +162,7 @@ SurveilFirstTest <-
 #' @importFrom rlang sym
 #' @keywords cats
 #' @export
-#' @examples em<-SurveilCapacity(Myendo,'Dateofprocedure')
+#' @examples SurveilCapacity(Myendo,'Dateofprocedure')
 
 SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
@@ -202,7 +202,7 @@ SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
 #' # indication needs to be inpoutted. In this case we are looking for all
 #' # endoscopies done
 #' # where the indication is surveillance (so searching on 'Surv' will do fine) .
-#' how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+#' HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 
 
 HowManyTests <-
@@ -489,7 +489,7 @@ PatientFlow_CircosPlots <-
 #' # free text columns or endoscopic. In this example it is for endoscopic
 #' # columns
 #' myNotableWords<-c('arrett','oeliac')
-#' tt<-ListLookup(Myendo,'Findings',myNotableWords)
+#' ListLookup(Myendo,'Findings',myNotableWords)
 
 ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
   jeopCorpus <- Corpus(VectorSource(theframe[, EndoReportColumn]))
@@ -533,7 +533,7 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' # and also gives a table with it. In this example we plot medication by
 #' # endoscopist
 #' Myendo<-EndoscMeds(Myendo,'Medications')
-#' Fent<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+#' MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 #' rm(Myendo)
 
 
@@ -576,7 +576,7 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions
-#' f<-TermStandardLocation(Mypath,'Histology')
+#' TermStandardLocation(Mypath,'Histology')
 #' rm(Mypath)
 
 
@@ -755,7 +755,7 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
 #' # by assessing the SampleLocation column which comes from the
 #' # TermStandardLocation function.
 #' f<-TermStandardLocation(Mypath,'Histology')
-#' f<-PolypLocator(f,'SampleLocation')
+#' PolypLocator(f,'SampleLocation')
 #' rm(Mypath)
 
 
@@ -847,7 +847,7 @@ PolypLocator <- function(dataframe, SampleLocationColumn) {
 #' MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 #' vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
 #'                     MyendoColon, "Dateofprocedure","HospitalNumber")
-#' GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
+#' GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
 #' 'Endoscopist','Diagnosis','Histology')
 #' rm(vColon)
 #' rm(MypathColon)

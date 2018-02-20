@@ -26,7 +26,7 @@ Specfically it extracts the Prague score
 # too
 
 
-v<-Barretts_PragueScore(Myendo,'Findings')
+Barretts_PragueScore(Myendo,'Findings')
 }
 \keyword{Prague}
 \keyword{score}

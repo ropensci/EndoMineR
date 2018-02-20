@@ -11,8 +11,8 @@
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
@@ -23,7 +23,7 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
+  <link href="../extra.css" rel="stylesheet">
   
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -39,7 +39,7 @@
   <body>
     <div class="container template-reference-topic">
       <header>
-      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -52,16 +52,10 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
+  <a href="../index.html">Home</a>
 </li>
 <li>
-  <a href="../articles/EndoMineR.html">Get Started</a>
-</li>
-<li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../reference/index.html">Functions</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -71,26 +65,25 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/Analysis.html">Analysis</a>
+      <a href="../articles/EndoMineRPrinciples.html">EndoMineR Principles</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's Oesophagus</a>
+      <a href="../articles/EndoMineR.html">Package overview</a>
     </li>
     <li>
-      <a href="../articles/EndoMineRPrinciples.html">EndoMinerPrinciples</a>
-    </li>
-    <li>
-      <a href="../articles/Surveillance.html">Surveillance</a>
+      <a href="../articles/Barretts.html">Barrett's</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">News</a>
 </li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://example.com">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -135,36 +128,53 @@ patient had at that endoscopy</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'># Firstly relevant columns are extrapolated from the
-# Mypath demo dataset. These functions are all part of Histology data
-# cleaning as part of the package.
-v<-HistolAccessionNumber(Mypath,'Histology',
-'SP-\\d{2}-\\d{7}')
-v<-HistolDx(v,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis')
-v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-v<-HistolBxSize(v,'Macroscopicdescription')
-# The histology is then merged with the Endoscopy dataset. The merge occurs
-# according to date and Hospital number
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-'HospitalNumber')
-# The function relies on the other Barrett's functions being run as well:
-b1<-Barretts_PragueScore(v,'Findings')
-b2<-Barretts_PathStage(b1,'Histology')
-b3<-Barretts_EventType(b2,'Histology',
-'ProcedurePerformed','Indications','Findings')
-colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
-# The function groups the procedures by patient and then looks at those which
-# have 'nothing' in the event column (which means biopsies only) which was
-# preceded by radiofrequency ablation (RFA) so that these patients are
-# labelled as having clearance of intestinal metaplasia. The result is a true
-or false column.
-Barretts_CRIM(b3,'HospitalNumber',"EVENT")
-rm(v)
-</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:24:4: unexpected symbol</span>
-#&gt; <span class='error'>23: # labelled as having clearance of intestinal metaplasia. The result is a true</span>
-#&gt; <span class='error'>24: or false</span>
-#&gt; <span class='error'>       ^</span></div></pre>
+    <pre class="examples"><div class='input'><span class='co'># Firstly relevant columns are extrapolated from the</span>
+<span class='co'># Mypath demo dataset. These functions are all part of Histology data</span>
+<span class='co'># cleaning as part of the package.</span>
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAccessionNumber.html'>HistolAccessionNumber</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Histology'</span>,
+<span class='st'>'SP-\\d{2}-\\d{7}'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: provided 11 variables to replace 1 variables</span></div><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
+<span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
+<span class='co'># according to date and Hospital number</span>
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>v</span>,<span class='st'>'Dateofprocedure'</span>,
+<span class='st'>'HospitalNumber'</span>)
+<span class='co'># The function relies on the other Barrett's functions being run as well:</span>
+<span class='no'>b1</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PragueScore.html'>Barretts_PragueScore</a></span>(<span class='no'>v</span>,<span class='st'>'Findings'</span>)
+<span class='no'>b2</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PathStage.html'>Barretts_PathStage</a></span>(<span class='no'>b1</span>,<span class='st'>'Histology'</span>)
+<span class='no'>b3</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_EventType.html'>Barretts_EventType</a></span>(<span class='no'>b2</span>,<span class='st'>'Histology'</span>,
+<span class='st'>'ProcedurePerformed'</span>,<span class='st'>'Indications'</span>,<span class='st'>'Findings'</span>)
+<span class='fu'>colnames</span>(<span class='no'>b3</span>)[<span class='fu'>colnames</span>(<span class='no'>b3</span>) <span class='kw'>==</span> <span class='st'>'pHospitalNum'</span>] <span class='kw'>&lt;-</span> <span class='st'>'HospitalNumber'</span>
+<span class='co'># The function groups the procedures by patient and then looks at those which</span>
+<span class='co'># have 'nothing' in the event column (which means biopsies only) which was</span>
+<span class='co'># preceded by radiofrequency ablation (RFA) so that these patients are</span>
+<span class='co'># labelled as having clearance of intestinal metaplasia. The result is a true</span>
+<span class='co'># or false column.</span>
+<span class='fu'>Barretts_CRIM</span>(<span class='no'>b3</span>,<span class='st'>'HospitalNumber'</span>,<span class='st'>"EVENT"</span>)</div><div class='output co'>#&gt; # A tibble: 584 x 36
+#&gt; # Groups:   HospitalNumber [97]
+#&gt;    PathReportWhole          HospitalNumber PatientName.x DOB   GeneralPractiti…
+#&gt;    &lt;chr&gt;                    &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;           
+#&gt;  1 "SP-22-4817508\nHospita… " A1648588\n"  "  Page, Aie… "  1… " Dr\n Kane, Sa…
+#&gt;  2 "SP-24-9461967\nHospita… " A1648588\n"  "  al-Zafar,… "  1… " Dr\n Gavin, L…
+#&gt;  3 "SP-77-2775965\nHospita… " A1648588\n"  "  al-Ebrahi… "  1… " Dr\n Sands, M…
+#&gt;  4 "SP-72-6139190\nHospita… " A1648588\n"  "  Jamerson,… "  1… " Dr\n al-Korom…
+#&gt;  5 "SP-83-6838873\nHospita… " A1648588\n"  "  Fitzpatri… "  1… " Dr\n Miller, …
+#&gt;  6 "SP-29-1590254\nHospita… " A1648588\n"  "  el-Radwan… "  1… " Dr\n al-Radwa…
+#&gt;  7 "SP-79-1431892\nHospita… " A3962018\n"  "  el-Sadri,… "  1… " Dr\n Baker, E…
+#&gt;  8 "SP-84-9745332\nHospita… " A3962018\n"  "  Vaughan, … "  1… " Dr\n Lopez Co…
+#&gt;  9 "SP-57-5567005\nHospita… " A3962018\n"  "  Thomas-Mo… "  1… " Dr\n Grano, K…
+#&gt; 10 "SP-59-7507017\nHospita… " A3962018\n"  "  el-Murad,… "  1… " Dr\n Ten, Che…
+#&gt; # ... with 574 more rows, and 31 more variables: Date.x &lt;date&gt;,
+#&gt; #   ClinicalDetails &lt;chr&gt;, Macroscopicdescription &lt;chr&gt;, Histology &lt;chr&gt;,
+#&gt; #   Diagnosis &lt;chr&gt;, AccessionNumber &lt;chr&gt;, Dx_Simplified &lt;chr&gt;, Cancer &lt;chr&gt;,
+#&gt; #   Dysplasia &lt;chr&gt;, GIST &lt;chr&gt;, NumbOfBx &lt;dbl&gt;, BxSize &lt;dbl&gt;,
+#&gt; #   OGDReportWhole &lt;chr&gt;, eHospitalNum &lt;chr&gt;, PatientName.y &lt;chr&gt;,
+#&gt; #   GeneralPractitioner.y &lt;chr&gt;, Date.y &lt;date&gt;, Endoscopist &lt;chr&gt;,
+#&gt; #   Secondendoscopist &lt;chr&gt;, Medications &lt;chr&gt;, Instrument &lt;chr&gt;,
+#&gt; #   ExtentofExam &lt;chr&gt;, Indications &lt;chr&gt;, ProcedurePerformed &lt;chr&gt;,
+#&gt; #   Findings &lt;chr&gt;, Days &lt;time&gt;, CStage &lt;dbl&gt;, MStage &lt;dbl&gt;, IMorNoIM &lt;chr&gt;,
+#&gt; #   EVENT &lt;chr&gt;, ind &lt;lgl&gt;</div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

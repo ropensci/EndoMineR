@@ -2,12 +2,11 @@
 title: "EndoMineR"
 author: "Sebastian Zeki `r Sys.Date()`"
 output:
-  prettydoc::html_pretty:
+  rmarkdown::html_document:
+    theme: lumen
     toc: true
-    theme: architect
-    highlight: github
-    css: 
-    - style.css
+    tod_depth: 4
+    css: style.css
 vignette: >
   %\VignetteIndexEntry{EndoMineR}
   %\VignetteEngine{knitr::rmarkdown}
@@ -91,9 +90,9 @@ pander(head(PathDataFrameFinalColon2,1))
 ```
 
 
-## The cleaning functions
 
-### Endoscopic cleaning
+
+## Endoscopic cleaning
 
 Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. The endoscopist column initially looks like this:
 
@@ -101,7 +100,7 @@ Once the extraction has been done there are various cleaning functions provided 
 pander(head(Myendo[2:6],10))
 ```
 
-#### Endoscopist cleaning
+### Endoscopist cleaning
 
 ```{r exampleEndoscEndoscopist2,echo = TRUE}
 Myendo2<-EndoscEndoscopist(Myendo,'Endoscopist')
@@ -120,7 +119,7 @@ pander(head(Myendo2[2:6],10))
 
 <br>
 
-#### Medication cleaning
+### Medication cleaning
 
 
 The EndoscMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted. 
@@ -141,14 +140,19 @@ TheOGDReportFinal2<-Extractor(TheOGDReportFinal,"OGDReportWhole",mywords)
 TheOGDReportFinal2df<-data.frame(TheOGDReportFinal2["HospitalNumber"],TheOGDReportFinal2["Instrument"],TheOGDReportFinal2["Indications"],TheOGDReportFinal2["Medications"],TheOGDReportFinal2["ProcedurePerformed"])
 pander(head(TheOGDReportFinal2df,10))
 v<-EndoscMeds(TheOGDReportFinal2df,'Medications')
+
+```
+
+
+```{r exampleEndoCleaningFuncMed2, echo = FALSE}
 pander(head(v,10))
 ```
 
-#### Instrument,Indications and Procedure type cleaning
+### Instrument,Indications and Procedure type cleaning
 
 EndoscInstrument,EndoscIndications and EndoscProcPerformed all perform similar cleaning functions with the endoscope number, the indication for the investigation and the actual procedure performed respectively. Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases
 
-### Histological cleaning
+## Histological cleaning
 
 The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting.
 In general, each histology report can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.
@@ -159,16 +163,16 @@ In general, each histology report can be divided into the Macroscopic descriptio
 
 <br>
 
-#### Basic Histology Cleaning
+### Basic Histology Cleaning
 
 The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present.
  
 <br>
-The original input example can be seen here
+The original input example can be seen here:
 
 
-```{r exampleEHistolHistol, echo = TRUE}
-pander(head(Mypath$Histology,2))
+```{r exampleEHistolHistol, echo = FALSE}
+head(Mypath$Histology,2)
 ```
 
 
@@ -176,18 +180,22 @@ And once the function is run the result is here:
 
 ```{r exampleEHistolHistol2, echo = TRUE}
 t<-HistolHistol(Mypath,'Histology')
-pander(head(t$Histology,2))
 ```
+
+```{r exampleEHistolHistol3, echo = FALSE}
+head(t$Histology,2)
+```
+
 <br>
 
-#### Removal of negatives
+### Removal of negatives
 
 In addition, if there is a need to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. This is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text.
 
 <br>
 The original input example can be seen here
 
-```{r exampleNeg, echo = TRUE}
+```{r exampleNeg, echo = FALSE}
 Mypath[7,10]
 ```
 
@@ -195,12 +203,15 @@ If we apply the function NegativeRemove we see this changes to:
 
 ```{r exampleNeg2, echo = TRUE}
 MypathNegRem<-NegativeRemove(Mypath,"Diagnosis")
+```
+
+```{r exampleNeg3, echo = FALSE}
 MypathNegRem[7,10]
 ```
 
 <br>
 
-#### Extraction of Macroscopic Description
+### Extraction of Macroscopic Description
 
 Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.
 
@@ -208,23 +219,32 @@ Because the information from the Macroscopic Description is based around numbers
 
 In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.
 
-```{r exampleHistolNumbOfBx, eval = FALSE}
+```{r exampleHistolNumbOfBx, echo = TRUE}
 v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 ```
 
 
-#### Extraction of Specific Disease Entities
+### Extraction of Specific Disease Entities
 
 The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but may be user defined in future iterations
 ```{r exampleHistolExtrapolDx, echo = TRUE}
 Mypath3<-data.frame(Mypath["HospitalNumber"],Mypath["Diagnosis"])
+
+```
+
+```{r exampleHistolExtrapolDx2, echo = FALSE}
 pander(head(Mypath3,10))
 ```
 
-```{r exampleHistolExtrapolDx2, echo = TRUE}
+```{r exampleHistolExtrapolDx3, echo = TRUE}
 Mypath3<-HistolExtrapolDx(Mypath3,"Diagnosis")
+```
+
+
+```{r exampleHistolExtrapolDx4, echo = FALSE}
 pander(head(Mypath3,10))
 ```
+
 
 Other less useful functions include but which may be useful in certain hospitals and certain situations in
 

@@ -28,7 +28,7 @@ names(Mypath)<-c("HospitalNumber","PatientName","DOB",
 "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
 "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
 "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-MacCleanUp<-HistolMacDescripCleanup(Mypath,"Histology")
+HistolMacDescripCleanup(Mypath,"Histology")
 rm(Mypath)
 }
 \keyword{Histology}

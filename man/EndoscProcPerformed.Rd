@@ -20,6 +20,6 @@ It should be used after the Extractor and the optional NewLines
 has been used.
 }
 \examples{
-v<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
+EndoscProcPerformed(Myendo,'ProcedurePerformed')
 }
 \keyword{Procedure}

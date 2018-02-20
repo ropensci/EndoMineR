@@ -6,3 +6,4 @@
 ^README-.*\.png$
 ^Hold_deleteIfNotNeeded$
 ^docs$
+^pkgdown$

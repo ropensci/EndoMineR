@@ -426,52 +426,10 @@ f<-PolypLocator(f,'SampleLocation')
   
 })
 
-#### SampleLocator test ####
-
-test_that("SampleLocator", {
-  
-  Histoltree <-c("Hospital Number","Patient Name:","DOB:",
-                 "General Practitioner:",
-                "Date received:","Clinical Details:",
-                "Macroscopic description:",
-                "Histology:","Diagnosis:"
-  )
-  
-  
-  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole"
-                                      ,Histoltree)
-  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
-                                   'Datereceived'] <- 'Dateofprocedure'
-  Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
-  f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
-  f<-SampleLocator(f,'SampleLocation')
-  
-})
 
 #### PolypLocator test ####
 
 test_that("PolypLocator", {
-  
-  Histoltree <-c("Hospital Number","Patient Name:","DOB:",
-                 "General Practitioner:",
-                 "Date received:","Clinical Details:",
-                 "Macroscopic description:",
-                 "Histology:","Diagnosis:"
-  )
-  
-  PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole"
-                                      ,Histoltree)
-  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
-                                   'Datereceived'] <- 'Dateofprocedure'
-  Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
-  f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
-  f<-PolypLocator(f,'SampleLocation')
-  
-})
-
-#### PolypTidyUpLocator test ####
-
-test_that("PolypTidyUpLocator", {
   
   Histoltree <-c("Hospital Number","Patient Name:","DOB:",
                  "General Practitioner:",
@@ -485,7 +443,7 @@ test_that("PolypTidyUpLocator", {
                                    'Datereceived'] <- 'Dateofprocedure'
   Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
   f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
-  f<-PolypTidyUpLocator(f,'SampleLocation')
+  f<-PolypLocator(f,'SampleLocation')
 })
 
 #### GRS_Type_Assess_By_Unit test ####

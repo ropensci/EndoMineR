@@ -58,7 +58,7 @@ if (getRversion() >= "2.15.1")
 #' # too
 #'
 #'
-#' v<-Barretts_PragueScore(Myendo,'Findings')
+#' Barretts_PragueScore(Myendo,'Findings')
 
 #Change to BarrPrague nee Barretts_PragueScore
 Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
@@ -189,7 +189,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' # Procedure performed, free text endoscopic Findings and the original
 #' # whole endoscopy report columns from the merged data set (v) for
 #' # EMR/APC/RFA/HALO so that the event for the procedure, is recorded.
-#' b<-Barretts_EventType(v,'Histology',
+#' Barretts_EventType(v,'Histology',
 #' 'ProcedurePerformed','Indications','Findings')
 #' rm(v)
 #'
@@ -269,7 +269,7 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 #' #The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b3<-Barretts_FUType(b2,'Findings')
+#' Barretts_FUType(b2,'Findings')
 #' rm(v)
 
 Barretts_FUType <- function(dataframe, EndoReportColumn) {
@@ -355,7 +355,7 @@ grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall",
 #' 
 #' 
 #' #The function relies on the other Barrett's functions being run as well:
-#' b<-BarrettsAll(v)
+#' BarrettsAll(v)
 #' rm(v)
 #' rm(Myendo)
 
@@ -413,7 +413,7 @@ BarrettsAll <- function(dataframe) {
 #' # and then groups the Barrett's endoscopies by patient (as defined by their
 #' # unique hospital identifier and then orders by the date of procedure. It
 #' # should look in the Indications column for Barrett's related indication
-#' Enroll<-BarrettsSurveil(Myendo,
+#' BarrettsSurveil(Myendo,
 #' 'HospitalNumber',
 #' 'Dateofprocedure','Indications')
 
@@ -489,7 +489,7 @@ BarrettsSurveil <- function(dataframe,
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' #Finally the unique hospital numbers are obtained according to the follow-up
 #' # rule you are looking for
-#' Rule<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
+#' BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
 #' rm(v)
 
 BarrettsSurveil_HospNum <- function(dataframe, rule, PatientID) {
@@ -1197,7 +1197,7 @@ BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
 #' # have 'nothing' in the event column (which means biopsies only) which was
 #' # preceded by radiofrequency ablation (RFA) so that these patients are
 #' # labelled as having clearance of intestinal metaplasia. The result is a true
-#' or false column.
+#'# or false column.
 #' Barretts_CRIM(b3,'HospitalNumber',"EVENT")
 #' rm(v)
 

@@ -19,7 +19,7 @@ scale tables later. It should be used after the Extractor and the optional
 NewLines has been used.
 }
 \examples{
-v<-EndoscMeds(Myendo,'Medications')
+EndoscMeds(Myendo,'Medications')
 }
 \keyword{Endoscopy}
 \keyword{medications}

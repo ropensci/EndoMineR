@@ -19,7 +19,7 @@ present. The Accession number relates to the actual specimen number as
 ascribed by the pathology service.
 }
 \examples{
-v<-HistolAccessionNumber(Mypath,'Histology',
+HistolAccessionNumber(Mypath,'Histology',
 'SP-\\\\d{2}-\\\\d{7}')
 }
 \keyword{Accession}

@@ -17,6 +17,6 @@ SurveilLastTest(dataframe, HospNum_Id, Endo_ResultPerformed)
 Extracts the last test only per patient
 }
 \examples{
-em<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 }
 \keyword{Surveillance}

@@ -19,7 +19,7 @@ or as a way of providing a 'positive diagnosis only' type output (see
 HistolDx)
 }
 \examples{
-Myendo<-lapply(Myendo, ColumnCleanUpAll)
+lapply(Myendo, ColumnCleanUpAll)
 rm(Myendo)
 
 }
