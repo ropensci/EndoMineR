@@ -7,6 +7,10 @@ output:
     theme: lumen
     toc: true
     css: style.css
+vignette: >
+  %\VignetteIndexEntry{EndoMineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 

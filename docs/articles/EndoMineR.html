@@ -56,7 +56,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://example.com">
+  <a href="http://gastrodatascience.com">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -91,9 +91,9 @@
 <h2 class="hasAnchor">
 <a href="#how-is-the-package-divided" class="anchor"></a>How is the package divided?</h2>
 <div class="figure">
-<img src="EndoMineR_FunctionStructure.svg" alt="Figure 2: Overview of all the functions" width="900"><p class="caption">Figure 2: Overview of all the functions</p>
+<img src="EndoMineROverView.png" alt="Figure 1: Overview of all the functions" width="600"><p class="caption">Figure 1: Overview of all the functions</p>
 </div>
-<p>The package is basically in three parts. How all the functions are connected in Figure 2. Extracts from this figure will be used in sequential sections below.</p>
+<p>The package is basically in three parts. How all the functions are connected in Figure 1. The import of the raw data is left up to the user. The data should be one file. The user can either upload data so that each row of the data is an endoscopic episode (or a pathology report) in its raw form and then allow the package to extract the relevant parts of the data, or the data can be pre-extracted (ie separate columns for the Endoscopist, medication given etc.) so that the Extraction step is skipped. The package can take either but the importing is left to the user.</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>The extraction</strong>- This is really when the data is provided as full text reports. You may already have the data in a spreadsheet in which case this part isn’t necessary</p></li>
 <li><p><strong>Cleaning</strong>- These are a group of functions that allow the user to extract and clean data commonly found in endoscopic and pathology reports. The cleaning functions usually remove common typos or extraneous information and do some reformatting</p></li>
@@ -109,10 +109,10 @@
 <img src="EndoMineR_Extractor.svg" alt="Figure 3: Extractor function"><p class="caption">Figure 3: Extractor function</p>
 </div>
 <p><br></p>
-<p>One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the NewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor)</p>
+<p>One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in built datasets as part of the package. Prior to tokenization it is recommended to use the NewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor). However this is not absolutely necessary.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/NewLines.html">NewLines</a></span>(TheOGDReportFinal,<span class="st">'OGDReportWhole'</span>)</code></pre></div>
 <p><br></p>
-<p>A list of keywords is then constructed. This list is made up of the words that will be used to split the document. The Extractor then does the splitting for each pair of words, with some cleaning up and then returns the split dataframe:</p>
+<p>A list of keywords is then constructed. This list is made up of the words that will be used to split the document. The Extractor then does the splitting for each pair of words, with some cleaning up and then returns the split dataframe. Here we use an example dataset:</p>
 <table style="width:44%;" class="table">
 <colgroup><col width="44%"></colgroup>
 <thead><tr class="header">
@@ -349,7 +349,7 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 </table>
 <p><br></p>
 <div class="figure">
-<img src="EndoMineR_EndoscopyClean.svg" alt="Figure 4: Endoscopy Cleaning functions"><p class="caption">Figure 4: Endoscopy Cleaning functions</p>
+<img src="EndoMineR_EndoscopyClean.png" alt="Figure 4: Endoscopy Cleaning functions"><p class="caption">Figure 4: Endoscopy Cleaning functions</p>
 </div>
 <p><br></p>
 </div>
@@ -578,7 +578,7 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology report can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.</p>
 <p><br></p>
 <div class="figure">
-<img src="EndoMineR_HistopExtrapol.svg" alt="Figure 5: Histopathology Cleaning functions"><p class="caption">Figure 5: Histopathology Cleaning functions</p>
+<img src="EndoMineR_HistopExtrapol.png" alt="Figure 5: Histopathology Cleaning functions"><p class="caption">Figure 5: Histopathology Cleaning functions</p>
 </div>
 <p><br></p>
 <div id="basic-histology-cleaning" class="section level3">
@@ -760,11 +760,9 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 </table>
 <p>Other less useful functions include but which may be useful in certain hospitals and certain situations in</p>
 <ol style="list-style-type: decimal">
-<li><p>HistolAccessionNumber which extracts Accession Number data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.</p></li>
-<li><p>HistolMacDescripCleanup. This extracts Macroscopic description data from the pathology report.Macroscopic description usually relates to the number of specimens retrieved, the size of each specimen and the location it was taken from. The cleanup usually relates to the removal of top and tail characters such as who reported the specimens etc.</p></li>
+<li>HistolAccessionNumber which extracts Accession Number data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/HistolAccessionNumber.html">HistolAccessionNumber</a></span>(Mypath,<span class="st">"Histology"</span>,<span class="st">"SP-</span><span class="ch">\\</span><span class="st">d{2}-</span><span class="ch">\\</span><span class="st">d{7}"</span>)
-v&lt;-<span class="kw"><a href="../reference/HistolMacDescripCleanup.html">HistolMacDescripCleanup</a></span>(Mypath,<span class="st">"Macroscopicdescription"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/HistolAccessionNumber.html">HistolAccessionNumber</a></span>(Mypath,<span class="st">"Histology"</span>,<span class="st">"SP-</span><span class="ch">\\</span><span class="st">d{2}-</span><span class="ch">\\</span><span class="st">d{7}"</span>)</code></pre></div>
 <p><br><br></p>
 </div>
 </div>

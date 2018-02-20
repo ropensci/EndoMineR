@@ -56,7 +56,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://example.com">
+  <a href="http://gastrodatascience.com">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -87,9 +87,9 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Gastroenterological data can be organised in a manner that allows several questions to be answered with the same data structure. The structure itself is straightforward. It simply rests on the basis that we mainly describe patient episodes so that each row of a dataframe pertains to the data collected at that episode and the index of the row is based on a combination of date and a patient’s unique identifier The following described an overview of how data should be structured using both and endoscopic dataset and a pathological dataset which we will merge.</p>
 </div>
-<div id="assumptions-for-practical-gastroenterological-datasets" class="section level2">
+<div id="dataset-assumptions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#assumptions-for-practical-gastroenterological-datasets" class="anchor"></a>Assumptions for practical gastroenterological datasets</h2>
+<a href="#dataset-assumptions" class="anchor"></a>Dataset assumptions</h2>
 <p><br></p>
 <div class="figure">
 <img src="TypicalReportForGastroDSEndoMinerVignette.svg" alt="Figure 1: Typical starting data set" width="900"><p class="caption">Figure 1: Typical starting data set</p>
@@ -121,9 +121,9 @@
 <p>Semi-structured data requires specific language processing techniques depending on what is being extracted. For our purposes the extractible data is likely to be either diagnoses or aspects of the test being performed. The diagnostic data is traditionally the most difficult to extract but this is often because the object to be extracted is from a large set eg for the purposes of coding for financial remuneration. Because the target set is much smaller for endoscopic-pathological diagnoses language extraction can be more focused whilst being more flexible to accommodate edge cases such as misspellings, plurals.</p>
 </div>
 </div>
-<div id="so-what-generic-questions-can-we-answer-in-gastroenterology" class="section level2">
+<div id="generic-gastroenterology-questions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#so-what-generic-questions-can-we-answer-in-gastroenterology" class="anchor"></a>So what generic questions can we answer in gastroenterology?</h2>
+<a href="#generic-gastroenterology-questions" class="anchor"></a>Generic gastroenterology questions?</h2>
 <p>The answer to this is really applicable to most areas in medicine. Many fields share the same practical, day to day questions. Although we may focus on specific questions for a specific field, the structure of many questions in medicine is the same. Based on observation and experience I think the main questions are:</p>
 <p><strong><a href="http://gastrodatascience.com/DataAnalysisEventingsSankey.html">1. Analysis patient flow</a> </strong></p>
 <p>If we understand the fact that patient’s flow through a system, and the way to characterise that flow is by organising data according to the patient’s unique identifier and episode date as a combined index, then there are a huge number of questions that can be ansered under this generic question. For example, at a population level analysis, how many patients will need to undergo further colonoscopy surveillance in 5 years based on the procedures already performed. On an individual patient level perhaps you need to know who is due to have further endoscopic follow up based on previous procedure, or which patients have been lost to follow-up. Once data is prepared in a manner that satisfies surveillance tasks, the data structure can be used for many other questions <br><br></p>
@@ -148,8 +148,8 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#assumptions-for-practical-gastroenterological-datasets">Assumptions for practical gastroenterological datasets</a></li>
-      <li><a href="#so-what-generic-questions-can-we-answer-in-gastroenterology">So what generic questions can we answer in gastroenterology?</a></li>
+      <li><a href="#dataset-assumptions">Dataset assumptions</a></li>
+      <li><a href="#generic-gastroenterology-questions">Generic gastroenterology questions?</a></li>
       </ul>
 </div>
       </div>

@@ -242,15 +242,6 @@ test_that("ColumnCleanUp", {
   expect_true( length(me2)>0)
 })
 
-#### HistolMacDescripCleanup test ####
-
-test_that("HistolMacDescripCleanup", {
-  ff<-"The report was Dictated by Dr John Di john"
-  ff<-data.frame(ff)
-  names(ff)<-"Thecol"
-
-  HistolMacDescripCleanup(ff,"Thecol")
-})
 
 #### HistolHistol test ####
 

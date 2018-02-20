@@ -6,7 +6,12 @@ output:
   rmarkdown::html_document:
     theme: lumen
     toc: true
+    toc_depth: 5
     css: style.css
+vignette: >
+  %\VignetteIndexEntry{EndoMineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ## The Analysis Functions
 
-The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice (See Principles)
+The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upone in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions. 
 
 ###Surveillance functions
 
@@ -63,6 +68,7 @@ This will provide the number of tests by month and year as a table as well as a 
 
 ###Patient flow functions
 
+####Sankey plots
 We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. 
 For example, if we have a dataset with events such as 'radiofrequency ablation' and 'endoscopic mucosal resection' or 'nothing' we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type ("EMR","RFA","nothing" in this case)
 
@@ -76,6 +82,9 @@ how<-SurveySankey(Myendo,"ProcPerformed")
 ![Figure 7: SurveySankey function](EndoMineR_Sankey.svg){width=600px}
 
 <br>
+
+
+####Circos plots
 
 We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
 
@@ -136,6 +145,8 @@ MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 
 
 <br>
+
+####Pathology Detection Quality
 
 #####Polyp and sample location
 

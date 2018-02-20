@@ -6,6 +6,11 @@ output:
   rmarkdown::html_vignette:
     toc: true
     toc_depth: 5
+    css: style.css
+vignette: >
+  %\VignetteIndexEntry{EndoMineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -21,9 +26,7 @@ Gastroenterological data can be organised in a manner that allows several questi
 The following described an overview of how data should be structured using both and endoscopic dataset and a pathological dataset which we will merge.
 
 
-
-
-##Assumptions for practical gastroenterological datasets
+##Dataset assumptions
 
 <br>
 
@@ -58,7 +61,7 @@ Semi-structured data requires specific language processing techniques depending 
 
 
 
-## So what generic questions can we answer in gastroenterology?
+## Generic gastroenterology questions?
 
 The answer to this is really applicable to most areas in medicine. Many fields share the same practical, day to day questions. Although we may focus on specific questions for a specific field, the structure of many questions in medicine is the same. Based on observation and experience I think the main questions are:
 

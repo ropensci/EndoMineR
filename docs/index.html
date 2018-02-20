@@ -56,7 +56,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://example.com">
+  <a href="http://gastrodatascience.com">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -82,7 +82,11 @@
 <div id="endominer" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#endominer" class="anchor"></a>EndoMineR</h1></div>
-<p>The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens. Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.</p>
+<p>The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens.</p>
+<p><br></p>
+<p>Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text.</p>
+<p><br></p>
+<p>However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.</p>
 <p>The package is basically in three parts</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>The extraction</strong>- This is really when the data is provided as full text reports. You may already have the data in a spreadsheet in which case this part isn’t necessary</p></li>
@@ -96,39 +100,54 @@
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools::<span class="kw">install_github</span>(<span class="st">"sebastiz/EndoMineR"</span>)</code></pre></div>
 </div>
-<div id="the-extractor-function" class="section level2">
+<div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
-<a href="#the-extractor-function" class="anchor"></a>The extractor function</h2>
+<a href="#getting-started" class="anchor"></a>Getting started</h2>
+<p><br></p>
+<p><strong>The data input</strong></p>
+<p>Most datasets will either be raw text so that the entire report contents is one text file. Other datasets will be spreadsheets where the pertinent columns reflecting eg Medication, performing endoscopis etc., will already be separated out. Functions are available for both situations. If the input is a series of raw text files organised as a series of rows (one row per report), then the first function to use, once the data has been inputted, is the extractor function</p>
+<div id="the-extractor-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#the-extractor-function" class="anchor"></a>The extractor function</h3>
 <p>One of the most useful functions in the package is the Extractor. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. This is analogous to tokenization in natural language processing. Here we use the in built datasets as part of the package:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath&lt;-<span class="kw">data</span>(PathDataFrameFinalColon)
-HistolTree&lt;-<span class="kw">list</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
-<span class="st">"Date of procedure:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,<span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>,<span class="st">""</span>)
-for(i in <span class="dv">1</span>:(<span class="kw">length</span>(HistolTree)-<span class="dv">1</span>)) {
-Mypath&lt;-<span class="kw"><a href="reference/Extractor.html">Extractor</a></span>(Mypath,<span class="st">"PathReportWhole"</span>,<span class="kw">as.character</span>(HistolTree[i]),
-<span class="kw">as.character</span>(HistolTree[i<span class="dv">+1</span>]),<span class="kw">as.character</span>(HistolTree[i]))
-}</code></pre></div>
-<p>This function can be used for both histology and pathology datasets.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw">c</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
+<span class="st">"Date received:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,
+<span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>)
+Mypath&lt;-<span class="kw"><a href="reference/Extractor.html">Extractor</a></span>(Mypath,<span class="st">"PathReportWhole"</span>,mywords)</code></pre></div>
+<p><br></p>
+<p>This function should be used for both histology and pathology datasets separately.</p>
+<p><br></p>
 </div>
-<div id="the-cleaning-function" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-cleaning-function" class="anchor"></a>The cleaning function</h2>
-<p>Data cleaning is tricky so that the cleaning functions have been developed on the basis of recurring patterns of cleaning that needs to be done for these kinds of reports. For example, when cleaning the endoscopist name the following function can be used:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">EndoscChopperEndoscopist</span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
+<div id="the-cleaning-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#the-cleaning-function" class="anchor"></a>The cleaning function</h3>
+<p><br></p>
+<p>Individual cleaning functions are provided for individual columns (for the most likely columns that you might want to analyse- eg Medications, Endoscopist, the Procedure performed etc.). For histopathology similar cleaning functions can be found.</p>
+<p>For example, when cleaning the endoscopist name the following function can be used:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
 <p>Many such functions for both endoscopy and histology are provided</p>
+<p><br></p>
+<p>Both endoscopy and histology functions can also be found as part of a respective convenience parent function (for endoscopy it is called EndoscAll and for histology it is called HistolAll).</p>
+<p><br></p>
 </div>
-<div id="the-analyses" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-analyses" class="anchor"></a>The analyses</h2>
+<div id="the-merging-function" class="section level3">
+<h3 class="hasAnchor">
+<a href="#the-merging-function" class="anchor"></a>The merging function</h3>
+<p>Once the histology and endoscopy datasets have been cleaned, if you wish (and want to run some of the analysis functions later in the packaed) you can merge the endoscopy and pathology datasets. This has been provided as a convenience function EndoMerge2 and merges the datasets based on the date performed (with some flexibility given pathology received is not always the same as the endoscopy date).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,Mypath,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>)</code></pre></div>
+</div>
+<div id="the-analyses" class="section level3">
+<h3 class="hasAnchor">
+<a href="#the-analyses" class="anchor"></a>The analyses</h3>
 <p>The overall aim is to provide functions that allow the user to perform complex analyses on the endoscopic-pathological datasets. As far as possible the analyses are based on guidelines developed by the British Society of Gastroenterology. These analyses will expand in further iterations. Generic analyses functions are provided for example, as various numeric analyses plotted by endoscopist.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo&lt;-<span class="kw">EndoscChopperMeds</span>(Myendo,<span class="st">'Medications'</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo&lt;-<span class="kw"><a href="reference/EndoscMeds.html">EndoscMeds</a></span>(Myendo,<span class="st">'Medications'</span>)
 Fent&lt;-<span class="kw"><a href="reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)</code></pre></div>
 <p>More specific analyses, ie those relating to a specific guidelines are also provided. For example in the case of Barrett’s oesophagus, the follow-up timing for the next endoscopy in those who have non dysplastic mucosa, can be determined as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#' v&lt;-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")</span>
-<span class="co">#' b&lt;-BarrettsDataAccord_PathStage(v,'Histology')</span>
-<span class="co">#' b2&lt;-BarrettsDataAccord_Event(b,'Histology',</span>
-<span class="co">#' 'ProcedurePerformed','OGDReportWhole','Findings')</span>
-<span class="co">#' b3&lt;-BarrettsDataAccord_FUGroup(b2,'Findings')</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
+b&lt;-<span class="kw"><a href="reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(v,<span class="st">'Histology'</span>)
+b2&lt;-<span class="kw">Barretts_Event</span>(b,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>) b3&lt;-<span class="kw">Barretts_FUGroup</span>(b2,<span class="st">'Findings'</span>)</code></pre></div>
 <p>Further more detailed examples are provided in the associated vignette for this package</p>
+</div>
 </div>
 </div>
 </div>

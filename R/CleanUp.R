@@ -626,41 +626,6 @@ HistolAll <- function(dataframe) {
 }
 
 
-#' Clean up histological macroscopic description data
-#'
-#' This is the parent cleaning function for the histology report. It contains
-#' all the other functions for the histology report to be cleaned up. It
-#' relies on the columns being named in a standardised way as below:
-#' @param dataframe dataframe with column of interest
-#' @param MacroColumn the dataframe column with the Macroscopic description text
-#' @keywords Histology
-#' @export
-#' @examples  
-#' 
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
-#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
-#' names(Mypath)<-c("HospitalNumber","PatientName","DOB",
-#' "GeneralPractitioner","Datereceived","ClinicalDetails",
-#' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
-#' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
-#' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-#' HistolMacDescripCleanup(Mypath,"Histology")
-#' rm(Mypath)
-
-
-
-HistolMacDescripCleanup <- function(dataframe,MacroColumn) {
-  
-  dataframe <- data.frame(dataframe)
-  # Column specific cleanup
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Dd]ictated by.*", "")
-  return(dataframe)
-}
-
-
 #' Extract the histology data from the report by removing negative findings
 #'
 #' This extracts Histology details data from the report. The Histology details
@@ -798,7 +763,11 @@ HistolExtrapolDx <- function(dataframe, Column) {
 
 
 HistolMacDescrip <- function(dataframe, MacroColumn) {
-  x <- data.frame(dataframe)
+  dataframe <- data.frame(dataframe)
+  
+  # Column specific cleanup
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Dd]ictated by.*", "")
   # Conversion of text numbers to allow number of biopsies to be extracted
   dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
                                           "[Oo]ne", "1")
@@ -818,7 +787,7 @@ HistolMacDescrip <- function(dataframe, MacroColumn) {
                                           "[Ss]even", "7")
   dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
                                           "[Ee]ight", "8")
-  return(x)
+  return(dataframe)
 }
 
 #' Extract the number of biopsies taken from histology report
