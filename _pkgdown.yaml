@@ -15,8 +15,11 @@ navbar:
           href: articles/EndoMineRPrinciples.html
         - text: "Package overview"
           href: articles/EndoMineR.html
+        - text: "Analysis"
+          href: articles/Analysis.html
         - text: "Barrett's"
           href: articles/Barretts.html
+        
 
   right:
     - icon: fa-github fa-lg

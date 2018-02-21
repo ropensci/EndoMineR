@@ -49,6 +49,9 @@
       <a href="../articles/EndoMineR.html">Package overview</a>
     </li>
     <li>
+      <a href="../articles/Analysis.html">Analysis</a>
+    </li>
+    <li>
       <a href="../articles/Barretts.html">Barrett's</a>
     </li>
   </ul>
@@ -92,7 +95,7 @@
 <p>Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps</p>
 <p><br></p>
 <div class="figure">
-<img src="EndoMineR_Surveillance.svg" alt="Figure 6: Surveillance functions: Each colour represents a patient and each row an endoscopic episode with associated outcome (defined by the user, but often means the pathology outcome)"><p class="caption">Figure 6: Surveillance functions: Each colour represents a patient and each row an endoscopic episode with associated outcome (defined by the user, but often means the pathology outcome)</p>
+<img src="EndoMineR_Surveillance.svg" alt="Surveillance functions: Each colour represents a patient and each row an endoscopic episode with associated outcome (defined by the user, but often means the pathology outcome)"><p class="caption">Surveillance functions: Each colour represents a patient and each row an endoscopic episode with associated outcome (defined by the user, but often means the pathology outcome)</p>
 </div>
 <p><br></p>
 <p>The basic surveillance functions are simple but are the most often used. SurveillanceTimeByRow will extract the time difference between each individual endoscopy for an individual patient. THis is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy. SurveilLastTest simply extracts the last and first test respectively for each patient</p>
@@ -288,7 +291,7 @@ how[<span class="dv">1</span>]</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/SurveySankey.html">SurveySankey</a></span>(Myendo,<span class="st">"ProcPerformed"</span>)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="EndoMineR_Sankey.svg" alt="Figure 7: SurveySankey function" width="600"><p class="caption">Figure 7: SurveySankey function</p>
+<img src="EndoMineR_Sankey.svg" alt="SurveySankey function" width="600"><p class="caption">SurveySankey function</p>
 </div>
 <p><br></p>
 </div>
@@ -299,7 +302,7 @@ how[<span class="dv">1</span>]</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flow&lt;-<span class="kw"><a href="../reference/PatientFlow_CircosPlots.html">PatientFlow_CircosPlots</a></span>(v,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,<span class="st">"ProcedurePerformed"</span>)</code></pre></div>
 <p><br></p>
 <div class="figure">
-<img src="EndoMineR_Circos.svg" alt="Figure 8: Circos function" width="600"><p class="caption">Figure 8: Circos function</p>
+<img src="EndoMineR_Circos.svg" alt="Circos function" width="600"><p class="caption">Circos function</p>
 </div>
 <p><br></p>
 </div>
