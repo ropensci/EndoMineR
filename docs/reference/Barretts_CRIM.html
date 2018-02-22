@@ -154,7 +154,7 @@ patient had at that endoscopy</p></td>
 <span class='co'># preceded by radiofrequency ablation (RFA) so that these patients are</span>
 <span class='co'># labelled as having clearance of intestinal metaplasia. The result is a true</span>
 <span class='co'># or false column.</span>
-<span class='fu'>Barretts_CRIM</span>(<span class='no'>b3</span>,<span class='st'>'HospitalNumber'</span>,<span class='st'>"EVENT"</span>)</div><div class='output co'>#&gt; # A tibble: 578 x 44
+<span class='fu'>Barretts_CRIM</span>(<span class='no'>b3</span>,<span class='st'>'HospitalNumber'</span>,<span class='st'>"EVENT"</span>)</div><div class='output co'>#&gt; # A tibble: 584 x 36
 #&gt; # Groups:   HospitalNumber [97]
 #&gt;    PathReportWhole          HospitalNumber PatientName.x DOB   GeneralPractiti…
 #&gt;    &lt;chr&gt;                    &lt;chr&gt;          &lt;chr&gt;         &lt;chr&gt; &lt;chr&gt;           
@@ -168,7 +168,7 @@ patient had at that endoscopy</p></td>
 #&gt;  8 "SP-84-9745332\nHospita… " A3962018\n"  "  Vaughan, … "  1… " Dr\n Lopez Co…
 #&gt;  9 "SP-57-5567005\nHospita… " A3962018\n"  "  Thomas-Mo… "  1… " Dr\n Grano, K…
 #&gt; 10 "SP-59-7507017\nHospita… " A3962018\n"  "  el-Murad,… "  1… " Dr\n Ten, Che…
-#&gt; # ... with 568 more rows, and 39 more variables: Date.x &lt;date&gt;,
+#&gt; # ... with 574 more rows, and 31 more variables: Date.x &lt;date&gt;,
 #&gt; #   ClinicalDetails &lt;chr&gt;, Macroscopicdescription &lt;chr&gt;, Histology &lt;chr&gt;,
 #&gt; #   Diagnosis &lt;chr&gt;, AccessionNumber &lt;chr&gt;, Dx_Simplified &lt;chr&gt;, Cancer &lt;chr&gt;,
 #&gt; #   Dysplasia &lt;chr&gt;, GIST &lt;chr&gt;, NumbOfBx &lt;dbl&gt;, BxSize &lt;dbl&gt;,
@@ -176,9 +176,8 @@ patient had at that endoscopy</p></td>
 #&gt; #   GeneralPractitioner.y &lt;chr&gt;, Date.y &lt;date&gt;, Endoscopist &lt;chr&gt;,
 #&gt; #   Secondendoscopist &lt;chr&gt;, Medications &lt;chr&gt;, Instrument &lt;chr&gt;,
 #&gt; #   ExtentofExam &lt;chr&gt;, Indications &lt;chr&gt;, ProcedurePerformed &lt;chr&gt;,
-#&gt; #   Findings &lt;chr&gt;, NA. &lt;dbl&gt;, NA..1 &lt;dbl&gt;, NA..2 &lt;dbl&gt;, NA..3 &lt;dbl&gt;,
-#&gt; #   NA..4 &lt;dbl&gt;, NA..5 &lt;dbl&gt;, Fent &lt;dbl&gt;, Midaz &lt;dbl&gt;, Days &lt;time&gt;,
-#&gt; #   CStage &lt;dbl&gt;, MStage &lt;dbl&gt;, IMorNoIM &lt;chr&gt;, EVENT &lt;chr&gt;, ind &lt;lgl&gt;</div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
+#&gt; #   Findings &lt;chr&gt;, Days &lt;time&gt;, CStage &lt;dbl&gt;, MStage &lt;dbl&gt;, IMorNoIM &lt;chr&gt;,
+#&gt; #   EVENT &lt;chr&gt;, ind &lt;lgl&gt;</div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -97,7 +97,7 @@ Therefore, once the data has been properly arranged we can then make an attempt 
 
 
 
-**[2. Diagnostic yields](http://gastrodatascience.com/Cornersteon_EndoPath.html)**
+**[2. Between dataset quality- Diagnostic yields](http://gastrodatascience.com/Cornersteon_EndoPath.html)**
 
 We can in fact use the same structure of dataset to also analyse diagnostic yields (meaning pathology diagnosis) from endoscopy. Again, the pathology and endoscopy datasets need to have been merged by patient ID and date.
 
@@ -120,26 +120,24 @@ Using a similar dataset to that of surveillance, it is a fairly straightforward 
 
 
 
-**[3. Analysis of quality](http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html) **
+**[3. Within dataset quality- Analysis of endoscopic and pathology quality](http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html) **
 
-This relates to measures such as the adequacy of sampling and documentation, adherence to minimum standards including lesion recognition performance). 
+This section relates to the anaylsis of quality within datasets. THis is similar to many of the fields required in the global rating scale for endoscopy. The section above on yield can also be seen as a 'between' dataset quality measure as in the adenoma detection rate, as oppose to the 'within' dataset quality discussed here.
 
-Having structured our datasets as per the previous pages, we can extract this easily as follows:
+Endoscopic quality relates to many things such as the amount of sedation given, the quality of the documentation amongst others. Pathology quality relates often to whether certain aspects are mentoned in the report such as depth of invasion of a cancer, or a particular scoring system.
 
-
-The figure above is a summary figure of how different aspects of one well constructed dataset can be used to answer questions within the spheres mentioned above
-
-
-The central issue is that data is organised according to time so that the data structure is indexed by a combination of the date and the unique patient identifier. Merging with external datasets can then be done according to either the patient identifier and date or just the patient identifier if there is no need to relate the time of an episode in one data set to another.
+Each of these is discussed in more detail in the documentation but at a generic level,the dataset we have already described is sufficient to allow the extraction of such detail as it comes directly from the fields already present, often without needing to cross reference with other fields.
 
 
+**[4. Analysis of patient flow](http://gastrodatascience.com/DataAnalysisEventingsSankey.html) **
 
-**[4. Performance metrics](http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html)**
+Gastroenterology departments are often concerned with population level problems such as patient flow: How many patients will need colonoscopy this year? What proportion of patients need several investigations for a specific symptom and can this be made more efficient? etc.
 
-Performance metrics depend on what is being assessed. There is a natural weighting towards endoscopy on these pages and therefore we often assess endoscopists based on their within procedure performance (how much sedation was given, the patient's comfort score etc.), as well as cross-referenceing with the results of tissue taken at the time of the procedure to assess how good we are at recognising lesions (such as the adenoma detection rate). The following pages assess these areas and given te practical recipes for resolving them in code.
+If we understand the fact that patient's flow through a system, and the way to characterise that flow is by organising data according to the patient's unique identifier and episode date as a combined index, then there are a huge number of questions that can be answered under this generic question. Such questions rely on the same organisation of data as the first figure, namely data organised by patient and date and sorted by date. Again this is discussed further in the relevant documents:
 
 
-**[5. Analysis of patient flow](http://gastrodatascience.com/DataAnalysisEventingsSankey.html) **
+To summarise, the data structure needed to answer most gastroenterology questions is as follows:
 
-If we understand the fact that patient's flow through a system, and the way to characterise that flow is by organising data according to the patient's unique identifier and episode date as a combined index, then there are a huge number of questions that can be ansered under this generic question. For example, at a population level analysis, how many patients will need to undergo further colonoscopy surveillance in 5 years based on the procedures already performed. On an individual patient level perhaps you need to know who is due to have further endoscopic follow up based on previous procedure, or which patients have been lost to follow-up. Once data is prepared in a manner that satisfies surveillance tasks, the data structure can be used for many other questions 
+![**Dataset summary**](EndoMineRPrincip_Summary.png){width=900px}
+
 <br><br>
