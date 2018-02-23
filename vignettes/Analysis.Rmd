@@ -30,7 +30,10 @@ Surveillance relates to the timing of a test relative to other tests or all test
 
 <br>
 
-![Surveillance functions: Each colour represents a patient and each row an endoscopic episode with associated outcome (defined by the user, but often means the pathology outcome)](EndoMineR_Surveillance.svg)
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
+knitr::include_graphics("EndoMineR_Surveillance.svg")
+```
 
 <br>
 
@@ -79,7 +82,11 @@ how<-SurveySankey(Myendo,"ProcPerformed")
 
 <br>
 
-![ SurveySankey function](EndoMineR_Sankey.svg){width=600px}
+
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "100%"}
+knitr::include_graphics("EndoMineR_Sankey.svg")
+```
 
 <br>
 
@@ -94,7 +101,10 @@ flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePer
 
 <br>
 
-![Circos function](EndoMineR_Circos.svg){width=600px}
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
+knitr::include_graphics("EndoMineR_Circos.svg")
+```
 
 <br>
 
