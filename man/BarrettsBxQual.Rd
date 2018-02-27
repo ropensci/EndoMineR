@@ -44,7 +44,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The number of average number of biopsies is then calculated and
 # compared to the average Prague C score so that those who are taking
 # too few biopsies can be determined
-BarrettsBxQual(b4,'Date.x','HospitalNumber',
+hh<-BarrettsBxQual(b4,'Date.x','HospitalNumber',
                                      'Endoscopist')
 rm(v)
 }

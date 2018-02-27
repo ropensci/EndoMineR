@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1309px" height="663px" viewBox="0 0 1309 663" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 10</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="50" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-1"></use>
+        </mask>
+        <rect id="path-3" x="0" y="0" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-3"></use>
+        </mask>
+        <rect id="path-5" x="0" y="101" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-6" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-5"></use>
+        </mask>
+        <rect id="path-7" x="0" y="152" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-8" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-7"></use>
+        </mask>
+        <rect id="path-9" x="0" y="203" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-10" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-9"></use>
+        </mask>
+        <rect id="path-11" x="0" y="254" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-12" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-11"></use>
+        </mask>
+        <rect id="path-13" x="0" y="305" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-14" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-13"></use>
+        </mask>
+        <rect id="path-15" x="0" y="356" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-16" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-15"></use>
+        </mask>
+        <rect id="path-17" x="0" y="407" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-18" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-17"></use>
+        </mask>
+        <rect id="path-19" x="0" y="458" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-20" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-19"></use>
+        </mask>
+        <rect id="path-21" x="0" y="509" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-22" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-21"></use>
+        </mask>
+        <rect id="path-23" x="0" y="560" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-24" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-23"></use>
+        </mask>
+        <rect id="path-25" x="0" y="611" width="1308.66181" height="50.8552105"></rect>
+        <mask id="mask-26" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="1308.66181" height="50.8552105" fill="white">
+            <use xlink:href="#path-25"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-10">
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-2)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-1"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-4)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-3"></use>
+            <text id="Report-1" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="85">Report 1</tspan>
+            </text>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-6)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-5"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-8)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-7"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-10)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-9"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-12)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-11"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-14)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-13"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-16)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-15"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-18)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-17"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-20)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-19"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-22)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-21"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-24)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-23"></use>
+            <use id="Rectangle-2" stroke="#979797" mask="url(#mask-26)" stroke-width="2" fill="#FFFFFF" xlink:href="#path-25"></use>
+            <path d="M242.5,0.5 L242.5,660.660635" id="Line" stroke="#979797" stroke-linecap="square" fill="#FFFFFF"></path>
+            <path d="M431.5,1.5 L431.5,661.660635" id="Line" stroke="#979797" stroke-linecap="square" fill="#FFFFFF"></path>
+            <path d="M620.5,0.5 L620.5,661.660635" id="Line" stroke="#979797" stroke-linecap="square" fill="#FFFFFF"></path>
+            <path d="M912.5,1.5 L912.5,661.660635" id="Line" stroke="#979797" stroke-linecap="square" fill="#FFFFFF"></path>
+            <text id="Report-2" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="136">Report 2</tspan>
+            </text>
+            <text id="Report-3" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="187">Report 3</tspan>
+            </text>
+            <text id="Report-4" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="238">Report 4</tspan>
+            </text>
+            <text id="Report-5" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="289">Report 5</tspan>
+            </text>
+            <text id="Report-6" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="340">Report 6</tspan>
+            </text>
+            <text id="Report-7" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="391">Report 7</tspan>
+            </text>
+            <text id="Report-8" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="442">Report 8</tspan>
+            </text>
+            <text id="Report-9" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="42.4892578" y="493">Report 9</tspan>
+            </text>
+            <text id="Report-10" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="27.4775391" y="544"> Report 10</tspan>
+            </text>
+            <text id="Report-11" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="27.4775391" y="595"> Report 11</tspan>
+            </text>
+            <text id="Report-12" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="27.4775391" y="646"> Report 12</tspan>
+            </text>
+            <text id="Patient-ID" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="253.487305" y="41">Patient ID</tspan>
+            </text>
+            <text id="Date" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="485.485352" y="42">Date</tspan>
+            </text>
+            <text id="Diagnosis" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="646.481445" y="41">Diagnosis</tspan>
+            </text>
+            <text id="Other" font-family="Helvetica-BoldOblique, Helvetica" font-size="36" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="959.494141" y="41">Other</tspan>
+            </text>
+        </g>
+    </g>
+</svg>

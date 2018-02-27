@@ -47,7 +47,7 @@ b4<-Barretts_FUType(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #Finally the unique hospital numbers are obtained according to the follow-up
 # rule you are looking for
-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
+ff<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
 rm(v)
 }
 \keyword{Rule}

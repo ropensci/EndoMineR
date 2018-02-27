@@ -47,7 +47,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # from the endoscopy report free text to
 # the histopathology scores for the same endoscopies so you can see what the
 # lesion recognition is like overall
-BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
+mm<-BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
 rm(v)
 }
 \keyword{Does}

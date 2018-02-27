@@ -1,0 +1,40 @@
+
+
+body{ /* Normal  */ 
+      font-size: 12px; 
+  } 
+td {  /* Table  */ 
+  font-size: 10px; 
+} 
+ 
+h1 { /* Header 1 */ 
+  font-size: 28px; 
+  color: DarkBlue; 
+} 
+h2:before,
+h2:after {
+ background-color: #333;
+ content: "";
+ display: inline-block;
+ height: 1px;
+ position: relative;
+ vertical-align: middle;
+ width: 25%;
+}
+h2 { /* Header 2 */ 
+    font-size: 22px; 
+  color: DarkBlue; 
+  padding-top: 2cm;
+} 
+h3 { /* Header 3 */ 
+  font-size: 18px; 
+  font-family: "Times New Roman", Times, serif; 
+  color: DarkBlue; 
+  padding-top: 1cm;
+} 
+.r{ /* Code block */ 
+    font-size: 12px; 
+} 
+pre { /* Code block - determines code spacing between lines */ 
+    font-size: 14px; 
+} 

@@ -22,6 +22,6 @@ Barretts_PragueScore.
 # Firstly relevant columns are extrapolated from the
 b1<-Barretts_PragueScore(Myendo,'Findings')
 # The documentation is really from the endoscopic Findings column
-BarrettsDocumentQual(b1,'Findings')
+gg<-BarrettsDocumentQual(b1,'Findings')
 }
 \keyword{Documentation}

@@ -42,7 +42,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # histopathology and returns the proportion of each finding (ie
 # proportion with low grade dysplasia, high grade etc.) for each
 # endoscopist
-BarrettsDDRQual(b4,'Endoscopist','IMorNoIM')
+jj<-BarrettsDDRQual(b4,'Endoscopist','IMorNoIM')
 rm(v)
 }
 \keyword{detection}

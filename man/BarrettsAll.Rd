@@ -47,7 +47,7 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 
 
 #The function relies on the other Barrett's functions being run as well:
-BarrettsAll(v)
+dd<-BarrettsAll(v)
 rm(v)
 rm(Myendo)
 }

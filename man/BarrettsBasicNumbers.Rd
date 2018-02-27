@@ -41,7 +41,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function groups the overall number of surveillance cases over time
 # The endoscopic episodes should be selected,according to surveillance
 # being the indication prior to using this function
-BarrettsBasicNumbers(b4,"Date.x")
+jj<-BarrettsBasicNumbers(b4,"Date.x")
 rm(v)
 }
 \keyword{Number}

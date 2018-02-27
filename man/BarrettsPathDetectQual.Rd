@@ -40,7 +40,7 @@ b4<-Barretts_FUType(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function simply the the histopathological grades overall for
 # your dataset and then creates a frequency plot of them
-BarrettsPathDetectQual(b4,'Myplot')
+ii<-BarrettsPathDetectQual(b4,'Myplot')
 rm(v)
 }
 \keyword{and}

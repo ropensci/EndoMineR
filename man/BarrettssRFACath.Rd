@@ -41,7 +41,7 @@ b4<-Barretts_FUType(b3,'Findings')
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function takes the RFA cases by looking in any free text column where
 # endoscopy fingings are described and then summarising by RFA subtype
-BarrettssRFACath(b4,"ProcedurePerformed","Findings")
+ll<-BarrettssRFACath(b4,"ProcedurePerformed","Findings")
 rm(v)
 }
 \keyword{RFA,}

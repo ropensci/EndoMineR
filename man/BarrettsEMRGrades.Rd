@@ -38,7 +38,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function extracts only those rows for patients who have undergone
 # EMR and then extracts the EMR grade from the extracted worst histopath
 # column (called IMorNoIM). This is then plotted out.
-BarrettsEMRGrades(b4)
+kk<-BarrettsEMRGrades(b4)
 rm(v)
 }
 \keyword{EMR}
