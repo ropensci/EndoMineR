@@ -20,25 +20,28 @@ library(EndoMineR)
 knitr::opts_chunk$set(echo = TRUE)
 
 ```
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set( warning=FALSE, message=FALSE)
+```
 ## The Analysis Functions
 
 The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upone in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions. 
 
 ###Surveillance functions
 
-Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps
+Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. How the data is organised is explained in the Principles section but essentially the details of this are all hidden in the function.
 
 <br>
 
-
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
-knitr::include_graphics("EndoMineR_Surveillance.svg")
+knitr::include_graphics("img/EndoMineR_Surveillance.svg")
 ```
 
 <br>
 
-The basic surveillance functions are simple but are the most often used. SurveillanceTimeByRow will extract the time difference between each individual endoscopy for an individual patient. THis is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.
-SurveilLastTest simply extracts the last and first test respectively for each patient 
+The basic surveillance functions are simple but are the most often used. SurveillanceTimeByRow will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.
+SurveilLastTest simply extracts the last and first test respectively for each patient. 
 
 ```{r exampleSurveillanceTimeByRow, eval = TRUE}
 em1<-SurveilTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
@@ -85,7 +88,7 @@ how<-SurveySankey(Myendo,"ProcPerformed")
 
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "100%"}
-knitr::include_graphics("EndoMineR_Sankey.svg")
+knitr::include_graphics("img/EndoMineR_Sankey.svg")
 ```
 
 <br>
@@ -103,7 +106,7 @@ flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePer
 
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
-knitr::include_graphics("EndoMineR_Circos.svg")
+knitr::include_graphics("img/EndoMineR_Circos.svg")
 ```
 
 <br>

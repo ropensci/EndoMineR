@@ -100,10 +100,9 @@ NewLines <- function(dataframe, EndoReportColumn) {
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
-#' Mypath
-#' rm(Mypath)
+#' Mypath2<-Extractor(Mypath,"PathReportWhole",mywords)
 #' 
+
 Extractor <- function(dataframeIn, Column, delim) {
   dataframeInForLater<-dataframeIn
   ColumnForLater<-Column
@@ -111,7 +110,8 @@ Extractor <- function(dataframeIn, Column, delim) {
   dataframeIn <- data.frame(dataframeIn)
   dataframeIn<-dataframeIn %>% 
     tidyr::separate(!!Column, into = c("added_name",delim), 
-                                          sep = paste(delim, collapse = "|"))
+                                          sep = paste(delim, collapse = "|"),
+                    extra = "drop", fill = "right")
   names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("\\\\.*", "", x))
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("       ", "", x))
@@ -190,7 +190,7 @@ EndoscAll<- function(dataframe) {
 #' @export
 #' @importFrom stringr str_replace
 #' @examples EndoscEndoscopist(Myendo,'Endoscopist')
-#' rm(v)
+
 
 EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
   # Extraction of the Endoscopist
@@ -556,7 +556,6 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' @export
 #' @importFrom stringr str_replace
 #' @examples lapply(Myendo, ColumnCleanUpAll)
-#' rm(Myendo)
 #' 
 
 ColumnCleanUpAll <- function(dataframe) {
@@ -640,6 +639,7 @@ HistolAll <- function(dataframe) {
 
 
 HistolHistol <- function(dataframe, HistolColumn) {
+  dataframe<-data.frame(dataframe)
   # HISTOLOGY
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
                                            "\n|\r", " ")
@@ -671,7 +671,7 @@ HistolHistol <- function(dataframe, HistolColumn) {
 #' @keywords Sample Accession number
 #' @export
 #' @examples HistolAccessionNumber(Mypath,'Histology',
-#' 'SP-\\d{2}-\\d{7}')
+#' "SP-\\d{2}-\\d{7}")
 
 HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
   dataframe <- data.frame(dataframe)
@@ -697,12 +697,13 @@ HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
 #' @examples HistolDx(Mypath,'Diagnosis')
 
 HistolDx <- function(dataframe, HistolColumn) {
+  dataframe<-data.frame(dataframe)
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"Dr.*", "")
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
                                            "[Rr]eported.*", "")
   # Column-generic cleanup
   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
-  dataframe[, HistolColumn] <- NegativeRemove(dataframe, HistolColumn)
+  dataframe<- NegativeRemove(dataframe, HistolColumn)
   dataframe$Dx_Simplified <- dataframe[, HistolColumn]
   dataframe$Dx_Simplified <-
     gsub("- ", "\n", dataframe$Dx_Simplified, fixed = TRUE)

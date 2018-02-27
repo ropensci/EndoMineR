@@ -18,6 +18,10 @@ library(pander)
 library(EndoMineR)
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+```
 ## Aims of EndoMineR
 
 The goal of EndoMineR is to extract as much information as possible from free or semi-structured endoscopy reports and their associated pathology specimens. 
@@ -34,7 +38,7 @@ Gastroenterology now has many standards against which practice is measured altho
 <br>
 
 ```{r fig.width=8, fig.height=8,fig.align='center',out.width = "50%",echo=FALSE}
-knitr::include_graphics("EndoMineROverView.png")
+knitr::include_graphics("img/EndoMineROverView.png")
 ```
 
 
@@ -57,7 +61,7 @@ For the latter, the package user will not need to Extract information as it is a
 
 <br>
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
-knitr::include_graphics("EndoMineR_Extractor.svg")
+knitr::include_graphics("img/EndoMineR_Extractor.svg")
 ```
 
 <br>
@@ -100,7 +104,7 @@ pander(head(PathDataFrameFinalColon2,1))
 
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
-knitr::include_graphics("EndoMineR_EndoscopyClean.png")
+knitr::include_graphics("img/EndoMineR_EndoscopyClean.png")
 ```
 
 <br>
@@ -166,7 +170,7 @@ In general, each histology report can be divided into the Macroscopic descriptio
 <br>
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
-knitr::include_graphics("EndoMineR_HistopExtrapol.png")
+knitr::include_graphics("img/EndoMineR_HistopExtrapol.png")
 ```
 
 

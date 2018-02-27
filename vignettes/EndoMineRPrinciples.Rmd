@@ -20,10 +20,14 @@ library(EndoMineR)
 
 ```
 
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+```
+
 ##Introduction 
 
 The electronic recording of endoscopy data is now the norm. This gives us the opportunity to answer many practical day to day gastroenterology questions and opens the door to automated and reproducible audit and governance analyses using scripted analyses.
-Electronic endoscopic data can be organised in a manner that allows several questions to be answered with the same data structure across patient episodes. The structure itself is straightforward. It simply rests on the basis that we mainly describe patient episodes so that each row of a dataframe pertains to the data collected at that episode and the index of the row is based on a combination of date and a patient's unique identifier
+Electronic endoscopic data can be organised in a manner that allows several questions to be answered with the same data structure across patient episodes. The structure itself is straightforward. It simply rests on the basis that we mainly describe patient episodes so that each row of a dataframe pertains to the data collected at that episode and the index of the row is based on a combination of date and a patient's unique identifier.
 The following described an overview of how data should be structured using both and endoscopic dataset and a pathological dataset which we will merge.
 
 
@@ -33,7 +37,7 @@ The following described an overview of how data should be structured using both 
 
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
-knitr::include_graphics("EndoMineRPrincip_Dataset.png")
+knitr::include_graphics("img/EndoMineRPrincip_Dataset.png")
 ```
 
 There are some basic assumptions we make about an endoscopic dataset so that processing can be straightforward. These assumptions are so generic and self-evident that they are likely to be true for all endoscopy datasets as well as many medical datasets in general.
@@ -71,7 +75,7 @@ A huge part of endoscopy is tissue acquisition for further histopathological ass
 
 The answer to this is really applicable to most areas in medicine. Many fields share the same practical, day to day questions. Although we may focus on specific questions for a specific field, the structure of many questions in medicine is the same. The main questions are:
 
-**[1.Surveillance](http://gastrodatascience.com/Cornerstone_Surveillance.html)**
+####1. Surveillance
 
 Surveillance programmes are ubiquitous in medicine and an essential part of preventive medicine.
 
@@ -93,7 +97,7 @@ So we need to merge the endoscopy and pathology reports for each patient and the
 The figure below demonstrates the general approach once the data has been merged. The patient episodes are organised by patientID and then secondarily arranged by date:
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
-knitr::include_graphics("EndoMineRSurveillanceDataset.png")
+knitr::include_graphics("img/EndoMineRSurveillanceDataset.png")
 ```
 
 
@@ -102,7 +106,7 @@ Therefore, once the data has been properly arranged we can then make an attempt 
 
 
 
-**[2. Between dataset quality- Diagnostic yields](http://gastrodatascience.com/Cornersteon_EndoPath.html)**
+####2. Between dataset quality- Diagnostic yields
 
 We can in fact use the same structure of dataset to also analyse diagnostic yields (meaning pathology diagnosis) from endoscopy. Again, the pathology and endoscopy datasets need to have been merged by patient ID and date.
 
@@ -124,10 +128,10 @@ Using a similar dataset to that of surveillance, it is a fairly straightforward 
 
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
-knitr::include_graphics("EndoMineRPrincip_DiagYield.png")
+knitr::include_graphics("img/EndoMineRPrincip_DiagYield.png")
 ```
 
-**[3. Within dataset quality- Analysis of endoscopic and pathology quality](http://gastrodatascience.com/Cornerstone_EndoscopicPerformance.html) **
+####3. Within dataset quality- Analysis of endoscopic and pathology quality
 
 This section relates to the anaylsis of quality within datasets. THis is similar to many of the fields required in the global rating scale for endoscopy. The section above on yield can also be seen as a 'between' dataset quality measure as in the adenoma detection rate, as oppose to the 'within' dataset quality discussed here.
 
@@ -136,7 +140,7 @@ Endoscopic quality relates to many things such as the amount of sedation given, 
 Each of these is discussed in more detail in the documentation but at a generic level,the dataset we have already described is sufficient to allow the extraction of such detail as it comes directly from the fields already present, often without needing to cross reference with other fields.
 
 
-**[4. Analysis of patient flow](http://gastrodatascience.com/DataAnalysisEventingsSankey.html) **
+####4. Analysis of patient flow
 
 Gastroenterology departments are often concerned with population level problems such as patient flow: How many patients will need colonoscopy this year? What proportion of patients need several investigations for a specific symptom and can this be made more efficient? etc.
 
@@ -146,7 +150,7 @@ If we understand the fact that patient's flow through a system, and the way to c
 To summarise, the data structure needed to answer most gastroenterology questions is as follows:
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
-knitr::include_graphics("EndoMineRPrincip_Summary.png")
+knitr::include_graphics("img/EndoMineRPrincip_Summary.png")
 ```
 
 

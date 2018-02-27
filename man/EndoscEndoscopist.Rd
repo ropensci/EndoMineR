@@ -21,7 +21,6 @@ has been used.
 }
 \examples{
 EndoscEndoscopist(Myendo,'Endoscopist')
-rm(v)
 }
 \keyword{Endoscopist}
 \keyword{extraction}

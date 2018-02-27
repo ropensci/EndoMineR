@@ -20,7 +20,7 @@ ascribed by the pathology service.
 }
 \examples{
 HistolAccessionNumber(Mypath,'Histology',
-'SP-\\\\d{2}-\\\\d{7}')
+"SP-\\\\d{2}-\\\\d{7}")
 }
 \keyword{Accession}
 \keyword{Sample}

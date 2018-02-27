@@ -43,7 +43,7 @@ Histoltree <-c(
     "Diagnosis")
 
 MypathColon <-Extractor(MypathColon,"PathReportWhole",Histoltree)
-                          
+
 names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
 MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",

@@ -520,7 +520,7 @@ BarrettsSurveil_HospNum <- function(dataframe, rule, PatientID) {
 #' b1<-Barretts_PragueScore(Myendo,'Findings')
 #' # The documentation is really from the endoscopic Findings column
 #' BarrettsDocumentQual(b1,'Findings')
-#' rm(v)
+
 
 
 
@@ -899,7 +899,6 @@ BarrettsEMRGrades <- function(EndoSubsetEMR) {
 #' # The function relies on the other Barrett's functions being run as well:
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b2<-Barretts_PathStage(b1,'Histology')
-#' browser(b2)
 #' b3<-Barretts_EventType(b2,'Histology',
 #'  'ProcedurePerformed','Indications','Findings')
 #'  

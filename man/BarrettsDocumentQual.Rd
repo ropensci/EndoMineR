@@ -23,6 +23,5 @@ Barretts_PragueScore.
 b1<-Barretts_PragueScore(Myendo,'Findings')
 # The documentation is really from the endoscopic Findings column
 BarrettsDocumentQual(b1,'Findings')
-rm(v)
 }
 \keyword{Documentation}

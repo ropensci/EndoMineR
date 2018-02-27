@@ -4,6 +4,7 @@
 ^\.travis\.yml$
 ^README\.Rmd$
 ^README-.*\.png$
-^Hold_deleteIfNotNeeded$
 ^docs$
 ^pkgdown$
+^CopyOfdocs$
+^_pkgdown.yaml$

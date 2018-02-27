@@ -92,7 +92,7 @@ SurveilLastToNow <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    
+
     dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
       mutate(diffDate = difftime(Sys.Date(), last(!!Endo_ResultPerformeda),
@@ -144,7 +144,7 @@ SurveilFirstTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    dataframe %>% group_by(!!HospNum_Ida) %>% 
+    dataframe %>% group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == 1)
   }
@@ -166,7 +166,7 @@ SurveilFirstTest <-
 
 SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-  dataframe %>% mutate(month = 
+  dataframe %>% mutate(month =
                          format(as.Date(!!Endo_ResultPerformeda), "%m")) %>%
     group_by(month) %>% summarise(n = n())
 }
@@ -225,13 +225,13 @@ HowManyTests <-
     TestNumbers$MonthYear <-
       paste("01_", TestNumbers$month, "_", TestNumbers$year, sep = "")
     TestNumbers$MonthYear <- dmy(TestNumbers$MonthYear)
-    
-    TestNumbers<-data.frame(TestNumbers)
-    TestNumbers2<-TestNumbers%>%select(year,freq) %>% 
-      group_by(year) %>% 
+
+    TestNumbers<-data.frame(TestNumbers)%>% arrange(year,month,week,day)
+    TestNumbers2<-TestNumbers%>%select(year,freq) %>%
+      group_by(year) %>%
       summarise(FreqYear=n())
-    
-    
+
+
     # # Then just plot it:
     Myplot <-
       ggplot(data = TestNumbers2, aes(x = year, y = FreqYear)) +
@@ -288,7 +288,7 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
   PtFlow <- data.frame(PtFlow)
   PtFlow <- PtFlow[!is.na(names(PtFlow))]
   r <- c()
-  
+
   #names(PtFlow)<-gsub("X(\\d+)","Event\\1",names(PtFlow))
   for (i in seq_along(PtFlow)) {
     t <- paste("ord", i, sep = "")
@@ -300,20 +300,20 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
   for (i in 3:ncol(orders)) {
     ord.cache <-
       orders %>% group_by(orders[, i - 1], orders[, i]) %>% summarise(n = n())
-    
+
     colnames(ord.cache)[1:2] <- c("from", "to")
-    
+
     # adding tags to carts
     ord.cache$from <-
       paste(ord.cache$from, "(", i - 1, ")", sep = "")
     ord.cache$to <- paste(ord.cache$to, "(", i, ")", sep = "")
-    
+
     ord.cache <- data.frame(ord.cache)
     orders.plot <- rbind(orders.plot, ord.cache)
-    
+
   }
-  
-  
+
+
   orders.plot <- data.frame(orders.plot)
   orders.plot <-
     orders.plot[grepl("[A-Z]", orders.plot$from) &
@@ -352,7 +352,7 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
 #' @importFrom dplyr arrange group_by mutate select summarise lag ungroup rename
 #' @importFrom reshape2 'dcast'
 #' @importFrom tidyr separate
-#' @importFrom circlize circos.clear circos.par chordDiagram 
+#' @importFrom circlize circos.clear circos.par chordDiagram
 #' circos.trackPlotRegion get.cell.meta.data circos.text
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang sym
@@ -391,33 +391,33 @@ PatientFlow_CircosPlots <-
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     HospNum_Ida <- sym(HospNum_Id)
     ProcPerformeda <- sym(ProcPerformed)
-    
+
     mydf <-
-      dataframe %>% arrange(!!Endo_ResultPerformeda) %>% 
+      dataframe %>% arrange(!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
       mutate(origin = lag(!!ProcPerformeda, 1),
              destination = !!ProcPerformeda) %>%
       select(origin, destination, PatientID) %>%
       group_by(origin, destination, PatientID) %>%
       summarise(n = n()) %>% ungroup()
-    
+
     mydf <- data.frame(dcast(mydf, origin ~ destination))
-    
+
     # Get rid of NA's
     mydf <- mydf[complete.cases(mydf),]
-    
+
     V1 <- c("2", "7", "3", "10")
     V2 <- c("210,150,12", "110,255,233", "125,175,0", "255,219,0")
-    
+
     mydf <- cbind(V1, V2, mydf)
-    
+
     df_format <-
       mydf %>% select(1:3) %>% rename(order = V1,
                                       rgb = V2,
                                       region = origin) %>%
       mutate(region = gsub("_", " ", region))
     # flow matrix. Need to add V1 and V2 to the matrix here
-    
+
     matmydf <- as.matrix(mydf[,-(1:3)])
     dimnames(matmydf) <-
       list(orig = df_format$region, dest = df_format$region)
@@ -427,9 +427,9 @@ PatientFlow_CircosPlots <-
       separate(rgb, c("r", "g", "b")) %>%
       mutate(col = rgb(r, g, b, max = 255),
              max = rowSums(matmydf) + colSums(matmydf))
-    
-    
-   
+
+
+
     circos.clear()
     par(mar = rep(0, 4), cex = 0.9)
     circos.par(start.degree = 90, gap.degree = 4)
@@ -444,8 +444,8 @@ PatientFlow_CircosPlots <-
       annotationTrackHeight = c(0.1, 0.1),
       diffHeight = -0.04
     )
-    
-    
+
+
     circos.trackPlotRegion(
       track.index = 1,
       panel.fun = function(x, y) {
@@ -501,7 +501,7 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
   d <- data.frame(word = names(v), freq = v)
   d$word <- as.character(d$word)
   d$Prop <- (d$freq / nrow(theframe)) * 100
-  
+
   # group all the words containing stems as per myNotableWords
   d <-
     sapply(myNotableWords, function(x)
@@ -540,12 +540,12 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
   group <- sym(Column)
   variable <- sym(EndoscopistColumn)
-  
+
   NumBxPlot <-
     dataframe %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>%
     summarise(avg = mean(!!variable))
-  
-  
+
+
   ggplot(NumBxPlot) + geom_point(aes(x = Endoscopist, y = avg),
                       colour = "red",
                      size = 3) + labs(title = "Average  by endoscopist") +
@@ -653,9 +653,9 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
     gsub("IleoAnal([a-zA-Z]+)", "Ileoanal \\1 ", dataframe$SampleLocation)
   dataframe$SampleLocation <-
     gsub("[Aa]nastomosis", "Anastomosis", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("[Xx]\\s*[1-9]|", "", 
+  dataframe$SampleLocation <- gsub("[Xx]\\s*[1-9]|", "",
                                    dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("[1-9]\\s*[Xx]|", "", 
+  dataframe$SampleLocation <- gsub("[1-9]\\s*[Xx]|", "",
                                    dataframe$SampleLocation)
   dataframe$SampleLocation <-
     gsub("[Hh]yperplastic", "", dataframe$SampleLocation)
@@ -688,11 +688,11 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
          dataframe$SampleLocation)
   dataframe$SampleLocation <-
     gsub("[Ff]undal|[Ff]undic|[Ff]undus", "GOJ", dataframe$SampleLocation)
-  
+
 #Extract the locations into a separate column
-  
-  
-  
+
+
+
   tofind <-
     paste(
       c(
@@ -722,7 +722,7 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
       ),
       collapse = "|"
     )
-  dataframe$AllSampleLocator <- 
+  dataframe$AllSampleLocator <-
     str_match_all(dataframe$SampleLocation, tofind)
   dataframe$AllSampleLocator <-
     lapply(dataframe$AllSampleLocator, function(p)
@@ -744,7 +744,7 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
 #' @keywords Withdrawal
 #' @importFrom stringr str_match_all
 #' @export
-#' @examples 
+#' @examples
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
@@ -791,16 +791,16 @@ PolypLocator <- function(dataframe, SampleLocationColumn) {
       ),
       collapse = "|"
     )
-  
+
   dataframe$PolypLocator <-
     str_match_all(dataframe[, SampleLocationColumn], ".*[Pp]olyp.*")
-  
+
   dataframe$PolypLocator <- str_match_all(dataframe$PolypLocator
                                           , tofind)
   dataframe$PolypLocator <- lapply(dataframe$PolypLocator, function(p)
     unique(p))
-  
- 
+
+
   return(dataframe)
 }
 
@@ -842,7 +842,7 @@ PolypLocator <- function(dataframe, SampleLocationColumn) {
 #'     "Diagnosis")
 #'
 #' MypathColon <-Extractor(MypathColon,"PathReportWhole",Histoltree)
-#'                           
+#'
 #' names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
 #' MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 #' vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
@@ -860,9 +860,9 @@ GRS_Type_Assess_By_Unit <-
            Dx,
            Histol) {
     dataframe <- data.frame(dataframe)
-    
+
     # Adenomas by endoscopist ============
-    
+
     dataframe <- dataframe[grepl("Colonoscopy", dataframe[, ProcPerformed]),]
     MyColonDataAdenomaDetectionByEndoscopist <-
       dataframe[grep(".*[Aa]denom.*", dataframe[, Dx]),]
@@ -870,11 +870,11 @@ GRS_Type_Assess_By_Unit <-
       MyColonDataAdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumAdenomas = nrow(.)))
-    
+
     MyColonDataColonoscopiesByEndoscopist <-
       dataframe %>% group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumColons = nrow(.)))
-    
+
     # Merge the two above by column to get proportion:
     MyColonDataADR <-
       full_join(
@@ -884,9 +884,9 @@ GRS_Type_Assess_By_Unit <-
       )
     MyColonDataADR$PropAdenomas <-
       (MyColonDataADR$NumAdenomas / MyColonDataADR$NumColons) * 100
-    
+
     # Adenocarcinomas (without adenomas) by endoscopist=====
-    
+
     MyColonDataAdenoCarcinomaDetectionByEndoscopist <-
       dataframe[grepl(".*denoca.*", dataframe[, Histol]) &
           !grepl(".*denom.*", dataframe[, Histol]),]
@@ -894,7 +894,7 @@ GRS_Type_Assess_By_Unit <-
       MyColonDataAdenoCarcinomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumAdenocarcinomas = nrow(.)))
-    
+
     MyColonDataAdenocarcinomas <-
       full_join(
         MyColonDataAdenoCarcinomaDetectionByEndoscopist,
@@ -906,7 +906,7 @@ GRS_Type_Assess_By_Unit <-
         MyColonDataAdenocarcinomas$NumAdenocarcinomas /
           MyColonDataAdenocarcinomas$NumColons
       ) * 100
-    
+
     # Dysplastic grade of adenomas by endoscopist (from whole dataset) =====
     MyColonData_HG_AdenomaDetectionByEndoscopist <-
       dataframe[grepl(".*denoma.*", dataframe[, Histol]) &
@@ -915,7 +915,7 @@ GRS_Type_Assess_By_Unit <-
       MyColonData_HG_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumHighGradeAdenomas = nrow(.)))
-    
+
     MyColonData_LG_AdenomaDetectionByEndoscopist <-
       dataframe[grepl(".*denoma.*", dataframe[, Histol]) &
           grepl(".*[Ll]ow [Gg]rade.*", dataframe[, Histol]),]
@@ -923,7 +923,7 @@ GRS_Type_Assess_By_Unit <-
       MyColonData_LG_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumLowGradeAdenomas = nrow(.)))
-    
+
     MyColonDataHGD_Adenomas <-
       full_join(
         MyColonData_HG_AdenomaDetectionByEndoscopist,
@@ -935,7 +935,7 @@ GRS_Type_Assess_By_Unit <-
         MyColonDataHGD_Adenomas$NumHighGradeAdenomas /
           MyColonDataHGD_Adenomas$NumColons
       ) * 100
-    
+
     MyColonDataLGD_Adenomas <-
       full_join(
         MyColonData_LG_AdenomaDetectionByEndoscopist,
@@ -947,14 +947,14 @@ GRS_Type_Assess_By_Unit <-
         MyColonDataLGD_Adenomas$NumLowGradeAdenomas /
           MyColonDataLGD_Adenomas$NumColons
       ) * 100
-    
+
     MyColonData_Serr_AdenomaDetectionByEndoscopist <-
       dataframe[grepl(".*[Ss]errated.*", dataframe[, Histol]),]
     MyColonData_Serr_AdenomaDetectionByEndoscopist <-
       MyColonData_Serr_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumSerrAdenomas = nrow(.)))
-    
+
     MyColonDataSerr_Adenomas <-
       full_join(
         MyColonData_Serr_AdenomaDetectionByEndoscopist,
@@ -964,17 +964,17 @@ GRS_Type_Assess_By_Unit <-
     MyColonDataSerr_Adenomas$PropSerrAdenomas <-
       (MyColonDataSerr_Adenomas$NumSerrAdenomas /
          MyColonDataSerr_Adenomas$NumColons) * 100
-    
+
     # Hyperplastic detection rate by endoscopist (from whole dataset) ====
     MyColonDataHyperplasticDetectionByEndoscopist <-
-      dataframe[grep(".*yperplastic.*", dataframe[, Dx]),] %>% 
+      dataframe[grep(".*yperplastic.*", dataframe[, Dx]),] %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumHyperplastics = nrow(.)))
-    
+
     MyColonDataColonoscopiesByEndoscopist <-
       dataframe %>% group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumColons = nrow(.)))
-    
+
     # Merge the two above by column to get proportion:
     MyColonDataHDR <-
       full_join(
@@ -984,16 +984,16 @@ GRS_Type_Assess_By_Unit <-
       )
     MyColonDataHDR$PropHyperplastic <-
       (MyColonDataHDR$NumHyperplastics / MyColonDataHDR$NumColons) * 100
-    
+
     FinalTable <-
       full_join(MyColonDataADR, MyColonDataHDR, by = Endo_Endoscopist)
     FinalTable <-
       full_join(FinalTable, MyColonDataAdenocarcinomas, by = Endo_Endoscopist)
     FinalTable$HyperplasticToAdenomaRatio <-
       FinalTable$PropAdenomas / FinalTable$PropHyperplastic
-    
+
     # Rename one column
-    
+
     names(FinalTable)[names(FinalTable) == "NumColons.y"] <-
       "Colons(Count)"
     return(FinalTable)
@@ -1019,7 +1019,7 @@ GRS_Type_Assess_By_Unit <-
 
 NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
   dataframe<-data.frame(dataframe)
-  NumByEndoscopist <- data.frame(table(dataframe[, EndoscopistColumn], 
+  NumByEndoscopist <- data.frame(table(dataframe[, EndoscopistColumn],
                                        dataframe[, IndicationColumn]))
   return(NumByEndoscopist)
 }
