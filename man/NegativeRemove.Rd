@@ -33,7 +33,7 @@ anexample<-data.frame(anexample)
 names(anexample)<-"Thecol"
 # Run the function on the dataframe and it should get rid of sentences (and
 # parts of sentences) with negative parts in them.
-NegativeRemove(anexample,"Thecol")
+hh<-NegativeRemove(anexample,"Thecol")
 }
 \keyword{Negative}
 \keyword{Sentences}

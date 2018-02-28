@@ -19,6 +19,6 @@ It should be used after the Extractor and the optional NewLines has
 been used.
 }
 \examples{
-EndoscIndications(Myendo,'Indications')
+ee<-EndoscIndications(Myendo,'Indications')
 }
 \keyword{Indications}

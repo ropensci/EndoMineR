@@ -28,6 +28,6 @@ have those terms.
 # free text columns or endoscopic. In this example it is for endoscopic
 # columns
 myNotableWords<-c('arrett','oeliac')
-ListLookup(Myendo,'Findings',myNotableWords)
+jj<-ListLookup(Myendo,'Findings',myNotableWords)
 }
 \keyword{Lookup}

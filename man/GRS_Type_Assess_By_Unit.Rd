@@ -48,7 +48,7 @@ names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
 MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
                     MyendoColon, "Dateofprocedure","HospitalNumber")
-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
+nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
 'Endoscopist','Diagnosis','Histology')
 rm(vColon)
 rm(MypathColon)

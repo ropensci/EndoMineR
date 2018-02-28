@@ -20,7 +20,7 @@ It collects everything from the regex [0-9]{1,2}.{0,3}
 to whatever the string boundary is (z).
 }
 \examples{
-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+qq<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 }
 \keyword{Biopsy}
 \keyword{number}

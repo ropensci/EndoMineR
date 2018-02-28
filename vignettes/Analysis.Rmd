@@ -24,11 +24,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set( warning=FALSE, message=FALSE)
 ```
-## The Analysis Functions
+
 
 The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upone in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions. 
 
-###Surveillance functions
+##Surveillance functions
 
 Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. How the data is organised is explained in the Principles section but essentially the details of this are all hidden in the function.
 
@@ -72,9 +72,9 @@ how[1]
 
 This will provide the number of tests by month and year as a table as well as a ggplot. It returns a list containing both the ggplot and a dataframe so this can be accessed with how[1] and how[2]
 
-###Patient flow functions
+##Patient flow functions
 
-####Sankey plots
+###Sankey plots
 We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. 
 For example, if we have a dataset with events such as 'radiofrequency ablation' and 'endoscopic mucosal resection' or 'nothing' we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type ("EMR","RFA","nothing" in this case)
 
@@ -94,7 +94,7 @@ knitr::include_graphics("img/EndoMineR_Sankey.svg")
 <br>
 
 
-####Circos plots
+###Circos plots
 
 We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
 
@@ -111,12 +111,12 @@ knitr::include_graphics("img/EndoMineR_Circos.svg")
 
 <br>
 
-###Assessment of quality functions
+##Assessment of quality functions
 
 Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)
 
 
-####Documentation Quality
+###Documentation Quality
 As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised on terms that should be mentioned in a report.
 
 **_Input_**
@@ -141,9 +141,9 @@ So we can see that the terms are present in the minority of reports across endos
 
 <br>
 
-####Endoscopic Quality
+###Endoscopic Quality
 
-#####Sedation Usage
+####Sedation Usage
 Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:
 
 ```{r exampleEndoscChopperMeds}
@@ -159,9 +159,9 @@ MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 
 <br>
 
-####Pathology Detection Quality
+###Pathology Detection Quality
 
-#####Polyp and sample location
+####Polyp and sample location
 
 <br>
 
@@ -193,7 +193,7 @@ A particularly well developed area to look at is that of the Global Rating Scale
 One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS requirement for the ADR as well as providing further metrics alongside
 
 
-#####Adenoma Detection Rates
+####Adenoma Detection Rates
 
 ```{r exampleGRS_Type_Assess_By_Unit, echo = TRUE,message=FALSE}
 #Import the endoscopy and pathology datasets for colonoscopy

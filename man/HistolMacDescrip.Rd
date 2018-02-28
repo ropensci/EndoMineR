@@ -20,6 +20,6 @@ HistolNumOfBx function below and normally not used as a stand alone
 function.
 }
 \examples{
-HistolMacDescrip(Mypath, 'Macroscopicdescription')
+pp<-HistolMacDescrip(Mypath, 'Macroscopicdescription')
 }
 \keyword{Macroscopic}

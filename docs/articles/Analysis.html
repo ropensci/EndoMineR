@@ -85,13 +85,10 @@
     
     
 <div class="contents">
-<div id="the-analysis-functions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#the-analysis-functions" class="anchor"></a>The Analysis Functions</h2>
 <p>The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upone in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions.</p>
-<div id="surveillance-functions" class="section level3">
-<h3 class="hasAnchor">
-<a href="#surveillance-functions" class="anchor"></a>Surveillance functions</h3>
+<div id="surveillance-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#surveillance-functions" class="anchor"></a>Surveillance functions</h2>
 <p>Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. How the data is organised is explained in the Principles section but essentially the details of this are all hidden in the function.</p>
 <p><br></p>
 <p><img src="img/EndoMineR_Surveillance.svg" style="display: block; margin: auto;"></p>
@@ -279,21 +276,21 @@ how[<span class="dv">1</span>]</code></pre></div>
 <p><img src="Analysis_files/figure-html/exampleHowManyTests-1.png" width="672"></p>
 <p>This will provide the number of tests by month and year as a table as well as a ggplot. It returns a list containing both the ggplot and a dataframe so this can be accessed with how[1] and how[2]</p>
 </div>
-<div id="patient-flow-functions" class="section level3">
+<div id="patient-flow-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#patient-flow-functions" class="anchor"></a>Patient flow functions</h2>
+<div id="sankey-plots" class="section level3">
 <h3 class="hasAnchor">
-<a href="#patient-flow-functions" class="anchor"></a>Patient flow functions</h3>
-<div id="sankey-plots" class="section level4">
-<h4 class="hasAnchor">
-<a href="#sankey-plots" class="anchor"></a>Sankey plots</h4>
+<a href="#sankey-plots" class="anchor"></a>Sankey plots</h3>
 <p>We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. For example, if we have a dataset with events such as ‘radiofrequency ablation’ and ‘endoscopic mucosal resection’ or ‘nothing’ we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type (“EMR”,“RFA”,“nothing” in this case)</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/SurveySankey.html">SurveySankey</a></span>(Myendo,<span class="st">"ProcPerformed"</span>)</code></pre></div>
 <p><br></p>
 <p><img src="img/EndoMineR_Sankey.svg" width="100%" style="display: block; margin: auto;"></p>
 <p><br></p>
 </div>
-<div id="circos-plots" class="section level4">
-<h4 class="hasAnchor">
-<a href="#circos-plots" class="anchor"></a>Circos plots</h4>
+<div id="circos-plots" class="section level3">
+<h3 class="hasAnchor">
+<a href="#circos-plots" class="anchor"></a>Circos plots</h3>
 <p>We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flow&lt;-<span class="kw"><a href="../reference/PatientFlow_CircosPlots.html">PatientFlow_CircosPlots</a></span>(v,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,<span class="st">"ProcedurePerformed"</span>)</code></pre></div>
 <p><br></p>
@@ -301,13 +298,13 @@ how[<span class="dv">1</span>]</code></pre></div>
 <p><br></p>
 </div>
 </div>
-<div id="assessment-of-quality-functions" class="section level3">
-<h3 class="hasAnchor">
-<a href="#assessment-of-quality-functions" class="anchor"></a>Assessment of quality functions</h3>
+<div id="assessment-of-quality-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#assessment-of-quality-functions" class="anchor"></a>Assessment of quality functions</h2>
 <p>Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)</p>
-<div id="documentation-quality" class="section level4">
-<h4 class="hasAnchor">
-<a href="#documentation-quality" class="anchor"></a>Documentation Quality</h4>
+<div id="documentation-quality" class="section level3">
+<h3 class="hasAnchor">
+<a href="#documentation-quality" class="anchor"></a>Documentation Quality</h3>
 <p>As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised on terms that should be mentioned in a report.</p>
 <p><strong><em>Input</em></strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pander</span>(<span class="kw">head</span>(<span class="kw">data.frame</span>(Myendo[<span class="dv">2</span>:<span class="dv">3</span>],Myendo[<span class="dv">13</span>])))</code></pre></div>
@@ -384,12 +381,12 @@ tt&lt;-<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></s
 <p>So we can see that the terms are present in the minority of reports across endoscopists, so perhaps we can look into this further..</p>
 <p><br></p>
 </div>
-<div id="endoscopic-quality" class="section level4">
+<div id="endoscopic-quality" class="section level3">
+<h3 class="hasAnchor">
+<a href="#endoscopic-quality" class="anchor"></a>Endoscopic Quality</h3>
+<div id="sedation-usage" class="section level4">
 <h4 class="hasAnchor">
-<a href="#endoscopic-quality" class="anchor"></a>Endoscopic Quality</h4>
-<div id="sedation-usage" class="section level5">
-<h5 class="hasAnchor">
-<a href="#sedation-usage" class="anchor"></a>Sedation Usage</h5>
+<a href="#sedation-usage" class="anchor"></a>Sedation Usage</h4>
 <p>Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo&lt;-<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(Myendo,<span class="st">'Medications'</span>)
 <span class="kw">pander</span>(<span class="kw">head</span>(<span class="kw">data.frame</span>(Myendo$HospitalNumber,Myendo$Fent,Myendo$Midaz),<span class="dv">10</span>))</code></pre></div>
@@ -463,12 +460,12 @@ tt&lt;-<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></s
 <p><br></p>
 </div>
 </div>
-<div id="pathology-detection-quality" class="section level4">
+<div id="pathology-detection-quality" class="section level3">
+<h3 class="hasAnchor">
+<a href="#pathology-detection-quality" class="anchor"></a>Pathology Detection Quality</h3>
+<div id="polyp-and-sample-location" class="section level4">
 <h4 class="hasAnchor">
-<a href="#pathology-detection-quality" class="anchor"></a>Pathology Detection Quality</h4>
-<div id="polyp-and-sample-location" class="section level5">
-<h5 class="hasAnchor">
-<a href="#polyp-and-sample-location" class="anchor"></a>Polyp and sample location</h5>
+<a href="#polyp-and-sample-location" class="anchor"></a>Polyp and sample location</h4>
 <p><br></p>
 <p>Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.</p>
 <p>To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings in histology. This also attempts to extract the sample location into a separate column</p>
@@ -564,9 +561,9 @@ fg&lt;-<span class="kw">data.frame</span>(fgg[(<span class="kw">ncol</span>(fgg)
 <p>A particularly well developed area to look at is that of the Global Rating Scale for assessing the quality of colonoscopy. One of the metrics- the adenoma detection rate assesses the number of colonoscopies where at least one adenoma was detected.</p>
 <p>One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS requirement for the ADR as well as providing further metrics alongside</p>
 </div>
-<div id="adenoma-detection-rates" class="section level5">
-<h5 class="hasAnchor">
-<a href="#adenoma-detection-rates" class="anchor"></a>Adenoma Detection Rates</h5>
+<div id="adenoma-detection-rates" class="section level4">
+<h4 class="hasAnchor">
+<a href="#adenoma-detection-rates" class="anchor"></a>Adenoma Detection Rates</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Import the endoscopy and pathology datasets for colonoscopy</span>
  MypathColon&lt;-PathDataFrameFinalColon
  MyendoColon &lt;-<span class="st"> </span>ColonFinal
@@ -818,7 +815,6 @@ GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html
 </div>
 </div>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -826,7 +822,9 @@ GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#the-analysis-functions">The Analysis Functions</a></li>
+<li><a href="#surveillance-functions">Surveillance functions</a></li>
+      <li><a href="#patient-flow-functions">Patient flow functions</a></li>
+      <li><a href="#assessment-of-quality-functions">Assessment of quality functions</a></li>
       </ul>
 </div>
       </div>

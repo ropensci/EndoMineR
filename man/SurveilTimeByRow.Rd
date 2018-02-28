@@ -17,7 +17,7 @@ SurveilTimeByRow(dataframe, HospNum_Id, Endo_ResultPerformed)
 This determines the time difference between each test for a patient in days.
 }
 \examples{
-SurveilTimeByRow(Myendo,'HospitalNumber',
+aa<-SurveilTimeByRow(Myendo,'HospitalNumber',
 'Dateofprocedure')
 }
 \keyword{Surveillance}

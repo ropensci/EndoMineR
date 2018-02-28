@@ -148,24 +148,8 @@ This should only be run after all the BarrettsDataAccord functions.</p>
 <span class='co'># The function groups the overall number of surveillance cases over time</span>
 <span class='co'># The endoscopic episodes should be selected,according to surveillance</span>
 <span class='co'># being the indication prior to using this function</span>
-<span class='fu'>BarrettsBasicNumbers</span>(<span class='no'>b4</span>,<span class='st'>"Date.x"</span>)</div><div class='output co'>#&gt; $ProcNumbers
-#&gt; # A tibble: 43 x 3
-#&gt; # Groups:   EVENT [?]
-#&gt;    EVENT  year     n
-#&gt;    &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;
-#&gt;  1 APC    2001     7
-#&gt;  2 APC    2002     8
-#&gt;  3 APC    2003     7
-#&gt;  4 APC    2004     8
-#&gt;  5 APC    2005     5
-#&gt;  6 APC    2006    10
-#&gt;  7 APC    2007    11
-#&gt;  8 APC    2008     8
-#&gt;  9 APC    2009     7
-#&gt; 10 APC    2010     3
-#&gt; # ... with 33 more rows
-#&gt; 
-#&gt; $ProcNumbersPlot</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using method = 'loess'</span></div><div class='img'><img src='BarrettsBasicNumbers-1.png' alt='' width='700' height='432.632880098887' /></div><div class='output co'>#&gt; </div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
+<span class='no'>jj</span><span class='kw'>&lt;-</span><span class='fu'>BarrettsBasicNumbers</span>(<span class='no'>b4</span>,<span class='st'>"Date.x"</span>)
+<span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

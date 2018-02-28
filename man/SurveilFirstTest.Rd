@@ -17,7 +17,7 @@ SurveilFirstTest(dataframe, HospNum_Id, Endo_ResultPerformed)
 Extracts the first test only per patient
 }
 \examples{
-SurveilFirstTest(Myendo,'HospitalNumber',
+dd<-SurveilFirstTest(Myendo,'HospitalNumber',
 'Dateofprocedure')
 }
 \keyword{Surveillance}

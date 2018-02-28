@@ -141,23 +141,9 @@ in it</p></td>
 <span class='co'># and then groups the Barrett's endoscopies by patient (as defined by their</span>
 <span class='co'># unique hospital identifier and then orders by the date of procedure. It</span>
 <span class='co'># should look in the Indications column for Barrett's related indication</span>
-<span class='fu'>BarrettsSurveil</span>(<span class='no'>Myendo</span>,
+<span class='no'>ee</span><span class='kw'>&lt;-</span><span class='fu'>BarrettsSurveil</span>(<span class='no'>Myendo</span>,
 <span class='st'>'HospitalNumber'</span>,
-<span class='st'>'Dateofprocedure'</span>,<span class='st'>'Indications'</span>)</div><div class='output co'>#&gt; # A tibble: 8 x 14
-#&gt; # Groups:   HospitalNumber [8]
-#&gt;   OGDReportWhole    HospitalNumber PatientName GeneralPractiti… Dateofprocedure
-#&gt;   &lt;chr&gt;             &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;            &lt;date&gt;         
-#&gt; 1 "Hospital: Rando… " J1337672\n"  "  el-Miah… " Dr\n Helstrom… 2013-03-25     
-#&gt; 2 "Hospital: Rando… " M5148114\n"  "  Archule… " Dr\n al-Ghazi… 2014-06-18     
-#&gt; 3 "Hospital: Rando… " P2080807\n"  "  Linscom… " Dr\n Alarid, … 2014-12-01     
-#&gt; 4 "Hospital: Rando… " Q7176341\n"  "  Cusiman… " Dr\n Taylor, … 2014-05-31     
-#&gt; 5 "Hospital: Rando… " Q7729897\n"  "  Schroed… " Dr\n Patterso… 2014-07-19     
-#&gt; 6 "Hospital: Rando… " R3882435\n"  "  Nobrega… " Dr\n Meseke, … 2014-11-15     
-#&gt; 7 "Hospital: Rando… " S1951882\n"  "  Clanton… " Dr\n Gallegos… 2014-11-16     
-#&gt; 8 "Hospital: Rando… " W2120051\n"  "  Leach, … " Dr\n Carr, Al… 2014-12-27     
-#&gt; # ... with 9 more variables: Endoscopist &lt;chr&gt;, Secondendoscopist &lt;chr&gt;,
-#&gt; #   Medications &lt;chr&gt;, Instrument &lt;chr&gt;, ExtentofExam &lt;chr&gt;, Indications &lt;chr&gt;,
-#&gt; #   ProcedurePerformed &lt;chr&gt;, Findings &lt;chr&gt;, Years &lt;time&gt;</div></pre>
+<span class='st'>'Dateofprocedure'</span>,<span class='st'>'Indications'</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

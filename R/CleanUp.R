@@ -57,7 +57,7 @@ if (getRversion() >= "2.15.1")
 #' # Myendo and searches through the raw
 #' # endoscopy text so that the text is
 #' #divided by sentence into a newline
-#' NewLines(Myendo,'OGDReportWhole')
+#' aa<-NewLines(Myendo,'OGDReportWhole')
 
 
 NewLines <- function(dataframe, EndoReportColumn) {
@@ -145,7 +145,7 @@ Extractor <- function(dataframeIn, Column, delim) {
 #' "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
 #' "Findings" )
 #' #Now use the function
-#' EndoscAll(Myendo)
+#' bb<-EndoscAll(Myendo)
 #' rm(Myendo)
 
 
@@ -221,7 +221,7 @@ EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
 #' @keywords Endoscopy medications
 #' @importFrom stringr str_extract str_replace
 #' @export
-#' @examples EndoscMeds(Myendo,'Medications')
+#' @examples cc<-EndoscMeds(Myendo,'Medications')
 
 EndoscMeds <- function(dataframe, MedColumn) {
   # Extraction of the Medications: Extract the fentanyl:
@@ -253,7 +253,7 @@ EndoscMeds <- function(dataframe, MedColumn) {
 #' @keywords Instrument
 #' @importFrom stringr str_replace
 #' @export
-#' @examples EndoscInstrument(Myendo,'Instrument')
+#' @examples dd<-EndoscInstrument(Myendo,'Instrument')
 
 EndoscInstrument <- function(dataframe, InstrumentColumn) {
   # Extraction of the Instrument used:
@@ -301,7 +301,7 @@ gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
 #' @keywords Indications
 #' @importFrom stringr str_replace
 #' @export
-#' @examples EndoscIndications(Myendo,'Indications')
+#' @examples ee<-EndoscIndications(Myendo,'Indications')
 
 EndoscIndications <- function(dataframe, IndicationColumn) {
   # Extraction of the Indications for examination
@@ -328,7 +328,7 @@ EndoscIndications <- function(dataframe, IndicationColumn) {
 #' @keywords Procedure
 #' @importFrom stringr str_replace
 #' @export
-#' @examples EndoscProcPerformed(Myendo,'ProcedurePerformed')
+#' @examples ff<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
 
 EndoscProcPerformed <- function(dataframe, ProcPerformed) {
   # Extraction of the eg Colonoscopy or gastroscopy etc:
@@ -368,7 +368,7 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
 #' @keywords Procedure
 #' @export
 #' @importFrom stringr str_replace
-#' @examples EndoscFindings(Myendo,'Findings')
+#' @examples gg<-EndoscFindings(Myendo,'Findings')
 
 EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
@@ -405,7 +405,7 @@ EndoscFindings <- function(dataframe, FindingsColumn) {
 #' names(anexample)<-"Thecol"
 #' # Run the function on the dataframe and it should get rid of sentences (and
 #' # parts of sentences) with negative parts in them.
-#' NegativeRemove(anexample,"Thecol")
+#' hh<-NegativeRemove(anexample,"Thecol")
 
 NegativeRemove <- function(dataframe, Column) {
   dataframe <- (data.frame(dataframe))
@@ -528,7 +528,7 @@ NegativeRemove <- function(dataframe, Column) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples ColumnCleanUp(Myendo,"OGDReportWhole")
+#' @examples ii<-ColumnCleanUp(Myendo,"OGDReportWhole")
 
 
 ColumnCleanUp <- function(dataframe, Column) {
@@ -555,7 +555,7 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples lapply(Myendo, ColumnCleanUpAll)
+#' @examples jj<-lapply(Myendo, ColumnCleanUpAll)
 #' 
 
 ColumnCleanUpAll <- function(dataframe) {
@@ -596,7 +596,7 @@ ColumnCleanUpAll <- function(dataframe) {
 #' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
 #' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
 #' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-#' HistolAll(Mypath)
+#' kk<-HistolAll(Mypath)
 #' rm(Mypath)
 
 
@@ -635,7 +635,7 @@ HistolAll <- function(dataframe) {
 #' @keywords Histology
 #' @export
 #' @importFrom stringr str_replace
-#' @examples HistolHistol(Mypath,'Histology')
+#' @examples ll<-HistolHistol(Mypath,'Histology')
 
 
 HistolHistol <- function(dataframe, HistolColumn) {
@@ -670,7 +670,7 @@ HistolHistol <- function(dataframe, HistolColumn) {
 #' @importFrom stringr str_extract
 #' @keywords Sample Accession number
 #' @export
-#' @examples HistolAccessionNumber(Mypath,'Histology',
+#' @examples mm<-HistolAccessionNumber(Mypath,'Histology',
 #' "SP-\\d{2}-\\d{7}")
 
 HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
@@ -694,7 +694,7 @@ HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
 #' @importFrom stringr str_extract str_replace
 #' @keywords Histology Diagnosis
 #' @export
-#' @examples HistolDx(Mypath,'Diagnosis')
+#' @examples nn<-HistolDx(Mypath,'Diagnosis')
 
 HistolDx <- function(dataframe, HistolColumn) {
   dataframe<-data.frame(dataframe)
@@ -730,7 +730,7 @@ HistolDx <- function(dataframe, HistolColumn) {
 #' @importFrom stringr str_extract
 #' @keywords Histology diagnosis
 #' @export
-#' @examples HistolExtrapolDx(Mypath,'Diagnosis')
+#' @examples oo<-HistolExtrapolDx(Mypath,'Diagnosis')
 
 HistolExtrapolDx <- function(dataframe, Column) {
   # Some further extraction to get commonly searched for data
@@ -760,7 +760,7 @@ HistolExtrapolDx <- function(dataframe, Column) {
 #' @keywords Macroscopic
 #' @importFrom stringr str_replace
 #' @export
-#' @examples HistolMacDescrip(Mypath, 'Macroscopicdescription')
+#' @examples pp<-HistolMacDescrip(Mypath, 'Macroscopicdescription')
 
 
 HistolMacDescrip <- function(dataframe, MacroColumn) {
@@ -805,7 +805,7 @@ HistolMacDescrip <- function(dataframe, MacroColumn) {
 #' @keywords Biopsy number
 #' @export
 #' @examples 
-#' HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+#' qq<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 
 
 HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
@@ -833,7 +833,7 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
 #' @importFrom stringr  str_match str_replace
 #' @keywords biopsy size
 #' @export
-#' @examples HistolBxSize(Mypath,'Macroscopicdescription')
+#' @examples rr<-HistolBxSize(Mypath,'Macroscopicdescription')
 
 HistolBxSize <- function(dataframe, MacroColumn) {
   # What's the average biopsy size this month?

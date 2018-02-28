@@ -30,6 +30,6 @@ the procedure type (eg EMR,
 # another. This allows us to see for example how many EMRs are done after
 #RFA. For further patient flow examples see PatientFlow_CircosPlots
 names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
-SurveySankey(Myendo,"ProcedurePerformed","PatientID")
+gg<-SurveySankey(Myendo,"ProcedurePerformed","PatientID")
 }
 \keyword{Sankey}

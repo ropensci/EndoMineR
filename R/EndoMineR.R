@@ -58,7 +58,7 @@ if (getRversion() >= "2.15.1")
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples SurveilTimeByRow(Myendo,'HospitalNumber',
+#' @examples aa<-SurveilTimeByRow(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
 SurveilTimeByRow <-
@@ -85,7 +85,7 @@ SurveilTimeByRow <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples SurveilLastToNow(Myendo,'HospitalNumber',
+#' @examples bb<-SurveilLastToNow(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
 SurveilLastToNow <-
@@ -111,7 +111,7 @@ SurveilLastToNow <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+#' @examples cc<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 
 
 
@@ -136,7 +136,7 @@ SurveilLastTest <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples SurveilFirstTest(Myendo,'HospitalNumber',
+#' @examples dd<-SurveilFirstTest(Myendo,'HospitalNumber',
 #' 'Dateofprocedure')
 
 
@@ -162,7 +162,7 @@ SurveilFirstTest <-
 #' @importFrom rlang sym
 #' @keywords cats
 #' @export
-#' @examples SurveilCapacity(Myendo,'Dateofprocedure')
+#' @examples ee<-SurveilCapacity(Myendo,'Dateofprocedure')
 
 SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
@@ -202,7 +202,7 @@ SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
 #' # indication needs to be inpoutted. In this case we are looking for all
 #' # endoscopies done
 #' # where the indication is surveillance (so searching on 'Surv' will do fine) .
-#' HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+#' ff<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 
 
 HowManyTests <-
@@ -276,7 +276,7 @@ HowManyTests <-
 #' # another. This allows us to see for example how many EMRs are done after
 #' #RFA. For further patient flow examples see PatientFlow_CircosPlots
 #' names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
-#' SurveySankey(Myendo,"ProcedurePerformed","PatientID")
+#' gg<-SurveySankey(Myendo,"ProcedurePerformed","PatientID")
 
 SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
   # Create the Sankey diagrams
@@ -378,7 +378,7 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
 #' # Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
 #' # Run the function using the procedure information (the date of the
 #' # procedure, the Event type and the individual patient IDs)
-#' PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
+#' hh<-PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
 #' rm(Myendo)
 #' rm(EndoEvent)
 
@@ -489,7 +489,7 @@ PatientFlow_CircosPlots <-
 #' # free text columns or endoscopic. In this example it is for endoscopic
 #' # columns
 #' myNotableWords<-c('arrett','oeliac')
-#' ListLookup(Myendo,'Findings',myNotableWords)
+#' jj<-ListLookup(Myendo,'Findings',myNotableWords)
 
 ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
   jeopCorpus <- Corpus(VectorSource(theframe[, EndoReportColumn]))
@@ -533,7 +533,7 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' # and also gives a table with it. In this example we plot medication by
 #' # endoscopist
 #' Myendo<-EndoscMeds(Myendo,'Medications')
-#' MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+#' kk<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 #' rm(Myendo)
 
 
@@ -576,7 +576,7 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 #' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions
-#' TermStandardLocation(Mypath,'Histology')
+#' ll<-TermStandardLocation(Mypath,'Histology')
 #' rm(Mypath)
 
 
@@ -755,7 +755,7 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
 #' # by assessing the SampleLocation column which comes from the
 #' # TermStandardLocation function.
 #' f<-TermStandardLocation(Mypath,'Histology')
-#' PolypLocator(f,'SampleLocation')
+#' mm<-PolypLocator(f,'SampleLocation')
 #' rm(Mypath)
 
 
@@ -847,7 +847,7 @@ PolypLocator <- function(dataframe, SampleLocationColumn) {
 #' MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 #' vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
 #'                     MyendoColon, "Dateofprocedure","HospitalNumber")
-#' GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
+#' nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
 #' 'Endoscopist','Diagnosis','Histology')
 #' rm(vColon)
 #' rm(MypathColon)
@@ -1014,7 +1014,7 @@ GRS_Type_Assess_By_Unit <-
 #' @keywords Withdrawal
 #' @export
 #' @examples Myendo<-Myendo[grepl('Gastroscopy',Myendo$ProcedurePerformed),]
-#'  NumberPerformed(Myendo,'Endoscopist','Indications')
+#'  oo<-NumberPerformed(Myendo,'Endoscopist','Indications')
 #'  rm(Myendo)
 
 NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {

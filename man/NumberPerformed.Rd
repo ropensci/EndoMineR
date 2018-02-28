@@ -22,7 +22,7 @@ defined)
 }
 \examples{
 Myendo<-Myendo[grepl('Gastroscopy',Myendo$ProcedurePerformed),]
- NumberPerformed(Myendo,'Endoscopist','Indications')
+ oo<-NumberPerformed(Myendo,'Endoscopist','Indications')
  rm(Myendo)
 }
 \keyword{Withdrawal}

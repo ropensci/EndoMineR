@@ -43,7 +43,7 @@ names(Myendo)[names(Myendo) == 'fff$col1'] <- 'EndoEvent'
 # Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
 # Run the function using the procedure information (the date of the
 # procedure, the Event type and the individual patient IDs)
-PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
+hh<-PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
 rm(Myendo)
 rm(EndoEvent)
 }

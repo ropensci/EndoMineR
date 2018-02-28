@@ -15,6 +15,6 @@ SurveilCapacity(dataframe, Endo_ResultPerformed)
 This determines the number of tests done per month
 }
 \examples{
-SurveilCapacity(Myendo,'Dateofprocedure')
+ee<-SurveilCapacity(Myendo,'Dateofprocedure')
 }
 \keyword{cats}

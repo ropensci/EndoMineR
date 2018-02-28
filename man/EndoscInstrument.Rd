@@ -19,6 +19,6 @@ It should be used after the Extractor and the optional
 NewLines has been used.
 }
 \examples{
-EndoscInstrument(Myendo,'Instrument')
+dd<-EndoscInstrument(Myendo,'Instrument')
 }
 \keyword{Instrument}

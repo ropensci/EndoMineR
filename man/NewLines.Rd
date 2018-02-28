@@ -23,7 +23,7 @@ parts of the text according to the user's requirements
 # Myendo and searches through the raw
 # endoscopy text so that the text is
 #divided by sentence into a newline
-NewLines(Myendo,'OGDReportWhole')
+aa<-NewLines(Myendo,'OGDReportWhole')
 }
 \keyword{Endoscopy}
 \keyword{Newlines}

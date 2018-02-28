@@ -18,7 +18,7 @@ This extracts other specific diagnoses from the report. These have been hard
 coded to look for dysplasia cancer and GIST. Optional use.
 }
 \examples{
-HistolExtrapolDx(Mypath,'Diagnosis')
+oo<-HistolExtrapolDx(Mypath,'Diagnosis')
 }
 \keyword{Histology}
 \keyword{diagnosis}

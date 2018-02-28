@@ -22,7 +22,7 @@ names(Mypath)<-c("Original","HospitalNumber","PatientName","DOB",
 "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
 "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
 "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-HistolAll(Mypath)
+kk<-HistolAll(Mypath)
 rm(Mypath)
 }
 \keyword{Macroscopic}
