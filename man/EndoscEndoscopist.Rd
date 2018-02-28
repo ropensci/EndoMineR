@@ -20,7 +20,7 @@ It should be used after the Extractor and the optional NewLines
 has been used.
 }
 \examples{
-EndoscEndoscopist(Myendo,'Endoscopist')
+de<-EndoscEndoscopist(Myendo,'Endoscopist')
 }
 \keyword{Endoscopist}
 \keyword{extraction}

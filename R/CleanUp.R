@@ -189,7 +189,7 @@ EndoscAll<- function(dataframe) {
 #' @keywords Endoscopist extraction
 #' @export
 #' @importFrom stringr str_replace
-#' @examples EndoscEndoscopist(Myendo,'Endoscopist')
+#' @examples de<-EndoscEndoscopist(Myendo,'Endoscopist')
 
 
 EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
