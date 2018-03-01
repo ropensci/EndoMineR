@@ -8,4 +8,4 @@
 ^pkgdown$
 ^CopyOfdocs$
 ^_pkgdown.yaml$
-^docs$
+^.*\.docs$

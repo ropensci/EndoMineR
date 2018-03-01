@@ -82,7 +82,7 @@ names(PathDataFrameFinalColon2)<-"PathReportWhole"
 pander(head(PathDataFrameFinalColon2,1))
 ```
 
-```{r exampleExtractor2}
+```{r exampleExtractor2,echo=TRUE}
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")

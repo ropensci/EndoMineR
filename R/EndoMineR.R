@@ -571,13 +571,13 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
-#' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
-#' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+#' MypathExtraction<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+#' names(MypathExtraction)[names(MypathExtraction) == 'Datereceived'] <- 'Dateofprocedure'
+#' MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions
 #' ll<-TermStandardLocation(Mypath,'Histology')
-#' rm(Mypath)
+#' rm(MypathExtraction)
 
 
 
@@ -748,15 +748,15 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
-#' names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
-#' Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+#' MypathExtract1<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+#' names(MypathExtract1)[names(MypathExtract1) == 'Datereceived'] <- 'Dateofprocedure'
+#' MypathExtract1$Dateofprocedure <- as.Date(MypathExtract1$Dateofprocedure)
 #' # The polyp locator then determines where the biopsies were taken from
 #' # by assessing the SampleLocation column which comes from the
 #' # TermStandardLocation function.
-#' f<-TermStandardLocation(Mypath,'Histology')
+#' f<-TermStandardLocation(MypathExtract1,'Histology')
 #' mm<-PolypLocator(f,'SampleLocation')
-#' rm(Mypath)
+#' rm(MypathExtract1)
 
 
 

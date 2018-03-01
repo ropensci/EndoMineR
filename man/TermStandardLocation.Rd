@@ -21,12 +21,12 @@ abbreviations that are commonly used in free text of pathology reports
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
-names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
-Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
+MypathExtraction<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+names(MypathExtraction)[names(MypathExtraction) == 'Datereceived'] <- 'Dateofprocedure'
+MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
 # The function then standardises the histology terms through a series of
 # regular expressions
 ll<-TermStandardLocation(Mypath,'Histology')
-rm(Mypath)
+rm(MypathExtraction)
 }
 \keyword{Withdrawal}

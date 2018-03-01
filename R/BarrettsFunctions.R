@@ -331,13 +331,11 @@ grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall",
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
-#' names(Mypath)<-c("Original","HospitalNumber","PatientName","DOB",
+#' Mypath3<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+#' names(Mypath3)<-c("Original","HospitalNumber","PatientName","DOB",
 #' "GeneralPractitioner","Datereceived","ClinicalDetails",
-#' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
-#' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
-#' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-#' v<-HistolAll(Mypath)
+#' "Macroscopicdescription","Histology","Diagnosis")
+#' v<-HistolAll(Mypath3)
 #' rm(Mypath)
 #' 
 #' #' # Rename the columns in whatever endoscopy dataframe you have

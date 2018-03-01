@@ -16,13 +16,11 @@ This is a parent function for all the functions below
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
+MypathExtracted<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
 names(Mypath)<-c("Original","HospitalNumber","PatientName","DOB",
 "GeneralPractitioner","Datereceived","ClinicalDetails",
-"Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
-"PatientName","DOB","GeneralPractitioner","Dateofprocedure",
-"ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-kk<-HistolAll(Mypath)
-rm(Mypath)
+"Macroscopicdescription","Histology","Diagnosis")
+kk<-HistolAll(MypathExtracted)
+rm(MypathExtracted)
 }
 \keyword{Macroscopic}

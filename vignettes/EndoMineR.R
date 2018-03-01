@@ -20,7 +20,7 @@ PathDataFrameFinalColon2<-PathDataFrameFinalColon
 names(PathDataFrameFinalColon2)<-"PathReportWhole"
 pander(head(PathDataFrameFinalColon2,1))
 
-## ----exampleExtractor2---------------------------------------------------
+## ----exampleExtractor2,echo=TRUE-----------------------------------------
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")

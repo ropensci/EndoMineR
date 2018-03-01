@@ -76,6 +76,9 @@
     <li>
       <a href="../articles/Barretts.html">Barrett's</a>
     </li>
+    <li>
+      <a href="../articles/Data.html">Data</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -161,24 +164,9 @@ This will be extended to other GRS outputs in the future.</p>
 <span class='no'>MypathColon</span>$<span class='no'>Dateofprocedure</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='no'>MypathColon</span>$<span class='no'>Dateofprocedure</span>)
 <span class='no'>vColon</span> <span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>MypathColon</span>, <span class='st'>"Dateofprocedure"</span>,<span class='st'>"HospitalNumber"</span>,
                     <span class='no'>MyendoColon</span>, <span class='st'>"Dateofprocedure"</span>,<span class='st'>"HospitalNumber"</span>)
-<span class='fu'>GRS_Type_Assess_By_Unit</span>(<span class='no'>vColon</span>,<span class='st'>'ProcedurePerformed'</span>,
-<span class='st'>'Endoscopist'</span>,<span class='st'>'Diagnosis'</span>,<span class='st'>'Histology'</span>)</div><div class='output co'>#&gt; # A tibble: 10 x 11
-#&gt; # Groups:   Endoscopist [?]
-#&gt;    Endoscopist            NumAdenomas NumColons.x PropAdenomas NumHyperplastics
-#&gt;    &lt;fct&gt;                        &lt;int&gt;       &lt;int&gt;        &lt;dbl&gt;            &lt;int&gt;
-#&gt;  1 " Dr\n al-Huda, Ummu …           3         204        1.47                 2
-#&gt;  2 " Dr\n al-Saade, Waaj…           2         215        0.930               NA
-#&gt;  3 " Dr\n Confer, Mounee…           6         216        2.78                 3
-#&gt;  4 " Dr\n Gebregzabheir,…           4         190        2.11                 3
-#&gt;  5 " Dr\n Hasling, Emily…           6         218        2.75                 5
-#&gt;  6 " Dr\n Monroe, Danjai…           7         230        3.04                 2
-#&gt;  7 " Dr\n Phillips, Harl…           6         233        2.58                 3
-#&gt;  8 " Dr\n Rahat, Janisa\…           1         217        0.461                2
-#&gt;  9 " Dr\n Rubio, Jessica…           2         180        1.11                 2
-#&gt; 10 " Dr\n Steinbach, Lin…           6         191        3.14                 3
-#&gt; # ... with 6 more variables: `Colons(Count)` &lt;int&gt;, PropHyperplastic &lt;dbl&gt;,
-#&gt; #   NumAdenocarcinomas &lt;int&gt;, NumColons &lt;int&gt;, PropAdenocarcinomas &lt;dbl&gt;,
-#&gt; #   HyperplasticToAdenomaRatio &lt;dbl&gt;</div><div class='input'><span class='fu'>rm</span>(<span class='no'>vColon</span>)
+<span class='no'>nn</span><span class='kw'>&lt;-</span><span class='fu'>GRS_Type_Assess_By_Unit</span>(<span class='no'>vColon</span>,<span class='st'>'ProcedurePerformed'</span>,
+<span class='st'>'Endoscopist'</span>,<span class='st'>'Diagnosis'</span>,<span class='st'>'Histology'</span>)
+<span class='fu'>rm</span>(<span class='no'>vColon</span>)
 <span class='fu'>rm</span>(<span class='no'>MypathColon</span>)
 <span class='fu'>rm</span>(<span class='no'>MyendoColon</span>)</div></pre>
   </div>

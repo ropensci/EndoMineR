@@ -32,7 +32,7 @@ have to be dealt with in the text before processing
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-Mypath2<-Extractor(Mypath,"PathReportWhole",mywords)
+Mypath2<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
 
 }
 \keyword{Extraction}

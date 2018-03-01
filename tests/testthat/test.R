@@ -155,59 +155,72 @@ test_that("Extractor", {
 #### EndoscEndoscopist test ####
 
 test_that("EndoscEndoscopist", {
-  Myendo <- EndoscEndoscopist(Myendo, "Endoscopist")
-  Myendo$Endoscopist <-
-    gsub("2nd [Ee]ndoscopist",
-         "Second endoscopist",
-         Myendo$Endoscopist)
+  MyEndoscEndoscopistTest<-data.frame(c("Dr Jeremiah Stubborn"))
+  names(MyEndoscEndoscopistTest)<-"Endoscopist"
+  
+  MyEndoscEndoscopistTest <- EndoscEndoscopist(MyEndoscEndoscopistTest, "Endoscopist")
+  MyEndoscEndoscopistTest$Endoscopist <-
   expect_true(all(!is.na(Myendo$Endoscopist)))
-  rm(Myendo)
+  Result<-as.character(Myendo$Endoscopist)
+  expect_identical(Result,"Jeremiah Stubborn")
 })
 
 #### EndoscMeds test ####
 
 test_that("EndoscMeds", {
-  Myendo <- EndoscMeds(Myendo, "Medications")
-  expect_true(all(!is.na(Myendo$Medications)))
-  rm(Myendo)
+  MyEndoscMedsTest<-data.frame(c("Fentanyl 125mcg, Midazolam 5mg"))
+  names(MyEndoscMedsTest)<-"Medications"
+  MyendoMeds <- EndoscMeds(MyEndoscMedsTest, "Medications")
+  expect_true(all(!is.na(MyendoMeds$Medications)))
+  expect_true(all(!is.na(MyendoMeds$Fent)))
+  expect_true(all(!is.na(MyendoMeds$Midaz)))
+  expect_identical(MyendoMeds$Fent,125)
+  expect_identical(MyendoMeds$Midaz,5)
 })
 
 #### EndoscInstrument test ####
 
 test_that("EndoscInstrument", {
-  Myendo <- EndoscInstrument(Myendo, "Instrument")
-  expect_true(all(!is.na(Myendo$Instrument)))
-  rm(Myendo)
+  MyEndoscInstrTest<-data.frame(c("Loan Scope FG5"))
+  names(MyEndoscInstrTest)<-"Instrument"
+  MyEndoscInstrTest <- EndoscInstrument(MyEndoscInstrTest, "Instrument")
+  expect_true(all(!is.na(MyEndoscInstrTest$Instrument)))
+  expect_identical(MyEndoscInstrTest$Instrument,"FG5")
 })
 
 #### EndoscIndications test ####
 
 test_that("EndoscIndications", {
-  Myendo <- EndoscIndications(Myendo, "Indications")
-  expect_true(all(!is.na(Myendo$Indications)))
-  rm(Myendo)
+  MyEndoscIndicTest<-data.frame(c("Follow up ulcer healing.\n.\n"))
+  names(MyEndoscIndicTest)<-"Indication"
+  MyEndoscIndicTest <- EndoscIndications(MyEndoscIndicTest, "Indication")
+  expect_true(all(!is.na(MyEndoscIndicTest$Indication)))
+  expect_identical(MyEndoscIndicTest$Indication,"Follow up ulcer healing.")
 })
 
 #### EndoscProcPerformed test ####
 
 test_that("EndoscProcPerformed", {
-  Myendo <- EndoscProcPerformed(Myendo, "ProcedurePerformed")
-  expect_true(all(!is.na(Myendo$Findings)))
-  rm(Myendo)
+  MyEndoscProcPerfTest<-data.frame(c("OGD - Quality of Procedure: Adequate"))
+  names(MyEndoscProcPerfTest)<-"ProcPerformed"
+  MyEndoscProcPerfTest <- EndoscProcPerformed(MyEndoscProcPerfTest, "ProcPerformed")
+  expect_true(all(!is.na(MyEndoscProcPerfTest$ProcPerformed)))
+  expect_identical(MyEndoscProcPerfTest$ProcPerformed,"OGD ")
 })
 
 #### EndoscFindings test ####
 
 test_that("EndoscFindings", {
-  Myendo <- EndoscFindings(Myendo, "Findings")
-  expect_true(all(!is.na(Myendo$Findings)))
-  rm(Myendo)
+  MyEndoscFindingsTest<-data.frame(c("At 25cm A"))
+  names(MyEndoscFindingsTest)<-"EndoscFindings"
+  MyEndoscFindingsTest <- EndoscFindings(MyEndoscFindingsTest, "EndoscFindings")
+  expect_true(all(!is.na(MyEndoscFindingsTest$EndoscFindings)))
+  expect_identical(MyEndoscFindingsTest$EndoscFindings,"At 25cm\n")
 })
 
 #### NewLines test ####
 test_that("NewLines", {
   #rm(MyendoColon)
-  browser()
 NewLines(MyendoColon,'Original')
 })
 
@@ -223,10 +236,9 @@ test_that("NegativeRemove", {
                anexample<-data.frame(anexample)
                names(anexample)<-"Thecol"
                res<-NegativeRemove(anexample,"Thecol")
-               
                res2<-res[grep("Although the prep was poor.",res$Thecol),]
-
                expect_true( length(res2)>0)
+               expect_identical(res2,"Although the prep was poor.\n")
      
 })
 
@@ -238,60 +250,104 @@ test_that("ColumnCleanUp", {
   me<-ColumnCleanUp(pp,"pp")
   
   me2<-me[grep("What",me)]
-  
-  expect_true( length(me2)>0)
+  expect_true(length(me2)>0)
+  expect_identical(me2,"What")
 })
 
 
 #### HistolHistol test ####
 
 test_that("HistolHistol", {
-  HistolHistol(Mypath,'Histology')
-  expect_true(all(!is.na(Mypath$Histol_Simplified)))
+ff<-"There is no evidence of coeliac disease\n"
+  ff<-data.frame(ff)
+  names(ff)<-"Histology"
+  HistolHistolTest<-HistolHistol(ff,'Histology')
+  expect_true(all(!is.na(HistolHistolTest$Histol_Simplified)))
+  expect_identical(HistolHistolTest$Histol_Simplified,
+                   "There is no evidence of coeliac disease ")
 })
 
 
 #### HistolDx test ####
 
 test_that("HistolDx", {
-  Mypath <- HistolDx(Mypath, "Diagnosis")
-  expect_true(all(!is.na(Mypath$Dx)))
+  ff<-"Barrett's oesophagus,Sigmoid colon, biopsy - Adenocarcinoma\n"
+  ff<-data.frame(ff)
+  names(ff)<-"Diagnosis"
+  HistolDxTest<-HistolDx(ff,'Diagnosis')
+  expect_true(all(!is.na(HistolDxTest$Dx_Simplified)))
+  expect_identical(HistolDxTest$Dx_Simplified,
+                   "Adenocarcinoma\n")
 })
 
 #### HistolExtrapolDx test ####
 
 test_that("HistolExtrapolDx", {
-  Mypath <- HistolExtrapolDx(Mypath, "Diagnosis")
-  expect_false(all(!is.na(Mypath$Dysplasia)))
+ 
+  ff<-"Barrett's oesophagus- dysplasia seen"
+  ff<-data.frame(ff)
+  names(ff)<-"Diagnosis"
+  HistolExtrapolDxTest<-HistolExtrapolDx(ff,'Diagnosis')
+  expect_true(all(!is.na(HistolExtrapolDxTest$Dysplasia)))
+  expect_identical(HistolExtrapolDxTest$Dysplasia,
+                   "dyspla")
 })
 
 #### HistolAccessionNumber test ####
 
 test_that("HistolAccessionNumber", {
-  Mypath <- HistolAccessionNumber(Mypath,'PathReportWhole',
-                                         'SP-\\d{2}-\\d{7}')
-  expect_true(all(!is.na(Mypath$AccessionNumber)))
+  
+  ff<-"Barrett's oesophagus- dysplasia seen SP-56-1500801"
+  ff<-data.frame(ff)
+  names(ff)<-"AccessionNumber"
+  HistolAccessionNumberTest<-HistolAccessionNumber(ff,'AccessionNumber',
+                                                   "SP-\\d{2}-\\d{7}")
+  expect_true(all(!is.na(HistolAccessionNumberTest$AccessionNumber)))
+  expect_identical(HistolAccessionNumberTest$AccessionNumber,
+                   "SP-56-1500801")
 })
 
 #### HistolMacDescrip test ####
 
 test_that("HistolMacDescrip", {
-  Mypath <- HistolMacDescrip(Mypath, "Macroscopicdescription")
-  expect_true(all(!is.na(Mypath$BxSize)))
+  
+  ff<-"Three specimens collected the largest 
+  measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm"
+  ff<-data.frame(ff)
+  names(ff)<-"Macroscopicdescription"
+  HistolHistolMacDescripTest<-HistolMacDescrip(ff,
+                              'Macroscopicdescription')
+  expect_true(all(!is.na(HistolHistolMacDescripTest$Macroscopicdescription)))
+  expect_identical(HistolHistolMacDescripTest$Macroscopicdescription,
+"3 specimens collected the largest
+measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm")
 })
 
 #### HistolNumbOfBx test ####
 
 test_that("HistolNumbOfBx", {
-  Mypath <- HistolNumbOfBx(Mypath, "Macroscopicdescription", "specimen")
-  expect_true(all(!is.na(Mypath$NumbOfBx)))
+  
+  ff<-"3 specimens collected the largest 
+  measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm"
+  ff<-data.frame(ff)
+  names(ff)<-"Macroscopicdescription"
+  HistolNumBxTest<-HistolNumbOfBx(ff,'Macroscopicdescription',"specimen")
+  expect_true(all(!is.na(HistolNumBxTest$NumbOfBx)))
+  expect_identical(HistolNumBxTest$NumbOfBx,3)
+
 })
 
 #### HistolBxSize test ####
 
 test_that("HistolBxSize", {
-  Mypath <- HistolBxSize(Mypath,'Macroscopicdescription')
-  expect_true(all(!is.na(Mypath$BxSize)))
+  
+  ff<-"3 specimens collected the largest measuring 3 x 2 x 1 mm"
+  ff<-data.frame(ff)
+  names(ff)<-"Macroscopicdescription"
+  ff$Macroscopicdescription<-as.character(ff$Macroscopicdescription)
+  HistolBxSizeTest<-HistolBxSize(ff,'Macroscopicdescription')
+  expect_true(all(!is.na(HistolBxSizeTest$BxSize)))
+  expect_identical(HistolBxSizeTest$BxSize,6)
 })
 
 

@@ -100,7 +100,7 @@ NewLines <- function(dataframe, EndoReportColumn) {
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' Mypath2<-Extractor(Mypath,"PathReportWhole",mywords)
+#' Mypath2<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
 #' 
 
 Extractor <- function(dataframeIn, Column, delim) {
@@ -590,14 +590,12 @@ ColumnCleanUpAll <- function(dataframe) {
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
+#' MypathExtracted<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
 #' names(Mypath)<-c("Original","HospitalNumber","PatientName","DOB",
 #' "GeneralPractitioner","Datereceived","ClinicalDetails",
-#' "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
-#' "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
-#' "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
-#' kk<-HistolAll(Mypath)
-#' rm(Mypath)
+#' "Macroscopicdescription","Histology","Diagnosis")
+#' kk<-HistolAll(MypathExtracted)
+#' rm(MypathExtracted)
 
 
 
