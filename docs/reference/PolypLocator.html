@@ -59,7 +59,7 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Tutorials
      
     <span class="caret"></span>
   </a>
@@ -131,15 +131,15 @@ TermStandardLocation</p></td>
     <pre class="examples"><div class='input'><span class='no'>mywords</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Hospital Number"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"DOB:"</span>,<span class='st'>"General Practitioner:"</span>,
 <span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details:"</span>,<span class='st'>"Macroscopic description:"</span>,
 <span class='st'>"Histology:"</span>,<span class='st'>"Diagnosis:"</span>)
-<span class='no'>Mypath</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>Mypath</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)
-<span class='fu'>names</span>(<span class='no'>Mypath</span>)[<span class='fu'>names</span>(<span class='no'>Mypath</span>) <span class='kw'>==</span> <span class='st'>'Datereceived'</span>] <span class='kw'>&lt;-</span> <span class='st'>'Dateofprocedure'</span>
-<span class='no'>Mypath</span>$<span class='no'>Dateofprocedure</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='no'>Mypath</span>$<span class='no'>Dateofprocedure</span>)
+<span class='no'>MypathExtract1</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>PathDataFrameFinal</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)
+<span class='fu'>names</span>(<span class='no'>MypathExtract1</span>)[<span class='fu'>names</span>(<span class='no'>MypathExtract1</span>) <span class='kw'>==</span> <span class='st'>'Datereceived'</span>] <span class='kw'>&lt;-</span> <span class='st'>'Dateofprocedure'</span>
+<span class='no'>MypathExtract1</span>$<span class='no'>Dateofprocedure</span> <span class='kw'>&lt;-</span> <span class='fu'>as.Date</span>(<span class='no'>MypathExtract1</span>$<span class='no'>Dateofprocedure</span>)
 <span class='co'># The polyp locator then determines where the biopsies were taken from</span>
 <span class='co'># by assessing the SampleLocation column which comes from the</span>
 <span class='co'># TermStandardLocation function.</span>
-<span class='no'>f</span><span class='kw'>&lt;-</span><span class='fu'><a href='TermStandardLocation.html'>TermStandardLocation</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Histology'</span>)
+<span class='no'>f</span><span class='kw'>&lt;-</span><span class='fu'><a href='TermStandardLocation.html'>TermStandardLocation</a></span>(<span class='no'>MypathExtract1</span>,<span class='st'>'Histology'</span>)
 <span class='no'>mm</span><span class='kw'>&lt;-</span><span class='fu'>PolypLocator</span>(<span class='no'>f</span>,<span class='st'>'SampleLocation'</span>)
-<span class='fu'>rm</span>(<span class='no'>Mypath</span>)</div></pre>
+<span class='fu'>rm</span>(<span class='no'>MypathExtract1</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

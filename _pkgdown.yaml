@@ -9,7 +9,7 @@ navbar:
       href: index.html
     - text: "Functions"
       href: reference/index.html
-    - text: "Articles"
+    - text: "Tutorials"
       menu:
         - text: "EndoMineR Principles"
           href: articles/EndoMineRPrinciples.html

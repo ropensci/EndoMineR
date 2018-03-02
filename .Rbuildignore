@@ -3,9 +3,6 @@
 ^data-raw$
 ^\.travis\.yml$
 ^README\.Rmd$
-^README-.*\.png$
 ^docs$
 ^pkgdown$
-^CopyOfdocs$
-^_pkgdown.yaml$
-^.*\.docs$
+^_pkgdown\.yaml$

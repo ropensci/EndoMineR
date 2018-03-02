@@ -59,7 +59,7 @@
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    Tutorials
      
     <span class="caret"></span>
   </a>
@@ -131,15 +131,12 @@ names as suggested with the parent function HistolAll</p>
 <span class='no'>mywords</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Hospital Number"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"DOB:"</span>,<span class='st'>"General Practitioner:"</span>,
 <span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details:"</span>,<span class='st'>"Macroscopic description:"</span>,
 <span class='st'>"Histology:"</span>,<span class='st'>"Diagnosis:"</span>)
-<span class='no'>Mypath</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>Mypath</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)
-<span class='fu'>names</span>(<span class='no'>Mypath</span>)<span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Original"</span>,<span class='st'>"HospitalNumber"</span>,<span class='st'>"PatientName"</span>,<span class='st'>"DOB"</span>,
+<span class='no'>Mypath3</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>PathDataFrameFinal</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)
+<span class='fu'>names</span>(<span class='no'>Mypath3</span>)<span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Original"</span>,<span class='st'>"HospitalNumber"</span>,<span class='st'>"PatientName"</span>,<span class='st'>"DOB"</span>,
 <span class='st'>"GeneralPractitioner"</span>,<span class='st'>"Datereceived"</span>,<span class='st'>"ClinicalDetails"</span>,
-<span class='st'>"Macroscopicdescription"</span>,<span class='st'>"Histology"</span>,<span class='st'>"Diagnosis"</span>,<span class='st'>"HospitalNumber"</span>,
-<span class='st'>"PatientName"</span>,<span class='st'>"DOB"</span>,<span class='st'>"GeneralPractitioner"</span>,<span class='st'>"Dateofprocedure"</span>,
-<span class='st'>"ClinicalDetails"</span>,<span class='st'>"Macroscopicdescription"</span>,<span class='st'>"Histology"</span>,<span class='st'>"Diagnosis"</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAll.html'>HistolAll</a></span>(<span class='no'>Mypath</span>)
-<span class='fu'>rm</span>(<span class='no'>Mypath</span>)
-
+<span class='st'>"Macroscopicdescription"</span>,<span class='st'>"Histology"</span>,<span class='st'>"Diagnosis"</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAll.html'>HistolAll</a></span>(<span class='no'>Mypath3</span>)
+<span class='fu'>rm</span>(<span class='no'>Mypath</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: object 'Mypath' not found</span></div><div class='input'>
 <span class='co'>#' # Rename the columns in whatever endoscopy dataframe you have</span>
 <span class='fu'>names</span>(<span class='no'>Myendo</span>)<span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"OGDReportWhole"</span>,<span class='st'>"HospitalNumber"</span>,<span class='st'>"PatientName"</span>,
 <span class='st'>"GeneralPractitioner"</span>,<span class='st'>"Dateofprocedure"</span>,<span class='st'>"Endoscopist"</span>,<span class='st'>"Secondendoscopist"</span>,
