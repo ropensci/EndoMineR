@@ -1074,7 +1074,6 @@ BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
 
 BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
   EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
-  
   EndoSubsetEMR$ParisClass <-
     ifelse(
       grepl("11a_c|2a_c|[Ii][Ii]a_c", EndoSubsetEMR[, Column], perl = TRUE) |

@@ -1,39 +1,8 @@
-#load(file="/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
-#load(file="/home/rstudio/EndoMineR/data/TheOGDReportFinal.rda")
+
 
 #### The data for the tests ####
 
 # For the upper GI
-Mypath <- PathDataFrameFinal
-Myendo <- TheOGDReportFinal
-Myendo$OGDReportWhole <-
-  gsub("2nd Endoscopist:",
-       "Second endoscopist:",
-       Myendo$OGDReportWhole)
-mywords<-c("Hospital Number:",
-    "Patient Name:",
-    "General Practitioner:",
-    "Date of procedure:",
-    "Endoscopist:",
-    "Second endoscopist:",
-    "Medications",
-    "Instrument",
-    "Extent of Exam:",
-    "Indications:",
-    "Procedure Performed:",
-    "Findings:",
-    "Endoscopic Diagnosis:"
-  )
-  Myendo <-Extractor(Myendo,"OGDReportWhole",mywords)
-
-mywords<-c("Hospital Number","Patient Name","DOB:","General Practitioner:",
-           "Date of procedure:","Clinical Details:",
-           "Macroscopic description:",
-           "Histology:","Diagnosis:")
-rm(Mypath)
-           Extractor(Mypath,"PathReportWhole",mywords)
-names(Mypath)[names(Mypath) == 'Datereceived'] <- 'Dateofprocedure'
-Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
 v <-
   Endomerge2(
     Mypath,
@@ -43,11 +12,6 @@ v <-
     "Dateofprocedure",
     "HospitalNumber"
   )
-
-
-
-
-
 
 
 #For the colon data
@@ -83,21 +47,19 @@ mywords<-c("Hospital Number","Patient Name","DOB:","General Practitioner:",
            "Macroscopic description:",
            "Histology:","Diagnosis:")
 
-MypathColon <-Extractor(MypathColon,"PathReportWhole",mywords)
+MypathColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",mywords)
 names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
 MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 
 vColon <-
   Endomerge2(
-    MypathColon,
+    MyendoColon,
     "Dateofprocedure",
     "HospitalNumber",
-    MyendoColon,
+    MypathColon,
     "Dateofprocedure",
     "HospitalNumber"
   )
-
-
 
 
 ##### rrrrrrrrrrrrrrrrrrrCleanUp test functions ####
@@ -107,7 +69,7 @@ vColon <-
 #### Extractor test ####
 test_that("Extractor", {
   expect_that(names(v), equals(
-    c("Original",
+    c("OGDReportWhole",
       "pHospitalNum",
       "PatientName.x",
       "GeneralPractitioner.x",
@@ -120,7 +82,6 @@ test_that("Extractor", {
       "Indications",
       "ProcedurePerformed",
       "Findings",
-      "EndoscopicDiagnosis",
       "PathReportWhole",
       "eHospitalNum",
       "PatientName.y",
@@ -158,10 +119,11 @@ test_that("EndoscEndoscopist", {
   MyEndoscEndoscopistTest<-data.frame(c("Dr Jeremiah Stubborn"))
   names(MyEndoscEndoscopistTest)<-"Endoscopist"
   
-  MyEndoscEndoscopistTest <- EndoscEndoscopist(MyEndoscEndoscopistTest, "Endoscopist")
-  MyEndoscEndoscopistTest$Endoscopist <-
-  expect_true(all(!is.na(Myendo$Endoscopist)))
-  Result<-as.character(Myendo$Endoscopist)
+  MyEndoscEndoscopistTest <- EndoscEndoscopist(MyEndoscEndoscopistTest,
+                                               "Endoscopist")
+ 
+  expect_true(all(!is.na(MyEndoscEndoscopistTest$Endoscopist)))
+  Result<-as.character(MyEndoscEndoscopistTest$Endoscopist)
   expect_identical(Result,"Jeremiah Stubborn")
 })
 
@@ -203,7 +165,8 @@ test_that("EndoscIndications", {
 test_that("EndoscProcPerformed", {
   MyEndoscProcPerfTest<-data.frame(c("OGD - Quality of Procedure: Adequate"))
   names(MyEndoscProcPerfTest)<-"ProcPerformed"
-  MyEndoscProcPerfTest <- EndoscProcPerformed(MyEndoscProcPerfTest, "ProcPerformed")
+  MyEndoscProcPerfTest <- EndoscProcPerformed(MyEndoscProcPerfTest, 
+                                              "ProcPerformed")
   expect_true(all(!is.na(MyEndoscProcPerfTest$ProcPerformed)))
   expect_identical(MyEndoscProcPerfTest$ProcPerformed,"OGD ")
 })
@@ -311,8 +274,8 @@ test_that("HistolAccessionNumber", {
 
 test_that("HistolMacDescrip", {
   
-  ff<-"Three specimens collected the largest 
-  measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm"
+  ff<-"Three specimens collected the largest
+measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm"
   ff<-data.frame(ff)
   names(ff)<-"Macroscopicdescription"
   HistolHistolMacDescripTest<-HistolMacDescrip(ff,
@@ -457,20 +420,25 @@ test_that("MetricByEndoscopist", {
 #### TermStandardLocation test ####
 
 test_that("TermStandardLocation", {
-  Histoltree <-c("Hospital Number:","Patient Name:",
- "General Practitioner:","Date received:","Clinical Details",
-  "Nature of specimen","Histology","Diagnosis",""
-)
+ff<-"The sigmoid polyp is a pedunculated tubular adenoma with moderate 
+dysplasia\n,inflammation, gastric metaplasia, dysplasia or neoplasia is seen,
+patchy fibrosis and myxoid areas and contains numerous eosinophils, 
+as well as scattered\n,These biopsies of non-specialised gastric-type mucosa 
+showed minimal chronic, focally active\n,Lymphovascular invasion: 
+Not identified\n,into submucosa for less than 1 mm \n\n"
+ff<-data.frame(ff)
+names(ff)<-"Histology"
+f<-TermStandardLocation(ff,'Histology')
 
+f$Histology<-as.character(f$Histology)
+TermStandardLocationTest<-TermStandardLocation(f,'Histology')
+TermStandardLocationTest<-PolypLocator(TermStandardLocationTest,
+                                       'SampleLocation')
 
-PathDataFrameFinalColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",
-                                    Histoltree)
-names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) == 
-                                 'Datereceived'] <- 'Dateofprocedure'
-Mypath$Dateofprocedure <- as.Date(Mypath$Dateofprocedure)
-f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
-f<-PolypLocator(f,'SampleLocation')
-  
+TermStandardLocationTest$PolypLocator<-
+  as.character(TermStandardLocationTest$PolypLocator)
+expect_true(all(!is.na(TermStandardLocationTest$PolypLocator)))
+expect_identical(TermStandardLocationTest$PolypLocator,"Sigmoid")
 })
 
 
@@ -478,26 +446,34 @@ f<-PolypLocator(f,'SampleLocation')
 
 test_that("PolypLocator", {
   
-  Histoltree <-c("Hospital Number","Patient Name:","DOB:",
-                 "General Practitioner:",
-                 "Date received:","Clinical Details:",
-                 "Macroscopic description:",
-                 "Histology:","Diagnosis:"
-  )
-  PathDataFrameFinalColon <-
-    Extractor(PathDataFrameFinalColon,"PathReportWhole",Histoltree)
-  names(PathDataFrameFinalColon)[names(PathDataFrameFinalColon) ==
-                                   'Datereceived'] <- 'Dateofprocedure'
-  Mypath$Dateofprocedure <- as.Date(PathDataFrameFinalColon$Dateofprocedure)
-  f<-TermStandardLocation(PathDataFrameFinalColon,'Histology')
+  f<-TermStandardLocation(Mypath,'Histology')
   f<-PolypLocator(f,'SampleLocation')
+  
+  ff<-"The sigmoid polyp is a pedunculated tubular adenoma with moderate 
+dysplasia\n,inflammation, gastric metaplasia, dysplasia or neoplasia is seen,
+patchy fibrosis and myxoid areas and contains numerous eosinophils, 
+as well as scattered\n,These biopsies of non-specialised gastric-type mucosa 
+showed minimal chronic, focally active\n,Lymphovascular invasion: 
+Not identified\n,into submucosa for less than 1 mm \n\n"
+  ff<-data.frame(ff)
+  names(ff)<-"Histology"
+  f<-TermStandardLocation(ff,'Histology')
+  
+  f$Histology<-as.character(f$Histology)
+  TermStandardLocationTest<-TermStandardLocation(f,'Histology')
+  TermStandardLocationTest<-
+    PolypLocator(TermStandardLocationTest,'SampleLocation')
+  
+  TermStandardLocationTest$PolypLocator<-
+    as.character(TermStandardLocationTest$PolypLocator)
+  expect_true(all(!is.na(TermStandardLocationTest$PolypLocator)))
+  expect_identical(TermStandardLocationTest$PolypLocator,"Sigmoid")
 })
 
 #### GRS_Type_Assess_By_Unit test ####
 
 test_that("GRS_Type_Assess_By_Unit", {
  #  
- 
  vColon2<-HistolDx(vColon,'Diagnosis')
  vColon2<-HistolExtrapolDx(vColon2,'Diagnosis')
  vColon2<-HistolNumbOfBx(vColon2,'Macroscopicdescription','specimen')
@@ -520,8 +496,14 @@ test_that("NumberPerformed", {
 
 test_that("Barretts_PragueScore", {
   
-  v<-Barretts_PragueScore(Myendo,'Findings')
+  ff<-"Barrett's oesophagus C1 M5"
+  ff<-data.frame(ff)
+  names(ff)<-"Findings"
+  
+  v<-Barretts_PragueScore(ff,'Findings')
   expect_true(nrow(v) > 0)
+  expect_identical(v$CStage,1)
+  expect_identical(v$MStage,5)
   
 })
 
@@ -529,27 +511,56 @@ test_that("Barretts_PragueScore", {
 #### Barretts_PathStage ####
 
 test_that("Barretts_PathStage", {
-  b<-Barretts_PathStage(v,'Histology')
+  ff<-"  Two biopsies consist of small bowel mucosa and are within 
+  normal histological limits\n\n"
+  ff<-data.frame(ff)
+  names(ff)<-"Histology"
   
+  ff<-Barretts_PathStage(ff,'Histology')
+  expect_true(nrow(ff) > 0)
+  expect_identical(ff$IMorNoIM,"No_IM")
 })
 
 
 #### Barretts_EventType ####
 
 test_that("Barretts_EventType", {
-
-b<-Barretts_EventType(v,'Histology','ProcedurePerformed','EndoscopicDiagnosis'
-                            ,'Findings')
+  f1<-"Some more text"
+  f2<-"RFA as HALO 90 given with good effect"
+  f3<-"  More text here"
+  f4<-" A bit more chat"
+  ff<-data.frame(f1,f2,f3,f4)
+  names(ff)<-c("Histology","ProcedurePerformed","EndoscopicDiagnosis",
+               "Findings")
+  
+  ff<-Barretts_EventType(ff,'Histology','ProcedurePerformed',
+                         'EndoscopicDiagnosis',
+                         'Findings')
+  expect_true(nrow(ff) > 0)
+  expect_identical(ff$EVENT,"RFA")
+  
 })
 
 
 #### Barretts_FUType ####
 
 test_that("Barretts_FUType", {
-  b<-Barretts_PathStage(v,'Histology')
-  b2<-Barretts_EventType(b,'Histology',
-  'ProcedurePerformed','Original','Findings')
+  
+  f1<-"  Two biopsies consist of small bowel mucosa and are within 
+  normal histological limits with intestinal metaplasia\n\n"
+  f2<-"Lots of biopsies taken"
+  f3<-"  More text here"
+  f4<-"The Barrett's length was C1M2"
+  ff<-data.frame(f1,f2,f3,f4)
+  names(ff)<-c("Histology","ProcedurePerformed","EndoscopicDiagnosis",
+               "Findings")
+  
+  ff1<-Barretts_PathStage(ff,'Histology')
+  b2<-Barretts_EventType(ff1,'Histology',
+  'ProcedurePerformed','EndoscopicDiagnosis','Findings')
   b3<-Barretts_FUType(b2,'Findings')
+  expect_true(nrow(b3) > 0)
+  expect_identical(b3$FU_Group,"Rule2")
   
 })
 
@@ -559,6 +570,7 @@ test_that("BarrettsSurveil", {
   
 Enroll<-BarrettsSurveil(Myendo,
                      'HospitalNumber','Dateofprocedure','Indications')
+expect_true(nrow(Enroll) > 0)
   
 })
 
@@ -567,40 +579,50 @@ Enroll<-BarrettsSurveil(Myendo,
 
 test_that("BarrettsSurveil_HospNum", {
   
-  b1<-Barretts_PragueScore(v,'Findings')
-  b2<-Barretts_PathStage(b1,'Histology')
-  b3<-Barretts_EventType(b2,'Histology',
-  'ProcedurePerformed','Original','Findings')
-  b4<-Barretts_FUType(b3,'Findings')
-  colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-  Rule<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
+  f1<-"  Two biopsies consist of small bowel mucosa and are within 
+  normal histological limits with intestinal metaplasia\n\n"
+  f2<-"Lots of biopsies taken"
+  f3<-"  More text here"
+  f4<-"The Barrett's length was C1M2"
+  f5<-"Z433255"
+  ff<-data.frame(f1,f2,f3,f4,f5)
+  names(ff)<-c("Histology","ProcedurePerformed","EndoscopicDiagnosis",
+               "Findings","HospitalNumber")
   
+  ff1<-Barretts_PathStage(ff,'Histology')
+  b2<-Barretts_EventType(ff1,'Histology',
+                         'ProcedurePerformed','EndoscopicDiagnosis','Findings')
+  b3<-Barretts_FUType(b2,'Findings')
+  colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
+  Rule<-BarrettsSurveil_HospNum(b3,'Rule2','HospitalNumber')
+  expect_identical(as.character(Rule$x),"Z433255")
 })
 
 
 #### BarrettsDocumentQual ####
 
 test_that("BarrettsDocumentQual", {
-  b<-Barretts_PathStage(v,'Histology')
-  BarrettsDocumentQual(b,'Findings')
+
+  b1<-Barretts_PragueScore(Myendo,'Findings')
+  BarrettsDocumentQual(b1,'Findings')
 })
 
 
 #### BarrettsBxQual ####
 
 test_that("BarrettsBxQual", {
+  
   v<-HistolExtrapolDx(v,'Diagnosis')
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
   b3<-Barretts_EventType(b2,'Histology','ProcedurePerformed',
-                               'Original','Findings')
+                               'OGDReportWhole','Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsBxQual(b4,'Date.x','HospitalNumber',
                                        'Endoscopist')
-  
 })
 
 #### BarrettsPathDetectQual ####
@@ -613,7 +635,7 @@ test_that("BarrettsPathDetectQual", {
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
   b3<-Barretts_EventType(b2,'Histology',
-  'ProcedurePerformed','Original','Findings')
+  'ProcedurePerformed','OGDReportWhole','Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsPathDetectQual(b4,'Myplot')
@@ -630,7 +652,7 @@ test_that("BarrettsDDRQual", {
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
   b3<-Barretts_EventType(b2,'Histology',
-                               'ProcedurePerformed','Original',
+                               'ProcedurePerformed','OGDReportWhole',
                                'Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
@@ -649,7 +671,7 @@ test_that("BarrettsEMRGrades", {
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
   b3<-Barretts_EventType(b2,'Histology',
-  'ProcedurePerformed','Original','Findings')
+  'ProcedurePerformed','OGDReportWhole','Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsEMRGrades(b4)
@@ -668,7 +690,7 @@ test_that("BarrettsBasicNumbers", {
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
   b3<-Barretts_EventType(b2,'Histology',
-                         'ProcedurePerformed','Original','Findings')
+                         'ProcedurePerformed','OGDReportWhole','Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsBasicNumbers(b4,"Date.x")
@@ -685,7 +707,7 @@ test_that("BarrettssRFACath", {
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
   b3<-Barretts_EventType(b2,'Histology',
-                       'ProcedurePerformed','Original','Findings')
+                       'ProcedurePerformed','OGDReportWhole','Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettssRFACath(b4,"ProcedurePerformed","Findings")
@@ -702,7 +724,7 @@ test_that("BarrettsParisEMR", {
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
   b3<-Barretts_EventType(b2,'Histology',
-                     'ProcedurePerformed','Original','Findings')
+                     'ProcedurePerformed','OGDReportWhole','Findings')
   b4<-Barretts_FUType(b3,'Findings')
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
@@ -718,7 +740,10 @@ test_that("Barretts_CRIM", {
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
   b3<-Barretts_EventType(b2,'Histology',
-                     'ProcedurePerformed','Original','Findings')
+                     'ProcedurePerformed','OGDReportWhole','Findings')
   colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
-  Barretts_CRIM(b3,'HospitalNumber',"EVENT")
+  sz<-Barretts_CRIM(b3,'HospitalNumber',"EVENT")
+  sz<-data.frame(sz)
+  expect_true(nrow(sz) > 0)
+  
 })

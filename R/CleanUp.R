@@ -813,8 +813,8 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
     str_match_all(dataframe[, MacroColumn], paste("[0-9]{1,2}.{0,3}", 
                                                   regString, sep = ""))
   dataframe$NumbOfBx <-
-    sapply(mylist, function(p)
-      sum(as.numeric(gsub(regString, "", p))))
+    vapply(mylist, function(p)
+      sum(as.numeric(gsub(regString, "", p))),numeric(1))
   return(dataframe)
 }
 

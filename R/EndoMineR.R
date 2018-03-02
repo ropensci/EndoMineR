@@ -504,8 +504,8 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 
   # group all the words containing stems as per myNotableWords
   d <-
-    sapply(myNotableWords, function(x)
-      sum(d$Prop[grepl(x, d$word)]))
+    vapply(myNotableWords, function(x)
+      sum(d$Prop[grepl(x, d$word)]),numeric(1))
   d <- data.frame(X2 = names(d), Prop = as.vector(d))
   return(d)
 }
