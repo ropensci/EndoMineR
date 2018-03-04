@@ -67,6 +67,18 @@
      
   </a>
 </li>
+<li>
+  <a href="https://twitter.com/GastroDS">
+    <span class="fa fa-twitter-square"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/sebastiz/EndoMineR">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -166,10 +178,17 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 <div id="endoscopic-cleaning" class="section level2">
 <h2 class="hasAnchor">
 <a href="#endoscopic-cleaning" class="anchor"></a>Endoscopic cleaning</h2>
+<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns.This is illustrated in the figure below:</p>
 <p><br></p>
 <p><img src="img/EndoMineR_EndoscopyClean.png" style="display: block; margin: auto;"></p>
 <p><br></p>
-<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. The endoscopist column initially looks like this:</p>
+<div id="endoscopist-cleaning" class="section level3">
+<h3 class="hasAnchor">
+<a href="#endoscopist-cleaning" class="anchor"></a>Endoscopist cleaning</h3>
+<p>For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up.</p>
+<p><br></p>
+<p>The endoscopist column might initially look like this:</p>
+<p><br></p>
 <table class="table">
 <colgroup>
 <col width="15%">
@@ -258,11 +277,9 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 </tr>
 </tbody>
 </table>
-<div id="endoscopist-cleaning" class="section level3">
-<h3 class="hasAnchor">
-<a href="#endoscopist-cleaning" class="anchor"></a>Endoscopist cleaning</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo2&lt;-<span class="kw"><a href="../reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
-<p>This function performs the cleaning of common things found in the text that may cause confusion. The result is as follows:</p>
+<p>This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist’s name. The result is as follows:</p>
+<p><br></p>
 <table class="table">
 <colgroup>
 <col width="15%">

@@ -100,6 +100,8 @@ pander(head(PathDataFrameFinalColon2,1))
 
 ## Endoscopic cleaning
 
+Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns.This is illustrated in the figure below: 
+
 <br>
 
 
@@ -109,19 +111,29 @@ knitr::include_graphics("img/EndoMineR_EndoscopyClean.png")
 
 <br>
 
-Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns. For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. The endoscopist column initially looks like this:
+### Endoscopist cleaning
+
+For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. 
+
+<br>
+
+The endoscopist column might initially look like this:
+
+<br>
 
 ```{r exampleEndoscEndoscopist, echo = FALSE}
 pander(head(Myendo[2:6],10))
 ```
 
-### Endoscopist cleaning
+
 
 ```{r exampleEndoscEndoscopist2,echo = TRUE}
 Myendo2<-EndoscEndoscopist(Myendo,'Endoscopist')
 ```
 
-This function performs the cleaning of common things found in the text that may cause confusion. The result is as follows:
+This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist's name. The result is as follows:
+
+<br>
 
 ```{r exampleEndoscEndoscopist3, echo = FALSE}
 pander(head(Myendo2[2:6],10))
