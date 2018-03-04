@@ -92,7 +92,7 @@
 </li>
 <li>
   <a href="https://twitter.com/GastroDS">
-    <span class="fa fa-twitter-square"></span>
+    <span class="fa fa fa fa-twitter"></span>
      
   </a>
 </li>
@@ -120,10 +120,9 @@
     <p>This does a general clean up of whitespace,
 semi-colons,full stops at the start
 of lines and converts end sentence full stops to new lines.
-It should be used after the Extractor and the optional
-NewLines has been used. It can be used as part of the other functions
-or as a way of providing a 'positive diagnosis only' type output (see
-HistolDx)</p>
+It should be used after the Extractor.
+It is used for columns where there is a lot of free text to extract. It 
+really extracts and standardises the sentences.</p>
     
 
     <pre class="usage"><span class='fu'>ColumnCleanUp</span>(<span class='no'>dataframe</span>, <span class='no'>Column</span>)</pre>
@@ -143,7 +142,7 @@ HistolDx)</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>ii</span><span class='kw'>&lt;-</span><span class='fu'>ColumnCleanUp</span>(<span class='no'>Myendo</span>,<span class='st'>"OGDReportWhole"</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>ii</span><span class='kw'>&lt;-</span><span class='fu'>ColumnCleanUp</span>(<span class='no'>Myendo</span>,<span class='st'>"Findings"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -17,36 +17,13 @@ The function follows the Histology function. You can use the same column
 names as suggested with the parent function HistolAll
 }
 \examples{
-# Firstly relevant columns are extrapolated from the
-# Mypath demo dataset. These functions are all part of Histology data
-# cleaning as part of the package.
-mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-"Date received:","Clinical Details:","Macroscopic description:",
-"Histology:","Diagnosis:")
-Mypath3<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
-names(Mypath3)<-c("Original","HospitalNumber","PatientName","DOB",
-"GeneralPractitioner","Datereceived","ClinicalDetails",
-"Macroscopicdescription","Histology","Diagnosis")
-v<-HistolAll(Mypath3)
-rm(Mypath)
-
-#' # Rename the columns in whatever endoscopy dataframe you have
-names(Myendo)<-c("OGDReportWhole","HospitalNumber","PatientName",
-"GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist",
-"Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
-"Findings" )
-#Now use the function
-Myendo<-EndoscAll(Myendo)
-
+ 
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
 'HospitalNumber')
-
-
 #The function relies on the other Barrett's functions being run as well:
 dd<-BarrettsAll(v)
 rm(v)
-rm(Myendo)
 }
 \keyword{Barretts}

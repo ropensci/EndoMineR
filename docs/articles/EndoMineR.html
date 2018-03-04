@@ -69,7 +69,7 @@
 </li>
 <li>
   <a href="https://twitter.com/GastroDS">
-    <span class="fa fa-twitter-square"></span>
+    <span class="fa fa fa fa-twitter"></span>
      
   </a>
 </li>
@@ -92,7 +92,7 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>EndoMineR</h1>
-                        <h4 class="author">Sebastian Zeki 2018-03-02</h4>
+                        <h4 class="author">Sebastian Zeki 2018-03-04</h4>
             
           </div>
 
@@ -113,19 +113,19 @@
 <p>The package is basically divied into three parts. How all the functions are connected in shown in the adjoining figure. The import of the raw data is left up to the user with the overall aim being that all the data is present in one dataframe. The user can either load data so that each row of the data is an endoscopic episode (or a pathology report) in its raw form and then allow the package to extract the relevant parts of the data, or the data can be pre-extracted (ie separate columns for the Endoscopist, medication given etc.) so that the Extraction step is skipped. The package can take either but the importing is left to the user.</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>The extraction</strong>- This is really when the data is provided as full text reports. You may already have the data in a spreadsheet in which case this part isn’t necessary. The extraction is provided as one function Extractor, explained below.</p></li>
-<li><p><strong>Cleaning</strong>- These are a group of functions that allow the user to extract and clean data commonly found in endoscopic and pathology reports. The cleaning functions usually remove common typos or extraneous information and do some reformatting. Some of the functions will also extract derived data into separate columns. The cleaning functions are provided on a per column basis (so if you have a column containing the endoscopist name, for example ,then EndoEndoscopist will clean this. However convenience functions are also provided to run the cleaning functions on several columns where present. EndoscAll for example will run several of the cleaning functions as long as the columns are properly named so that the subfunctions are run on the correct columns.</p></li>
-<li><p><strong>Analyses</strong>- The analyses provide graphing function as well as analyses according to the cornerstone questions in gastroenterology- namely surveillance, patient tracking, quality of endoscopy and pathology reporting and diagnostic yield questions as explained in the EndoMineR principles pages. The analyses are separated into generic analyses that are relevant to any endo-pathological dataset, as well as specific analyses for adenoma detection rates and Barrett’s surveillance and therapy. Further disease specific datasets will be included in future iterations.</p></li>
+<li><p><strong>Cleaning</strong>- These are a group of functions that allow the user to extract and clean data commonly found in endoscopic and pathology reports. The cleaning functions usually remove common typos or extraneous information and do some reformatting. Some of the functions will also extract derived data into separate columns. The cleaning functions are provided on a per column basis (so if you have a column containing the endoscopist name, for example ,then EndoEndoscopist will clean this. However convenience functions are also provided to run the several cleaning functions at the same time as long as the relevant columns are present. EndoscAll for example will run several of the cleaning functions as long as the columns are properly named so that the subfunctions are run on the correct columns.This is also true for HistolAll</p></li>
+<li><p><strong>Analyses</strong>- The analyses provide graphing functions as well as analyses according to the cornerstone questions in gastroenterology- namely surveillance, patient tracking, quality of endoscopy and pathology reporting and diagnostic yield questions as explained in the EndoMineR principles pages. The analyses are separated into generic analyses that are relevant to any endo-pathological dataset, as well as specific analyses for adenoma detection rates and Barrett’s surveillance and therapy. Further disease specific datasets will be included in future iterations.</p></li>
 </ol>
 </div>
 <div id="the-extractor-function" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-extractor-function" class="anchor"></a>The extractor function</h2>
-<p>Endoscopic and pathological data will come in one of two forms- either as a collection of the whole text report or as spreadsheets with some degree of separation into different columns of the various aspects of that report eg who the Endoscopist was, the patient’s unique identifier etc. For the latter, the package user will not need to Extract information as it is already extracted and so can go straight to cleaning the data. For the former the Extractor function has been provided:</p>
+<p>Endoscopic and pathological data will come in one of two forms- either as a collection of the whole text report or as spreadsheets with some degree of separation into different columns of the various aspects of that report eg. who the Endoscopist was, the patient’s unique identifier etc. For the latter, the package user will not need to Extract information as it is already extracted and so can go straight to cleaning the data. For the former the Extractor function has been provided:</p>
 <p><br><img src="img/EndoMineR_Extractor.svg" style="display: block; margin: auto;"></p>
 <p><br></p>
-<p>The Extractor is a very useful function. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in-built datasets as part of the package. Prior to using the function it is recommended to use the NewLine function to divide the free text up by sentence (this can be useful if not using multiline regex or you have another way of splitting the text rather than using the Extractor). However this is not absolutely necessary.</p>
+<p>The Extractor is a very useful function. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in-built datasets as part of the package.</p>
 <p><br></p>
-<p>A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe. Here we use an example dataset:</p>
+<p>A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe. Here we use an example dataset (which has not had separate columns selected already) as the input:</p>
 <table style="width:44%;" class="table">
 <colgroup><col width="44%"></colgroup>
 <thead><tr class="header">
@@ -135,6 +135,9 @@
 <td align="center">Hospital: Random NHS Foundation Trust Hospital Number: H2890235 Patient Name: al-Bilal, Widdad DOB: 1922-05-04 General Practitioner: Dr. Mondragon, Amber Date received: 2002-11-10 Clinical Details: Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen. Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’| Macroscopic description: 1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm Histology: The appearances are of a hyperplastic polyp.,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3.,Completeness of excision is uncertain as the base is not clearly visualised.,There is no ulceration.,Kikuchi level: sm2. Diagnosis: Colon, biopsy - Normal.,- Focal granulomatous inflammation, non-necrotising.,Duodenum, biopsy - within normal histological limits.,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia.,- Hyperplastic polyp .,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia.,- Mild chronic inflammation within the oesophageal mucosa.,Sigmoid colon biopsies:- normal mucosa.,Sigmoid polyp excision:- tubular adenoma.</td>
 </tr></tbody>
 </table>
+<p><br></p>
+<p>We can then define the list of delimiters that will split this text into separate columns, title the columns according to the delimiters and return a dataframe. each column simply contains the text between the delimiters that the user has defined. These columns are then ready for the more refined cleaning provided by subesquent functions.</p>
+<p><br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw">c</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
 <span class="st">"Date received:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,
 <span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>)
@@ -178,7 +181,7 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 <div id="endoscopic-cleaning" class="section level2">
 <h2 class="hasAnchor">
 <a href="#endoscopic-cleaning" class="anchor"></a>Endoscopic cleaning</h2>
-<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns.This is illustrated in the figure below:</p>
+<p>Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns.This is illustrated in the figure below. Any one column does not have to be present in the final dataframe once extraction has happened. The functions are defined according to the most likely outputted columns from extraction from a typical dataset. If endoscopy reports are being extracted then the functions concentrate on these.</p>
 <p><br></p>
 <p><img src="img/EndoMineR_EndoscopyClean.png" style="display: block; margin: auto;"></p>
 <p><br></p>
@@ -187,7 +190,7 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 <a href="#endoscopist-cleaning" class="anchor"></a>Endoscopist cleaning</h3>
 <p>For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up.</p>
 <p><br></p>
-<p>The endoscopist column might initially look like this:</p>
+<p>The endoscopist column might initially look like this (as the last column in this dataframe)</p>
 <p><br></p>
 <table class="table">
 <colgroup>
@@ -278,7 +281,7 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo2&lt;-<span class="kw"><a href="../reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
-<p>This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist’s name. The result is as follows:</p>
+<p>This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist’s name, getting rid of whitespace etc. This is important to prevent double outputs for the same Endoscopist because of, for example, the lack and presence of a ‘.’ after Dr amongst other variations. The result is as follows:</p>
 <p><br></p>
 <table class="table">
 <colgroup>
@@ -373,7 +376,7 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 <div id="medication-cleaning" class="section level3">
 <h3 class="hasAnchor">
 <a href="#medication-cleaning" class="anchor"></a>Medication cleaning</h3>
-<p>The EndoscMeds currently extracts Fentanyl and Midazolam doses into a separate column and reformats them as numeric columns so further calculations can be done. In future iterations pethidine, propofol and general anaesthetic will also be able to be extracted.</p>
+<p>The EndoscMeds currently extracts Fentanyl, Pethidine, Midazolam and Propofol doses into a separate column and reformats them as numeric columns so further calculations can be done.</p>
 <p>Several other similar clean up functions are available for Endoscopy as follows. We will extract from the Raw endoscopy data first:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw">c</span>(<span class="st">"Hospital:"</span>,<span class="st">"Hospital Number:"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"General Practitioner:"</span>,<span class="st">"Date of procedure:"</span>,<span class="st">"Endoscopist:"</span>,<span class="st">"Second Endoscopist"</span>,
            <span class="st">"Medications:"</span>,<span class="st">"Instrument:"</span>,<span class="st">"Extent of Exam:"</span>,<span class="st">"Indications:"</span>,<span class="st">"Procedure Performed:"</span>,
@@ -496,7 +499,7 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Follow-up ULCER HEALING</td>
 <td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
 <td align="center">Gastroscopy (OGD)</td>
-<td align="center">NA</td>
+<td align="center">5</td>
 <td align="center">6</td>
 </tr>
 <tr class="even">
@@ -523,7 +526,7 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Other-</td>
 <td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
 <td align="center">Gastroscopy (OGD)</td>
-<td align="center">NA</td>
+<td align="center">5</td>
 <td align="center">2</td>
 </tr>
 <tr class="odd">
@@ -605,8 +608,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 ## [2] "  modified giemsa stain\n,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease\n,The nuclei are hyperchromatic,\n,There is no granulomatous inflammation\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n\n"</code></pre>
 <p>And once the function is run the result is here:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw"><a href="../reference/HistolHistol.html">HistolHistol</a></span>(Mypath,<span class="st">'Histology'</span>)</code></pre></div>
-<pre><code>## [1] "  Two biopsies consist of small bowel mucosa and are within normal histological limits \n"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-## [2] "  modified giemsa stain ,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease\n,The nuclei are hyperchromatic,\n,There is no granulomatous inflammation\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n\n"</code></pre>
+<pre><code>## [1] ""                                                                                                                                                                                                                                                                                                   
+## [2] "The nuclei are hyperchromatic,\n.\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n.\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n"</code></pre>
 <p><br></p>
 </div>
 <div id="extraction-of-macroscopic-description" class="section level3">

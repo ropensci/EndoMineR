@@ -294,7 +294,10 @@ gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
 EndoscIndications <- function(dataframe, IndicationColumn) {
   # Extraction of the Indications for examination
   # eg chest pain/ dysphagia etc.
-
+  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],
+                                               "\r\n", "\n")
+  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],
+                                               "\\.\n\\.\n|\\.\r\\.\r", "\\.")
   return(dataframe)
 }
 
@@ -358,7 +361,7 @@ EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
   dataframe[, FindingsColumn] <- str_replace(dataframe[, FindingsColumn],
                                              "cm\\s+[A-Z]|cm.+\\)", "cm\n")
-  
+  dataframe$EndoFindingsSimple<- NegativeRemove(dataframe, FindingsColumn)
   #Put in the Negative remove for FindingsSimplified Here
   return(dataframe)
 }
@@ -670,10 +673,10 @@ HistolHistol <- function(dataframe, HistolColumn) {
   dataframe$Histol_Simplified <- gsub("-[A-Z]", "\n", 
                                       dataframe$Histol_Simplified
                               , fixed = TRUE)
-  dataframe$Histol_Simplified <-
-    str_replace(dataframe$Histol_Simplified,".*biopsies.*\n", "")
-  dataframe$Histol_Simplified <-
-    str_replace(dataframe$Histol_Simplified,".*biopsy.*\n", "")
+  #dataframe$Histol_Simplified <-
+    #str_replace(dataframe$Histol_Simplified,"(?<=[A-Z].*)biopsies.*\n", "")
+  #dataframe$Histol_Simplified <-
+    #str_replace(dataframe$Histol_Simplified,"[A-Z].*biopsy.*\n", "")
   dataframe$Histol_Simplified <-str_replace(dataframe$Histol_Simplified,":", "")
   return(dataframe)
 }
@@ -730,10 +733,10 @@ HistolDx <- function(dataframe, HistolColumn) {
     gsub("- ", "\n", dataframe$Dx_Simplified, fixed = TRUE)
   dataframe$Dx_Simplified <-
     gsub("-[A-Z]", "\n", dataframe$Dx_Simplified, fixed = TRUE)
-  dataframe$Dx_Simplified <-
-    str_replace(dataframe$Dx_Simplified,".*biopsies.*\n", "")
-  dataframe$Dx_Simplified <-
-    str_replace(dataframe$Dx_Simplified,".*biopsy.*\n", "")
+  #dataframe$Dx_Simplified <-
+    #str_replace(dataframe$Dx_Simplified,"[A-Z].*biopsies.*\n", "")
+  #dataframe$Dx_Simplified <-
+    #str_replace(dataframe$Dx_Simplified,"[A-Z].*biopsy.*\n", "")
   return(dataframe)
   
 }

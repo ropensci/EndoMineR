@@ -69,8 +69,26 @@ t<-HistolHistol(Mypath,'Histology')
 ## ----exampleEHistolHistol3, echo = FALSE---------------------------------
 head(t$Histol_Simplified,2)
 
-## ----exampleHistolNumbOfBx, echo = TRUE----------------------------------
+## ----exampleHistolDx1, echo = FALSE--------------------------------------
+head(Mypath$Diagnosis,2)
+
+
+## ----exampleHistolDx2, echo = TRUE---------------------------------------
+t<-HistolDx(Mypath,'Diagnosis')
+
+## ----exampleHistolDx3, echo = FALSE--------------------------------------
+head(t$Dx_Simplified,2)
+
+## ----exampleHistolNumbOfBx1, echo = FALSE--------------------------------
+sg<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$Macroscopicdescription)
+pander(head(sg,5))
+
+## ----exampleHistolNumbOfBx2, echo = TRUE---------------------------------
 v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+
+## ----exampleHistolNumbOfBx3, echo = FALSE--------------------------------
+sh<-data.frame(v$HospitalNumber,v$PatientName,v$NumbOfBx)
+pander(head(sh,5))
 
 ## ----exampleHistolExtrapolDx, echo = TRUE--------------------------------
 Mypath3<-data.frame(Mypath["HospitalNumber"],Mypath["Diagnosis"])

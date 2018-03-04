@@ -12,9 +12,6 @@ knitr::include_graphics("img/EndoMineROverView.png")
 ## ----fig.width=12, fig.height=8,fig.align='center',echo=FALSE------------
 knitr::include_graphics("img/EndoMineR_Extractor.svg")
 
-## ----exampleNewLines, eval = FALSE---------------------------------------
-#  v<-NewLines(TheOGDReportFinal,'OGDReportWhole')
-
 ## ----exampleExtractor,echo=FALSE-----------------------------------------
 PathDataFrameFinalColon2<-PathDataFrameFinalColon
 names(PathDataFrameFinalColon2)<-"PathReportWhole"
@@ -70,7 +67,7 @@ head(Mypath$Histology,2)
 t<-HistolHistol(Mypath,'Histology')
 
 ## ----exampleEHistolHistol3, echo = FALSE---------------------------------
-head(t$Histology,2)
+head(t$Histol_Simplified,2)
 
 ## ----exampleHistolNumbOfBx, echo = TRUE----------------------------------
 v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')

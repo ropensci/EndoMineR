@@ -136,7 +136,8 @@ $(document).ready(function () {
 </ul></li>
 <li><a href="#histological-cleaning">Histological cleaning</a><ul>
 <li><a href="#basic-histology-cleaning">Basic Histology Cleaning</a></li>
-<li><a href="#extraction-of-macroscopic-description">Extraction of Macroscopic Description</a></li>
+<li><a href="#extraction-of-diagnosis">Extraction of Diagnosis</a></li>
+<li><a href="#extraction-of-elements-from-the-macroscopic-description">Extraction of elements from the Macroscopic Description</a></li>
 <li><a href="#extraction-of-specific-disease-entities">Extraction of Specific Disease Entities</a></li>
 </ul></li>
 <li><a href="#removal-of-negatives">Removal of negatives</a></li>
@@ -244,6 +245,99 @@ PathDataFrameFinalColon2&lt;-Extractor(PathDataFrameFinalColon2,&quot;PathReport
 <table>
 <colgroup>
 <col width="15%"></col>
+<col width="20%"></col>
+<col width="21%"></col>
+<col width="16%"></col>
+<col width="26%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">HospitalNumber</th>
+<th align="center">PatientName</th>
+<th align="center">GeneralPractitioner</th>
+<th align="center">Dateofprocedure</th>
+<th align="center">Endoscopist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Jargon, Victoria</td>
+<td align="center">Dr Martin, Marche</td>
+<td align="center">2009-11-11</td>
+<td align="center">Dr Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Powell, Destiny</td>
+<td align="center">Dr al-Safi, Lutfiyya</td>
+<td align="center">2008-06-15</td>
+<td align="center">Dr Kekich, Annabelle</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">Martinez-Santos, Ana</td>
+<td align="center">Dr Rogers, Monica</td>
+<td align="center">2007-10-27</td>
+<td align="center">Dr Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Lopez, Maria</td>
+<td align="center">Dr Heilman, Lisa</td>
+<td align="center">2002-03-17</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">Dr Krumland, Lisa</td>
+<td align="center">2011-12-05</td>
+<td align="center">Dr Greimann, Phoua</td>
+</tr>
+<tr class="even">
+<td align="center">I8031481</td>
+<td align="center">Forrest, Dazheea</td>
+<td align="center">Dr Millman, Arianna</td>
+<td align="center">2014-09-19</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">W2120051</td>
+<td align="center">Naperola, Breanna</td>
+<td align="center">Dr Vigil, Lidia</td>
+<td align="center">2002-05-28</td>
+<td align="center">Dr Martinez, Maegen</td>
+</tr>
+<tr class="even">
+<td align="center">O7163832</td>
+<td align="center">Zuni, Shannon</td>
+<td align="center">Dr Merced, Essence</td>
+<td align="center">2009-09-19</td>
+<td align="center">Dr Anderson, Alana</td>
+</tr>
+<tr class="odd">
+<td align="center">P6620949</td>
+<td align="center">Gomez Barron, Erin</td>
+<td align="center">Dr Ursery, Dezire</td>
+<td align="center">2003-10-02</td>
+<td align="center">Dr Anderson, Alana</td>
+</tr>
+<tr class="even">
+<td align="center">L4378217</td>
+<td align="center">Hamm, Shebra</td>
+<td align="center">Dr Bauman, Caitlin</td>
+<td align="center">2016-11-22</td>
+<td align="center">Dr Ives, Rashiah</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>Myendo2&lt;-EndoscEndoscopist(Myendo,'Endoscopist')</code></pre>
+<p>This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist’s name, getting rid of whitespace etc. This is important to prevent double outputs for the same Endoscopist because of, for example, the lack and presence of a ‘.’ after Dr amongst other variations. The result is as follows:</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="15%"></col>
 <col width="21%"></col>
 <col width="22%"></col>
 <col width="16%"></col>
@@ -328,99 +422,6 @@ PathDataFrameFinalColon2&lt;-Extractor(PathDataFrameFinalColon2,&quot;PathReport
 <td align="center">Dr Bauman, Caitlin</td>
 <td align="center">2016-11-22</td>
 <td align="center">Ives, Rashiah</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>Myendo2&lt;-EndoscEndoscopist(Myendo,'Endoscopist')</code></pre>
-<p>This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist’s name, getting rid of whitespace etc. This is important to prevent double outputs for the same Endoscopist because of, for example, the lack and presence of a ‘.’ after Dr amongst other variations. The result is as follows:</p>
-<p><br></p>
-<table>
-<colgroup>
-<col width="15%"></col>
-<col width="21%"></col>
-<col width="22%"></col>
-<col width="16%"></col>
-<col width="23%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">PatientName</th>
-<th align="center">GeneralPractitioner</th>
-<th align="center">Dateofprocedure</th>
-<th align="center">Endoscopist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">Jargon, Victoria</td>
-<td align="center">Dr Martin, Marche</td>
-<td align="center">2009-11-11</td>
-<td align="center">Sullivan,Shelby</td>
-</tr>
-<tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">Powell, Destiny</td>
-<td align="center">Dr al-Safi, Lutfiyya</td>
-<td align="center">2008-06-15</td>
-<td align="center">Kekich,Annabelle</td>
-</tr>
-<tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">Martinez-Santos, Ana</td>
-<td align="center">Dr Rogers, Monica</td>
-<td align="center">2007-10-27</td>
-<td align="center">Sullivan,Shelby</td>
-</tr>
-<tr class="even">
-<td align="center">G1449886</td>
-<td align="center">Lopez, Maria</td>
-<td align="center">Dr Heilman, Lisa</td>
-<td align="center">2002-03-17</td>
-<td align="center">Avitia Ramirez, Alondra</td>
-</tr>
-<tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">al-Rahimi, Rif’a</td>
-<td align="center">Dr Krumland, Lisa</td>
-<td align="center">2011-12-05</td>
-<td align="center">Greimann,Phoua</td>
-</tr>
-<tr class="even">
-<td align="center">I8031481</td>
-<td align="center">Forrest, Dazheea</td>
-<td align="center">Dr Millman, Arianna</td>
-<td align="center">2014-09-19</td>
-<td align="center">Avitia Ramirez, Alondra</td>
-</tr>
-<tr class="odd">
-<td align="center">W2120051</td>
-<td align="center">Naperola, Breanna</td>
-<td align="center">Dr Vigil, Lidia</td>
-<td align="center">2002-05-28</td>
-<td align="center">Martinez,Maegen</td>
-</tr>
-<tr class="even">
-<td align="center">O7163832</td>
-<td align="center">Zuni, Shannon</td>
-<td align="center">Dr Merced, Essence</td>
-<td align="center">2009-09-19</td>
-<td align="center">Anderson,Alana</td>
-</tr>
-<tr class="odd">
-<td align="center">P6620949</td>
-<td align="center">Gomez Barron, Erin</td>
-<td align="center">Dr Ursery, Dezire</td>
-<td align="center">2003-10-02</td>
-<td align="center">Anderson,Alana</td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-<td align="center">Hamm, Shebra</td>
-<td align="center">Dr Bauman, Caitlin</td>
-<td align="center">2016-11-22</td>
-<td align="center">Ives,Rashiah</td>
 </tr>
 </tbody>
 </table>
@@ -661,15 +662,113 @@ pander(head(TheOGDReportFinal2df,10))</code></pre>
 ## [2] &quot;  modified giemsa stain\n,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease\n,The nuclei are hyperchromatic,\n,There is no granulomatous inflammation\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n\n&quot;</code></pre>
 <p>And once the function is run the result is here:</p>
 <pre class="r"><code>t&lt;-HistolHistol(Mypath,'Histology')</code></pre>
-<pre><code>## [1] &quot;&quot;                                                                                                                                                                                                                                                                                                   
-## [2] &quot;The nuclei are hyperchromatic,\n.\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n.\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n&quot;</code></pre>
+<pre><code>## [1] &quot;&quot;                                                                                                                                                                                                                                                                                                                                                                    
+## [2] &quot;  modified giemsa stain ,These are biopsies of gastric mucosa .\nThe nuclei are hyperchromatic,\n.\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n.\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n&quot;</code></pre>
 <p><br></p>
 </div>
-<div id="extraction-of-macroscopic-description" class="section level3">
-<h3>Extraction of Macroscopic Description</h3>
+<div id="extraction-of-diagnosis" class="section level3">
+<h3>Extraction of Diagnosis</h3>
+<p>Some pathology reports also provide an overall impression or a list of diagnoses interpreted from the description of the pathological text. This can also be extracted. The diagnoses may also included the absence of features and a function is provided to both clean up the Diagnosis column as well as exclude negative diagnoses. If a diagnosis column is present the function can be run as follows:</p>
+<pre><code>## [1] &quot;  Distal transverse colon polyp excision:- tubular adenoma, low grade dysplasia\n,Ileo-caecal valve, biopsies:\n,Stomach antrum biopsies:- normal mucosa\n,- Up to 34 eosinophils per high power field,Stomach, biopsy - Mild chronic inflammation\n&quot;                                                                                                                                                                                
+## [2] &quot;  Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Raised intra-epithelial lymphocytes ,Duodenum, biopsies - within normal histological limits\n,B GI biopsy - DISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2\n,Oesophagus, biopsies : - Minimal chronic inflammation,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:- 2 x papillomas\n,Duodenum biopsies:- normal\n&quot;</code></pre>
+<p><br></p>
+<p>with the following result:</p>
+<p><br></p>
+<pre class="r"><code>t&lt;-HistolDx(Mypath,'Diagnosis')</code></pre>
+<pre><code>## [1] &quot;  Distal transverse colon polyp excision:\ntubular adenoma, low grade dysplasia\n,\nUp to 34 eosinophils per high power field,Stomach, biopsy \nMild chronic inflammation\n&quot;                                                                                           
+## [2] &quot;B GI biopsy \nDISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2\n,Oesophagus, biopsies : \nMinimal chronic inflammation,Sigmoid colon, polypectomy: \nTubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:\n2 x papillomas\n,Duodenum biopsies:\nnormal\n&quot;</code></pre>
+</div>
+<div id="extraction-of-elements-from-the-macroscopic-description" class="section level3">
+<h3>Extraction of elements from the Macroscopic Description</h3>
 <p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.</p>
-<p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.</p>
+<p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is. For example, if the report usually says:</p>
+<p><br></p>
+<table>
+<colgroup>
+<col width="30%"></col>
+<col width="29%"></col>
+<col width="40%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Mypath.HospitalNumber</th>
+<th align="center">Mypath.PatientName</th>
+<th align="center">Mypath.Macroscopicdescription</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Jargon, Victoria</td>
+<td align="center">3 specimens collected the largest measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Powell, Destiny</td>
+<td align="center">4 specimens collected the largest measuring 4 x 4 x 4 mm and the smallest 5 x 3 x 1 mm</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">Martinez-Santos, Ana</td>
+<td align="center">9 specimens collected the largest measuring 2 x 5 x 2 mm and the smallest 1 x 1 x 4 mm</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Lopez, Maria</td>
+<td align="center">4 specimens collected the largest measuring 5 x 4 x 1 mm and the smallest 1 x 3 x 3 mm</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">5 specimens collected the largest measuring 2 x 2 x 1 mm and the smallest 3 x 4 x 3 mm</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>then the word that limits the number you are interested in is specimen so the function and it’s output is:</p>
+<p><br></p>
 <pre class="r"><code>v&lt;-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')</code></pre>
+<table style="width:75%;">
+<colgroup>
+<col width="26%"></col>
+<col width="31%"></col>
+<col width="16%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">v.HospitalNumber</th>
+<th align="center">v.PatientName</th>
+<th align="center">v.NumbOfBx</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">J6044658</td>
+<td align="center">Jargon, Victoria</td>
+<td align="center">3</td>
+</tr>
+<tr class="even">
+<td align="center">Y6417773</td>
+<td align="center">Powell, Destiny</td>
+<td align="center">4</td>
+</tr>
+<tr class="odd">
+<td align="center">B6072011</td>
+<td align="center">Martinez-Santos, Ana</td>
+<td align="center">9</td>
+</tr>
+<tr class="even">
+<td align="center">G1449886</td>
+<td align="center">Lopez, Maria</td>
+<td align="center">4</td>
+</tr>
+<tr class="odd">
+<td align="center">V1607560</td>
+<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">5</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="extraction-of-specific-disease-entities" class="section level3">
 <h3>Extraction of Specific Disease Entities</h3>

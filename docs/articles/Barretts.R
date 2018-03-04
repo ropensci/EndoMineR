@@ -36,41 +36,18 @@ b3<-Barretts_FUType(b2,'Findings')
 panderOptions('table.split.table', Inf)
 pander(b3[23:27,(ncol(b3)-4):ncol(b3)])
 
-## ----exampleBarrettsAll, echo = TRUE,message=FALSE, warning=FALSE--------
- # Firstly relevant columns are extrapolated from the
- # Mypath demo dataset. These functions are all part of Histology data
- # cleaning as part of the package.
- mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
- "Date received:","Clinical Details:","Macroscopic description:",
- "Histology:","Diagnosis:")
- Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
- names(Mypath)<-c("Original","HospitalNumber","PatientName","DOB",
- "GeneralPractitioner","Datereceived","ClinicalDetails",
- "Macroscopicdescription","Histology","Diagnosis","HospitalNumber",
- "PatientName","DOB","GeneralPractitioner","Dateofprocedure",
- "ClinicalDetails","Macroscopicdescription","Histology","Diagnosis")
- v<-HistolAll(Mypath)
- rm(Mypath)
- 
-  # Rename the columns in whatever endoscopy dataframe you have
- names(Myendo)<-c("OGDReportWhole","HospitalNumber","PatientName",
- "GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist",
- "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
- "Findings" )
- #Now use the function
- Myendo<-EndoscAll(Myendo)
- 
+## ----exampleBarrettsAll3, echo = TRUE,message=FALSE, warning=FALSE-------
  # The histology is then merged with the Endoscopy dataset. The merge occurs
  # according to date and Hospital number
- v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
  'HospitalNumber')
- 
- 
+
+## ----exampleBarrettsAll4, echo = TRUE,message=FALSE, warning=FALSE-------
+
  #The function relies on the other Barrett's functions being run as well:
  b3<-BarrettsAll(v)
  panderOptions('table.split.table', Inf)
  pander(b3[23:27,(ncol(b3)-4):ncol(b3)])
- 
 
 ## ----exampleBarretts_LesionRecognitionEMR, eval = FALSE,message=FALSE, warning=FALSE----
 #  #As long as the code int he chunk above has been run then all that needs to be done is:

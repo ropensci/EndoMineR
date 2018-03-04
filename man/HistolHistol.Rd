@@ -12,9 +12,9 @@ HistolHistol(dataframe, HistolColumn)
 \item{HistolColumn}{column of interest}
 }
 \description{
-This extracts Histology details data from the report. The Histology details
-usually relate to the description of the histological report. This
-may be refined in further iterations.
+This extracts Histology details data from the report and also removes 
+negative findings. The Histology details
+usually relate to the description of the histological report.
 }
 \examples{
 ll<-HistolHistol(Mypath,'Histology')

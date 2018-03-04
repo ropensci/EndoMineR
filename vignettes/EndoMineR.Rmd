@@ -218,18 +218,64 @@ head(t$Histol_Simplified,2)
 
 <br>
 
-### Extraction of Macroscopic Description
 
-Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.
+### Extraction of Diagnosis
+
+Some pathology reports also provide an overall impression or a list of diagnoses interpreted from the 
+description of the pathological text. This can also be extracted. The diagnoses may also included the absence of
+features and a function is provided to both clean up the Diagnosis column as well as exclude negative diagnoses. If a diagnosis column is present the function can be run as follows:
+
+
+
+```{r exampleHistolDx1, echo = FALSE}
+head(Mypath$Diagnosis,2)
+
+```
+
+<br>
+
+with the following result:
+
+<br>
+
+```{r exampleHistolDx2, echo = TRUE}
+t<-HistolDx(Mypath,'Diagnosis')
+```
+
+```{r exampleHistolDx3, echo = FALSE}
+head(t$Dx_Simplified,2)
+```
+
+### Extraction of elements from the Macroscopic Description
+
+Because the information from the Macroscopic Description is based around numbers, a further function has been provided called HistolNumOfBx to extract the number of biopsies taken.
 
 
 
 In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.
+For example, if the report usually says:
 
-```{r exampleHistolNumbOfBx, echo = TRUE}
+<br>
+
+```{r exampleHistolNumbOfBx1, echo = FALSE}
+sg<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$Macroscopicdescription)
+pander(head(sg,5))
+```
+
+<br>
+
+Based on this, the word that limits the number you are interested in is 'specimen' so the function and it's output is:
+
+<br>
+
+```{r exampleHistolNumbOfBx2, echo = TRUE}
 v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 ```
 
+```{r exampleHistolNumbOfBx3, echo = FALSE}
+sh<-data.frame(v$HospitalNumber,v$PatientName,v$NumbOfBx)
+pander(head(sh,5))
+```
 
 ### Extraction of Specific Disease Entities
 
@@ -268,7 +314,7 @@ v<-HistolAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 
 ## Removal of negatives
 
-In addition, if there is a need to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. It can be applied as a stand alone function but is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text.
+In addition, if there is a need to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. It can be applied as a stand alone function but is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text to provide a Simplified Diagnosis column.
 
 <br>
 The original input example can be seen here

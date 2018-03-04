@@ -69,7 +69,7 @@
 </li>
 <li>
   <a href="https://twitter.com/GastroDS">
-    <span class="fa fa-twitter-square"></span>
+    <span class="fa fa fa fa-twitter"></span>
      
   </a>
 </li>
@@ -94,7 +94,7 @@
       <h1>Barrett’s Oesophagus</h1>
                         <h4 class="author">Sebastian Zeki</h4>
             
-            <h4 class="date">March 02, 2018</h4>
+            <h4 class="date">March 04, 2018</h4>
           </div>
 
     
@@ -388,36 +388,11 @@ b3&lt;-<span class="kw"><a href="../reference/Barretts_FUType.html">Barretts_FUT
 <h3 class="hasAnchor">
 <a href="#running-all-the-barretts-functions" class="anchor"></a>Running all the Barrett’s functions:</h3>
 <p>It is sometimes useful to run all the Barrett’s functions rather than one by one. This is provided by the function BarrettsAll which is a parent function for Barretts_PathStage, Barretts_EventType, Barretts_FUType. It relies on the columns being named in a standardised way but not all the columns need to be present- if they are not present the BarrettsAll function will just skip them.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="co"># Firstly relevant columns are extrapolated from the</span>
- <span class="co"># Mypath demo dataset. These functions are all part of Histology data</span>
- <span class="co"># cleaning as part of the package.</span>
- mywords&lt;-<span class="kw">c</span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
- <span class="st">"Date received:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,
- <span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>)
- Mypath&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(Mypath,<span class="st">"PathReportWhole"</span>,mywords)
- <span class="kw">names</span>(Mypath)&lt;-<span class="kw">c</span>(<span class="st">"Original"</span>,<span class="st">"HospitalNumber"</span>,<span class="st">"PatientName"</span>,<span class="st">"DOB"</span>,
- <span class="st">"GeneralPractitioner"</span>,<span class="st">"Datereceived"</span>,<span class="st">"ClinicalDetails"</span>,
- <span class="st">"Macroscopicdescription"</span>,<span class="st">"Histology"</span>,<span class="st">"Diagnosis"</span>,<span class="st">"HospitalNumber"</span>,
- <span class="st">"PatientName"</span>,<span class="st">"DOB"</span>,<span class="st">"GeneralPractitioner"</span>,<span class="st">"Dateofprocedure"</span>,
- <span class="st">"ClinicalDetails"</span>,<span class="st">"Macroscopicdescription"</span>,<span class="st">"Histology"</span>,<span class="st">"Diagnosis"</span>)
- v&lt;-<span class="kw"><a href="../reference/HistolAll.html">HistolAll</a></span>(Mypath)
- <span class="kw">rm</span>(Mypath)
- 
-  <span class="co"># Rename the columns in whatever endoscopy dataframe you have</span>
- <span class="kw">names</span>(Myendo)&lt;-<span class="kw">c</span>(<span class="st">"OGDReportWhole"</span>,<span class="st">"HospitalNumber"</span>,<span class="st">"PatientName"</span>,
- <span class="st">"GeneralPractitioner"</span>,<span class="st">"Dateofprocedure"</span>,<span class="st">"Endoscopist"</span>,<span class="st">"Secondendoscopist"</span>,
- <span class="st">"Medications"</span>,<span class="st">"Instrument"</span>,<span class="st">"ExtentofExam"</span>,<span class="st">"Indications"</span>,<span class="st">"ProcedurePerformed"</span>,
- <span class="st">"Findings"</span> )
- <span class="co">#Now use the function</span>
- Myendo&lt;-<span class="kw"><a href="../reference/EndoscAll.html">EndoscAll</a></span>(Myendo)
- 
- <span class="co"># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="co"># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
  <span class="co"># according to date and Hospital number</span>
- v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,v,<span class="st">'Dateofprocedure'</span>,
- <span class="st">'HospitalNumber'</span>)
- 
- 
- <span class="co">#The function relies on the other Barrett's functions being run as well:</span>
+ v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,Mypath,<span class="st">'Dateofprocedure'</span>,
+ <span class="st">'HospitalNumber'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="co">#The function relies on the other Barrett's functions being run as well:</span>
  b3&lt;-<span class="kw"><a href="../reference/BarrettsAll.html">BarrettsAll</a></span>(v)
  <span class="kw">panderOptions</span>(<span class="st">'table.split.table'</span>, <span class="ot">Inf</span>)
  <span class="kw">pander</span>(b3[<span class="dv">23</span>:<span class="dv">27</span>,(<span class="kw">ncol</span>(b3)-<span class="dv">4</span>):<span class="kw">ncol</span>(b3)])</code></pre></div>
@@ -607,17 +582,17 @@ b4&lt;-<span class="kw"><a href="../reference/HistolBxSize.html">HistolBxSize</a
 <span class="kw"><a href="../reference/BarrettsBxQual.html">BarrettsBxQual</a></span>(b4,<span class="st">'Date.x'</span>,<span class="st">'HospitalNumber'</span>,
                                       <span class="st">'Endoscopist'</span>)</code></pre></div>
 <pre><code>## $BxShortfallPre
-##                Endoscopist    MeanDiff
-## 1   al-Arif, Ummu Kulthoom -12.8888889
-## 2          Anderson, Alana  -1.8500000
-## 3  Avitia-Ramirez, Alondra  -6.3181818
-## 4          Greimann, Phoua  -2.7222222
-## 5            Ives, Rashiah  -8.5416667
-## 6        Kekich, Annabelle  -0.8333333
-## 7    Kola-Kehinde, Karisma   0.7619048
-## 8         Martinez, Maegen -11.9090909
-## 9           Moreno, Lauren  -0.3478261
-## 10        Sullivan, Shelby  -9.8333333
+##                        Endoscopist    MeanDiff
+## 1    Dr\n al-Arif, Ummu Kulthoom\n -12.8888889
+## 2           Dr\n Anderson, Alana\n  -1.8500000
+## 3   Dr\n Avitia-Ramirez, Alondra\n  -6.3181818
+## 4           Dr\n Greimann, Phoua\n  -2.7222222
+## 5             Dr\n Ives, Rashiah\n  -8.5416667
+## 6         Dr\n Kekich, Annabelle\n  -0.8333333
+## 7     Dr\n Kola-Kehinde, Karisma\n   0.7619048
+## 8          Dr\n Martinez, Maegen\n -11.9090909
+## 9            Dr\n Moreno, Lauren\n  -0.3478261
+## 10         Dr\n Sullivan, Shelby\n  -9.8333333
 ## 
 ## $t</code></pre>
 <p><img src="Barretts_files/figure-html/exampleBarrettsQuality_AnalysisBiopsyNumber-1.png" width="672"><br></p>
@@ -637,30 +612,30 @@ b4&lt;-<span class="kw"><a href="../reference/HistolBxSize.html">HistolBxSize</a
 <p><br></p>
 <p>This function provides a plot with absolute numbers of pathology detected. This of course doesn’t tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist. The output is provided as a table of proportions per endoscopist</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsDDRQual.html">BarrettsDDRQual</a></span>(b3,<span class="st">'Endoscopist'</span>,<span class="st">'IMorNoIM'</span>)</code></pre></div>
-<pre><code>##                          
-##                                    HGD           IM          LGD
-##   al-Arif, Ummu Kulthoom  0.0071090047 0.0208530806 0.0047393365
-##   Anderson, Alana         0.0061611374 0.0213270142 0.0037914692
-##   Avitia-Ramirez, Alondra 0.0061611374 0.0208530806 0.0052132701
-##   Greimann, Phoua         0.0047393365 0.0165876777 0.0037914692
-##   Ives, Rashiah           0.0056872038 0.0232227488 0.0037914692
-##   Kekich, Annabelle       0.0052132701 0.0180094787 0.0023696682
-##   Kola-Kehinde, Karisma   0.0075829384 0.0161137441 0.0075829384
-##   Martinez, Maegen        0.0090047393 0.0189573460 0.0042654028
-##   Moreno, Lauren          0.0071090047 0.0180094787 0.0104265403
-##   Sullivan, Shelby        0.0094786730 0.0213270142 0.0066350711
-##                          
-##                                  No_IM          T1a
-##   al-Arif, Ummu Kulthoom  0.0777251185 0.0018957346
-##   Anderson, Alana         0.0725118483 0.0023696682
-##   Avitia-Ramirez, Alondra 0.0616113744 0.0014218009
-##   Greimann, Phoua         0.0635071090 0.0004739336
-##   Ives, Rashiah           0.0687203791 0.0009478673
-##   Kekich, Annabelle       0.0649289100 0.0000000000
-##   Kola-Kehinde, Karisma   0.0654028436 0.0009478673
-##   Martinez, Maegen        0.0663507109 0.0004739336
-##   Moreno, Lauren          0.0744075829 0.0004739336
-##   Sullivan, Shelby        0.0592417062 0.0004739336</code></pre>
+<pre><code>##                                  
+##                                            HGD           IM          LGD
+##    Dr\n al-Arif, Ummu Kulthoom\n  0.0071090047 0.0208530806 0.0047393365
+##    Dr\n Anderson, Alana\n         0.0061611374 0.0213270142 0.0037914692
+##    Dr\n Avitia-Ramirez, Alondra\n 0.0061611374 0.0208530806 0.0052132701
+##    Dr\n Greimann, Phoua\n         0.0047393365 0.0165876777 0.0037914692
+##    Dr\n Ives, Rashiah\n           0.0056872038 0.0232227488 0.0037914692
+##    Dr\n Kekich, Annabelle\n       0.0052132701 0.0180094787 0.0023696682
+##    Dr\n Kola-Kehinde, Karisma\n   0.0075829384 0.0161137441 0.0075829384
+##    Dr\n Martinez, Maegen\n        0.0090047393 0.0189573460 0.0042654028
+##    Dr\n Moreno, Lauren\n          0.0071090047 0.0180094787 0.0104265403
+##    Dr\n Sullivan, Shelby\n        0.0094786730 0.0213270142 0.0066350711
+##                                  
+##                                          No_IM          T1a
+##    Dr\n al-Arif, Ummu Kulthoom\n  0.0777251185 0.0018957346
+##    Dr\n Anderson, Alana\n         0.0725118483 0.0023696682
+##    Dr\n Avitia-Ramirez, Alondra\n 0.0616113744 0.0014218009
+##    Dr\n Greimann, Phoua\n         0.0635071090 0.0004739336
+##    Dr\n Ives, Rashiah\n           0.0687203791 0.0009478673
+##    Dr\n Kekich, Annabelle\n       0.0649289100 0.0000000000
+##    Dr\n Kola-Kehinde, Karisma\n   0.0654028436 0.0009478673
+##    Dr\n Martinez, Maegen\n        0.0663507109 0.0004739336
+##    Dr\n Moreno, Lauren\n          0.0744075829 0.0004739336
+##    Dr\n Sullivan, Shelby\n        0.0592417062 0.0004739336</code></pre>
 </div>
 </div>
 <div id="surveillance-enrollment-and-lost-to-follow-ups" class="section level2">
@@ -686,35 +661,35 @@ MyEnroll&lt;-<span class="kw">data.frame</span>(Enroll[<span class="st">"Hospita
 <tbody>
 <tr class="odd">
 <td align="center">J1337672</td>
-<td align="center">4.953297 weeks</td>
+<td align="center">4.958791 weeks</td>
 </tr>
 <tr class="even">
 <td align="center">M5148114</td>
-<td align="center">3.717033 weeks</td>
+<td align="center">3.722527 weeks</td>
 </tr>
 <tr class="odd">
 <td align="center">P2080807</td>
-<td align="center">3.260989 weeks</td>
+<td align="center">3.266484 weeks</td>
 </tr>
 <tr class="even">
 <td align="center">Q7176341</td>
-<td align="center">3.766484 weeks</td>
+<td align="center">3.771978 weeks</td>
 </tr>
 <tr class="odd">
 <td align="center">Q7729897</td>
-<td align="center">3.631868 weeks</td>
+<td align="center">3.637363 weeks</td>
 </tr>
 <tr class="even">
 <td align="center">R3882435</td>
-<td align="center">3.304945 weeks</td>
+<td align="center">3.310440 weeks</td>
 </tr>
 <tr class="odd">
 <td align="center">S1951882</td>
-<td align="center">3.302198 weeks</td>
+<td align="center">3.307692 weeks</td>
 </tr>
 <tr class="even">
 <td align="center">W2120051</td>
-<td align="center">3.189560 weeks</td>
+<td align="center">3.195055 weeks</td>
 </tr>
 </tbody>
 </table>
