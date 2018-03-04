@@ -181,11 +181,7 @@ test_that("EndoscFindings", {
   expect_identical(MyEndoscFindingsTest$EndoscFindings,"At 25cm\n")
 })
 
-#### NewLines test ####
-test_that("NewLines", {
-  #rm(MyendoColon)
-NewLines(MyendoColon,'Original')
-})
+
 
 #### NegativeRemove test ####
 
@@ -227,7 +223,7 @@ ff<-"There is no evidence of coeliac disease\n"
   HistolHistolTest<-HistolHistol(ff,'Histology')
   expect_true(all(!is.na(HistolHistolTest$Histol_Simplified)))
   expect_identical(HistolHistolTest$Histol_Simplified,
-                   "There is no evidence of coeliac disease ")
+                   "")
 })
 
 

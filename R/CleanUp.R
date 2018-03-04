@@ -41,36 +41,6 @@ if (getRversion() >= "2.15.1")
 
 ############## Endoscopy Clean-up functions##############
 
-#' Cleans endoscopy reports and splits sentences into new lines
-#'
-#' Cleans the long lines to separate them into new lines if necessary.
-#' This helps further down the line in the tokenisation of the text.
-#' It is optional depending on the format of your text. It should be used
-#' after the Extractor has separated out the different
-#' parts of the text according to the user's requirements
-#' @param dataframe dataframe
-#' @param EndoReportColumn The endoscopy report text column
-#' @importFrom stringr str_replace
-#' @keywords Endoscopy Newlines
-#' @export
-#' @examples # The function takes the demo data
-#' # Myendo and searches through the raw
-#' # endoscopy text so that the text is
-#' #divided by sentence into a newline
-#' aa<-NewLines(Myendo,'OGDReportWhole')
-
-
-NewLines <- function(dataframe, EndoReportColumn) {
-  dataframe <- data.frame(dataframe)
-  # Separate long lines with empty space into new lines
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
-                                               "    ", "\n")
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
-                                               "(\n|\r){2,8}", "\\.")
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
-                                               "(\n|\r)", "\\." )
-  return(dataframe)
-}
 
 #' Extracts the columns from the raw report
 #'
@@ -224,19 +194,37 @@ EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
 #' @examples cc<-EndoscMeds(Myendo,'Medications')
 
 EndoscMeds <- function(dataframe, MedColumn) {
-  # Extraction of the Medications: Extract the fentanyl:
+  # Extraction of the Medications: Extract the fentanyl if present
+  if(grepl("[Ff]entanyl",dataframe$Medications)){
   dataframe$Fent <-
-    str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d+)\\s*mcg")
+    str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
   dataframe$Fent <- str_replace(dataframe$Fent,"Fentanyl", "")
   dataframe$Fent <- str_replace(dataframe$Fent,"mcg", "")
   dataframe$Fent <- as.numeric(dataframe$Fent)
+  }
   
-  # Extract the midazolam
+  # Extract the midazolam if present
+  if(grepl("[Mm]idazolam",dataframe$Medications)){
   dataframe$Midaz <-
-    str_extract(dataframe$Medications, "Midazolam\\s*(\\d+)\\s*mg")
+    str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
   dataframe$Midaz <- str_replace(dataframe$Midaz,"Midazolam ", "")
   dataframe$Midaz <- str_replace(dataframe$Midaz,"mg", "")
   dataframe$Midaz <- as.numeric(dataframe$Midaz)
+  }
+  if(grepl("[Pp]ethidine",dataframe$Medications)){
+    dataframe$Peth <-
+      str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+    dataframe$Peth <- str_replace(dataframe$Peth,"Pethidine", "")
+    dataframe$Peth <- str_replace(dataframe$Peth,"mcg", "")
+    dataframe$Peth <- as.numeric(dataframe$Peth)
+  }
+  if(grepl("[Pp]ropofol",dataframe$Medications)){
+    dataframe$Prop <-
+      str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+    dataframe$Prop <- str_replace(dataframe$Prop,"Propofol", "")
+    dataframe$Prop <- str_replace(dataframe$Prop,"mcg", "")
+    dataframe$Prop <- as.numeric(dataframe$Prop)
+  }
   return(dataframe)
 }
 
@@ -306,12 +294,8 @@ gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
 EndoscIndications <- function(dataframe, IndicationColumn) {
   # Extraction of the Indications for examination
   # eg chest pain/ dysphagia etc.
-  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],
-                                               "\r\n", "\n")
-  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],
-                                               "\\.\n\\.\n|\\.\r\\.\r", "\\.")
+
   return(dataframe)
-  
 }
 
 
@@ -374,10 +358,15 @@ EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
   dataframe[, FindingsColumn] <- str_replace(dataframe[, FindingsColumn],
                                              "cm\\s+[A-Z]|cm.+\\)", "cm\n")
+  
+  #Put in the Negative remove for FindingsSimplified Here
   return(dataframe)
 }
 
 ####### General Clean-Up functions #####
+
+
+############## Endoscopy Clean-up functions##############
 
 #' Removes negative and normal sentences
 #'
@@ -413,8 +402,7 @@ NegativeRemove <- function(dataframe, Column) {
   dataframe[, Column] <- gsub(
     "(but|although|however|though|apart|otherwise
     |unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|
-    unremarkable|-ve|normal).*?(\\.|
-    \\n|:|$)\\R*",
+    unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*",
     "\\.\n",
     dataframe[, Column],
     perl = TRUE,
@@ -450,8 +438,7 @@ NegativeRemove <- function(dataframe, Column) {
   # Nos
   dataframe[, Column] <-
     gsub(
-      ".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b
-      (?![?:A-Za-z])|
+      ".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b(?![?:A-Za-z])|
       ([?:]\\s*N?![A-Za-z])).*\\R*",
       "",
       dataframe[, Column],
@@ -480,16 +467,14 @@ NegativeRemove <- function(dataframe, Column) {
                                      ".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "")
   # Other negatives
   dataframe[, Column] <- gsub(
-    ".*there (is|are) \\bno\\b .*?(\\.|
-    \n|:|$)\\R*",
+    ".*there (is|are) \\bno\\b .*?(\\.|\n|:|$)\\R*",
     "",
     dataframe[, Column],
     perl = TRUE,
     ignore.case = TRUE
 )
   dataframe[, Column] <- gsub(
-    "(within|with) (normal|\\bno\\b) .*?(\\.|
-    \n|:|$)\\R*",
+    "(within|with) (normal|\\bno\\b) .*?(\\.|\n|:|$)\\R*",
     "",
     dataframe[, Column],
     perl = TRUE,
@@ -519,26 +504,45 @@ NegativeRemove <- function(dataframe, Column) {
 #' This does a general clean up of whitespace,
 #' semi-colons,full stops at the start
 #' of lines and converts end sentence full stops to new lines.
-#' It should be used after the Extractor and the optional
-#' NewLines has been used. It can be used as part of the other functions
-#' or as a way of providing a 'positive diagnosis only' type output (see
-#' HistolDx)
+#' It should be used after the Extractor.
+#' It is used for columns where there is a lot of free text to extract. It 
+#' really extracts and standardises the sentences. 
 #' @param dataframe dataframe with column of interest
 #' @param Column column of interest
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace
-#' @examples ii<-ColumnCleanUp(Myendo,"OGDReportWhole")
+#' @examples ii<-ColumnCleanUp(Myendo,"Findings")
 
 
 ColumnCleanUp <- function(dataframe, Column) {
- # dataframe <- (data.frame(dataframe))
+  #Get rid of the empty lines with floating puctuation
   dataframe[, "Column"] <- str_replace(dataframe[, Column],"^\\.\n", "")
-  dataframe[, Column] <- str_replace(dataframe[, Column],"^:", "")
-  dataframe[, Column] <- gsub(".", "\n", dataframe[, Column], fixed = TRUE)
-  dataframe[, Column] <- str_replace(dataframe[, Column],"\\s{5}", "")
   dataframe[, Column] <- str_replace(dataframe[, Column],"^\\.", "")
+  dataframe[, Column] <- str_replace(dataframe[, Column],"^:", "")
+  
+  #Get rid of breaks between lines
+  dataframe[, Column] <- str_replace(dataframe[, Column],"(\n|\r){2,}", "\n")
+  dataframe[, Column] <- str_replace(dataframe[, Column],
+                                     "\\.\n\\.\n|\\.\r\\.\r", "\\.")
+  
+  #Get rid of floating whitespace
+  dataframe[, Column] <- str_replace(dataframe[, Column],"\\s{5,}", "")
   dataframe[, Column] <- str_replace(dataframe[, Column],"$\\.", "")
+  
+  #Get rid of floating commas at the end of lines
+  dataframe[, Column] <- str_replace(dataframe[, Column],"\n,", "\n")
+  #Standardise the carriage returns
+  dataframe[, Column] <- str_replace(dataframe[, Column],
+                                               "\r\n", "\n")
+  
+  
+  
+  #Get rid of trailing dots from previous conversions
+  dataframe[, Column] <- str_replace(dataframe[, Column],"\\.{2,}", "\\.")
+  
+  #Convert sentence endings to newlines as the sentence boundary
+  dataframe[, Column] <- gsub(".", "\n", dataframe[, Column], fixed = TRUE)
   return(dataframe[, Column])
 }
 
@@ -559,16 +563,33 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' 
 
 ColumnCleanUpAll <- function(dataframe) {
-  # dataframe <- (data.frame(dataframe))
+
+  #Get rid of the empty lines with floating puctuation
   dataframe <- str_replace(dataframe,"^\\.\n", "")
-  dataframe <- str_replace(dataframe,"^:", "")
-  dataframe <- gsub(".", "\n", dataframe, fixed = TRUE)
-  dataframe <- str_replace(dataframe,"\\s{5}", "")
   dataframe <- str_replace(dataframe,"^\\.", "")
-  dataframe<- str_replace(dataframe,"$\\.", "")
+  dataframe <- str_replace(dataframe,"^:", "")
+  
+  #Get rid of breaks between lines
+  dataframe <- str_replace(dataframe,"(\n|\r){2,}", "\n")
+  dataframe<- str_replace(dataframe,"\\.\n\\.\n|\\.\r\\.\r", "\\.")
+  
+  #Get rid of floating whitespace
+  dataframe <- str_replace(dataframe,"\\s{5,}", "")
+  dataframe <- str_replace(dataframe,"$\\.", "")
+  
+  #Get rid of floating commas at the end of lines
+  dataframe <- str_replace(dataframe,"\n,", "\n")
+  
+  #Get rid of trailing dots from previous conversions
+  dataframe <- str_replace(dataframe,"\\.{2,}", "\\.")
+  
+  #Standardise the carriage returns
+  dataframe<- str_replace(dataframe,"\r\n", "\n")
+  
+  #Convert sentence endings to newlines as the sentence boundary
+  dataframe <- gsub(".", "\n", dataframe, fixed = TRUE)
   return(dataframe)
 }
-
 
 ####### Histology Clean Up All functions #######
 
@@ -625,9 +646,9 @@ HistolAll <- function(dataframe) {
 
 #' Extract the histology data from the report by removing negative findings
 #'
-#' This extracts Histology details data from the report. The Histology details
-#' usually relate to the description of the histological report. This
-#' may be refined in further iterations.
+#' This extracts Histology details data from the report and also removes 
+#' negative findings. The Histology details
+#' usually relate to the description of the histological report. 
 #' @param dataframe dataframe with column of interest
 #' @param HistolColumn column of interest
 #' @keywords Histology
@@ -641,6 +662,8 @@ HistolHistol <- function(dataframe, HistolColumn) {
   # HISTOLOGY
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
                                            "\n|\r", " ")
+  dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
+  dataframe<- NegativeRemove(dataframe, HistolColumn)
   dataframe$Histol_Simplified <- dataframe[, HistolColumn]
   dataframe$Histol_Simplified <- gsub("- ", "\n", dataframe$Histol_Simplified,
                               fixed = TRUE)
@@ -688,7 +711,7 @@ HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
 #' cleanup and negative remover have also been implemented here.
 #'
 #' @param dataframe dataframe
-#' @param HistolColumn column containing the Hisopathology report
+#' @param HistolColumn column containing the Histopathology report
 #' @importFrom stringr str_extract str_replace
 #' @keywords Histology Diagnosis
 #' @export
@@ -740,8 +763,6 @@ HistolExtrapolDx <- function(dataframe, Column) {
     str_extract(dataframe[, Column], "G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio")
   return(dataframe)
 }
-
-
 
 
 #' Cleans spelt numbers in histology report

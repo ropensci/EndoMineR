@@ -9,7 +9,7 @@ HistolDx(dataframe, HistolColumn)
 \arguments{
 \item{dataframe}{dataframe}
 
-\item{HistolColumn}{column containing the Hisopathology report}
+\item{HistolColumn}{column containing the Histopathology report}
 }
 \description{
 This extracts Diagnosis data from the report. The Diagnosis is the overall

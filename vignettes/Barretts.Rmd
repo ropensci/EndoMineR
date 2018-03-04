@@ -69,7 +69,6 @@ panderOptions('table.split.table', Inf)
 pander(b[20:23,(ncol(b)-4):ncol(b)])
 ```
 
-
 ###Therapeutic events
 
 We also need to process any endoscopies where an event other than surveillance happened (unless filtered specifically for surveillance. This function extracts the Event- usually a therapeutic event, from the text eg endoscopic mucosal resection, radiofrequency ablation etc. It does not currently include stricture dilatation.Specfically it extracts the event. At the moment the event is extracted from the endoscopy only but for specimen extraction eg endoscopic mucosal resection future iterations may also examine the pathology data as it is likely to describe the presence of EMR more robustly. 
