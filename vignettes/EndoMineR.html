@@ -680,7 +680,7 @@ pander(head(TheOGDReportFinal2df,10))</code></pre>
 </div>
 <div id="extraction-of-elements-from-the-macroscopic-description" class="section level3">
 <h3>Extraction of elements from the Macroscopic Description</h3>
-<p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided to extract numbers from the text. This function is usually only used as part of HistolNumOfBx which extracts the number of biopsies taken.</p>
+<p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided called HistolNumOfBx to extract the number of biopsies taken.</p>
 <p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is. For example, if the report usually says:</p>
 <p><br></p>
 <table>
@@ -725,7 +725,7 @@ pander(head(TheOGDReportFinal2df,10))</code></pre>
 </tbody>
 </table>
 <p><br></p>
-<p>then the word that limits the number you are interested in is specimen so the function and it’s output is:</p>
+<p>Based on this, the word that limits the number you are interested in is ‘specimen’ so the function and it’s output is:</p>
 <p><br></p>
 <pre class="r"><code>v&lt;-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')</code></pre>
 <table style="width:75%;">
@@ -928,7 +928,7 @@ pander(head(TheOGDReportFinal2df,10))</code></pre>
 </div>
 <div id="removal-of-negatives" class="section level2">
 <h2>Removal of negatives</h2>
-<p>In addition, if there is a need to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. It can be applied as a stand alone function but is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text.</p>
+<p>In addition, if there is a need to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. It can be applied as a stand alone function but is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text to provide a Simplified Diagnosis column.</p>
 <p><br> The original input example can be seen here</p>
 <pre><code>## [1] &quot;  - Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal\n,Ileum and colon biopsies:- normal mucosa\n,Oesophagus, EMR 43P - Barrett 's oesophagus without intestinal metaplasia\n,Sigmoid colon, biopsy - Adenocarcinoma\n,- Chronic active inflammation,Duodenum biopsies:- normal mucosa\n,- Low grade dysplasia&quot;</code></pre>
 <p>If we apply the function NegativeRemove we see this changes to:</p>

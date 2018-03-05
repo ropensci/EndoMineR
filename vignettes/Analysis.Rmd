@@ -26,7 +26,7 @@ knitr::opts_chunk$set( warning=FALSE, message=FALSE)
 ```
 
 
-The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upone in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions. 
+The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upon in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions. 
 
 ##Surveillance functions
 
@@ -40,7 +40,7 @@ knitr::include_graphics("img/EndoMineR_Surveillance.svg")
 
 <br>
 
-The basic surveillance functions are simple but are the most often used. SurveillanceTimeByRow will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.
+The basic surveillance functions are simple but are the most often used. SurveilTimeByRow will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.
 SurveilLastTest simply extracts the last and first test respectively for each patient. 
 
 ```{r exampleSurveillanceTimeByRow, eval = TRUE}
@@ -117,11 +117,11 @@ Quality is measured in a variety of different ways. For endoscopy it is measured
 
 
 ###Documentation Quality
-As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised on terms that should be mentioned in a report.
+As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised of terms that should be mentioned in a report.
 
 **_Input_**
                       
-```{r exampleListLookup, eval = TRUE}
+```{r exampleListLookup, eval = TRUE,echo=FALSE}
 pander(head(data.frame(Myendo[2:3],Myendo[13])))
 ```
 
@@ -132,6 +132,9 @@ In this example we are looking for the words Barrett's and coeliac as perhaps we
 ```{r exampleListLookup2, eval = TRUE}
 myNotableWords <- c("arrett", "oeliac")
 tt<-ListLookup(Myendo,'Findings',myNotableWords)
+```
+
+```{r exampleListLookup2, echo=FALSE}
 pander(head(tt))
 ```
 

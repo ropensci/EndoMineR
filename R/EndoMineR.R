@@ -151,6 +151,7 @@ SurveilFirstTest <-
 
 
 
+
 #' Number of tests done per month
 #'
 #' This determines the number of tests done per month
@@ -166,9 +167,10 @@ SurveilFirstTest <-
 
 SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-  dataframe %>% mutate(month =
-                         format(as.Date(!!Endo_ResultPerformeda), "%m")) %>%
-    group_by(month) %>% summarise(n = n())
+  dataframe %>% mutate(month =format(as.Date(!!Endo_ResultPerformeda), "%m"),
+                       year = format(!!Endo_ResultPerformeda, "%Y")) %>%
+    group_by(year,month) %>% summarise(n = n())
+  dataframe<-data.frame(dataframe)
 }
 
 #' Number of tests done per month and year by indication

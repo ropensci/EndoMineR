@@ -236,7 +236,7 @@ test_that("HistolDx", {
   HistolDxTest<-HistolDx(ff,'Diagnosis')
   expect_true(all(!is.na(HistolDxTest$Dx_Simplified)))
   expect_identical(HistolDxTest$Dx_Simplified,
-                   "Adenocarcinoma\n")
+                   "Barrett's oesophagus,Sigmoid colon, biopsy \nAdenocarcinoma\n")
 })
 
 #### HistolExtrapolDx test ####
