@@ -1,6 +1,6 @@
 template:
   params:
-    bootswatch: simplex
+    bootswatch: paper
     
 navbar:
   type: inverse

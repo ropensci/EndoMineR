@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Analysis • EndoMineR</title>
-<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/simplex/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
@@ -94,13 +94,13 @@
       <h1>Analysis</h1>
                         <h4 class="author">Sebastian Zeki</h4>
             
-            <h4 class="date">March 04, 2018</h4>
+            <h4 class="date">March 06, 2018</h4>
           </div>
 
     
     
 <div class="contents">
-<p>The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upone in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions.</p>
+<p>The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upon in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions.</p>
 <div id="surveillance-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#surveillance-functions" class="anchor"></a>Surveillance functions</h2>
@@ -108,7 +108,7 @@
 <p><br></p>
 <p><img src="img/EndoMineR_Surveillance.svg" style="display: block; margin: auto;"></p>
 <p><br></p>
-<p>The basic surveillance functions are simple but are the most often used. SurveillanceTimeByRow will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy. SurveilLastTest simply extracts the last and first test respectively for each patient.</p>
+<p>The basic surveillance functions are simple but are the most often used. SurveilTimeByRow will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy. SurveilLastTest simply extracts the last and first test respectively for each patient.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em1&lt;-<span class="kw"><a href="../reference/SurveilTimeByRow.html">SurveilTimeByRow</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
 <span class="kw">pander</span>(<span class="kw">head</span>(<span class="kw">data.frame</span>(em1[<span class="dv">2</span>],em1[<span class="kw">ncol</span>(em1)]),<span class="dv">5</span>))</code></pre></div>
 <table style="width:39%;" class="table">
@@ -157,23 +157,23 @@
 <tbody>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">805 days</td>
+<td align="center">807 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">805 days</td>
+<td align="center">807 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">805 days</td>
+<td align="center">807 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">805 days</td>
+<td align="center">807 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">805 days</td>
+<td align="center">807 days</td>
 </tr>
 </tbody>
 </table>
@@ -248,39 +248,209 @@
 <p>Of course we also want to know how many tests have been done over a time period and this is provided by two functions</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em5&lt;-<span class="kw"><a href="../reference/SurveilCapacity.html">SurveilCapacity</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>)
 <span class="kw">pander</span>(<span class="kw">head</span>(em5))</code></pre></div>
-<table style="width:18%;" class="table">
+<table class="table">
+<caption>Table continues below</caption>
 <colgroup>
-<col width="11%">
-<col width="6%">
+<col width="45%">
+<col width="23%">
+<col width="30%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">month</th>
-<th align="center">n</th>
+<th align="center">OGDReportWhole</th>
+<th align="center">HospitalNumber</th>
+<th align="center">PatientName</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">01</td>
-<td align="center">178</td>
+<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: J6044658 Patient Name: Jargon, Victoria General Practitioner: Dr. Martin, Marche Date of procedure: 2009-11-11 Endoscopist: Dr. Sullivan, Shelby Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 12.5mcg Midazolam 6mg Instrument: FG5 Extent of Exam: GOJ Indications: Follow-up ULCER HEALING Procedure Performed: Gastroscopy (OGD) Findings: No evidence of Barrett’s oesophagus, short 2 cn hiatus hernia.,Oesophageal biopsies taken from three levels as requested.,OGD today to assess for ulceration/ongoing bleeding.,Diaphragmatic pinch:40cm .,She has a small hiatus hernia .,We will re-book for 2 weeks, rebanding.,Tiny erosions at the antrum.,Biopsies taken from top of stricture-metal marking clips in situ.,The varices flattened well with air insufflation.,He is on Barrett’s Screeling List in October 2017 at St Thomas’. HALO 90 done with good effect Endoscopic Diagnosis: Post chemo-radiotherapy stricture</td>
+<td align="center">J6044658</td>
+<td align="center">Jargon, Victoria</td>
 </tr>
 <tr class="even">
-<td align="center">02</td>
-<td align="center">158</td>
+<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: Y6417773 Patient Name: Powell, Destiny General Practitioner: Dr. al-Safi, Lutfiyya Date of procedure: 2008-06-15 Endoscopist: Dr. Kekich, Annabelle Second endoscopist: Dr. Needham, April Medications: Fentanyl 125mcg Midazolam 7mg Instrument: FG6 Extent of Exam: Pylorus Indications: Weight Loss Procedure Performed: Gastroscopy (OGD) Findings: Duodenum: Duodenitis with a small erosion .,STOMACH: diffuse gastritis with angiodysplasia and punctate bleeding site on greater curve mid body - no obvious ulcer- antrum scar ?,No immediate complications.,Z-line at: 38cm - Bravo placed at 32cm- good positionat check endoscopy. Endoscopic Diagnosis: Esophageal candidiasis</td>
+<td align="center">Y6417773</td>
+<td align="center">Powell, Destiny</td>
 </tr>
 <tr class="odd">
-<td align="center">03</td>
-<td align="center">174</td>
+<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: B6072011 Patient Name: Martinez-Santos, Ana General Practitioner: Dr. Rogers, Monica Date of procedure: 2007-10-27 Endoscopist: Dr. Sullivan, Shelby Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 125mcg Midazolam 6mg Instrument: FG2 Extent of Exam: GOJ Indications: Follow-up ULCER HEALING Procedure Performed: Gastroscopy (OGD) Findings: Stomach- Body Polyp- Pedunculated .,Several erosions/small ulcers in inflammed antrum.,Lax cardia with small hiatus hernia but no erosive oesophagitis.,DUODENUM: Normal to D3. Endoscopic Diagnosis: Post chemo-radiotherapy stricture ,Extensive neoplastic looking esophageal lesion. ,Esophageal candidiasis</td>
+<td align="center">B6072011</td>
+<td align="center">Martinez-Santos, Ana</td>
 </tr>
 <tr class="even">
-<td align="center">04</td>
-<td align="center">146</td>
+<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: G1449886 Patient Name: Lopez, Maria General Practitioner: Dr. Heilman, Lisa Date of procedure: 2002-03-17 Endoscopist: Dr. Avitia-Ramirez, Alondra Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 12.5mcg Midazolam 2mg Instrument: FG1 Extent of Exam: GOJ Indications: Other- Procedure Performed: Gastroscopy (OGD) Findings: STOMACH: Small amount of bright red blood that seems to have refluxed back through the pylorus. Endoscopic Diagnosis: Post chemo-radiotherapy stricture ,Oesophagitis.</td>
+<td align="center">G1449886</td>
+<td align="center">Lopez, Maria</td>
 </tr>
 <tr class="odd">
-<td align="center">05</td>
-<td align="center">184</td>
+<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: V1607560 Patient Name: al-Rahimi, Rif’a General Practitioner: Dr. Krumland, Lisa Date of procedure: 2011-12-05 Endoscopist: Dr. Greimann, Phoua Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 75mcg Midazolam 6mg Instrument: FG2 Extent of Exam: D2 Indications: Previous OGD ? 8 months ago Procedure Performed: Gastroscopy (OGD) Findings: Coffee ground vomit.,OESOPHAGUS: the previous subepithelial lesion measuring 1. TTS HALO to area Endoscopic Diagnosis: Food bolus obstructing the oesophagus.,Esophageal candidiasis ,Post chemo-radiotherapy stricture</td>
+<td align="center">V1607560</td>
+<td align="center">al-Rahimi, Rif’a</td>
 </tr>
 <tr class="even">
-<td align="center">06</td>
-<td align="center">170</td>
+<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: I8031481 Patient Name: Forrest, Dazheea General Practitioner: Dr. Millman, Arianna Date of procedure: 2014-09-19 Endoscopist: Dr. Avitia-Ramirez, Alondra Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 150mcg Midazolam 3mg Instrument: FG6 Extent of Exam: Pylorus Indications: Surveillance-Barrett’s Procedure Performed: Gastroscopy (OGD) Findings: Stomach- Pylorus.,No cervical inlet patch. Endoscopic Diagnosis: Gastritis</td>
+<td align="center">I8031481</td>
+<td align="center">Forrest, Dazheea</td>
+</tr>
+</tbody>
+</table>
+<table style="width:96%;" class="table">
+<caption>Table continues below</caption>
+<colgroup>
+<col width="31%">
+<col width="25%">
+<col width="38%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">GeneralPractitioner</th>
+<th align="center">Dateofprocedure</th>
+<th align="center">Endoscopist</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">Dr Martin, Marche</td>
+<td align="center">2009-11-11</td>
+<td align="center">Dr Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">Dr al-Safi, Lutfiyya</td>
+<td align="center">2008-06-15</td>
+<td align="center">Dr Kekich, Annabelle</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Rogers, Monica</td>
+<td align="center">2007-10-27</td>
+<td align="center">Dr Sullivan, Shelby</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Heilman, Lisa</td>
+<td align="center">2002-03-17</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Krumland, Lisa</td>
+<td align="center">2011-12-05</td>
+<td align="center">Dr Greimann, Phoua</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Millman, Arianna</td>
+<td align="center">2014-09-19</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+</tr>
+</tbody>
+</table>
+<table style="width:94%;" class="table">
+<caption>Table continues below</caption>
+<colgroup>
+<col width="34%">
+<col width="43%">
+<col width="16%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">Secondendoscopist</th>
+<th align="center">Medications</th>
+<th align="center">Instrument</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">Dr al-Basha, Mahfoodha</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
+<td align="center">FG5</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Needham, April</td>
+<td align="center">Fentanyl 125mcg Midazolam 7mg</td>
+<td align="center">FG6</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr al-Basha, Mahfoodha</td>
+<td align="center">Fentanyl 125mcg Midazolam 6mg</td>
+<td align="center">FG2</td>
+</tr>
+<tr class="even">
+<td align="center">Dr al-Basha, Mahfoodha</td>
+<td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
+<td align="center">FG1</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr al-Basha, Mahfoodha</td>
+<td align="center">Fentanyl 75mcg Midazolam 6mg</td>
+<td align="center">FG2</td>
+</tr>
+<tr class="even">
+<td align="center">Dr al-Basha, Mahfoodha</td>
+<td align="center">Fentanyl 150mcg Midazolam 3mg</td>
+<td align="center">FG6</td>
+</tr>
+</tbody>
+</table>
+<table style="width:90%;" class="table">
+<caption>Table continues below</caption>
+<colgroup>
+<col width="20%">
+<col width="41%">
+<col width="27%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">ExtentofExam</th>
+<th align="center">Indications</th>
+<th align="center">ProcedurePerformed</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">GOJ</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">Pylorus</td>
+<td align="center">Weight Loss</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">GOJ</td>
+<td align="center">Follow-up ULCER HEALING</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">GOJ</td>
+<td align="center">Other-</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="odd">
+<td align="center">D2</td>
+<td align="center">Previous OGD ? 8 months ago</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+<tr class="even">
+<td align="center">Pylorus</td>
+<td align="center">Surveillance-Barrett’s</td>
+<td align="center">Gastroscopy (OGD)</td>
+</tr>
+</tbody>
+</table>
+<table style="width:44%;" class="table">
+<colgroup><col width="44%"></colgroup>
+<thead><tr class="header">
+<th align="center">Findings</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">No evidence of Barrett’s oesophagus, short 2 cn hiatus hernia ,Oesophageal biopsies taken from three levels as requested ,OGD today to assess for ulceration/ongoing bleeding ,Diaphragmatic pinch:40cm ,She has a small hiatus hernia ,We will re-book for 2 weeks, rebanding ,Tiny erosions at the antrum ,Biopsies taken from top of stricture-metal marking clips in situ ,The varices flattened well with air insufflation ,He is on Barrett’s Screeling List in October 2017 at St Thomas’ HALO 90 done with good effect</td>
+</tr>
+<tr class="even">
+<td align="center">Duodenum: Duodenitis with a small erosion ,STOMACH: diffuse gastritis with angiodysplasia and punctate bleeding site on greater curve mid body - no obvious ulcer- antrum scar ?,No immediate complications ,Z-line at: 38cm - Bravo placed at 32cm- good positionat check endoscopy</td>
+</tr>
+<tr class="odd">
+<td align="center">Stomach- Body Polyp- Pedunculated ,Several erosions/small ulcers in inflammed antrum ,Lax cardia with small hiatus hernia but no erosive oesophagitis ,DUODENUM: Normal to D3</td>
+</tr>
+<tr class="even">
+<td align="center">STOMACH: Small amount of bright red blood that seems to have refluxed back through the pylorus</td>
+</tr>
+<tr class="odd">
+<td align="center">Coffee ground vomit ,OESOPHAGUS: the previous subepithelial lesion measuring 1 TTS HALO to area</td>
+</tr>
+<tr class="even">
+<td align="center">Stomach- Pylorus ,No cervical inlet patch</td>
 </tr>
 </tbody>
 </table>
@@ -320,9 +490,8 @@ how[<span class="dv">1</span>]</code></pre></div>
 <div id="documentation-quality" class="section level3">
 <h3 class="hasAnchor">
 <a href="#documentation-quality" class="anchor"></a>Documentation Quality</h3>
-<p>As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised on terms that should be mentioned in a report.</p>
+<p>As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised of terms that should be mentioned in a report.</p>
 <p><strong><em>Input</em></strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pander</span>(<span class="kw">head</span>(<span class="kw">data.frame</span>(Myendo[<span class="dv">2</span>:<span class="dv">3</span>],Myendo[<span class="dv">13</span>])))</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="23%">
@@ -370,8 +539,7 @@ how[<span class="dv">1</span>]</code></pre></div>
 <p><br></p>
 <p>In this example we are looking for the words Barrett’s and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscope report</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myNotableWords &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"arrett"</span>, <span class="st">"oeliac"</span>)
-tt&lt;-<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></span>(Myendo,<span class="st">'Findings'</span>,myNotableWords)
-<span class="kw">pander</span>(<span class="kw">head</span>(tt))</code></pre></div>
+tt&lt;-<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></span>(Myendo,<span class="st">'Findings'</span>,myNotableWords)</code></pre></div>
 <table style="width:25%;" class="table">
 <colgroup>
 <col width="12%">
@@ -485,6 +653,8 @@ tt&lt;-<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></s
 <p>Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.</p>
 <p>To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings in histology. This also attempts to extract the sample location into a separate column</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f&lt;-<span class="kw"><a href="../reference/TermStandardLocation.html">TermStandardLocation</a></span>(Mypath,<span class="st">'Histology'</span>)
+
+<span class="co">#Just some column selection</span>
 fgg&lt;-<span class="kw">data.frame</span>(f[(<span class="kw">ncol</span>(f)-<span class="dv">1</span>)],f[(<span class="kw">ncol</span>(f))])
 <span class="kw">pander</span>(<span class="kw">head</span>(fgg,<span class="dv">10</span>))</code></pre></div>
 <table style="width:92%;" class="table">
@@ -541,6 +711,8 @@ fgg&lt;-<span class="kw">data.frame</span>(f[(<span class="kw">ncol</span>(f)-<s
 </table>
 <p>Once this is done, a column called SampleLocation is appended to the existing dataset. This will attempt to state the location of all samples whether they are resections/ biopsies or polyps. If polyps specifically need to be located then the PolypLocator function can be used (after the TermStandardLocation function).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fgg&lt;-<span class="kw"><a href="../reference/PolypLocator.html">PolypLocator</a></span>(fgg,<span class="st">'SampleLocation'</span>) 
+
+<span class="co">#Just some column selection</span>
 fg&lt;-<span class="kw">data.frame</span>(fgg[(<span class="kw">ncol</span>(fgg)-<span class="dv">2</span>)],fgg[(<span class="kw">ncol</span>(fgg)-<span class="dv">1</span>)],fgg[(<span class="kw">ncol</span>(fgg))])
 <span class="kw">pander</span>(<span class="kw">head</span>(fg,<span class="dv">3</span>))</code></pre></div>
 <table style="width:92%;" class="table">
@@ -606,21 +778,33 @@ fg&lt;-<span class="kw">data.frame</span>(fgg[(<span class="kw">ncol</span>(fgg)
 
  
  <span class="co">#Use the function</span>
-GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html">GRS_Type_Assess_By_Unit</a></span>(vColon,<span class="st">'ProcedurePerformed'</span>,<span class="st">'Endoscopist'</span>,<span class="st">'Diagnosis'</span>,<span class="st">'Histology'</span>)
-<span class="kw">pander</span>(GRSTable)</code></pre></div>
-<table style="width:97%;" class="table">
-<caption>Table continues below</caption>
+GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html">GRS_Type_Assess_By_Unit</a></span>(vColon,<span class="st">'ProcedurePerformed'</span>,<span class="st">'Endoscopist'</span>,<span class="st">'Diagnosis'</span>,<span class="st">'Histology'</span>)</code></pre></div>
+<table class="table">
 <colgroup>
-<col width="38%">
-<col width="19%">
-<col width="19%">
-<col width="19%">
+<col width="13%">
+<col width="6%">
+<col width="6%">
+<col width="7%">
+<col width="9%">
+<col width="7%">
+<col width="9%">
+<col width="10%">
+<col width="5%">
+<col width="10%">
+<col width="13%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">Endoscopist</th>
 <th align="center">NumAdenomas</th>
 <th align="center">NumColons.x</th>
 <th align="center">PropAdenomas</th>
+<th align="center">NumHyperplastics</th>
+<th align="center">Colons(Count)</th>
+<th align="center">PropHyperplastic</th>
+<th align="center">NumAdenocarcinomas</th>
+<th align="center">NumColons</th>
+<th align="center">PropAdenocarcinomas</th>
+<th align="center">HyperplasticToAdenomaRatio</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -628,198 +812,127 @@ GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html
 <td align="center">3</td>
 <td align="center">204</td>
 <td align="center">1.471</td>
+<td align="center">2</td>
+<td align="center">204</td>
+<td align="center">0.9804</td>
+<td align="center">NA</td>
+<td align="center">204</td>
+<td align="center">NA</td>
+<td align="center">1.5</td>
 </tr>
 <tr class="even">
 <td align="center">Dr al-Saade, Waajida</td>
 <td align="center">2</td>
 <td align="center">215</td>
 <td align="center">0.9302</td>
+<td align="center">NA</td>
+<td align="center">215</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
+<td align="center">215</td>
+<td align="center">NA</td>
+<td align="center">NA</td>
 </tr>
 <tr class="odd">
 <td align="center">Dr Confer, Mouneek</td>
 <td align="center">6</td>
 <td align="center">216</td>
 <td align="center">2.778</td>
+<td align="center">3</td>
+<td align="center">216</td>
+<td align="center">1.389</td>
+<td align="center">NA</td>
+<td align="center">216</td>
+<td align="center">NA</td>
+<td align="center">2</td>
 </tr>
 <tr class="even">
 <td align="center">Dr Gebregzabheir, Kiara</td>
 <td align="center">4</td>
 <td align="center">190</td>
 <td align="center">2.105</td>
+<td align="center">3</td>
+<td align="center">190</td>
+<td align="center">1.579</td>
+<td align="center">NA</td>
+<td align="center">190</td>
+<td align="center">NA</td>
+<td align="center">1.333</td>
 </tr>
 <tr class="odd">
 <td align="center">Dr Hasling, Emily</td>
 <td align="center">6</td>
 <td align="center">218</td>
 <td align="center">2.752</td>
+<td align="center">5</td>
+<td align="center">218</td>
+<td align="center">2.294</td>
+<td align="center">NA</td>
+<td align="center">218</td>
+<td align="center">NA</td>
+<td align="center">1.2</td>
 </tr>
 <tr class="even">
 <td align="center">Dr Monroe, Danjai</td>
 <td align="center">7</td>
 <td align="center">230</td>
 <td align="center">3.043</td>
+<td align="center">2</td>
+<td align="center">230</td>
+<td align="center">0.8696</td>
+<td align="center">NA</td>
+<td align="center">230</td>
+<td align="center">NA</td>
+<td align="center">3.5</td>
 </tr>
 <tr class="odd">
 <td align="center">Dr Phillips, Harlie</td>
 <td align="center">6</td>
 <td align="center">233</td>
 <td align="center">2.575</td>
+<td align="center">3</td>
+<td align="center">233</td>
+<td align="center">1.288</td>
+<td align="center">NA</td>
+<td align="center">233</td>
+<td align="center">NA</td>
+<td align="center">2</td>
 </tr>
 <tr class="even">
 <td align="center">Dr Rahat, Janisa</td>
 <td align="center">1</td>
 <td align="center">217</td>
 <td align="center">0.4608</td>
+<td align="center">2</td>
+<td align="center">217</td>
+<td align="center">0.9217</td>
+<td align="center">NA</td>
+<td align="center">217</td>
+<td align="center">NA</td>
+<td align="center">0.5</td>
 </tr>
 <tr class="odd">
 <td align="center">Dr Rubio, Jessica</td>
 <td align="center">2</td>
 <td align="center">180</td>
 <td align="center">1.111</td>
+<td align="center">2</td>
+<td align="center">180</td>
+<td align="center">1.111</td>
+<td align="center">NA</td>
+<td align="center">180</td>
+<td align="center">NA</td>
+<td align="center">1</td>
 </tr>
 <tr class="even">
 <td align="center">Dr Steinbach, Lindsey</td>
 <td align="center">6</td>
 <td align="center">191</td>
 <td align="center">3.141</td>
-</tr>
-</tbody>
-</table>
-<table class="table">
-<caption>Table continues below</caption>
-<colgroup>
-<col width="25%">
-<col width="21%">
-<col width="25%">
-<col width="27%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">NumHyperplastics</th>
-<th align="center">Colons(Count)</th>
-<th align="center">PropHyperplastic</th>
-<th align="center">NumAdenocarcinomas</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">2</td>
-<td align="center">204</td>
-<td align="center">0.9804</td>
-<td align="center">NA</td>
-</tr>
-<tr class="even">
-<td align="center">NA</td>
-<td align="center">215</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">3</td>
-<td align="center">216</td>
-<td align="center">1.389</td>
-<td align="center">NA</td>
-</tr>
-<tr class="even">
-<td align="center">3</td>
-<td align="center">190</td>
-<td align="center">1.579</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">5</td>
-<td align="center">218</td>
-<td align="center">2.294</td>
-<td align="center">NA</td>
-</tr>
-<tr class="even">
-<td align="center">2</td>
-<td align="center">230</td>
-<td align="center">0.8696</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">3</td>
-<td align="center">233</td>
-<td align="center">1.288</td>
-<td align="center">NA</td>
-</tr>
-<tr class="even">
-<td align="center">2</td>
-<td align="center">217</td>
-<td align="center">0.9217</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">2</td>
-<td align="center">180</td>
-<td align="center">1.111</td>
-<td align="center">NA</td>
-</tr>
-<tr class="even">
 <td align="center">3</td>
 <td align="center">191</td>
 <td align="center">1.571</td>
 <td align="center">NA</td>
-</tr>
-</tbody>
-</table>
-<table style="width:86%;" class="table">
-<colgroup>
-<col width="16%">
-<col width="30%">
-<col width="38%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">NumColons</th>
-<th align="center">PropAdenocarcinomas</th>
-<th align="center">HyperplasticToAdenomaRatio</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">204</td>
-<td align="center">NA</td>
-<td align="center">1.5</td>
-</tr>
-<tr class="even">
-<td align="center">215</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">216</td>
-<td align="center">NA</td>
-<td align="center">2</td>
-</tr>
-<tr class="even">
-<td align="center">190</td>
-<td align="center">NA</td>
-<td align="center">1.333</td>
-</tr>
-<tr class="odd">
-<td align="center">218</td>
-<td align="center">NA</td>
-<td align="center">1.2</td>
-</tr>
-<tr class="even">
-<td align="center">230</td>
-<td align="center">NA</td>
-<td align="center">3.5</td>
-</tr>
-<tr class="odd">
-<td align="center">233</td>
-<td align="center">NA</td>
-<td align="center">2</td>
-</tr>
-<tr class="even">
-<td align="center">217</td>
-<td align="center">NA</td>
-<td align="center">0.5</td>
-</tr>
-<tr class="odd">
-<td align="center">180</td>
-<td align="center">NA</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
 <td align="center">191</td>
 <td align="center">NA</td>
 <td align="center">2</td>
