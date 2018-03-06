@@ -23,7 +23,7 @@ navbar:
           href: articles/Data.html
 
   right:
-    - icon: fa-github fa-lg
+    - icon: fa fa-bullseye
       href: http://gastrodatascience.com
     - icon: fa fa-twitter
       href: https://twitter.com/GastroDS

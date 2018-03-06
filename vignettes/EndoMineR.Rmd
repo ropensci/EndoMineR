@@ -105,7 +105,7 @@ pander(head(PathDataFrameFinalColon2,1))
 
 ## Endoscopic cleaning
 
-Once the extraction has been done there are various cleaning functions provided based around the extraction of likely columns.This is illustrated in the figure below. Any one column does not have to be present in the final dataframe once extraction has happened. The functions are defined according to the most likely outputted columns from extraction from a typical dataset. If endoscopy reports are being extracted then the functions concentrate on these.
+Once the extraction has been done into separate columns, various cleaning functions can be used for indivisual columns. This is illustrated in the figure below. Any one column does not have to be present in the final dataframe once extraction has happened. The functions are defined according to the most likely outputted columns from extraction from a typical dataset. If endoscopy reports are being extracted then the functions concentrate on these.
 
 <br>
 

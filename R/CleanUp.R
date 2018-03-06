@@ -165,9 +165,9 @@ EndoscAll<- function(dataframe) {
 EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
   # Extraction of the Endoscopist
   dataframe <- data.frame(dataframe)
-  dataframe[, EndoReportColumn] <- gsub("Mr|Professor|Prof|Dr", "", 
-                                  dataframe[, EndoReportColumn])
   dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
+                                               "Mr|Professor|Prof|Dr", "")
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn], 
                                                "[^[:alnum:],]", "")
   # Put gaps between names
   dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],

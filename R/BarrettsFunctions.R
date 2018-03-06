@@ -421,6 +421,8 @@ BarrettsSurveil <- function(dataframe,
     ) / 52) %>%
     filter(Years > 3)
   
+  t<-data.frame(t)
+  
   return(t)
   
 }
@@ -1184,5 +1186,6 @@ Barretts_CRIM <- function(dataframe, HospNum, EVENT) {
     mutate(ind = (!!EVENTa) == "RFA" &
              lead(!!EVENTa) == "nothing") %>%
     slice(sort(c(which(ind), which(ind) + 1)))
+  CRIM<-data.frame(CRIM)
   return(CRIM)
 }

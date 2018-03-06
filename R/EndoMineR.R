@@ -65,11 +65,13 @@ SurveilTimeByRow <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
+    ret<-dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
       mutate(diffDate = difftime(as.Date(!!Endo_ResultPerformeda), lead(as.Date(
         !!Endo_ResultPerformeda
       ), 1), units = "days"))
+    dataframe<-data.frame(ret)
+    return(dataframe)
   }
 
 #' Extract the last test done by a patient in days and how long ago
@@ -93,10 +95,12 @@ SurveilLastToNow <-
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
 
-    dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
+    ret<-dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
       mutate(diffDate = difftime(Sys.Date(), last(!!Endo_ResultPerformeda),
                                  units = "days"))
+    dataframe<-data.frame(ret)
+    return(dataframe)
   }
 
 
@@ -119,9 +123,11 @@ SurveilLastTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    dataframe %>% group_by(!!HospNum_Ida) %>%
+    ret<-dataframe %>% group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == n())
+    dataframe<-data.frame(ret)
+    return(dataframe)
   }
 
 
@@ -144,9 +150,11 @@ SurveilFirstTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    dataframe %>% group_by(!!HospNum_Ida) %>%
+    ret<-dataframe %>% group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == 1)
+    dataframe<-data.frame(ret)
+    return(dataframe)
   }
 
 
@@ -167,10 +175,11 @@ SurveilFirstTest <-
 
 SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-  dataframe %>% mutate(month =format(as.Date(!!Endo_ResultPerformeda), "%m"),
+  ret<-dataframe %>% mutate(month =format(as.Date(!!Endo_ResultPerformeda), "%m"),
                        year = format(!!Endo_ResultPerformeda, "%Y")) %>%
     group_by(year,month) %>% summarise(n = n())
-  dataframe<-data.frame(dataframe)
+  dataframe<-data.frame(ret)
+  return(dataframe)
 }
 
 #' Number of tests done per month and year by indication
@@ -232,6 +241,7 @@ HowManyTests <-
     TestNumbers2<-TestNumbers%>%select(year,freq) %>%
       group_by(year) %>%
       summarise(FreqYear=n())
+    TestNumbers2<-data.frame(TestNumbers2)
 
 
     # # Then just plot it:
@@ -998,6 +1008,7 @@ GRS_Type_Assess_By_Unit <-
 
     names(FinalTable)[names(FinalTable) == "NumColons.y"] <-
       "Colons(Count)"
+    FinalTable<-data.frame(FinalTable)
     return(FinalTable)
   }
 

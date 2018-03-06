@@ -58,8 +58,14 @@ Of course we also want to know how many tests have been done over a time period 
 
 ```{r exampleSurveillanceCapacity}
 em5<-SurveilCapacity(Myendo,"Dateofprocedure")
+
+```
+
+```{r exampleSurveillanceCapacity2,echo=FALSE}
+pander::panderOptions('table.split.table', Inf)
 pander(head(em5))
 ```
+
 
 
 This function will return the number of tests by month. The more detailed function is:
@@ -113,7 +119,7 @@ knitr::include_graphics("img/EndoMineR_Circos.svg")
 
 ##Assessment of quality functions
 
-Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)
+Quality is measured in a variety of ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)
 
 
 ###Documentation Quality
@@ -122,6 +128,7 @@ As regards adherence to documentation for example, a generic function is provide
 **_Input_**
                       
 ```{r exampleListLookup, eval = TRUE,echo=FALSE}
+pander::panderOptions('table.split.table', Inf)
 pander(head(data.frame(Myendo[2:3],Myendo[13])))
 ```
 
@@ -135,6 +142,7 @@ tt<-ListLookup(Myendo,'Findings',myNotableWords)
 ```
 
 ```{r exampleListLookup3, echo=FALSE}
+pander::panderOptions('table.split.table', Inf)
 pander(head(tt))
 ```
 
