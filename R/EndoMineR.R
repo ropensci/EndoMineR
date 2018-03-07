@@ -1,7 +1,5 @@
 
 
-
-
 if (getRversion() >= "2.15.1")
   utils::globalVariables(
     c(
@@ -525,7 +523,8 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 
 #' Plot a metric by endoscopist
 #'
-#' This takes any numerical metric in the dataset and plots it by endoscopist.
+#' This takes any of the numerical metrics in the dataset and plots it by
+#' endoscopist.
 #' It of course relies on a Endoscopist column being present
 #' @param dataframe The dataframe
 #' @param Column The column (numeric data) of interest

@@ -14,7 +14,8 @@ MetricByEndoscopist(dataframe, Column, EndoscopistColumn)
 \item{EndoscopistColumn}{The endoscopist column}
 }
 \description{
-This takes any numerical metric in the dataset and plots it by endoscopist.
+This takes any of the numerical metrics in the dataset and plots it by
+endoscopist.
 It of course relies on a Endoscopist column being present
 }
 \examples{
