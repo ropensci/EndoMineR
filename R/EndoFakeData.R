@@ -15,7 +15,6 @@
 #' @param PathHospNumber The unique hospital number in the endoscopy dataset
 #' @importFrom magrittr '%>%'
 #' @importFrom dplyr filter
-#' @importFrom fuzzyjoin difference_full_join
 #' @keywords merge endoscopy and histology
 #' @export
 #' @examples v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',

@@ -22,6 +22,10 @@ pander(head(data.frame(em4[2],em4[5]),5))
 
 ## ----exampleSurveillanceCapacity-----------------------------------------
 em5<-SurveilCapacity(Myendo,"Dateofprocedure")
+
+
+## ----exampleSurveillanceCapacity2,echo=FALSE-----------------------------
+pander::panderOptions('table.split.table', Inf)
 pander(head(em5))
 
 ## ----exampleHowManyTests-------------------------------------------------
@@ -41,6 +45,7 @@ knitr::include_graphics("img/EndoMineR_Sankey.svg")
 knitr::include_graphics("img/EndoMineR_Circos.svg")
 
 ## ----exampleListLookup, eval = TRUE,echo=FALSE---------------------------
+pander::panderOptions('table.split.table', Inf)
 pander(head(data.frame(Myendo[2:3],Myendo[13])))
 
 ## ----exampleListLookup2, eval = TRUE-------------------------------------
@@ -48,6 +53,7 @@ myNotableWords <- c("arrett", "oeliac")
 tt<-ListLookup(Myendo,'Findings',myNotableWords)
 
 ## ----exampleListLookup3, echo=FALSE--------------------------------------
+pander::panderOptions('table.split.table', Inf)
 pander(head(tt))
 
 ## ----exampleEndoscChopperMeds--------------------------------------------

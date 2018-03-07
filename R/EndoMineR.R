@@ -278,8 +278,6 @@ HowManyTests <-
 #' @importFrom dplyr group_by
 #' @importFrom magrittr '%>%'
 #' @importFrom data.table 'setDT' 'rowid'
-#' @importFrom reshape2 'dcast'
-#' @importFrom googleVis gvisSankey
 #' @keywords Sankey
 #' @export
 #' @examples # The purpose of the function is to
@@ -364,8 +362,6 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
 #' @importFrom dplyr arrange group_by mutate select summarise lag ungroup rename
 #' @importFrom reshape2 'dcast'
 #' @importFrom tidyr separate
-#' @importFrom circlize circos.clear circos.par chordDiagram
-#' circos.trackPlotRegion get.cell.meta.data circos.text
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang sym
 #' @keywords Circos
@@ -442,11 +438,11 @@ PatientFlow_CircosPlots <-
 
 
 
-    circos.clear()
+    circlize::circos.clear()
     par(mar = rep(0, 4), cex = 0.9)
-    circos.par(start.degree = 90, gap.degree = 4)
+    circlize::circos.par(start.degree = 90, gap.degree = 4)
     par(cex = 0.8, mar = c(0, 0, 0, 0))
-    chordDiagram(
+    circlize::chordDiagram(
       x = matmydf,
       directional = 1,
       order = df_format$region,
@@ -458,13 +454,13 @@ PatientFlow_CircosPlots <-
     )
 
 
-    circos.trackPlotRegion(
+    circlize::circos.trackPlotRegion(
       track.index = 1,
       panel.fun = function(x, y) {
-        xlim <- get.cell.meta.data("xlim")
-        ylim <- get.cell.meta.data("ylim")
-        sector.index <- get.cell.meta.data("sector.index")
-        circos.text(
+        xlim <- circlize::get.cell.meta.data("xlim")
+        ylim <- circlize::get.cell.meta.data("ylim")
+        sector.index <- circlize::get.cell.meta.data("sector.index")
+        circlize::circos.text(
           mean(xlim),
           mean(ylim),
           sector.index,

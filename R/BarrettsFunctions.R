@@ -1019,7 +1019,6 @@ BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
 #' @param Column Endoscopy report field of interest
 #' @param Column2 Another endoscopy report field of interest
 #' @keywords Does something with data
-#' @importFrom gplots 'heatmap.2'
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
@@ -1119,7 +1118,7 @@ BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
                 seq(0.21, 0.8, length = 100),
                 seq(0.81, 1, length = 100))
     
-    heatmap.2(
+    gplots::heatmap.2(
       tr5,
       trace = "none",
       breaks = colors,

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Sebastian Zeki" />
 
-<meta name="date" content="2018-03-05" />
+<meta name="date" content="2018-03-07" />
 
 <title>Analysis</title>
 
@@ -122,7 +122,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Analysis</h1>
 <h4 class="author"><em>Sebastian Zeki</em></h4>
-<h4 class="date"><em>March 05, 2018</em></h4>
+<h4 class="date"><em>March 07, 2018</em></h4>
 
 </div>
 
@@ -206,23 +206,23 @@ pander(head(data.frame(em2[2],em2[ncol(em2)]),5))</code></pre>
 <tbody>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">806 days</td>
+<td align="center">808 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">806 days</td>
+<td align="center">808 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">806 days</td>
+<td align="center">808 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">806 days</td>
+<td align="center">808 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">806 days</td>
+<td align="center">808 days</td>
 </tr>
 </tbody>
 </table>
@@ -299,223 +299,50 @@ pander(head(data.frame(em4[2],em4[5]),5))</code></pre>
 </tbody>
 </table>
 <p>Of course we also want to know how many tests have been done over a time period and this is provided by two functions</p>
-<pre class="r"><code>em5&lt;-SurveilCapacity(Myendo,&quot;Dateofprocedure&quot;)
-pander(head(em5))</code></pre>
-<table>
-<caption>Table continues below</caption>
+<pre class="r"><code>em5&lt;-SurveilCapacity(Myendo,&quot;Dateofprocedure&quot;)</code></pre>
+<table style="width:26%;">
 <colgroup>
-<col width="45%"></col>
-<col width="23%"></col>
-<col width="30%"></col>
+<col width="9%"></col>
+<col width="11%"></col>
+<col width="5%"></col>
 </colgroup>
 <thead>
 <tr class="header">
-<th align="center">OGDReportWhole</th>
-<th align="center">HospitalNumber</th>
-<th align="center">PatientName</th>
+<th align="center">year</th>
+<th align="center">month</th>
+<th align="center">n</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: J6044658 Patient Name: Jargon, Victoria General Practitioner: Dr. Martin, Marche Date of procedure: 2009-11-11 Endoscopist: Dr. Sullivan, Shelby Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 12.5mcg Midazolam 6mg Instrument: FG5 Extent of Exam: GOJ Indications: Follow-up ULCER HEALING Procedure Performed: Gastroscopy (OGD) Findings: No evidence of Barrett’s oesophagus, short 2 cn hiatus hernia.,Oesophageal biopsies taken from three levels as requested.,OGD today to assess for ulceration/ongoing bleeding.,Diaphragmatic pinch:40cm .,She has a small hiatus hernia .,We will re-book for 2 weeks, rebanding.,Tiny erosions at the antrum.,Biopsies taken from top of stricture-metal marking clips in situ.,The varices flattened well with air insufflation.,He is on Barrett’s Screeling List in October 2017 at St Thomas’. HALO 90 done with good effect Endoscopic Diagnosis: Post chemo-radiotherapy stricture</td>
-<td align="center">J6044658</td>
-<td align="center">Jargon, Victoria</td>
+<td align="center">2001</td>
+<td align="center">01</td>
+<td align="center">9</td>
 </tr>
 <tr class="even">
-<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: Y6417773 Patient Name: Powell, Destiny General Practitioner: Dr. al-Safi, Lutfiyya Date of procedure: 2008-06-15 Endoscopist: Dr. Kekich, Annabelle Second endoscopist: Dr. Needham, April Medications: Fentanyl 125mcg Midazolam 7mg Instrument: FG6 Extent of Exam: Pylorus Indications: Weight Loss Procedure Performed: Gastroscopy (OGD) Findings: Duodenum: Duodenitis with a small erosion .,STOMACH: diffuse gastritis with angiodysplasia and punctate bleeding site on greater curve mid body - no obvious ulcer- antrum scar ?,No immediate complications.,Z-line at: 38cm - Bravo placed at 32cm- good positionat check endoscopy. Endoscopic Diagnosis: Esophageal candidiasis</td>
-<td align="center">Y6417773</td>
-<td align="center">Powell, Destiny</td>
+<td align="center">2001</td>
+<td align="center">02</td>
+<td align="center">8</td>
 </tr>
 <tr class="odd">
-<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: B6072011 Patient Name: Martinez-Santos, Ana General Practitioner: Dr. Rogers, Monica Date of procedure: 2007-10-27 Endoscopist: Dr. Sullivan, Shelby Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 125mcg Midazolam 6mg Instrument: FG2 Extent of Exam: GOJ Indications: Follow-up ULCER HEALING Procedure Performed: Gastroscopy (OGD) Findings: Stomach- Body Polyp- Pedunculated .,Several erosions/small ulcers in inflammed antrum.,Lax cardia with small hiatus hernia but no erosive oesophagitis.,DUODENUM: Normal to D3. Endoscopic Diagnosis: Post chemo-radiotherapy stricture ,Extensive neoplastic looking esophageal lesion. ,Esophageal candidiasis</td>
-<td align="center">B6072011</td>
-<td align="center">Martinez-Santos, Ana</td>
+<td align="center">2001</td>
+<td align="center">03</td>
+<td align="center">15</td>
 </tr>
 <tr class="even">
-<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: G1449886 Patient Name: Lopez, Maria General Practitioner: Dr. Heilman, Lisa Date of procedure: 2002-03-17 Endoscopist: Dr. Avitia-Ramirez, Alondra Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 12.5mcg Midazolam 2mg Instrument: FG1 Extent of Exam: GOJ Indications: Other- Procedure Performed: Gastroscopy (OGD) Findings: STOMACH: Small amount of bright red blood that seems to have refluxed back through the pylorus. Endoscopic Diagnosis: Post chemo-radiotherapy stricture ,Oesophagitis.</td>
-<td align="center">G1449886</td>
-<td align="center">Lopez, Maria</td>
+<td align="center">2001</td>
+<td align="center">04</td>
+<td align="center">6</td>
 </tr>
 <tr class="odd">
-<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: V1607560 Patient Name: al-Rahimi, Rif’a General Practitioner: Dr. Krumland, Lisa Date of procedure: 2011-12-05 Endoscopist: Dr. Greimann, Phoua Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 75mcg Midazolam 6mg Instrument: FG2 Extent of Exam: D2 Indications: Previous OGD ? 8 months ago Procedure Performed: Gastroscopy (OGD) Findings: Coffee ground vomit.,OESOPHAGUS: the previous subepithelial lesion measuring 1. TTS HALO to area Endoscopic Diagnosis: Food bolus obstructing the oesophagus.,Esophageal candidiasis ,Post chemo-radiotherapy stricture</td>
-<td align="center">V1607560</td>
-<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">2001</td>
+<td align="center">05</td>
+<td align="center">10</td>
 </tr>
 <tr class="even">
-<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: I8031481 Patient Name: Forrest, Dazheea General Practitioner: Dr. Millman, Arianna Date of procedure: 2014-09-19 Endoscopist: Dr. Avitia-Ramirez, Alondra Second endoscopist: Dr. al-Basha, Mahfoodha Medications: Fentanyl 150mcg Midazolam 3mg Instrument: FG6 Extent of Exam: Pylorus Indications: Surveillance-Barrett’s Procedure Performed: Gastroscopy (OGD) Findings: Stomach- Pylorus.,No cervical inlet patch. Endoscopic Diagnosis: Gastritis</td>
-<td align="center">I8031481</td>
-<td align="center">Forrest, Dazheea</td>
-</tr>
-</tbody>
-</table>
-<table style="width:96%;">
-<caption>Table continues below</caption>
-<colgroup>
-<col width="31%"></col>
-<col width="25%"></col>
-<col width="38%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">GeneralPractitioner</th>
-<th align="center">Dateofprocedure</th>
-<th align="center">Endoscopist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Dr Martin, Marche</td>
-<td align="center">2009-11-11</td>
-<td align="center">Dr Sullivan, Shelby</td>
-</tr>
-<tr class="even">
-<td align="center">Dr al-Safi, Lutfiyya</td>
-<td align="center">2008-06-15</td>
-<td align="center">Dr Kekich, Annabelle</td>
-</tr>
-<tr class="odd">
-<td align="center">Dr Rogers, Monica</td>
-<td align="center">2007-10-27</td>
-<td align="center">Dr Sullivan, Shelby</td>
-</tr>
-<tr class="even">
-<td align="center">Dr Heilman, Lisa</td>
-<td align="center">2002-03-17</td>
-<td align="center">Dr Avitia-Ramirez, Alondra</td>
-</tr>
-<tr class="odd">
-<td align="center">Dr Krumland, Lisa</td>
-<td align="center">2011-12-05</td>
-<td align="center">Dr Greimann, Phoua</td>
-</tr>
-<tr class="even">
-<td align="center">Dr Millman, Arianna</td>
-<td align="center">2014-09-19</td>
-<td align="center">Dr Avitia-Ramirez, Alondra</td>
-</tr>
-</tbody>
-</table>
-<table style="width:94%;">
-<caption>Table continues below</caption>
-<colgroup>
-<col width="34%"></col>
-<col width="43%"></col>
-<col width="16%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">Secondendoscopist</th>
-<th align="center">Medications</th>
-<th align="center">Instrument</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">Dr al-Basha, Mahfoodha</td>
-<td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
-<td align="center">FG5</td>
-</tr>
-<tr class="even">
-<td align="center">Dr Needham, April</td>
-<td align="center">Fentanyl 125mcg Midazolam 7mg</td>
-<td align="center">FG6</td>
-</tr>
-<tr class="odd">
-<td align="center">Dr al-Basha, Mahfoodha</td>
-<td align="center">Fentanyl 125mcg Midazolam 6mg</td>
-<td align="center">FG2</td>
-</tr>
-<tr class="even">
-<td align="center">Dr al-Basha, Mahfoodha</td>
-<td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
-<td align="center">FG1</td>
-</tr>
-<tr class="odd">
-<td align="center">Dr al-Basha, Mahfoodha</td>
-<td align="center">Fentanyl 75mcg Midazolam 6mg</td>
-<td align="center">FG2</td>
-</tr>
-<tr class="even">
-<td align="center">Dr al-Basha, Mahfoodha</td>
-<td align="center">Fentanyl 150mcg Midazolam 3mg</td>
-<td align="center">FG6</td>
-</tr>
-</tbody>
-</table>
-<table style="width:90%;">
-<caption>Table continues below</caption>
-<colgroup>
-<col width="20%"></col>
-<col width="41%"></col>
-<col width="27%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">ExtentofExam</th>
-<th align="center">Indications</th>
-<th align="center">ProcedurePerformed</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">GOJ</td>
-<td align="center">Follow-up ULCER HEALING</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="even">
-<td align="center">Pylorus</td>
-<td align="center">Weight Loss</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="odd">
-<td align="center">GOJ</td>
-<td align="center">Follow-up ULCER HEALING</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="even">
-<td align="center">GOJ</td>
-<td align="center">Other-</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="odd">
-<td align="center">D2</td>
-<td align="center">Previous OGD ? 8 months ago</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="even">
-<td align="center">Pylorus</td>
-<td align="center">Surveillance-Barrett’s</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-</tbody>
-</table>
-<table style="width:44%;">
-<colgroup>
-<col width="44%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th align="center">Findings</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="center">No evidence of Barrett’s oesophagus, short 2 cn hiatus hernia ,Oesophageal biopsies taken from three levels as requested ,OGD today to assess for ulceration/ongoing bleeding ,Diaphragmatic pinch:40cm ,She has a small hiatus hernia ,We will re-book for 2 weeks, rebanding ,Tiny erosions at the antrum ,Biopsies taken from top of stricture-metal marking clips in situ ,The varices flattened well with air insufflation ,He is on Barrett’s Screeling List in October 2017 at St Thomas’ HALO 90 done with good effect</td>
-</tr>
-<tr class="even">
-<td align="center">Duodenum: Duodenitis with a small erosion ,STOMACH: diffuse gastritis with angiodysplasia and punctate bleeding site on greater curve mid body - no obvious ulcer- antrum scar ?,No immediate complications ,Z-line at: 38cm - Bravo placed at 32cm- good positionat check endoscopy</td>
-</tr>
-<tr class="odd">
-<td align="center">Stomach- Body Polyp- Pedunculated ,Several erosions/small ulcers in inflammed antrum ,Lax cardia with small hiatus hernia but no erosive oesophagitis ,DUODENUM: Normal to D3</td>
-</tr>
-<tr class="even">
-<td align="center">STOMACH: Small amount of bright red blood that seems to have refluxed back through the pylorus</td>
-</tr>
-<tr class="odd">
-<td align="center">Coffee ground vomit ,OESOPHAGUS: the previous subepithelial lesion measuring 1 TTS HALO to area</td>
-</tr>
-<tr class="even">
-<td align="center">Stomach- Pylorus ,No cervical inlet patch</td>
+<td align="center">2001</td>
+<td align="center">06</td>
+<td align="center">12</td>
 </tr>
 </tbody>
 </table>
@@ -547,7 +374,7 @@ how[1]</code></pre>
 </div>
 <div id="assessment-of-quality-functions" class="section level2">
 <h2>Assessment of quality functions</h2>
-<p>Quality is measured in a variety of different ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)</p>
+<p>Quality is measured in a variety of ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)</p>
 <div id="documentation-quality" class="section level3">
 <h3>Documentation Quality</h3>
 <p>As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised of terms that should be mentioned in a report.</p>
@@ -865,7 +692,7 @@ GRSTable&lt;-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed','Endoscopist','
 <th align="center">NumColons.x</th>
 <th align="center">PropAdenomas</th>
 <th align="center">NumHyperplastics</th>
-<th align="center">Colons(Count)</th>
+<th align="center">Colons.Count.</th>
 <th align="center">PropHyperplastic</th>
 <th align="center">NumAdenocarcinomas</th>
 <th align="center">NumColons</th>

@@ -3,7 +3,7 @@ Title: Functions to mine endoscopic and associated pathology datasets
 Version: 0.0.0.9000
 Authors@R: person("Sebastian", "Zeki", email = "sebastiz@hotmail.com",
   role = c("aut", "cre"))
-Description: This script comprises the functions that I use to clean up endoscopic 
+Description: This script comprises the functions that are used to clean up endoscopic 
              reports and pathology reports as well as many of the scripts used for analysis.  
              The scripts assume the endoscopy and histopathology data set is merged already but it can 
              also be used of course with the unmerged datasets.
@@ -11,14 +11,11 @@ Depends: R (>= 3.3.2)
 Imports:
         ggplot2,
         data.table,
-        reshape2,
         magrittr,
         tidyr,
-        gplots,
         tm,
         lubridate,
         stringr,
-        fuzzyjoin,
         rlang,
         dplyr
 License: GPL-3
@@ -33,7 +30,12 @@ Suggests:
     randomNames,
     generator,
     knitr,
-    covr
+    covr,
+    circlize,
+    googleVis,
+    fuzzyjoin,
+    reshape2,
+    gplots
 VignetteBuilder: knitr
 URL: https://sebastiz.github.io/EndoMineR/index.html
 BugReports: https://github.com/sebastiz/EndoMineR/issues
