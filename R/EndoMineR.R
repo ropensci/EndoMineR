@@ -360,7 +360,6 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
 #'  any dscription of a procedure you desire)
 #' @param HospNum_Id Column with the patient's unique hospital number
 #' @importFrom dplyr arrange group_by mutate select summarise lag ungroup rename
-#' @importFrom reshape2 'dcast'
 #' @importFrom tidyr separate
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang sym
@@ -409,7 +408,7 @@ PatientFlow_CircosPlots <-
       group_by(origin, destination, PatientID) %>%
       summarise(n = n()) %>% ungroup()
 
-    mydf <- data.frame(dcast(mydf, origin ~ destination))
+    mydf <- data.frame(reshape2::dcast(mydf, origin ~ destination))
 
     # Get rid of NA's
     mydf <- mydf[complete.cases(mydf),]
