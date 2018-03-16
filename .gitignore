@@ -1,7 +1,6 @@
 .Rproj.user
 .Rhistory
 .RData
-inst/doc
 bookdown
 pkgdown
 _pkgdown.yaml

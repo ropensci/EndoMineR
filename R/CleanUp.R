@@ -195,36 +195,37 @@ EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
 
 EndoscMeds <- function(dataframe, MedColumn) {
   # Extraction of the Medications: Extract the fentanyl if present
-  if(grepl("[Ff]entanyl",dataframe$Medications)){
+ 
+    
   dataframe$Fent <-
     str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
   dataframe$Fent <- str_replace(dataframe$Fent,"Fentanyl", "")
   dataframe$Fent <- str_replace(dataframe$Fent,"mcg", "")
   dataframe$Fent <- as.numeric(dataframe$Fent)
-  }
+ 
   
   # Extract the midazolam if present
-  if(grepl("[Mm]idazolam",dataframe$Medications)){
+ 
   dataframe$Midaz <-
     str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
   dataframe$Midaz <- str_replace(dataframe$Midaz,"Midazolam ", "")
   dataframe$Midaz <- str_replace(dataframe$Midaz,"mg", "")
   dataframe$Midaz <- as.numeric(dataframe$Midaz)
-  }
-  if(grepl("[Pp]ethidine",dataframe$Medications)){
+ 
+  # Extract the pethidine if present
     dataframe$Peth <-
       str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
     dataframe$Peth <- str_replace(dataframe$Peth,"Pethidine", "")
     dataframe$Peth <- str_replace(dataframe$Peth,"mcg", "")
     dataframe$Peth <- as.numeric(dataframe$Peth)
-  }
-  if(grepl("[Pp]ropofol",dataframe$Medications)){
+  
+    # Extract the propofol if present
     dataframe$Prop <-
       str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
     dataframe$Prop <- str_replace(dataframe$Prop,"Propofol", "")
     dataframe$Prop <- str_replace(dataframe$Prop,"mcg", "")
     dataframe$Prop <- as.numeric(dataframe$Prop)
-  }
+  
   return(dataframe)
 }
 
