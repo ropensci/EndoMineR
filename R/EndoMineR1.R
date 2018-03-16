@@ -1,4 +1,4 @@
-#' EndoMineR: A package for computating the notorious bar statistic.
+#' EndoMineR: A package for analysis of endoscopic and related pathology
 #'
 #' The goal of EndoMineR is to extract as much information as possible from 
 #' endoscopy reports and their associated pathology specimens. The package 
