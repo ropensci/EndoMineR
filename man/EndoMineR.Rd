@@ -4,7 +4,7 @@
 \name{EndoMineR}
 \alias{EndoMineR}
 \alias{EndoMineR-package}
-\title{EndoMineR: A package for computating the notorious bar statistic.}
+\title{EndoMineR: A package for analysis of endoscopic and related pathology}
 \description{
 The goal of EndoMineR is to extract as much information as possible from 
 endoscopy reports and their associated pathology specimens. The package 
