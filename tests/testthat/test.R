@@ -247,8 +247,8 @@ test_that("HistolExtrapolDx", {
   ff<-data.frame(ff)
   names(ff)<-"Diagnosis"
   HistolExtrapolDxTest<-HistolExtrapolDx(ff,'Diagnosis')
-  expect_true(all(!is.na(HistolExtrapolDxTest$Dysplasia)))
-  expect_identical(HistolExtrapolDxTest$Dysplasia,
+  expect_true(all(!is.na(HistolExtrapolDxTest$Extracted)))
+  expect_identical(HistolExtrapolDxTest$Extracted,
                    "dyspla")
 })
 

@@ -1,5 +1,5 @@
 
-##### Fake Data Creation ##### 
+##### Fake Data Creation #####
 
 # Endoscopies() creates a spreadsheet of Endoscopy data,Histop_df() creates a dataframe of
 # Histopathology data. Endomerge() associates them together
@@ -80,7 +80,7 @@ Endoscopies <- function(x) {
 sample(1:10, 1), replace = F), collapse = "."),
 sample(c("", paste("Barrett's oesophagus length:",
                    sample(BarrettsLength, 1))), 1))))
-  
+
   # Lets rename the one column to something more
   # intelligent
   names(Endoscopies) <- c("HospNum_Id", "EndoReports")
@@ -102,7 +102,7 @@ sample(c("", paste("Barrett's oesophagus length:",
                                             " oesophagus length: C.*M.*")
   Endoscopies$BarrM <- stringr::str_extract(Endoscopies$BarrC,
                                             "M.*")
-  
+
   ######### Data cleaning Endoscopy dataset and formatting
   ######### the columns
   Endoscopies$Date <- gsub("Date of Procedure", "",
@@ -111,36 +111,36 @@ sample(c("", paste("Barrett's oesophagus length:",
   # here
   Endoscopies$Date <- as.Date(gsub(" Endoscopist",
                                    "", Endoscopies$Date), format = "%Y-%m-%d")
-  
+
   Endoscopies$Endoscopist <- gsub("Endoscopist:  Dr ",
                                   "", Endoscopies$Endoscopist)
   Endoscopies$Endoscopist <- gsub("Midazolam", "",
                                   Endoscopies$Endoscopist)
-  
+
   Endoscopies$Midazolam <- gsub("Midazolam: ", "",
                                 Endoscopies$Midazolam)
   # Also reformatting this column into a nueric
   # column at the same time
   Endoscopies$Midazolam <- as.numeric(gsub("mg Fentanyl",
                                            "", Endoscopies$Midazolam))
-  
+
   Endoscopies$Fentanyl <- gsub("Fentanyl: ", "",
                                Endoscopies$Fentanyl)
   # Also reformatting this column into a nueric
   # column at the same time
   Endoscopies$Fentanyl <- as.numeric(gsub("mcg Indication",
                                           "", Endoscopies$Fentanyl))
-  
+
   Endoscopies$Indication <- gsub("Indication: ",
                                  "", Endoscopies$Indication)
   Endoscopies$Indication <- gsub(" Diagnosis", "",
                                  Endoscopies$Indication)
-  
+
   Endoscopies$Diagnosis <- gsub("Indication: ", "",
                                 Endoscopies$Diagnosis)
   Endoscopies$Diagnosis <- gsub(" Diagnosis", "",
                                 Endoscopies$Diagnosis)
-  
+
   Endoscopies$BarrC <- gsub("oesophagus length: ",
                             "", Endoscopies$BarrC)
   # Also reformatting this column into a nueric
@@ -191,12 +191,12 @@ Histop_df <- function(x) {
                                                                                             1), "mm and the smallest", sample(1:5,
                                                                                                                               1), "x", sample(1:5, 1), "x", sample(1:5,
                                                                                                                                                                    1), "mm"), simplify = FALSE)
-  
+
   # Merge the strings together randomly
   histop <- replicate(1000, paste(sample(list.of.samples,
                                          1, replace = F), paste("Diagnoses", stringr::str_c(sample(line,
                                                                                                    sample(3:10, 1), replace = F), collapse = "."))))
-  
+
   # Because we eventually will merge histopath and
   # endoscopy together we are going to be crafty and
   # generate the histopath dates from the endoscopy
@@ -207,11 +207,11 @@ Histop_df <- function(x) {
   # Generate hospital numbers from the Endoscopies
   # report
   HospNum_Id <- Endoscopies$HospNum_Id
-  
+
   Histop_df <- data.frame(HospNum_Id, dat, paste("Date received:",
                                                  dat, histop))
   names(Histop_df) <- c("HospNum_Id", "dat", "HistoReport")
-  
+
   ######### Data accordionisation Convert into paragraphs so
   ######### can be more easily separated
   Histop_df$Date <- stringr::str_extract(Histop_df$HistoReport,
@@ -225,11 +225,11 @@ Histop_df <- function(x) {
   Histop_df$Date <- gsub("Date received: ", "", Histop_df$Date)
   Histop_df$Date <- as.Date(gsub("Macrosopic description:",
                                  "", Histop_df$Date), format = "%Y-%m-%d")
-  
+
   Histop_df$Macro <- gsub("Macrosopic description: ",
                           "", Histop_df$Macro)
   Histop_df$Macro <- gsub("Diagnoses", "", Histop_df$Macro)
-  
+
   Histop_df$Diagnoses <- gsub("Diagnoses", "", Histop_df$Diagnoses)
   # Lets get rid of a column we don't need
   Histop_df$dat <- NULL
@@ -250,15 +250,15 @@ Histop_df <- function(x) {
 
 
 samplenumber <- 2000
-HospitalNumberID <- paste("Hospital Number: ", sample(c(LETTERS)), 
-                 sample(1e+06:9999999, (samplenumber - 1900), replace = T), 
+HospitalNumberID <- paste("Hospital Number: ", sample(c(LETTERS)),
+                 sample(1e+06:9999999, (samplenumber - 1900), replace = T),
                           sep = "")
 NHS_Trust <- replicate(samplenumber, c("Hospital: Random NHS Foundation Trust"))
-Patient_Name <- paste("Patient Name: ", randomNames::randomNames(samplenumber, 
+Patient_Name <- paste("Patient Name: ", randomNames::randomNames(samplenumber,
      "first", "last"))
-Date_of_Birth <- paste("DOB: ", generator::r_date_of_births(samplenumber, 
+Date_of_Birth <- paste("DOB: ", generator::r_date_of_births(samplenumber,
      start = as.Date("1900-01-01"), end = as.Date("1999-01-01")))
- GeneralPractictioner <- paste("General Practitioner: Dr. ", 
+ GeneralPractictioner <- paste("General Practitioner: Dr. ",
             randomNames::randomNames(samplenumber, "first", "last"), sep = "")
 Date_of_ProcedureAll <- generator::r_date_of_births(samplenumber,
                   start = as.Date("2001-01-01"), end = as.Date("2017-01-01"))
@@ -321,7 +321,7 @@ EndoRaw2 <- function() {
   FINDINGS <- replicate(samplenumber, paste("Findings: ",
                                             stringr::str_c(as.list(sample(FINDINGS$x, sample(1:10),
                                                                           replace = T)), collapse = ",")))
-  
+
   TherapyorNot <- replicate(samplenumber,
                                            paste(sample(list(x1 = "Therapeutic- Dilatation was performed",
                                                                              x2 = "", x3 = "HALO 90 done with good effect",
@@ -336,7 +336,7 @@ EndoRaw2 <- function() {
                                                              x19= "",x20= "",x21= "",x22= "",x23= "",x24= "",x25= ""
                                                              ),
                                                                         1, replace = F)))
-  
+
   ENDOSCOPIC_DIAGNOSIS <- data.frame(c("Ulcer- Oesophageal. ",
                                        "Post chemo-radiotherapy stricture ", "Possible achalasia.",
                                        "Oesophagitis. ", "Food bolus obstructing the oesophagus.",
@@ -362,7 +362,7 @@ EndoRaw2 <- function() {
   names(TheOGDReportFinal) <- "OGDReportWhole"
   save(TheOGDReportFinal,file = "/home/rstudio/EndoMineR/data/TheOGDReportFinal.rda")
   # return(TheOGDReportFinal)
-  
+
   Myendo<-TheOGDReportFinal
   Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',Myendo$OGDReportWhole)
   EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
@@ -374,7 +374,7 @@ EndoRaw2 <- function() {
                       as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
   }
   Myendo$Dateofprocedure<-as.Date(Myendo$Dateofprocedure)
-  
+
   save(Myendo,file = "/home/rstudio/EndoMineR/data/Myendo.rda")
 }
 
@@ -401,7 +401,7 @@ EndoRaw2 <- function() {
 #' @examples pathRep(x)
 
 pathRep2 <- function() {
-  
+
   AccessionNum<-paste0("SP-",sample(10:99),"-",sample(1000000:9999999,2000,replace=F))
   Date <- Date_of_ProcedureAll+sample(1:12,1)
   Date <- paste("Date received: ", Date)
@@ -419,24 +419,20 @@ pathRep2 <- function() {
                              header = T, stringsAsFactors = F)
   NatureOfSpec <- replicate(samplenumber, paste(sample(1:10,1,replace=T),"specimen. Nature of specimen: ",
                                                 stringr::str_c(as.list(sample(NatureOfSpec$x, sample(1:10), replace = T)), collapse = ",")))
-  
+
   MacDescrip <- unlist(replicate(samplenumber, paste("Macroscopic description:",
                                                      sample(1:10, 1), "specimens collected the largest measuring",
-                                                     sample(1:5, 1), "x", sample(1:5, 1), "x", sample(1:5,
-                                                                                                      1), "mm and the smallest", sample(1:5,
-                                                                                                                                        1), "x", sample(1:5, 1), "x", sample(1:5,
-                                                                                                                                                                             1), "mm"), simplify = FALSE))
+                                                     sample(1:5, 1), "x", sample(1:5, 1), "x", sample(1:5,1), "mm and the smallest", sample(1:5,1), "x", sample(1:5, 1), "x", sample(1:5, 1), "mm"), simplify = FALSE))
   # Merge the strings together randomly
-  
+
   # Histol Details
-  Histol <- read.table("./data-raw/data/HistolText",
-                       header = T, stringsAsFactors = F)
+  Histol <- read.table("./data-raw/data/HistolText",header = T, stringsAsFactors = F)
   Histol <- replicate(samplenumber, paste("Histology: ",
                                           stringr::str_c(as.list(sample(Histol$x, sample(1:10),
                                                                         replace = T)), collapse = ",")))
   Diagnostic <- read.table("./data-raw/data/HistolDxText",
                            header = T, stringsAsFactors = F)
-  
+
   Diagnostic <- replicate(samplenumber, paste("Diagnosis: ",
                                               stringr::str_c(as.list(sample(Diagnostic$x, sample(5:10),
                                                                             replace = T)), collapse = ",")))
@@ -449,11 +445,11 @@ pathRep2 <- function() {
                                      colnames(PathDataFrameReport), sep = "\n")
   names(PathDataFrameFinal) <- "PathReportWhole"
   save(PathDataFrameFinal,file = "/home/rstudio/EndoMineR/data/PathDataFrameFinal.rda")
-  
-  
-#################  
-  
-  
+
+
+#################
+
+
   Mypath<-PathDataFrameFinal
   HistolTree<-list('Hospital Number','Patient Name','DOB:',
                    'General Practitioner:',
@@ -552,7 +548,7 @@ ColonEndoRaw <- function(x) {
   names(TheOGDReportFinal) <- "OGDReportWhole"
   ColonFinal<-TheOGDReportFinal
   # load(file = "ColonFinal.rda")
-  
+
   save(ColonFinal,file = "/home/rstudio/EndoMineR/data/ColonFinal.rda")
   return(ColonFinal)
 }
@@ -573,7 +569,7 @@ ColonpathRep <- function(x) {
   # Date <- paste("Date received: ", Date_of_Procedure +
   #                 replicate(samplenumber, as.numeric(sample(1:10)),
   #                           1))
-  
+
   Date <- Date_of_ProcedureAll+sample(1:12,1)
   Date <- paste("Date received: ", Date)
   # Clinical Details

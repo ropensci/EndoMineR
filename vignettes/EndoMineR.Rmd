@@ -279,7 +279,9 @@ pander(head(sh,5))
 
 ### Extraction of Specific Disease Entities
 
-The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but may be user defined in future iterations
+The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but will also take user defined words. These will have to be in the form of a regular expression or can be left as an empty string as in the examples
+<br>
+
 ```{r exampleHistolExtrapolDx, echo = TRUE}
 Mypath3<-data.frame(Mypath["HospitalNumber"],Mypath["Diagnosis"])
 
@@ -290,7 +292,7 @@ pander(head(Mypath3,10))
 ```
 
 ```{r exampleHistolExtrapolDx3, echo = TRUE}
-Mypath3<-HistolExtrapolDx(Mypath3,"Diagnosis")
+Mypath3<-HistolExtrapolDx(Mypath3,"Diagnosis","")
 ```
 
 

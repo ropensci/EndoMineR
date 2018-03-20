@@ -746,25 +746,26 @@ HistolDx <- function(dataframe, HistolColumn) {
 #' Extract specific diagnoses from the histology report
 #'
 #' This extracts other specific diagnoses from the report. These have been hard
-#' coded to look for dysplasia cancer and GIST. Optional use.
+#' coded to look for dysplasia cancer and GIST. Optional use for the user to 
+#' add regular expressions as well. All the diagnoses are extracted into
+#' one column and made unique.
 #'
 #' @param dataframe dataframe containing histology results,
 #' @param Column the column to extract dysplasia, cancer, and GIST from- 
 #' often the
 #' Histology diagnosis column
-#' @importFrom stringr str_extract
+#' @importFrom stringr str_extract_all
 #' @keywords Histology diagnosis
 #' @export
 #' @examples oo<-HistolExtrapolDx(Mypath,'Diagnosis')
 
 HistolExtrapolDx <- function(dataframe, Column) {
   # Some further extraction to get commonly searched for data
-  dataframe$Cancer <-
-    str_extract(dataframe[, Column], "[Cc]arcin|[Cc]ance|[Ll]ymphoma|
-                         [Tt]umour")
-  dataframe$Dysplasia <- str_extract(dataframe[, Column], "[Dd]yspla")
-  dataframe$GIST <-
-    str_extract(dataframe[, Column], "G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio")
+  dataframe$Extracted <-
+   str_extract_all(dataframe[, Column], 
+                    paste0("[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour|[Dd]yspla|G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio|[Cc]rohn"),
+                   simplify = TRUE)
+  #Make each entry unique
   return(dataframe)
 }
 
