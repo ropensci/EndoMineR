@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Clean up all Histology data — HistolAll • EndoMineR</title>
+<title>EndoMineR: A package for analysis of endoscopic and related pathology — EndoMineR • EndoMineR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -113,42 +113,51 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Clean up all Histology data</h1>
+    <h1>EndoMineR: A package for analysis of endoscopic and related pathology</h1>
     </div>
 
     
-    <p>This is a parent function for all the functions below</p>
+    <p>The goal of EndoMineR is to extract as much information as possible from 
+endoscopy reports and their associated pathology specimens. The package 
+is intended for use by gastroenterologists, pathologists and anyone 
+interested in the analysis of endoscopic and ppathological datasets
+Gastroenterology now has many standards against which practice is measured 
+although many reporting systems do not include the reporting capability to 
+give anything more than basic analysis. Much of the data is locked in 
+semi-structured text.However the nature of semi-structured text means that 
+data can be extracted in a standardised way- it just requires more 
+manipulation. This package provides that manipulation so that complex 
+endoscopic-pathological analyses, in line with recognised standards for 
+these analyses, can be done.The package is basically in three parts/</p>
     
 
-    <pre class="usage"><span class='fu'>HistolAll</span>(<span class='no'>dataframe</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>dataframe</th>
-      <td><p>dataframe with column of interest</p></td>
-    </tr>
-    </table>
+        
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <ul>
+<li><p>The extraction- This is really when the data is provided as full text 
+reports. You may already have the data in a spreadsheet in which case 
+this part isn't necessary.</p></li>
+<li><p>Cleaning- These are a group of functions 
+that allow the user to extract and clean data commonly found in endoscopic 
+and pathology reports. The cleaning functions usually remove common typos or 
+extraneous information and do some reformatting.</p></li>
+<li><p>Analyses- The analyses provide graphing function as well as analyses 
+according to the cornerstone questions in gastroenterology- namely 
+surveillance, patient tracking, quality of endoscopy and pathology 
+reporting and diagnostic yield questions.</p></li>
+</ul>
+    <p>To learn more about EndoMineR, start with the vignettes:
+`browseVignettes(package = "EndoMineR")`</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>mywords</span><span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Hospital Number"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"DOB:"</span>,<span class='st'>"General Practitioner:"</span>,
-<span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details:"</span>,<span class='st'>"Macroscopic description:"</span>,
-<span class='st'>"Histology:"</span>,<span class='st'>"Diagnosis:"</span>)
-<span class='no'>MypathExtracted</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>PathDataFrameFinal</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)
-<span class='fu'>names</span>(<span class='no'>Mypath</span>)<span class='kw'>&lt;-</span><span class='fu'>c</span>(<span class='st'>"Original"</span>,<span class='st'>"HospitalNumber"</span>,<span class='st'>"PatientName"</span>,<span class='st'>"DOB"</span>,
-<span class='st'>"GeneralPractitioner"</span>,<span class='st'>"Datereceived"</span>,<span class='st'>"ClinicalDetails"</span>,
-<span class='st'>"Macroscopicdescription"</span>,<span class='st'>"Histology"</span>,<span class='st'>"Diagnosis"</span>)
-<span class='no'>kk</span><span class='kw'>&lt;-</span><span class='fu'>HistolAll</span>(<span class='no'>MypathExtracted</span>)</div><div class='output co'>#&gt; <span class='error'>Error in paste0("[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour|[Dd]yspla|G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio|[Cc]rohn",     userString): argument "userString" is missing, with no default</span></div><div class='input'><span class='fu'>rm</span>(<span class='no'>MypathExtracted</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-            
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+      
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>

@@ -755,7 +755,6 @@ HistolDx <- function(dataframe, HistolColumn) {
 #' often the Histology diagnosis column
 #' @param userString user defined string search for (regular expression)
 #' @importFrom stringr str_extract_all
-#' @importFrom purrr is_empty
 #' @keywords Histology diagnosis
 #' @export
 #' @examples oo<-HistolExtrapolDx(Mypath,'Diagnosis',"")

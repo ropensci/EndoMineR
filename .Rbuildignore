@@ -3,6 +3,7 @@
 ^data-raw$
 ^\.travis\.yml$
 ^README\.Rmd$
+^CONTRIBUTING\.md$
 ^docs$
 ^pkgdown$
 ^_pkgdown\.yaml$

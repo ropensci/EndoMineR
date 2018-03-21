@@ -146,7 +146,8 @@ It of course relies on a Endoscopist column being present</p>
     <pre class="examples"><div class='input'><span class='co'>#The function plots any numeric metric by endoscopist</span>
 <span class='co'># and also gives a table with it. In this example we plot medication by</span>
 <span class='co'># endoscopist</span>
-<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'><a href='EndoscMeds.html'>EndoscMeds</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Medications'</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='output co'>#&gt; <span class='warning'>Warning: the condition has length &gt; 1 and only the first element will be used</span></div><div class='input'><span class='no'>kk</span><span class='kw'>&lt;-</span><span class='fu'>MetricByEndoscopist</span>(<span class='no'>Myendo</span>,<span class='st'>'Endoscopist'</span>,<span class='st'>'Fent'</span>)
+<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'><a href='EndoscMeds.html'>EndoscMeds</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Medications'</span>)
+<span class='no'>kk</span><span class='kw'>&lt;-</span><span class='fu'>MetricByEndoscopist</span>(<span class='no'>Myendo</span>,<span class='st'>'Endoscopist'</span>,<span class='st'>'Fent'</span>)
 <span class='fu'>rm</span>(<span class='no'>Myendo</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

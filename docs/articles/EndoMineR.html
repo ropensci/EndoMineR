@@ -92,7 +92,7 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>EndoMineR</h1>
-                        <h4 class="author">Sebastian Zeki 2018-03-07</h4>
+                        <h4 class="author">Sebastian Zeki 2018-03-21</h4>
             
           </div>
 
@@ -473,15 +473,17 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 </tbody>
 </table>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(TheOGDReportFinal2df,<span class="st">'Medications'</span>)</code></pre></div>
-<table class="table">
+<table style="width:100%;" class="table">
 <colgroup>
-<col width="13%">
-<col width="10%">
-<col width="23%">
-<col width="24%">
-<col width="16%">
+<col width="12%">
+<col width="9%">
+<col width="21%">
+<col width="21%">
+<col width="14%">
+<col width="4%">
 <col width="5%">
-<col width="5%">
+<col width="4%">
+<col width="4%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">HospitalNumber</th>
@@ -491,6 +493,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <th align="center">ProcedurePerformed</th>
 <th align="center">Fent</th>
 <th align="center">Midaz</th>
+<th align="center">Peth</th>
+<th align="center">Prop</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -501,6 +505,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">5</td>
 <td align="center">6</td>
+<td align="center">5</td>
+<td align="center">5</td>
 </tr>
 <tr class="even">
 <td align="center">Y6417773</td>
@@ -510,6 +516,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">125</td>
 <td align="center">7</td>
+<td align="center">125</td>
+<td align="center">125</td>
 </tr>
 <tr class="odd">
 <td align="center">B6072011</td>
@@ -519,6 +527,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">125</td>
 <td align="center">6</td>
+<td align="center">125</td>
+<td align="center">125</td>
 </tr>
 <tr class="even">
 <td align="center">G1449886</td>
@@ -528,6 +538,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">5</td>
 <td align="center">2</td>
+<td align="center">5</td>
+<td align="center">5</td>
 </tr>
 <tr class="odd">
 <td align="center">V1607560</td>
@@ -537,6 +549,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">75</td>
 <td align="center">6</td>
+<td align="center">75</td>
+<td align="center">75</td>
 </tr>
 <tr class="even">
 <td align="center">I8031481</td>
@@ -546,6 +560,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">150</td>
 <td align="center">3</td>
+<td align="center">150</td>
+<td align="center">150</td>
 </tr>
 <tr class="odd">
 <td align="center">W2120051</td>
@@ -555,6 +571,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">125</td>
 <td align="center">5</td>
+<td align="center">125</td>
+<td align="center">125</td>
 </tr>
 <tr class="even">
 <td align="center">O7163832</td>
@@ -564,6 +582,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">75</td>
 <td align="center">3</td>
+<td align="center">75</td>
+<td align="center">75</td>
 </tr>
 <tr class="odd">
 <td align="center">P6620949</td>
@@ -573,6 +593,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">25</td>
 <td align="center">1</td>
+<td align="center">25</td>
+<td align="center">25</td>
 </tr>
 <tr class="even">
 <td align="center">L4378217</td>
@@ -582,6 +604,8 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">150</td>
 <td align="center">1</td>
+<td align="center">150</td>
+<td align="center">150</td>
 </tr>
 </tbody>
 </table>
@@ -717,7 +741,7 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <div id="extraction-of-specific-disease-entities" class="section level3">
 <h3 class="hasAnchor">
 <a href="#extraction-of-specific-disease-entities" class="anchor"></a>Extraction of Specific Disease Entities</h3>
-<p>The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but may be user defined in future iterations</p>
+<p>The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but will also take user defined words. These will have to be in the form of a regular expression or can be left as an empty string as in the examples <br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw">data.frame</span>(Mypath[<span class="st">"HospitalNumber"</span>],Mypath[<span class="st">"Diagnosis"</span>])</code></pre></div>
 <table style="width:68%;" class="table">
 <colgroup>
@@ -771,92 +795,68 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw"><a href="../reference/HistolExtrapolDx.html">HistolExtrapolDx</a></span>(Mypath3,<span class="st">"Diagnosis"</span>)</code></pre></div>
-<table class="table">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw"><a href="../reference/HistolExtrapolDx.html">HistolExtrapolDx</a></span>(Mypath3,<span class="st">"Diagnosis"</span>,<span class="st">""</span>)</code></pre></div>
+<table style="width:92%;" class="table">
 <colgroup>
+<col width="23%">
+<col width="45%">
 <col width="22%">
-<col width="42%">
-<col width="11%">
-<col width="15%">
-<col width="7%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">HospitalNumber</th>
 <th align="center">Diagnosis</th>
-<th align="center">Cancer</th>
-<th align="center">Dysplasia</th>
-<th align="center">GIST</th>
+<th align="center">Extracted</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="center">J6044658</td>
 <td align="center">Distal transverse colon polyp excision:- tubular adenoma, low grade dysplasia ,Ileo-caecal valve, biopsies: ,Stomach antrum biopsies:- normal mucosa ,- Up to 34 eosinophils per high power field,Stomach, biopsy - Mild chronic inflammation</td>
-<td align="center">NA</td>
 <td align="center">dyspla</td>
-<td align="center">NA</td>
 </tr>
 <tr class="even">
 <td align="center">Y6417773</td>
 <td align="center">Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Raised intra-epithelial lymphocytes ,Duodenum, biopsies - within normal histological limits ,B GI biopsy - DISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2 ,Oesophagus, biopsies : - Minimal chronic inflammation,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:- 2 x papillomas ,Duodenum biopsies:- normal</td>
-<td align="center">NA</td>
-<td align="center">dyspla</td>
-<td align="center">NA</td>
+<td align="center">dyspla, dyspla</td>
 </tr>
 <tr class="odd">
 <td align="center">B6072011</td>
 <td align="center">- Background Barrett ‘s oesophagus,Sigmoid colon, biopsy - Adenocarcinoma ,- Gastric metaplasia,Oesophagus 36cm ’papilloma’ biopsy:- normal squamous mucosa ,- Chronic active inflammation,Oesophagus, biopsy - Barrett ’s oesophagus with moderate chronic inflammation ,- Minimal chronic inflammation</td>
 <td align="center">carcin</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
 </tr>
 <tr class="even">
 <td align="center">G1449886</td>
 <td align="center">Stomach, biopsy - Mild chronic inflammation and reactive changes ,- Normal,- note: biopsies put into the wrong pots ,Oesophagus, biopsy - Poorly differentiated tumour ,Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Mild chronic inflammation and oedema,-Inflammatory fibroid polyp,- within normal histological limits,- Negative for HLO</td>
-<td align="center">NA</td>
-<td align="center">dyspla</td>
-<td align="center">NA</td>
+<td align="center">tumour, dyspla</td>
 </tr>
 <tr class="odd">
 <td align="center">V1607560</td>
 <td align="center">Nodule GOJ, biopsies:- acute and chronic inflammation with Helicobacter ,Stomach, biopsy -Mild acute and chronic inflammation ,Oesophagus polyps biopsies:- 2 x papillomas ,- &lt;1 mm from lateral margin,Duodenum biopsies:- patchy increase in IELs ,Duodenum, biopsy - Normal</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
+<td align="center"></td>
 </tr>
 <tr class="even">
 <td align="center">I8031481</td>
 <td align="center">Duodenum and stomach, polyp biopsies - Consistent with hamartomatous polyps ,Gastric oesophageal junction, biopsies : - Chronic inflammation,Stomach, biopsy - Mild chronic inflammation ,- Gastric HER2 negative,- Minimal chronic inflammation,Oesophagus, biopsy - Acute inflammation in presumed proximal biopsies only ,Gastro-osophageal junction, biopsy - Squamocolumnar mucosa ,Descending colon biopsies:- normal mucosa ,- Within normalhistological limits,The biopsies of gastric oesophageal junction type squamo-columnar mucosa show mild chronic</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
 <td align="center">W2120051</td>
 <td align="center">- Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal ,Ileum and colon biopsies:- normal mucosa ,Oesophagus, EMR 43P - Barrett ’s oesophagus without intestinal metaplasia ,Sigmoid colon, biopsy - Adenocarcinoma ,- Chronic active inflammation,Duodenum biopsies:- normal mucosa ,- Low grade dysplasia</td>
-<td align="center">carcin</td>
-<td align="center">dyspla</td>
-<td align="center">NA</td>
+<td align="center">carcin, dyspla</td>
 </tr>
 <tr class="even">
 <td align="center">O7163832</td>
 <td align="center">- possible eosinophilic oesophagitis,- Mild chronic gastritis,A -E) Stomach, polyps, biopsies: ,- Mild chronic inflammation and oedema,- Focal mild chronic inflammation,- Gastric HER2 negative,Ileum and colon biopsies:- normal mucosa ,Adjacent mucosa, biopsy - Normal small bowel mucosa</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
 <td align="center">P6620949</td>
 <td align="center">- Chronic active gastritis,Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,Oesophaguas biopsies:- normal mucosa ,- Acute inflammatory exudate,Right and left colon, biopsies: - Within normal histological limits</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
+<td align="center"></td>
 </tr>
 <tr class="even">
 <td align="center">L4378217</td>
 <td align="center">Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,- tubular adenoma, low grade dysplasia x 1 ,- Tubular adenoma,- Tubular adenoma,Sigmoid colon, polyp biopsy - Hyperplastic polyp ,Stomach, biopsy - Reactive gastritis and intestinal metaplasia ,- Chronic inflammation,- Mild chronic inflammation</td>
-<td align="center">NA</td>
 <td align="center">dyspla</td>
-<td align="center">NA</td>
 </tr>
 </tbody>
 </table>

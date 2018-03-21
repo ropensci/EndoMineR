@@ -149,8 +149,7 @@ Being the procedure done at the time and the follow-up timings</p>
 <span class='co'># cleaning</span>
 <span class='co'># as part of the package.</span>
 
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAll.html'>HistolAll</a></span>(<span class='no'>Mypath</span>)
-<span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAll.html'>HistolAll</a></span>(<span class='no'>Mypath</span>)</div><div class='output co'>#&gt; <span class='error'>Error in paste0("[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour|[Dd]yspla|G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio|[Cc]rohn",     userString): argument "userString" is missing, with no default</span></div><div class='input'><span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
 <span class='co'># according to date and Hospital number</span>
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>v</span>,<span class='st'>'Dateofprocedure'</span>,
 <span class='st'>'HospitalNumber'</span>)

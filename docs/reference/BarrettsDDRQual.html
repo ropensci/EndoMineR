@@ -145,8 +145,7 @@
 <span class='co'># Mypath demo dataset. These functions are all part of Histology data</span>
 <span class='co'># cleaning as part of the package.</span>
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Diagnosis'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
+<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)</div><div class='output co'>#&gt; <span class='error'>Error in paste0("[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour|[Dd]yspla|G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio|[Cc]rohn",     userString): argument "userString" is missing, with no default</span></div><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
 <span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
 <span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
 <span class='co'># according to date and Hospital number</span>

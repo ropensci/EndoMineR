@@ -246,7 +246,7 @@ test_that("HistolExtrapolDx", {
   ff<-"Barrett's oesophagus- dysplasia seen"
   ff<-data.frame(ff)
   names(ff)<-"Diagnosis"
-  HistolExtrapolDxTest<-HistolExtrapolDx(ff,'Diagnosis')
+  HistolExtrapolDxTest<-HistolExtrapolDx(ff,'Diagnosis',"")
   expect_true(all(!is.na(HistolExtrapolDxTest$Extracted)))
   expect_identical(HistolExtrapolDxTest$Extracted,
                    "dyspla")
@@ -471,7 +471,7 @@ Not identified\n,into submucosa for less than 1 mm \n\n"
 test_that("GRS_Type_Assess_By_Unit", {
  #  
  vColon2<-HistolDx(vColon,'Diagnosis')
- vColon2<-HistolExtrapolDx(vColon2,'Diagnosis')
+ vColon2<-HistolExtrapolDx(vColon2,'Diagnosis',"")
  vColon2<-HistolNumbOfBx(vColon2,'Macroscopicdescription','specimen')
  vColon2<-HistolBxSize(vColon2,'Macroscopicdescription')
  GRSTable<-GRS_Type_Assess_By_Unit(vColon2,'ProcedurePerformed', 
@@ -608,7 +608,7 @@ test_that("BarrettsDocumentQual", {
 
 test_that("BarrettsBxQual", {
   
-  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis',"")
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
@@ -625,7 +625,7 @@ test_that("BarrettsBxQual", {
 
 test_that("BarrettsPathDetectQual", {
   v<-HistolDx(v,'Diagnosis')
-  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis',"")
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
@@ -642,7 +642,7 @@ test_that("BarrettsPathDetectQual", {
 
 test_that("BarrettsDDRQual", {
   v<-HistolDx(v,'Diagnosis')
-  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis',"")
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
@@ -661,7 +661,7 @@ test_that("BarrettsDDRQual", {
 
 test_that("BarrettsEMRGrades", {
   v<-HistolDx(v,'Diagnosis')
-  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis',"")
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
@@ -678,7 +678,7 @@ test_that("BarrettsEMRGrades", {
 
 test_that("BarrettsBasicNumbers", {
   v<-HistolDx(Mypath,'Diagnosis')
-  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis',"")
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
@@ -697,7 +697,7 @@ test_that("BarrettsBasicNumbers", {
 
 test_that("BarrettssRFACath", {
   v<-HistolDx(v,'Diagnosis')
-  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis',"")
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
@@ -714,7 +714,7 @@ test_that("BarrettssRFACath", {
 
 test_that("BarrettsParisEMR", {
   v<-HistolDx(v,'Diagnosis')
-  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis',"")
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
@@ -730,7 +730,7 @@ test_that("BarrettsParisEMR", {
 #### Barretts_CRIM ####
 test_that("Barretts_CRIM", {
   v<-HistolDx(v,'Diagnosis')
-  v<-HistolExtrapolDx(v,'Diagnosis')
+  v<-HistolExtrapolDx(v,'Diagnosis',"")
   v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
