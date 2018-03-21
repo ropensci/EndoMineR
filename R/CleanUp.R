@@ -752,20 +752,22 @@ HistolDx <- function(dataframe, HistolColumn) {
 #'
 #' @param dataframe dataframe containing histology results,
 #' @param Column the column to extract dysplasia, cancer, and GIST from- 
-#' often the
-#' Histology diagnosis column
+#' often the Histology diagnosis column
+#' @param userString user defined string search for (regular expression)
 #' @importFrom stringr str_extract_all
+#' @importFrom purrr is_empty
 #' @keywords Histology diagnosis
 #' @export
-#' @examples oo<-HistolExtrapolDx(Mypath,'Diagnosis')
+#' @examples oo<-HistolExtrapolDx(Mypath,'Diagnosis',"")
 
-HistolExtrapolDx <- function(dataframe, Column) {
+HistolExtrapolDx <- function(dataframe, Column,userString) {
   # Some further extraction to get commonly searched for data
   dataframe$Extracted <-
-   str_extract_all(dataframe[, Column], 
-                    paste0("[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour|[Dd]yspla|G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio|[Cc]rohn"),
-                   simplify = TRUE)
+    str_extract_all(dataframe[, Column], 
+                    paste0("[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour|[Dd]yspla|G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio|[Cc]rohn",userString),
+                   simplify = FALSE)
   #Make each entry unique
+  dataframe$Extracted<-sapply(dataframe$Extracted, toString)
   return(dataframe)
 }
 
