@@ -178,7 +178,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -255,7 +255,7 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -447,7 +447,7 @@ BarrettsSurveil <- function(dataframe,
 #' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -570,7 +570,7 @@ BarrettsDocumentQual <- function(dataframe, Findings) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -662,7 +662,7 @@ BarrettsBxQual <- function(dataframe,
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -720,7 +720,7 @@ BarrettsPathDetectQual <- function(dataframe, titlePlot) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -766,7 +766,7 @@ BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -926,7 +926,7 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -1026,7 +1026,7 @@ BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
 #' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -1154,7 +1154,7 @@ BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
 #' v<-HistolAccessionNumber(Mypath,'Histology',
 #' 'SP-\\d{2}-\\d{7}')
 #' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs

@@ -10,6 +10,7 @@ output: github_document
 [![Coverage status](https://codecov.io/gh/sebastiz/EndoMineR/branch/master/graph/badge.svg)](https://codecov.io/github/sebastiz/EndoMineR?branch=master)
 
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, echo = FALSE}
@@ -19,6 +20,11 @@ knitr::opts_chunk$set(
   fig.path = "README-"
 )
 ```
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
+knitr::include_graphics("vignettes/img/EndoMineRLogo.png")
+```
+
 
 # EndoMineR
 

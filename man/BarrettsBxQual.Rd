@@ -24,7 +24,7 @@ Prague score for that endoscopy.
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
 v<-HistolDx(Mypath,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis')
+v<-HistolExtrapolDx(v,'Diagnosis',"")
 v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs

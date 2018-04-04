@@ -640,7 +640,7 @@ HistolAll <- function(dataframe) {
    
   if("Diagnosis" %in% colnames(dataframe)){
     dataframe<-HistolDx(dataframe,'Diagnosis')
-    dataframe<-HistolExtrapolDx(dataframe,'Diagnosis')
+    dataframe<-HistolExtrapolDx(dataframe,'Diagnosis',"")
   }
   dataframe<-data.frame(dataframe)
    

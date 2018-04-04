@@ -28,7 +28,7 @@ some point
 v<-HistolAccessionNumber(Mypath,'Histology',
 'SP-\\\\d{2}-\\\\d{7}')
 v<-HistolDx(v,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis')
+v<-HistolExtrapolDx(v,'Diagnosis',"")
 v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
