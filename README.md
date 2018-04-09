@@ -107,3 +107,5 @@ b2<-Barretts_Event(b,'Histology','ProcedurePerformed','OGDReportWhole','Findings
 ```
 
 Further more detailed examples are provided in the associated vignette for this package
+
+[![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
