@@ -7,7 +7,7 @@ tags:
 authors:
 - name: Sebastian S Zeki
   orcid: 0000-0000-0000-1234
-  affiliation: "1, 2" # (Multiple affiliations must be quoted)
+  affiliation: "1, 2" # (Multiple affiliations must be quoted).
 
 affiliations:
 - name: Department of Gastroenterology, St Thomas' Hospital, 
