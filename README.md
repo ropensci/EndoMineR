@@ -1,5 +1,5 @@
 
-[![Build Status](https://travis-ci.org/sebastiz/EndoMineR.svg?branch=master)](https://travis-ci.org/sebastiz/EndoMineR) [![ropensci](https://badges.ropensci.org/153_status.svg)](https://github.com/ropensci/onboarding/issues/153) [![Coverage status](https://codecov.io/gh/sebastiz/EndoMineR/branch/master/graph/badge.svg)](https://codecov.io/github/sebastiz/EndoMineR?branch=master)
+[![Build Status](https://travis-ci.org/ropensci/EndoMineR.svg?branch=master)](https://travis-ci.org/ropensci/EndoMineR) [![ropensci](https://badges.ropensci.org/153_status.svg)](https://github.com/ropensci/onboarding/issues/153) [![Coverage status](https://codecov.io/gh/ropensci/EndoMineR/branch/master/graph/badge.svg)](https://codecov.io/github/ropensci/EndoMineR?branch=master)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <img src="vignettes/img/EndoMineRLogo.png" style="display: block; margin: auto;" />
