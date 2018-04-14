@@ -29,4 +29,6 @@ navbar:
       href: https://twitter.com/GastroDS
     - icon: fa-github fa-lg
       href: https://github.com/sebastiz/EndoMineR
+    - icon: far fa-book
+      href: http://www.gastroenterologybook.com/
 
