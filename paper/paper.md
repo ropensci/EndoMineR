@@ -32,7 +32,7 @@ Furthermore the package also provides functions for the following types of analy
 -Patient surveillance
 -Patient tracking
 -Quality of endoscopy and pathology reporting
--Diagnostic yield 
+-Diagnostic yield.
 
  It is the purpose of this paper to demonstrate a methodology to merge endoscopy with pathology reports and extract units of data from both. The paper also demonstrates how crucial questions that are asked of datasets repeatedly in endoscopy can be answered in an automated way as long as the dataset is prepared well.
  
