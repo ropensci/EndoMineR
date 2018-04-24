@@ -30,7 +30,7 @@ However if this can be done then many downstream analyses which benefit individu
 The EndoMineR package provides a comprehensive way to extract information from natural language endoscopy ann pathology reports as well as merging the two datasets so that pathology specimens are relevant to the endoscopy they came from.
 Furthermore the package also provides functions for the following types of analysis of endoscopic and pathological datasets:
 -Patient surveillance
--Patient tracking
+-Patient tracking.
 -Quality of endoscopy and pathology reporting
 -Diagnostic yield.
 
