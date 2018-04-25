@@ -34,11 +34,10 @@ Furthermore the package also provides functions for the following types of analy
 -Quality of endoscopy and pathology reporting
 -Diagnostic yield.
 
- It is the purpose of this paper to demonstrate a methodology to merge endoscopy with pathology reports and extract units of data from both. The paper also demonstrates how crucial questions that are asked of datasets repeatedly in endoscopy can be answered in an automated way as long as the dataset is prepared well.
+ It is the purpose of the package to create a unified process for merging of endoscopy reports with their associated pathology reports and to allow the extraction and tidying of commonly need data. Furthermore the package has methods for the analysis of the data in areas that are commonly required for high quality endoscopic services. This includes methods to track patients who need endoscopic surveillance, methods to determine endoscopic quality and disease detection rates. Also included are methods to assess patient flow through different types of endoscopy and to predict future usage of certain endoscopic techniques.
  
-- A list of key references including a link to the software archive
-- Mentions (if applicable) of any ongoing research projects using the software
-or recent scholarly publications enabled by it
+The package is in the process of having each analysis function validated and functions some validation has been submitted in abstract form to gastroenterological societies. 
+
 
 Citations to entries in paper.bib should be in
 [rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
@@ -46,6 +45,6 @@ format.
 
 This is an example citation [@figshare_archive].
 
-Figures can be included like this: ![Fidgit deposited in figshare.](figshare_article.png)
+
 
 # References
