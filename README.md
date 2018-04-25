@@ -108,9 +108,6 @@ b2<-Barretts_Event(b,'Histology','ProcedurePerformed','OGDReportWhole','Findings
 
 Further more detailed examples are provided in the associated vignette for this package
 
-[![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
-
-
 ### How to contribute
 
 Contributions to this project are most welcome. There are just a few small guidelines you need to follow.
@@ -128,3 +125,8 @@ Any significant changes should almost always be accompanied by tests. The projec
 Do your best to have well-formed commit messages for each change. This provides consistency throughout the project, and ensures that commit messages are able to be formatted properly by various git tools.
 
 Finally, push the commits to your fork and submit a pull request. Please, remember to rebase properly in order to maintain a clean, linear git history.
+
+
+[![ropensci\_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
+
+
