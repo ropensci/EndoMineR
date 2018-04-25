@@ -12,7 +12,7 @@ authors:
 affiliations:
   - name: Department of Gastroenterology, St Thomas' Hospital, Westminster Bridge Bridge Road, London SE1 7EH
     index: 1
-date: 14th April 2018
+date: 25th April 2018
 bibliography: paper.bib
 ---
 
@@ -26,12 +26,13 @@ Regardless of the method of storage, it is often difficult to associate the part
 
 However if this can be done then many downstream analyses which benefit individual patients as well as the department, can be automated and include more complex analyses to determine follow-up regimes or endoscopic –pathologic lesion recognition performance.
 
-The EndoMineR package provides a comprehensive way to extract information from natural language endoscopy ann pathology reports as well as merging the two datasets so that pathology specimens are relevant to the endoscopy they came from.
-Furthermore the package also provides functions for the following types of analysis of endoscopic and pathological datasets:
--Patient surveillance. - EXAMPLES
--Patient tracking. -EXAMPLES
--Quality of endoscopy and pathology reporting- EXAMPLES
--Diagnostic yield. -EXAMPLES
+The EndoMineR package provides a comprehensive way to extract information from natural language endoscopy ann pathology reports as well as merging the two datasets so that pathology specimens are relevant to the endoscopy they came from. Furthermore the package also provides functions for the following types of analysis of endoscopic and pathological datasets:
+
+ + 1. Patient surveillance. Examples including determining when patients should return for surveillance and who is overdue.
+ + 2. Patient tracking. -Examples include determining the length of time since the last endoscopy, as well as aggregate functions such as finding how many endoscopies of a certain type have been done and predicting future burden.
+ + 3. Patient flow - determining the kinds of endoscopies an individual patient may get over time eg for ablation of Barrett's oesophagus.
+ + 4. Quality of endoscopy and pathology reporting- Determining whether endoscopy quality is being maintained using some of the Global Rating scale metrics. Also making sure the pathology reports are complete.
+ + 5. Diagnostic yield. Examples include determination of detection of dysplasia and cancer by endoscopist as a measure of lesion quality.
 
  It is the purpose of the package to create a unified process for merging of endoscopy reports with their associated pathology reports and to allow the extraction and tidying of commonly need data. Furthermore the package has methods for the analysis of the data in areas that are commonly required for high quality endoscopic services. This includes methods to track patients who need endoscopic surveillance, methods to determine endoscopic quality and disease detection rates. Also included are methods to assess patient flow through different types of endoscopy and to predict future usage of certain endoscopic techniques.
  
