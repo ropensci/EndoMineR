@@ -7,6 +7,11 @@
 EndoMineR
 =========
 
+The fuller explanation can be found [here](https://ropensci.github.io/EndoMineR/)
+
+
+
+
 The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens. The package is intended for use by gastroenterologists, pathologists and anyone interested in the analysis of endoscopic and ppathological datasets
 
 <br>
