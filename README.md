@@ -1,5 +1,6 @@
 
 [![Build Status](https://travis-ci.org/ropensci/EndoMineR.svg?branch=master)](https://travis-ci.org/ropensci/EndoMineR) [![ropensci](https://badges.ropensci.org/153_status.svg)](https://github.com/ropensci/onboarding/issues/153) [![Coverage status](https://codecov.io/gh/ropensci/EndoMineR/branch/master/graph/badge.svg)](https://codecov.io/github/ropensci/EndoMineR?branch=master)
+[![DOI](http://joss.theoj.org/papers/10.21105/joss.00701/status.svg)](https://doi.org/10.21105/joss.00701)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <img src="vignettes/img/EndoMineRLogo.png" style="display: block; margin: auto;" />
@@ -8,8 +9,6 @@ EndoMineR
 =========
 
 The fuller explanation can be found [here](https://ropensci.github.io/EndoMineR/)
-
-
 
 
 The goal of EndoMineR is to extract as much information as possible from endoscopy reports and their associated pathology specimens. The package is intended for use by gastroenterologists, pathologists and anyone interested in the analysis of endoscopic and ppathological datasets
@@ -37,7 +36,7 @@ You can install EndoMineR from github with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("sebastiz/EndoMineR")
+devtools::install_github("ropensci/EndoMineR")
 ```
 
 Getting started
