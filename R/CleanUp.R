@@ -99,6 +99,70 @@ Extractor <- function(dataframeIn, Column, delim) {
   return(dataframeIn)
 }
 
+
+
+
+#' Extractor2
+#'
+#' This is the alternative extractor for the Endoscopy and Histology report.
+#' THis performs the same essentially as the main extractor but is useful when the 
+#' semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
+#' As per the main Extractor, This function on the user creating a list of words or characters that 
+#' act as the words that should be split against. The list is then fed to the 
+#' Extractor in a loop so that it acts as the beginning and the end of the 
+#' regex used to split the text. Whatever has been specified in the list 
+#' is used as a column header. Column headers don't tolerate special characters 
+#' like : or ? and / and don't allow numbers as the start character so these 
+#' have to be dealt with in the text before processing
+#' 
+#' @param x the dataframe 
+#' @param y the column to extract from
+#' @param stra the start of the boundary to extract
+#' @param strb the end of the boundary to extract
+#' @param t the column name to create
+#' @importFrom stringr str_extract
+#' @keywords Extraction
+#' @export
+#' @examples v<-TheOGDReportFinal
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
+#' Myendo$OGDReportWhole)
+#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+#' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
+#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
+#' 'Findings:','Endoscopic Diagnosis:')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'  Myendo<-Extractor2(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
+#' }
+#' res<-Myendo
+
+
+Extractor2 <- function(x, y, stra, strb, t) {
+  x <- data.frame(x)
+  t <- gsub("[^[:alnum:],]", " ", t)
+  t <- gsub(" ", "", t, fixed = TRUE)
+  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra, 
+                                                              "(.*)", strb, sep = ""), dotall = TRUE))
+  
+  
+  x[, t] <- gsub("\\\\.*", "", x[, t])
+  
+  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
+  x[, t] <- gsub("       ", "", x[, t])
+  x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
+  if (strb != "") {
+    x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
+  }
+  x[, t] <- gsub("       ", "", x[, t])
+  x[, t] <- ColumnCleanUp(x, t)
+  return(x)
+}
+
+
+
+
+
 #' Extracts the columns from the raw report
 #'
 #' This is the parent cleaning function for the endoscopy report. It contains
