@@ -18,13 +18,35 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
   <link href="../extra.css" rel="stylesheet">
   
+<meta property="og:title" content="EndoMineR: A package for analysis of endoscopic and related pathology — EndoMineR" />
+
+<meta property="og:description" content="The goal of EndoMineR is to extract as much information as possible from 
+endoscopy reports and their associated pathology specimens. The package 
+is intended for use by gastroenterologists, pathologists and anyone 
+interested in the analysis of endoscopic and ppathological datasets
+Gastroenterology now has many standards against which practice is measured 
+although many reporting systems do not include the reporting capability to 
+give anything more than basic analysis. Much of the data is locked in 
+semi-structured text.However the nature of semi-structured text means that 
+data can be extracted in a standardised way- it just requires more 
+manipulation. This package provides that manipulation so that complex 
+endoscopic-pathological analyses, in line with recognised standards for 
+these analyses, can be done.The package is basically in three parts/" />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +69,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">EndoMineR</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">EndoMineR</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.0.9000</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -102,7 +128,14 @@
      
   </a>
 </li>
+<li>
+  <a href="http://www.gastroenterologybook.com/">
+    <span class="far fa far fa-book"></span>
+     
+  </a>
+</li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -110,12 +143,15 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>EndoMineR: A package for analysis of endoscopic and related pathology</h1>
+    
+    <div class="hidden name"><code>EndoMineR.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>The goal of EndoMineR is to extract as much information as possible from 
 endoscopy reports and their associated pathology specimens. The package 
@@ -130,6 +166,7 @@ manipulation. This package provides that manipulation so that complex
 endoscopic-pathological analyses, in line with recognised standards for 
 these analyses, can be done.The package is basically in three parts/</p>
     
+    </div>
 
         
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -168,11 +205,14 @@ reporting and diagnostic yield questions.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

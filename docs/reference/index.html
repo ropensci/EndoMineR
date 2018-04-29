@@ -18,13 +18,21 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
+
+
+
   <link href="../extra.css" rel="stylesheet">
   
+<meta property="og:title" content="Function reference" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +55,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">EndoMineR</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">EndoMineR</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.0.9000</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -102,7 +114,14 @@
      
   </a>
 </li>
+<li>
+  <a href="http://www.gastroenterologybook.com/">
+    <span class="far fa far fa-book"></span>
+     
+  </a>
+</li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -110,376 +129,377 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;0.0.0.9000</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsAll.html">BarrettsAll</a></code> </p>
-          </td>
-          <td><p>Follow up group determination</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsBasicNumbers.html">BarrettsBasicNumbers</a></code> </p>
-          </td>
-          <td><p>Barretts Basic Numbers</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsBxQual.html">BarrettsBxQual</a></code> </p>
-          </td>
-          <td><p>Barrett's number of biopsies</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Barretts_CRIM.html">Barretts_CRIM</a></code> </p>
-          </td>
-          <td><p>CRIM status Barrett's</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsDDRQual.html">BarrettsDDRQual</a></code> </p>
-          </td>
-          <td><p>Dysplasia detection rate on surveillance</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsDocumentQual.html">BarrettsDocumentQual</a></code> </p>
-          </td>
-          <td><p>Analysis of Barrett's Documentation Quality</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsEMRGrades.html">BarrettsEMRGrades</a></code> </p>
-          </td>
-          <td><p>Number of Barrett's EMRs by grade</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Barretts_EventType.html">Barretts_EventType</a></code> </p>
-          </td>
-          <td><p>Therapeutic subtypes</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Barretts_FUType.html">Barretts_FUType</a></code> </p>
-          </td>
-          <td><p>Follow up group determination</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsParisEMR.html">BarrettsParisEMR</a></code> </p>
-          </td>
-          <td><p>Paris vs histopath Barrett's</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsPathDetectQual.html">BarrettsPathDetectQual</a></code> </p>
-          </td>
-          <td><p>Dysplasia detection on surveillance</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Barretts_PathStage.html">Barretts_PathStage</a></code> </p>
-          </td>
-          <td><p>Worst pathological stage Barrett's</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Barretts_PragueScore.html">Barretts_PragueScore</a></code> </p>
-          </td>
-          <td><p>Prague score extraction</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettssRFACath.html">BarrettssRFACath</a></code> </p>
-          </td>
-          <td><p>RFA catheter use</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsSurveil_HospNum.html">BarrettsSurveil_HospNum</a></code> </p>
-          </td>
-          <td><p>Unique Hospital Numbers of Barrett's patients</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="BarrettsSurveil.html">BarrettsSurveil</a></code> </p>
-          </td>
-          <td><p>How many Barrett's patients had surveillance</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="ColonFinal.html">ColonFinal</a></code> </p>
-          </td>
-          <td><p>Fake Lower GI Endoscopy Set</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="ColumnCleanUpAll.html">ColumnCleanUpAll</a></code> </p>
-          </td>
-          <td><p>Tidies up all columns</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="ColumnCleanUp.html">ColumnCleanUp</a></code> </p>
-          </td>
-          <td><p>Tidies up messy columns</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Endomerge2.html">Endomerge2</a></code> </p>
-          </td>
-          <td><p>Endomerge</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="EndoMineR.html">EndoMineR</a></code> </p>
-          </td>
-          <td><p>EndoMineR: A package for analysis of endoscopic and related pathology</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="EndoscAll.html">EndoscAll</a></code> </p>
-          </td>
-          <td><p>Extracts the columns from the raw report</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="EndoscEndoscopist.html">EndoscEndoscopist</a></code> </p>
-          </td>
-          <td><p>Cleans endoscopist column if present</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="EndoscFindings.html">EndoscFindings</a></code> </p>
-          </td>
-          <td><p>Cleans Procedure performed column if present</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="EndoscIndications.html">EndoscIndications</a></code> </p>
-          </td>
-          <td><p>Cleans indications column if present</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="EndoscInstrument.html">EndoscInstrument</a></code> </p>
-          </td>
-          <td><p>Cleans instrument column if present</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="EndoscMeds.html">EndoscMeds</a></code> </p>
-          </td>
-          <td><p>Cleans medication column if present</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="EndoscProcPerformed.html">EndoscProcPerformed</a></code> </p>
-          </td>
-          <td><p>Cleans Procedure performed column if present</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Extractor.html">Extractor</a></code> </p>
-          </td>
-          <td><p>Extracts the columns from the raw report</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="GRS_Type_Assess_By_Unit.html">GRS_Type_Assess_By_Unit</a></code> </p>
-          </td>
-          <td><p>Create GRS metrics by endoscopist (X-ref with pathology)</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HistolAccessionNumber.html">HistolAccessionNumber</a></code> </p>
-          </td>
-          <td><p>Extract histological accession number</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HistolAll.html">HistolAll</a></code> </p>
-          </td>
-          <td><p>Clean up all Histology data</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HistolBxSize.html">HistolBxSize</a></code> </p>
-          </td>
-          <td><p>Determine the largest biopsy size from the histology report</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HistolDx.html">HistolDx</a></code> </p>
-          </td>
-          <td><p>Extracts histological diagnosis</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HistolExtrapolDx.html">HistolExtrapolDx</a></code> </p>
-          </td>
-          <td><p>Extract specific diagnoses from the histology report</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HistolHistol.html">HistolHistol</a></code> </p>
-          </td>
-          <td><p>Extract the histology data from the report by removing negative findings</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HistolMacDescrip.html">HistolMacDescrip</a></code> </p>
-          </td>
-          <td><p>Cleans spelt numbers in histology report</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HistolNumbOfBx.html">HistolNumbOfBx</a></code> </p>
-          </td>
-          <td><p>Extract the number of biopsies taken from histology report</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="HowManyTests.html">HowManyTests</a></code> </p>
-          </td>
-          <td><p>Number of tests done per month and year by indication</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="ListLookup.html">ListLookup</a></code> </p>
-          </td>
-          <td><p>Extract from report, using words from a list</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="MetricByEndoscopist.html">MetricByEndoscopist</a></code> </p>
-          </td>
-          <td><p>Plot a metric by endoscopist</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Myendo.html">Myendo</a></code> </p>
-          </td>
-          <td><p>Fake Endoscopies</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="Mypath.html">Mypath</a></code> </p>
-          </td>
-          <td><p>Fake Pathology report</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="NegativeRemove.html">NegativeRemove</a></code> </p>
-          </td>
-          <td><p>Removes negative and normal sentences</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="NumberPerformed.html">NumberPerformed</a></code> </p>
-          </td>
-          <td><p>Determine overall number of procedures performed</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="PathDataFrameFinalColon.html">PathDataFrameFinalColon</a></code> </p>
-          </td>
-          <td><p>Fake Lower GI Pathology Set</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="PathDataFrameFinal.html">PathDataFrameFinal</a></code> </p>
-          </td>
-          <td><p>Fake Upper GI Pathology Set</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="PatientFlow_CircosPlots.html">PatientFlow_CircosPlots</a></code> </p>
-          </td>
-          <td><p>Create a Circos plot for patient flow</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="PolypLocator.html">PolypLocator</a></code> </p>
-          </td>
-          <td><p>Determine polyp location</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="SurveilCapacity.html">SurveilCapacity</a></code> </p>
-          </td>
-          <td><p>Number of tests done per month</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="SurveilFirstTest.html">SurveilFirstTest</a></code> </p>
-          </td>
-          <td><p>Extracts the first test only per patient</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="SurveilLastTest.html">SurveilLastTest</a></code> </p>
-          </td>
-          <td><p>Extract the last test done by a patient only</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="SurveilLastToNow.html">SurveilLastToNow</a></code> </p>
-          </td>
-          <td><p>Extract the last test done by a patient in days and how long ago</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="SurveilTimeByRow.html">SurveilTimeByRow</a></code> </p>
-          </td>
-          <td><p>Extract the time difference between each test in days</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="SurveySankey.html">SurveySankey</a></code> </p>
-          </td>
-          <td><p>Create a Sankey plot for patient flow</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="TermStandardLocation.html">TermStandardLocation</a></code> </p>
-          </td>
-          <td><p>Standardise location of biopsies or tissue samples</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="TheOGDReportFinal.html">TheOGDReportFinal</a></code> </p>
-          </td>
-          <td><p>Fake Upper GI Endoscopy Set</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsAll.html">BarrettsAll()</a></code> </p>
+        </td>
+        <td><p>Follow up group determination</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsBasicNumbers.html">BarrettsBasicNumbers()</a></code> </p>
+        </td>
+        <td><p>Barretts Basic Numbers</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsBxQual.html">BarrettsBxQual()</a></code> </p>
+        </td>
+        <td><p>Barrett's number of biopsies</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsDDRQual.html">BarrettsDDRQual()</a></code> </p>
+        </td>
+        <td><p>Dysplasia detection rate on surveillance</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsDocumentQual.html">BarrettsDocumentQual()</a></code> </p>
+        </td>
+        <td><p>Analysis of Barrett's Documentation Quality</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsEMRGrades.html">BarrettsEMRGrades()</a></code> </p>
+        </td>
+        <td><p>Number of Barrett's EMRs by grade</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsParisEMR.html">BarrettsParisEMR()</a></code> </p>
+        </td>
+        <td><p>Paris vs histopath Barrett's</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsPathDetectQual.html">BarrettsPathDetectQual()</a></code> </p>
+        </td>
+        <td><p>Dysplasia detection on surveillance</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsSurveil.html">BarrettsSurveil()</a></code> </p>
+        </td>
+        <td><p>How many Barrett's patients had surveillance</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettsSurveil_HospNum.html">BarrettsSurveil_HospNum()</a></code> </p>
+        </td>
+        <td><p>Unique Hospital Numbers of Barrett's patients</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Barretts_CRIM.html">Barretts_CRIM()</a></code> </p>
+        </td>
+        <td><p>CRIM status Barrett's</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Barretts_EventType.html">Barretts_EventType()</a></code> </p>
+        </td>
+        <td><p>Therapeutic subtypes</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Barretts_FUType.html">Barretts_FUType()</a></code> </p>
+        </td>
+        <td><p>Follow up group determination</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Barretts_PathStage.html">Barretts_PathStage()</a></code> </p>
+        </td>
+        <td><p>Worst pathological stage Barrett's</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Barretts_PragueScore.html">Barretts_PragueScore()</a></code> </p>
+        </td>
+        <td><p>Prague score extraction</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="BarrettssRFACath.html">BarrettssRFACath()</a></code> </p>
+        </td>
+        <td><p>RFA catheter use</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="ColonFinal.html">ColonFinal</a></code> </p>
+        </td>
+        <td><p>Fake Lower GI Endoscopy Set</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="ColumnCleanUp.html">ColumnCleanUp()</a></code> </p>
+        </td>
+        <td><p>Tidies up messy columns</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="ColumnCleanUpAll.html">ColumnCleanUpAll()</a></code> </p>
+        </td>
+        <td><p>Tidies up all columns</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="EndoMineR.html">EndoMineR</a></code> </p>
+        </td>
+        <td><p>EndoMineR: A package for analysis of endoscopic and related pathology</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Endomerge2.html">Endomerge2()</a></code> </p>
+        </td>
+        <td><p>Endomerge</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="EndoscAll.html">EndoscAll()</a></code> </p>
+        </td>
+        <td><p>Extracts the columns from the raw report</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="EndoscEndoscopist.html">EndoscEndoscopist()</a></code> </p>
+        </td>
+        <td><p>Cleans endoscopist column if present</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="EndoscFindings.html">EndoscFindings()</a></code> </p>
+        </td>
+        <td><p>Cleans Procedure performed column if present</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="EndoscIndications.html">EndoscIndications()</a></code> </p>
+        </td>
+        <td><p>Cleans indications column if present</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="EndoscInstrument.html">EndoscInstrument()</a></code> </p>
+        </td>
+        <td><p>Cleans instrument column if present</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="EndoscMeds.html">EndoscMeds()</a></code> </p>
+        </td>
+        <td><p>Cleans medication column if present</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="EndoscProcPerformed.html">EndoscProcPerformed()</a></code> </p>
+        </td>
+        <td><p>Cleans Procedure performed column if present</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Extractor.html">Extractor()</a></code> </p>
+        </td>
+        <td><p>Extracts the columns from the raw report</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Extractor2.html">Extractor2()</a></code> </p>
+        </td>
+        <td><p>Extractor2</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="GRS_Type_Assess_By_Unit.html">GRS_Type_Assess_By_Unit()</a></code> </p>
+        </td>
+        <td><p>Create GRS metrics by endoscopist (X-ref with pathology)</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HistolAccessionNumber.html">HistolAccessionNumber()</a></code> </p>
+        </td>
+        <td><p>Extract histological accession number</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HistolAll.html">HistolAll()</a></code> </p>
+        </td>
+        <td><p>Clean up all Histology data</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HistolBxSize.html">HistolBxSize()</a></code> </p>
+        </td>
+        <td><p>Determine the largest biopsy size from the histology report</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HistolDx.html">HistolDx()</a></code> </p>
+        </td>
+        <td><p>Extracts histological diagnosis</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HistolExtrapolDx.html">HistolExtrapolDx()</a></code> </p>
+        </td>
+        <td><p>Extract specific diagnoses from the histology report</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HistolHistol.html">HistolHistol()</a></code> </p>
+        </td>
+        <td><p>Extract the histology data from the report by removing negative findings</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HistolMacDescrip.html">HistolMacDescrip()</a></code> </p>
+        </td>
+        <td><p>Cleans spelt numbers in histology report</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HistolNumbOfBx.html">HistolNumbOfBx()</a></code> </p>
+        </td>
+        <td><p>Extract the number of biopsies taken from histology report</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="HowManyTests.html">HowManyTests()</a></code> </p>
+        </td>
+        <td><p>Number of tests done per month and year by indication</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="ListLookup.html">ListLookup()</a></code> </p>
+        </td>
+        <td><p>Extract from report, using words from a list</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="MetricByEndoscopist.html">MetricByEndoscopist()</a></code> </p>
+        </td>
+        <td><p>Plot a metric by endoscopist</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Myendo.html">Myendo</a></code> </p>
+        </td>
+        <td><p>Fake Endoscopies</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="Mypath.html">Mypath</a></code> </p>
+        </td>
+        <td><p>Fake Pathology report</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="NegativeRemove.html">NegativeRemove()</a></code> </p>
+        </td>
+        <td><p>Removes negative and normal sentences</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="NumberPerformed.html">NumberPerformed()</a></code> </p>
+        </td>
+        <td><p>Determine overall number of procedures performed</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="PathDataFrameFinal.html">PathDataFrameFinal</a></code> </p>
+        </td>
+        <td><p>Fake Upper GI Pathology Set</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="PathDataFrameFinalColon.html">PathDataFrameFinalColon</a></code> </p>
+        </td>
+        <td><p>Fake Lower GI Pathology Set</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="PatientFlow_CircosPlots.html">PatientFlow_CircosPlots()</a></code> </p>
+        </td>
+        <td><p>Create a Circos plot for patient flow</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="PolypLocator.html">PolypLocator()</a></code> </p>
+        </td>
+        <td><p>Determine polyp location</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="SurveilCapacity.html">SurveilCapacity()</a></code> </p>
+        </td>
+        <td><p>Number of tests done per month</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="SurveilFirstTest.html">SurveilFirstTest()</a></code> </p>
+        </td>
+        <td><p>Extracts the first test only per patient</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="SurveilLastTest.html">SurveilLastTest()</a></code> </p>
+        </td>
+        <td><p>Extract the last test done by a patient only</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="SurveilLastToNow.html">SurveilLastToNow()</a></code> </p>
+        </td>
+        <td><p>Extract the last test done by a patient in days and how long ago</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="SurveilTimeByRow.html">SurveilTimeByRow()</a></code> </p>
+        </td>
+        <td><p>Extract the time difference between each test in days</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="SurveySankey.html">SurveySankey()</a></code> </p>
+        </td>
+        <td><p>Create a Sankey plot for patient flow</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="TermStandardLocation.html">TermStandardLocation()</a></code> </p>
+        </td>
+        <td><p>Standardise location of biopsies or tissue samples</p></td>
+      </tr><tr>
+        <!--  -->
+        <td>
+          <p><code><a href="TheOGDReportFinal.html">TheOGDReportFinal</a></code> </p>
+        </td>
+        <td><p>Fake Upper GI Endoscopy Set</p></td>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -496,11 +516,14 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

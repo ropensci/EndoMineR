@@ -83,8 +83,8 @@ Mypath<-Extractor(Mypath,"PathReportWhole",mywords)
 This function should be used for both histology and pathology datasets separately. 
 
 Occasionally the text may be present in a non-ordered way ie the delimiting text may be ordered seperately between one report and the next. To accomodate this a second Extractor function is provided called Extractor2 and this can be used as an alternative to Extractor as follows
-```{r exampleExtractor2, echo = FALSE}
-Myendo
+```{r exampleExtractor2, eval = FALSE}
+Myendo<-TheOGDReportFinal
 Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
 Myendo$OGDReportWhole)
 EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',

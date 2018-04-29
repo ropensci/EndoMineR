@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Number of Barrett's EMRs by grade — BarrettsEMRGrades • EndoMineR</title>
+<title>Extractor2 — Extractor2 • EndoMineR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,18 @@
 
   <link href="../extra.css" rel="stylesheet">
   
-<meta property="og:title" content="Number of Barrett's EMRs by grade — BarrettsEMRGrades" />
+<meta property="og:title" content="Extractor2 — Extractor2" />
 
-<meta property="og:description" content="Plots all the pathological grades of the EMRs.This should only be
-run after all the BarrettsDataAccord functions." />
+<meta property="og:description" content="This is the alternative extractor for the Endoscopy and Histology report.
+THis performs the same essentially as the main extractor but is useful when the 
+semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
+As per the main Extractor, This function on the user creating a list of words or characters that 
+act as the words that should be split against. The list is then fed to the 
+Extractor in a loop so that it acts as the beginning and the end of the 
+regex used to split the text. Whatever has been specified in the list 
+is used as a column header. Column headers don't tolerate special characters 
+like : or ? and / and don't allow numbers as the start character so these 
+have to be dealt with in the text before processing" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -136,56 +144,68 @@ run after all the BarrettsDataAccord functions." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Number of Barrett's EMRs by grade</h1>
+    <h1>Extractor2</h1>
     
-    <div class="hidden name"><code>BarrettsEMRGrades.Rd</code></div>
+    <div class="hidden name"><code>Extractor2.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Plots all the pathological grades of the EMRs.This should only be
-run after all the BarrettsDataAccord functions.</p>
+    <p>This is the alternative extractor for the Endoscopy and Histology report.
+THis performs the same essentially as the main extractor but is useful when the 
+semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
+As per the main Extractor, This function on the user creating a list of words or characters that 
+act as the words that should be split against. The list is then fed to the 
+Extractor in a loop so that it acts as the beginning and the end of the 
+regex used to split the text. Whatever has been specified in the list 
+is used as a column header. Column headers don't tolerate special characters 
+like : or ? and / and don't allow numbers as the start character so these 
+have to be dealt with in the text before processing</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>BarrettsEMRGrades</span>(<span class='no'>EndoSubsetEMR</span>)</pre>
+    <pre class="usage"><span class='fu'>Extractor2</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>stra</span>, <span class='no'>strb</span>, <span class='no'>t</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>EndoSubsetEMR</th>
-      <td><p>The dataset.</p></td>
+      <th>x</th>
+      <td><p>the dataframe</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>the column to extract from</p></td>
+    </tr>
+    <tr>
+      <th>stra</th>
+      <td><p>the start of the boundary to extract</p></td>
+    </tr>
+    <tr>
+      <th>strb</th>
+      <td><p>the end of the boundary to extract</p></td>
+    </tr>
+    <tr>
+      <th>t</th>
+      <td><p>the column name to create</p></td>
     </tr>
     </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Firstly relevant columns are extrapolated from the</span>
-<span class='co'># Mypath demo dataset. These functions are all part of Histology data</span>
-<span class='co'># cleaning as part of the package.</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Diagnosis'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>,<span class='st'>""</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
-<span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
-<span class='co'># according to date and Hospital number</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>v</span>,<span class='st'>'Dateofprocedure'</span>,
-<span class='st'>'HospitalNumber'</span>)
-<span class='co'>#The function relies on the other Barrett's functions being run as well:</span>
-<span class='no'>b1</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PragueScore.html'>Barretts_PragueScore</a></span>(<span class='no'>v</span>,<span class='st'>'Findings'</span>)
-<span class='no'>b2</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PathStage.html'>Barretts_PathStage</a></span>(<span class='no'>b1</span>,<span class='st'>'Histology'</span>)
-<span class='no'>b3</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_EventType.html'>Barretts_EventType</a></span>(<span class='no'>b2</span>,<span class='st'>'Histology'</span>,
-<span class='st'>'ProcedurePerformed'</span>,<span class='st'>'Indications'</span>,<span class='st'>'Findings'</span>)
-<span class='co'># The follow-up group depends on the histology and the Prague score for a</span>
-<span class='co'># patient so it takes the processed Barrett's data and then looks in the</span>
-<span class='co'># Findings column for permutations of the Prague score.</span>
-<span class='no'>b4</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_FUType.html'>Barretts_FUType</a></span>(<span class='no'>b3</span>,<span class='st'>'Findings'</span>)
-<span class='fu'>colnames</span>(<span class='no'>b4</span>)[<span class='fu'>colnames</span>(<span class='no'>b4</span>) <span class='kw'>==</span> <span class='st'>'pHospitalNum'</span>] <span class='kw'>&lt;-</span> <span class='st'>'HospitalNumber'</span>
-<span class='co'># The function extracts only those rows for patients who have undergone</span>
-<span class='co'># EMR and then extracts the EMR grade from the extracted worst histopath</span>
-<span class='co'># column (called IMorNoIM). This is then plotted out.</span>
-<span class='no'>kk</span><span class='kw'>&lt;-</span><span class='fu'>BarrettsEMRGrades</span>(<span class='no'>b4</span>)</div><div class='img'><img src='BarrettsEMRGrades-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>rm</span>(<span class='no'>v</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>v</span><span class='kw'>&lt;-</span><span class='no'>TheOGDReportFinal</span>
+<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='no'>TheOGDReportFinal</span>
+<span class='no'>Myendo</span>$<span class='no'>OGDReportWhole</span><span class='kw'>&lt;-</span><span class='fu'>gsub</span>(<span class='st'>'2nd Endoscopist:'</span>,<span class='st'>'Second endoscopist:'</span>,
+<span class='no'>Myendo</span>$<span class='no'>OGDReportWhole</span>)
+<span class='no'>EndoscTree</span><span class='kw'>&lt;-</span><span class='fu'>list</span>(<span class='st'>'Hospital Number:'</span>,<span class='st'>'Patient Name:'</span>,<span class='st'>'General Practitioner:'</span>,
+<span class='st'>'Date of procedure:'</span>,<span class='st'>'Endoscopist:'</span>,<span class='st'>'Second Endoscopist:'</span>,<span class='st'>'Medications'</span>,
+<span class='st'>'Instrument'</span>,<span class='st'>'Extent of Exam:'</span>,<span class='st'>'Indications:'</span>,<span class='st'>'Procedure Performed:'</span>,
+<span class='st'>'Findings:'</span>,<span class='st'>'Endoscopic Diagnosis:'</span>)
+<span class='kw'>for</span>(<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>:(<span class='fu'>length</span>(<span class='no'>EndoscTree</span>)-<span class='fl'>1</span>)) {
+ <span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'>Extractor2</span>(<span class='no'>Myendo</span>,<span class='st'>'OGDReportWhole'</span>,<span class='fu'>as.character</span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>]),
+ <span class='fu'>as.character</span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>+<span class='fl'>1</span>]),<span class='fu'>as.character</span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>]))
+}
+<span class='no'>res</span><span class='kw'>&lt;-</span><span class='no'>Myendo</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

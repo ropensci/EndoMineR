@@ -8,15 +8,18 @@
 <title>Barrett’s Oesophagus • EndoMineR</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="Barrett’s Oesophagus">
+<meta property="og:description" content="">
+<meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container template-vignette">
+    <div class="container template-article">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
@@ -25,8 +28,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">EndoMineR</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">EndoMineR</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.0.0.9000</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
@@ -79,6 +86,12 @@
      
   </a>
 </li>
+<li>
+  <a href="http://www.gastroenterologybook.com/">
+    <span class="far fa far fa-book"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -89,17 +102,20 @@
 
       
       </header><div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>Barrett’s Oesophagus</h1>
                         <h4 class="author">Sebastian Zeki</h4>
             
-            <h4 class="date">March 21, 2018</h4>
-          </div>
+            <h4 class="date">April 29, 2018</h4>
+      
+      
+      <div class="hidden name"><code>Barretts.Rmd</code></div>
+
+    </div>
 
     
     
-<div class="contents">
 <div id="specific-diseases---barretts-oesophagus" class="section level2">
 <h2 class="hasAnchor">
 <a href="#specific-diseases---barretts-oesophagus" class="anchor"></a>Specific diseases - Barrett’s oesophagus</h2>
@@ -492,7 +508,7 @@ b3&lt;-<span class="kw"><a href="../reference/Barretts_FUType.html">Barretts_FUT
 ## # ... with 33 more rows
 ## 
 ## $ProcNumbersPlot</code></pre>
-<p><img src="Barretts_files/figure-html/exampleBarrettsBasicNumbers-1.png" width="672"></p>
+<p><img src="Barretts_files/figure-html/exampleBarrettsBasicNumbers-1.png" width="700"></p>
 <p><br></p>
 <p>To assess the number of different catheter types used (for renumeration purposes for example) the following function BarrettssRFACath can be used. Because the use of a catheter may be part of the ProcedurePerformed column or in the free text of Findings, more than one column can be searched in.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettssRFACath.html">BarrettssRFACath</a></span>(b3,<span class="st">"ProcedurePerformed"</span>,<span class="st">"Findings"</span>)</code></pre></div>
@@ -563,7 +579,7 @@ ds2&lt;-<span class="kw">data.frame</span>(ds$pHospitalNum,ds$ind)</code></pre><
 <a href="#quality-of-documentation-for-barretts-surveillance-endoscopies" class="anchor"></a>Quality of documentation for Barrett’s surveillance endoscopies</h3>
 <p>We can also assess the documentation used in Barrett’s endoscopies. Documentation quality is a cornerstone of endoscopic quality as listed in the EndoMineR principles and also in the <a href="https://sebastiz.github.io/EndoMineR/articles/Analysis.html">Analysis</a> tutorial There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett’s documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on Barrett’s endoscopic reporting. This should be run after the Barretts_Prague as assessment of the Prague score is a part of this assessment:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsDocumentQual.html">BarrettsDocumentQual</a></span>(b3,<span class="st">"Findings"</span>)</code></pre></div>
-<p><img src="Barretts_files/figure-html/exampleBarrettsQuality_AnalysisDocumentation-1.png" width="672"></p>
+<p><img src="Barretts_files/figure-html/exampleBarrettsQuality_AnalysisDocumentation-1.png" width="700"></p>
 <p><br></p>
 </div>
 <div id="quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="section level3">
@@ -727,36 +743,40 @@ MyEnroll&lt;-<span class="kw">data.frame</span>(Enroll[<span class="st">"Hospita
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="center">E7461659</td>
+<td align="center">3.002747 weeks</td>
+</tr>
+<tr class="even">
 <td align="center">J1337672</td>
-<td align="center">5.005495 weeks</td>
+<td align="center">5.112637 weeks</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="center">M5148114</td>
-<td align="center">3.769231 weeks</td>
+<td align="center">3.876374 weeks</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="center">P2080807</td>
-<td align="center">3.313187 weeks</td>
+<td align="center">3.420330 weeks</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="center">Q7176341</td>
-<td align="center">3.818681 weeks</td>
+<td align="center">3.925824 weeks</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="center">Q7729897</td>
-<td align="center">3.684066 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">R3882435</td>
-<td align="center">3.357143 weeks</td>
+<td align="center">3.791209 weeks</td>
 </tr>
 <tr class="odd">
-<td align="center">S1951882</td>
-<td align="center">3.354396 weeks</td>
+<td align="center">R3882435</td>
+<td align="center">3.464286 weeks</td>
 </tr>
 <tr class="even">
+<td align="center">S1951882</td>
+<td align="center">3.461538 weeks</td>
+</tr>
+<tr class="odd">
 <td align="center">W2120051</td>
-<td align="center">3.241758 weeks</td>
+<td align="center">3.348901 weeks</td>
 </tr>
 </tbody>
 </table>
@@ -809,7 +829,6 @@ Rule&lt;-<span class="kw"><a href="../reference/BarrettsSurveil_HospNum.html">Ba
 </table>
 </div>
 </div>
-</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -834,11 +853,13 @@ Rule&lt;-<span class="kw"><a href="../reference/BarrettsSurveil_HospNum.html">Ba
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
 </div>
+
+  
 
   </body>
 </html>
