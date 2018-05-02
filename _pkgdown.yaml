@@ -31,10 +31,6 @@ navbar:
       href: https://github.com/ropensci/EndoMineR
     - icon: far fa-book
       href: http://www.gastroenterologybook.com/
-    - icon: fa-briefcase-medical
+    - icon:  fas fa-file-medical
       href: https://www.nhs.uk/profiles/consultant/6029157
-    - icon: fa briefcase-medical
-      href: https://www.nhs.uk/profiles/consultant/6029157
-    - icon: fas fa-briefcase-medical
-      href: https://www.nhs.uk/profiles/consultant/6029157
-
+    
