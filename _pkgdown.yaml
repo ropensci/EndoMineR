@@ -31,6 +31,5 @@ navbar:
       href: https://github.com/ropensci/EndoMineR
     - icon: far fa-book
       href: http://www.gastroenterologybook.com/
-    - icon:  fas fa-file-medical
+    - icon:  fas fa-stethoscope
       href: https://www.nhs.uk/profiles/consultant/6029157
-    
