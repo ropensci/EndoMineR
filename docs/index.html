@@ -95,6 +95,12 @@
      
   </a>
 </li>
+<li>
+  <a href="https://www.nhs.uk/profiles/consultant/6029157">
+    <span class="fas fa fas fa-hospital"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -112,7 +118,6 @@
     
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<p><img src="articles/img/EndoMineRLogo.png" style="display: block; margin: auto;"></p>
 <div id="endominer" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#endominer" class="anchor"></a>EndoMineR</h1></div>
@@ -194,7 +199,8 @@ Fent&lt;-<span class="kw"><a href="reference/MetricByEndoscopist.html">MetricByE
 <p>More specific analyses, ie those relating to a specific guidelines are also provided. For example in the case of Barrett’s oesophagus, the follow-up timing for the next endoscopy in those who have non dysplastic mucosa, can be determined as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
 b&lt;-<span class="kw"><a href="reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(v,<span class="st">'Histology'</span>)
-b2&lt;-<span class="kw">Barretts_Event</span>(b,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>) b3&lt;-<span class="kw">Barretts_FUGroup</span>(b2,<span class="st">'Findings'</span>)</code></pre></div>
+b2&lt;-<span class="kw"><a href="reference/Barretts_EventType.html">Barretts_EventType</a></span>(b,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>) 
+b3&lt;-<span class="kw"><a href="reference/Barretts_FUType.html">Barretts_FUType</a></span>(b2,<span class="st">'Findings'</span>)</code></pre></div>
 <p>Further more detailed examples are provided in the associated vignette for this package ### How to contribute</p>
 <p>Contributions to this project are most welcome. There are just a few small guidelines you need to follow.</p>
 <div id="submitting-a-patch" class="section level4">
