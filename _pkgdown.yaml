@@ -28,9 +28,11 @@ navbar:
     - icon: fa fa-twitter
       href: https://twitter.com/GastroDS
     - icon: fa-github fa-lg
-      href: https://github.com/sebastiz/EndoMineR
+      href: https://github.com/ropensci/EndoMineR
     - icon: far fa-book
       href: http://www.gastroenterologybook.com/
-    - icon: fas fa-hospital
+    - icon: fa-briefcase-medical
+      href: https://www.nhs.uk/profiles/consultant/6029157
+    - icon: fa briefcase-medical
       href: https://www.nhs.uk/profiles/consultant/6029157
 
