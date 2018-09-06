@@ -37,5 +37,5 @@ Suggests:
     reshape2,
     gplots
 VignetteBuilder: knitr
-URL: https://sebastiz.github.io/EndoMineR/index.html
-BugReports: https://github.com/sebastiz/EndoMineR/issues
+URL: https://sebastiz.github.io/EndoMineR/index.html, https://github.com/ropensci/EndoMineR
+BugReports: https://github.com/ropensci/EndoMineR/issues
