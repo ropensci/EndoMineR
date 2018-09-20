@@ -71,21 +71,21 @@ if (getRversion() >= "2.15.1")
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
 #' Mypath2<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
-#' 
+#'
 
 Extractor <- function(dataframeIn, Column, delim) {
   dataframeInForLater<-dataframeIn
   ColumnForLater<-Column
   Column <- rlang::sym(Column)
   dataframeIn <- data.frame(dataframeIn)
-  dataframeIn<-dataframeIn %>% 
-    tidyr::separate(!!Column, into = c("added_name",delim), 
+  dataframeIn<-dataframeIn %>%
+    tidyr::separate(!!Column, into = c("added_name",delim),
                                           sep = paste(delim, collapse = "|"),
                     extra = "drop", fill = "right")
   names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("\\\\.*", "", x))
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("       ", "", x))
-  
+
   #Convert back to a dataframe as has been converted to a matrix
   dataframeIn<-data.frame(dataframeIn)
   dataframeIn<-dataframeIn[,-1]
@@ -105,17 +105,17 @@ Extractor <- function(dataframeIn, Column, delim) {
 #' Extractor2
 #'
 #' This is the alternative extractor for the Endoscopy and Histology report.
-#' THis performs the same essentially as the main extractor but is useful when the 
+#' THis performs the same essentially as the main extractor but is useful when the
 #' semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
-#' As per the main Extractor, This function on the user creating a list of words or characters that 
-#' act as the words that should be split against. The list is then fed to the 
-#' Extractor in a loop so that it acts as the beginning and the end of the 
-#' regex used to split the text. Whatever has been specified in the list 
-#' is used as a column header. Column headers don't tolerate special characters 
-#' like : or ? and / and don't allow numbers as the start character so these 
+#' As per the main Extractor, This function on the user creating a list of words or characters that
+#' act as the words that should be split against. The list is then fed to the
+#' Extractor in a loop so that it acts as the beginning and the end of the
+#' regex used to split the text. Whatever has been specified in the list
+#' is used as a column header. Column headers don't tolerate special characters
+#' like : or ? and / and don't allow numbers as the start character so these
 #' have to be dealt with in the text before processing
-#' 
-#' @param x the dataframe 
+#'
+#' @param x the dataframe
 #' @param y the column to extract from
 #' @param stra the start of the boundary to extract
 #' @param strb the end of the boundary to extract
@@ -142,12 +142,12 @@ Extractor2 <- function(x, y, stra, strb, t) {
   x <- data.frame(x)
   t <- gsub("[^[:alnum:],]", " ", t)
   t <- gsub(" ", "", t, fixed = TRUE)
-  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra, 
+  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
                                                               "(.*)", strb, sep = ""), dotall = TRUE))
-  
-  
+
+
   x[, t] <- gsub("\\\\.*", "", x[, t])
-  
+
   names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
   x[, t] <- gsub("       ", "", x[, t])
   x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
@@ -187,7 +187,7 @@ EndoscAll<- function(dataframe) {
 
   if("Medications" %in% colnames(dataframe)){
     dataframe<-EndoscMeds(Myendo,'Medications')
-   
+
   }
   if("Instruments" %in% colnames(dataframe)){
     dataframe<-EndoscInstrument(dataframe,'Instruments')
@@ -231,14 +231,14 @@ EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
   dataframe <- data.frame(dataframe)
   dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
                                                "Mr|Professor|Prof|Dr", "")
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn], 
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
                                                "[^[:alnum:],]", "")
   # Put gaps between names
   dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
                                                "([a-z])([A-Z])", "\\1 \\2")
   dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
                                                "2nd.*", "")
-  dataframe[, EndoReportColumn] <- trimws(dataframe[, EndoReportColumn], 
+  dataframe[, EndoReportColumn] <- trimws(dataframe[, EndoReportColumn],
                                           which = c("both"))
   return(dataframe)
 }
@@ -259,37 +259,37 @@ EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
 
 EndoscMeds <- function(dataframe, MedColumn) {
   # Extraction of the Medications: Extract the fentanyl if present
- 
-    
+
+
   dataframe$Fent <-
     str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
   dataframe$Fent <- str_replace(dataframe$Fent,"Fentanyl", "")
   dataframe$Fent <- str_replace(dataframe$Fent,"mcg", "")
   dataframe$Fent <- as.numeric(dataframe$Fent)
- 
-  
+
+
   # Extract the midazolam if present
- 
+
   dataframe$Midaz <-
     str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
   dataframe$Midaz <- str_replace(dataframe$Midaz,"Midazolam ", "")
   dataframe$Midaz <- str_replace(dataframe$Midaz,"mg", "")
   dataframe$Midaz <- as.numeric(dataframe$Midaz)
- 
+
   # Extract the pethidine if present
     dataframe$Peth <-
       str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
     dataframe$Peth <- str_replace(dataframe$Peth,"Pethidine", "")
     dataframe$Peth <- str_replace(dataframe$Peth,"mcg", "")
     dataframe$Peth <- as.numeric(dataframe$Peth)
-  
+
     # Extract the propofol if present
     dataframe$Prop <-
       str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
     dataframe$Prop <- str_replace(dataframe$Prop,"Propofol", "")
     dataframe$Prop <- str_replace(dataframe$Prop,"mcg", "")
     dataframe$Prop <- as.numeric(dataframe$Prop)
-  
+
   return(dataframe)
 }
 
@@ -310,10 +310,10 @@ EndoscMeds <- function(dataframe, MedColumn) {
 
 EndoscInstrument <- function(dataframe, InstrumentColumn) {
   # Extraction of the Instrument used:
-  
+
   dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
                                                "-.*", "")
-  dataframe[, InstrumentColumn] <- 
+  dataframe[, InstrumentColumn] <-
 gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
     Loan Scope \\(specify serial no:|
     Loan Scope \\(specify\\s*serial no|\\)|-.*",
@@ -424,7 +424,8 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
 
 EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
-  dataframe[, FindingsColumn] <- str_replace(dataframe[, FindingsColumn],
+  #dataframe[, FindingsColumn] <-
+    str_replace(dataframe[, FindingsColumn],
                                              "cm\\s+[A-Z]|cm.+\\)", "cm\n")
   dataframe$EndoFindingsSimple<- NegativeRemove(dataframe, FindingsColumn)
   #Put in the Negative remove for FindingsSimplified Here
@@ -562,7 +563,7 @@ NegativeRemove <- function(dataframe, Column) {
                  dataframe[, Column],
                  perl = TRUE,
                  ignore.case = TRUE)
-  return(dataframe)
+  return(dataframe[, Column])
 }
 
 
@@ -573,8 +574,8 @@ NegativeRemove <- function(dataframe, Column) {
 #' semi-colons,full stops at the start
 #' of lines and converts end sentence full stops to new lines.
 #' It should be used after the Extractor.
-#' It is used for columns where there is a lot of free text to extract. It 
-#' really extracts and standardises the sentences. 
+#' It is used for columns where there is a lot of free text to extract. It
+#' really extracts and standardises the sentences.
 #' @param dataframe dataframe with column of interest
 #' @param Column column of interest
 #' @keywords Cleaner
@@ -588,27 +589,27 @@ ColumnCleanUp <- function(dataframe, Column) {
   dataframe[, "Column"] <- str_replace(dataframe[, Column],"^\\.\n", "")
   dataframe[, Column] <- str_replace(dataframe[, Column],"^\\.", "")
   dataframe[, Column] <- str_replace(dataframe[, Column],"^:", "")
-  
+
   #Get rid of breaks between lines
   dataframe[, Column] <- str_replace(dataframe[, Column],"(\n|\r){2,}", "\n")
   dataframe[, Column] <- str_replace(dataframe[, Column],
                                      "\\.\n\\.\n|\\.\r\\.\r", "\\.")
-  
+
   #Get rid of floating whitespace
   dataframe[, Column] <- str_replace(dataframe[, Column],"\\s{5,}", "")
   dataframe[, Column] <- str_replace(dataframe[, Column],"$\\.", "")
-  
+
   #Get rid of floating commas at the end of lines
   dataframe[, Column] <- str_replace(dataframe[, Column],"\n,", "\n")
   #Standardise the carriage returns
   dataframe[, Column] <- str_replace(dataframe[, Column],
                                                "\r\n", "\n")
-  
-  
-  
+
+
+
   #Get rid of trailing dots from previous conversions
   dataframe[, Column] <- str_replace(dataframe[, Column],"\\.{2,}", "\\.")
-  
+
   #Convert sentence endings to newlines as the sentence boundary
   dataframe[, Column] <- gsub(".", "\n", dataframe[, Column], fixed = TRUE)
   return(dataframe[, Column])
@@ -628,7 +629,7 @@ ColumnCleanUp <- function(dataframe, Column) {
 #' @export
 #' @importFrom stringr str_replace
 #' @examples jj<-lapply(Myendo, ColumnCleanUpAll)
-#' 
+#'
 
 ColumnCleanUpAll <- function(dataframe) {
 
@@ -636,24 +637,24 @@ ColumnCleanUpAll <- function(dataframe) {
   dataframe <- str_replace(dataframe,"^\\.\n", "")
   dataframe <- str_replace(dataframe,"^\\.", "")
   dataframe <- str_replace(dataframe,"^:", "")
-  
+
   #Get rid of breaks between lines
   dataframe <- str_replace(dataframe,"(\n|\r){2,}", "\n")
   dataframe<- str_replace(dataframe,"\\.\n\\.\n|\\.\r\\.\r", "\\.")
-  
+
   #Get rid of floating whitespace
   dataframe <- str_replace(dataframe,"\\s{5,}", "")
   dataframe <- str_replace(dataframe,"$\\.", "")
-  
+
   #Get rid of floating commas at the end of lines
   dataframe <- str_replace(dataframe,"\n,", "\n")
-  
+
   #Get rid of trailing dots from previous conversions
   dataframe <- str_replace(dataframe,"\\.{2,}", "\\.")
-  
+
   #Standardise the carriage returns
   dataframe<- str_replace(dataframe,"\r\n", "\n")
-  
+
   #Convert sentence endings to newlines as the sentence boundary
   dataframe <- gsub(".", "\n", dataframe, fixed = TRUE)
   return(dataframe)
@@ -675,7 +676,7 @@ ColumnCleanUpAll <- function(dataframe) {
 #' @keywords Macroscopic
 #' @export
 #' @importFrom stringr str_replace
-#' @examples 
+#' @examples
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
@@ -689,34 +690,34 @@ ColumnCleanUpAll <- function(dataframe) {
 
 
 HistolAll <- function(dataframe) {
-  
+
   if("Histology" %in% colnames(dataframe)){
     dataframe<-HistolHistol(dataframe,'Histology')
     dataframe<-HistolAccessionNumber(dataframe,'Histology','SP-\\d{2}-\\d{7}')
   }
-  
+
   if("Macroscopicdescription" %in% colnames(dataframe)){
     dataframe<-HistolMacDescrip(dataframe,'Macroscopicdescription')
     dataframe<-HistolNumbOfBx(Mypath,'Macroscopicdescription',
                                      'specimen')
     dataframe<- HistolBxSize(Mypath,'Macroscopicdescription')
   }
-   
+
   if("Diagnosis" %in% colnames(dataframe)){
     dataframe<-HistolDx(dataframe,'Diagnosis')
     dataframe<-HistolExtrapolDx(dataframe,'Diagnosis',"")
   }
   dataframe<-data.frame(dataframe)
-   
+
   return(dataframe)
 }
 
 
 #' Extract the histology data from the report by removing negative findings
 #'
-#' This extracts Histology details data from the report and also removes 
+#' This extracts Histology details data from the report and also removes
 #' negative findings. The Histology details
-#' usually relate to the description of the histological report. 
+#' usually relate to the description of the histological report.
 #' @param dataframe dataframe with column of interest
 #' @param HistolColumn column of interest
 #' @keywords Histology
@@ -735,7 +736,7 @@ HistolHistol <- function(dataframe, HistolColumn) {
   dataframe$Histol_Simplified <- dataframe[, HistolColumn]
   dataframe$Histol_Simplified <- gsub("- ", "\n", dataframe$Histol_Simplified,
                               fixed = TRUE)
-  dataframe$Histol_Simplified <- gsub("-[A-Z]", "\n", 
+  dataframe$Histol_Simplified <- gsub("-[A-Z]", "\n",
                                       dataframe$Histol_Simplified
                               , fixed = TRUE)
   #dataframe$Histol_Simplified <-
@@ -765,7 +766,7 @@ HistolHistol <- function(dataframe, HistolColumn) {
 HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
   dataframe <- data.frame(dataframe)
   # Accession number samples- not really necessary to extract:
-  dataframe$AccessionNumber <- 
+  dataframe$AccessionNumber <-
    str_extract(dataframe[, AccessionColumn], regString)
   return(dataframe)
 }
@@ -803,19 +804,19 @@ HistolDx <- function(dataframe, HistolColumn) {
   #dataframe$Dx_Simplified <-
     #str_replace(dataframe$Dx_Simplified,"[A-Z].*biopsy.*\n", "")
   return(dataframe)
-  
+
 }
 
 
 #' Extract specific diagnoses from the histology report
 #'
 #' This extracts other specific diagnoses from the report. These have been hard
-#' coded to look for dysplasia cancer and GIST. Optional use for the user to 
+#' coded to look for dysplasia cancer and GIST. Optional use for the user to
 #' add regular expressions as well. All the diagnoses are extracted into
 #' one column and made unique.
 #'
 #' @param dataframe dataframe containing histology results,
-#' @param Column the column to extract dysplasia, cancer, and GIST from- 
+#' @param Column the column to extract dysplasia, cancer, and GIST from-
 #' often the Histology diagnosis column
 #' @param userString user defined string search for (regular expression)
 #' @importFrom stringr str_extract_all
@@ -826,7 +827,7 @@ HistolDx <- function(dataframe, HistolColumn) {
 HistolExtrapolDx <- function(dataframe, Column,userString) {
   # Some further extraction to get commonly searched for data
   dataframe$Extracted <-
-    str_extract_all(dataframe[, Column], 
+    str_extract_all(dataframe[, Column],
                     paste0("[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour|[Dd]yspla|G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio|[Cc]rohn",userString),
                    simplify = FALSE)
   #Make each entry unique
@@ -854,7 +855,7 @@ HistolExtrapolDx <- function(dataframe, Column,userString) {
 
 HistolMacDescrip <- function(dataframe, MacroColumn) {
   dataframe <- data.frame(dataframe)
-  
+
   # Column specific cleanup
   dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
                                           "[Dd]ictated by.*", "")
@@ -893,7 +894,7 @@ HistolMacDescrip <- function(dataframe, MacroColumn) {
 #' @importFrom stringr str_match_all
 #' @keywords Biopsy number
 #' @export
-#' @examples 
+#' @examples
 #' qq<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 
 
@@ -901,7 +902,7 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
   dataframe <- data.frame(dataframe)
   dataframe <- HistolMacDescrip(dataframe, MacroColumn)
   mylist <-
-    str_match_all(dataframe[, MacroColumn], paste("[0-9]{1,2}.{0,3}", 
+    str_match_all(dataframe[, MacroColumn], paste("[0-9]{1,2}.{0,3}",
                                                   regString, sep = ""))
   dataframe$NumbOfBx <-
     vapply(mylist, function(p)
