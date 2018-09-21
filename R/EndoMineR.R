@@ -728,11 +728,13 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
       ),
       collapse = "|"
     )
-  dataframe$AllSampleLocator <-
-    str_match_all(dataframe$SampleLocation, tofind)
-  dataframe$AllSampleLocator <-
-    lapply(dataframe$AllSampleLocator, function(p)
-      unique(p))
+  
+  
+  so<-str_match_all(dataframe$SampleLocation, tofind)
+  #Collapse as str_match_all outputs a list so need to collapse it to make into a character vector
+  so<-sapply( so, paste0, collapse=",")
+  dataframe$AllSampleLocator<-so
+  
   return(dataframe)
 }
 

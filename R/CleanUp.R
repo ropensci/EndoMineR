@@ -536,7 +536,7 @@ NegativeRemove <- function(dataframe, Column) {
                                      ".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "")
   # Other negatives
   dataframe[, Column] <- gsub(
-    ".*there (is|are) \\bno\\b .*?(\\.|\n|:|$)\\R*",
+    ".*there (is|are|were) \\bno\\b .*?(\\.|\n|:|$)\\R*",
     "",
     dataframe[, Column],
     perl = TRUE,
