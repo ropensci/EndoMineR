@@ -490,7 +490,7 @@ NegativeRemove <- function(dataframe, Column) {
   # Nots
   dataframe[, Column] <-
     gsub(
-      ".*(was|were) not.*?(\\.|\n|:|$)\\R*",
+      ".*(is|was|were) not.*?(\\.|\n|:|$)\\R*",
       "",
       dataframe[, Column],
       perl = TRUE,
