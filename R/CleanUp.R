@@ -732,7 +732,7 @@ HistolHistol <- function(dataframe, HistolColumn) {
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
                                            "\n|\r", " ")
   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
-  dataframe<- NegativeRemove(dataframe, HistolColumn)
+  dataframe[, HistolColumn]<- NegativeRemove(dataframe, HistolColumn)
   dataframe$Histol_Simplified <- dataframe[, HistolColumn]
   dataframe$Histol_Simplified <- gsub("- ", "\n", dataframe$Histol_Simplified,
                               fixed = TRUE)
@@ -793,7 +793,7 @@ HistolDx <- function(dataframe, HistolColumn) {
                                            "[Rr]eported.*", "")
   # Column-generic cleanup
   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
-  dataframe<- NegativeRemove(dataframe, HistolColumn)
+  dataframe[, HistolColumn]<- NegativeRemove(dataframe, HistolColumn)
   dataframe$Dx_Simplified <- dataframe[, HistolColumn]
   dataframe$Dx_Simplified <-
     gsub("- ", "\n", dataframe$Dx_Simplified, fixed = TRUE)
