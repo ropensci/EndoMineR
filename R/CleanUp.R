@@ -910,6 +910,7 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
   return(dataframe)
 }
 
+
 #' Determine the largest biopsy size from the histology report
 #'
 #' This extracts the biopsy size from the report. If there are multiple
@@ -938,3 +939,35 @@ HistolBxSize <- function(dataframe, MacroColumn) {
     as.numeric(str_match(dataframe$BxSize, strBxSize)[, 4])
   return(dataframe)
 }
+
+
+#' Validate columns
+#'
+#' This is an attempt to determine whether functions are accurate in their extraction
+#' It is part of a validation pipeline to make sure the data outputted from a function
+#' is accurate
+#' It essentially is a comparison of actual vs expected output. The intention is to 
+#' then quantify the output of a function for a specific dataset.
+#'
+#' @param dataframe dataframe
+#' @param testcolumn The dataframe column to run the function on
+#' @param pHospitalNum the hospital number of the patient so can be identified
+#' @importFrom openxlsx write.xlsx
+#' @keywords validation
+#' @export
+#' @examples #ValidationR(HistolBxSize,myHistol,"histology_report")
+
+ValidationR<-function(FUN =funct,dataframe,Column){
+  dd<-funct(dataframe,Column)
+  #Now just want the columns that have changed or have been added from the original as well
+  #as well as the columns that sound very similar to the original
+  #ie nee to get the original column called Column as well as the new column created (can
+  # I get this from the diff between two data frames? dd-dataframe??)
+  #This gets the new column name from the dataframe that the function has run
+  
+  #pHospitalNum
+  ff<-setdiff(union(names(dataframe), names(dd)), names(dataframe))
+  ff<-data.frame(dd[,Column],dd[,ff])
+  write.xlsx(ff, paste0(getwd(),"/MyValidation.txt"))
+}
+dataframe[,pHospitalNum],
