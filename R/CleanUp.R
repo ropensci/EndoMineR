@@ -490,7 +490,7 @@ NegativeRemove <- function(dataframe, Column) {
   # Nots
   dataframe[, Column] <-
     gsub(
-      ".*(does|is|was|were|are) not.*?(\\.|\n|:|$)\\R*",
+      ".*(does|is|was|were|are|have) not.*?(\\.|\n|:|$)\\R*",
       "",
       dataframe[, Column],
       perl = TRUE,
@@ -733,7 +733,6 @@ HistolHistol <- function(dataframe, HistolColumn) {
                                            "\n|\r", " ")
   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
   dataframe$Histol_Simplified<- NegativeRemove(dataframe, HistolColumn)
-  dataframe$Histol_Simplified <- dataframe[, HistolColumn]
   dataframe$Histol_Simplified <- gsub("- ", "\n", dataframe$Histol_Simplified,
                               fixed = TRUE)
   dataframe$Histol_Simplified <- gsub("-[A-Z]", "\n",
