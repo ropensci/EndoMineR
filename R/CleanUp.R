@@ -732,7 +732,7 @@ HistolHistol <- function(dataframe, HistolColumn) {
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
                                            "\n|\r", " ")
   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
-  dataframe[, HistolColumn]<- NegativeRemove(dataframe, HistolColumn)
+  dataframe$Histol_Simplified<- NegativeRemove(dataframe, HistolColumn)
   dataframe$Histol_Simplified <- dataframe[, HistolColumn]
   dataframe$Histol_Simplified <- gsub("- ", "\n", dataframe$Histol_Simplified,
                               fixed = TRUE)
