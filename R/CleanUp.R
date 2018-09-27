@@ -732,12 +732,13 @@ HistolHistol <- function(dataframe, HistolColumn) {
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
                                            "\n|\r", " ")
   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
+  dataframe[, HistolColumn] <- gsub("- ", "\n", dataframe[, HistolColumn],
+                                      fixed = TRUE)
+  dataframe[, HistolColumn] <- gsub("-[A-Z]", "\n",
+                                      dataframe[, HistolColumn]
+                                      , fixed = TRUE)
   dataframe$Histol_Simplified<- NegativeRemove(dataframe, HistolColumn)
-  dataframe$Histol_Simplified <- gsub("- ", "\n", dataframe$Histol_Simplified,
-                              fixed = TRUE)
-  dataframe$Histol_Simplified <- gsub("-[A-Z]", "\n",
-                                      dataframe$Histol_Simplified
-                              , fixed = TRUE)
+
   #dataframe$Histol_Simplified <-
     #str_replace(dataframe$Histol_Simplified,"(?<=[A-Z].*)biopsies.*\n", "")
   #dataframe$Histol_Simplified <-
