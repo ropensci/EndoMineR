@@ -103,7 +103,7 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
 #' rm(v)
 
 Barretts_PathStage <- function(dataframe, PathColumn) {
-  # Get the worst pathology for that sample
+  # Get the worst pathology for that sample inc SM stages
   dataframe <- data.frame(dataframe)
   dataframe$IMorNoIM <-
     ifelse(grepl("[Ss][Mm]2", dataframe[, PathColumn], perl = TRUE),
