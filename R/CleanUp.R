@@ -738,11 +738,6 @@ HistolHistol <- function(dataframe, HistolColumn) {
                                       dataframe[, HistolColumn]
                                       , fixed = TRUE)
   dataframe$Histol_Simplified<- NegativeRemove(dataframe, HistolColumn)
-
-  #dataframe$Histol_Simplified <-
-    #str_replace(dataframe$Histol_Simplified,"(?<=[A-Z].*)biopsies.*\n", "")
-  #dataframe$Histol_Simplified <-
-    #str_replace(dataframe$Histol_Simplified,"[A-Z].*biopsy.*\n", "")
   dataframe$Histol_Simplified <-str_replace(dataframe$Histol_Simplified,":", "")
   return(dataframe)
 }

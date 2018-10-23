@@ -106,7 +106,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
   # Get the worst pathology for that sample
   dataframe <- data.frame(dataframe)
   dataframe$IMorNoIM <-
-    ifelse(grepl("[Ss][Mm]1", dataframe[, PathColumn], perl = TRUE),
+    ifelse(grepl("[Ss][Mm]2", dataframe[, PathColumn], perl = TRUE),
            "SM2",
            ifelse(
              grepl("[Ss][Mm]1", dataframe[, PathColumn], perl = TRUE),

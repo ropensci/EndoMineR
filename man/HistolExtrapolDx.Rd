@@ -9,14 +9,14 @@ HistolExtrapolDx(dataframe, Column, userString)
 \arguments{
 \item{dataframe}{dataframe containing histology results,}
 
-\item{Column}{the column to extract dysplasia, cancer, and GIST from- 
+\item{Column}{the column to extract dysplasia, cancer, and GIST from-
 often the Histology diagnosis column}
 
 \item{userString}{user defined string search for (regular expression)}
 }
 \description{
 This extracts other specific diagnoses from the report. These have been hard
-coded to look for dysplasia cancer and GIST. Optional use for the user to 
+coded to look for dysplasia cancer and GIST. Optional use for the user to
 add regular expressions as well. All the diagnoses are extracted into
 one column and made unique.
 }
