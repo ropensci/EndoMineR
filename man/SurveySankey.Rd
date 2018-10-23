@@ -2,7 +2,33 @@
 % Please edit documentation in R/EndoMineR.R
 \name{SurveySankey}
 \alias{SurveySankey}
-\title{Create a Sankey plot for patient flow}
+\title{#' Determine the patient metric of choice over time WORK IN PROGRESS
+#'
+#' This function aims to show what is happening over time to a metric
+#' of choice on a per patient basis.
+#' An example might be to demonstrate the worst grade of histopathology
+#' on repeated endoscopic biopsies eg for Barrett's oesophagus
+#' @param theframe the dataframe,
+#' @param EndoReportColumn the column of interest,
+#' @param myNotableWords list of words you are interested in
+#' @import ggplot2 
+#' @import stringr
+#' @import ggplus
+#' @keywords patient flow
+#' @export
+#' @examples #The function relies on defined a list of
+#' # words you are interested in and then choosing the column you are
+#' # interested in looking in for these words. This can be for histopathology
+#' # free text columns or endoscopic. In this example it is for endoscopic
+#' # columns
+#' v<-HistolAll(Mypath)
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
+#' b<-Barretts_PathStage(v,'Histology')
+#' aa<-Barretts_PragueScore(b,'Findings')
+#' bb<-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
+#' aa<-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' myNotableWords<-c("No_IM","IM","LGD","HGD","T1a)
+#' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)}
 \usage{
 SurveySankey(dfw, ProcPerformedColumn, PatientID)
 }
@@ -15,7 +41,30 @@ rocPerformed for example}
 \item{PatientID}{the column containing the patients unique identifier
 eg hostpital number}
 }
-\description{
+\details{
+PatientFlowBasic <- function(theframe, EndoReportColumn, myNotableWords) {
+
+theframe["RecodedColumn"] <- as.integer(factor(theframe[,EndoReportColumn], myNotableWords, ordered = TRUE))
+  
+  #Now develop the patient specific journey with faceted plot in ggplot2
+  f<-ggplot(theframe) +
+    geom_point(aes(Date.x,type),shape=16,size=1) +
+    xlab("Date") + 
+    ylab("Histopathological State") +
+    theme(axis.text.x=element_text(angle=-90)) 
+  
+  
+  
+  t<-facet_multiple(plot = f, 
+                 facets = 'pHospitalNum', 
+                 ncol = 2, 
+                 nrow = 2)
+  mylist<-as.list(aa,t)
+  
+  return(mylist)
+}
+Create a Sankey plot for patient flow
+
 This creates a Sankey plot to see the order of tests for all patients:
 dfw is the dataframe, y is the value of in this case
 the procedure type (eg EMR,
