@@ -2,7 +2,17 @@
 % Please edit documentation in R/CleanUp.R
 \name{HistolAccessionNumber}
 \alias{HistolAccessionNumber}
-\title{Extract histological accession number}
+\title{#' Extract the histology data from the report by removing negative findings
+#'
+#' This extracts Histology details data from the report and also removes
+#' negative findings. The Histology details
+#' usually relate to the description of the histological report.
+#' @param dataframe dataframe with column of interest
+#' @param HistolColumn column of interest
+#' @keywords Histology
+#' @export
+#' @importFrom stringr str_replace
+#' @examples ll<-HistolHistol(Mypath,'Histology')}
 \usage{
 HistolAccessionNumber(dataframe, AccessionColumn, regString)
 }
@@ -14,6 +24,24 @@ HistolAccessionNumber(dataframe, AccessionColumn, regString)
 \item{regString}{regular expression needed as a string}
 }
 \description{
+HistolHistol <- function(dataframe, HistolColumn) {
+  dataframe<-data.frame(dataframe)
+  # HISTOLOGY
+  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
+                                           "\n|\r", " ")
+  dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
+  dataframe[, HistolColumn] <- gsub("- ", "\n", dataframe[, HistolColumn],
+                                      fixed = TRUE)
+  dataframe[, HistolColumn] <- gsub("-[A-Z]", "\n",
+                                      dataframe[, HistolColumn]
+                                      , fixed = TRUE)
+  dataframe$Histol_Simplified<- NegativeRemove(dataframe, HistolColumn)
+  dataframe$Histol_Simplified <-str_replace(dataframe$Histol_Simplified,":", "")
+  return(dataframe)
+}
+Extract histological accession number
+}
+\details{
 This extracts Accession Number data data from the report where one is
 present. The Accession number relates to the actual specimen number as
 ascribed by the pathology service.

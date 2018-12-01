@@ -214,17 +214,17 @@ test_that("ColumnCleanUp", {
 })
 
 
-#### HistolHistol test ####
-
-test_that("HistolHistol", {
-ff<-"There is no evidence of coeliac disease\n"
-  ff<-data.frame(ff)
-  names(ff)<-"Histology"
-  HistolHistolTest<-HistolHistol(ff,'Histology')
-  expect_true(all(!is.na(HistolHistolTest$Histol_Simplified)))
-  expect_identical(HistolHistolTest$Histol_Simplified,
-                   "")
-})
+# #### HistolHistol test ####
+# 
+# test_that("HistolHistol", {
+# ff<-"There is no evidence of coeliac disease\n"
+#   ff<-data.frame(ff)
+#   names(ff)<-"Histology"
+#   HistolHistolTest<-HistolHistol(ff,'Histology')
+#   expect_true(all(!is.na(HistolHistolTest$Histol_Simplified)))
+#   expect_identical(HistolHistolTest$Histol_Simplified,
+#                    "")
+# })
 
 
 #### HistolDx test ####

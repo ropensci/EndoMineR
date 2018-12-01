@@ -4,7 +4,8 @@
 \alias{GRS_Type_Assess_By_Unit}
 \title{Create GRS metrics by endoscopist (X-ref with pathology)}
 \usage{
-GRS_Type_Assess_By_Unit(dataframe, ProcPerformed, Endo_Endoscopist, Dx, Histol)
+GRS_Type_Assess_By_Unit(dataframe, ProcPerformed, Endo_Endoscopist, Dx,
+  Histol)
 }
 \arguments{
 \item{dataframe}{The dataframe}

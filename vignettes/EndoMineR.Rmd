@@ -195,20 +195,20 @@ knitr::include_graphics("img/EndoMineR_HistopExtrapol.png")
 
 ### Basic Histology Cleaning
 
-The histology cleaning functions are based around this. For example, the HistolHistol cleans the Histology text if present.
+The histology cleaning functions are based around this. For example, the HistolDx cleans the Histology text if present.
  
 <br>
 The original input example can be seen here:
 
 
-```{r exampleEHistolHistol, echo = FALSE}
+```{r exampleEHistolDx, echo = FALSE}
 head(Mypath$Histology,2)
 ```
 
 And once the function is run the result is here:
 
-```{r exampleEHistolHistol2, echo = TRUE}
-t<-HistolHistol(Mypath,'Histology')
+```{r exampleEHistolDx2, echo = TRUE}
+t<-HistolDx(Mypath,'Histology')
 ```
 
 ```{r exampleEHistolHistol3, echo = FALSE}
@@ -332,7 +332,7 @@ MypathNegRem<-NegativeRemove(Mypath,"Diagnosis")
 ```
 
 ```{r exampleNeg3, echo = FALSE}
-MypathNegRem[7,10]
+MypathNegRem[7:10]
 ```
 
 

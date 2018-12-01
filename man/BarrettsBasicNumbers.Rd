@@ -19,6 +19,7 @@ This should only be run after all the BarrettsDataAccord functions.
 # Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
+rm(list=ls(all=TRUE))
 v<-HistolDx(Mypath,'Diagnosis')
 v<-HistolExtrapolDx(v,'Diagnosis',"")
 v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')

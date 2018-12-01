@@ -41,6 +41,35 @@ rocPerformed for example}
 \item{PatientID}{the column containing the patients unique identifier
 eg hostpital number}
 }
+\description{
+#' Determine the patient metric of choice over time WORK IN PROGRESS
+#'
+#' This function aims to show what is happening over time to a metric
+#' of choice on a per patient basis.
+#' An example might be to demonstrate the worst grade of histopathology
+#' on repeated endoscopic biopsies eg for Barrett's oesophagus
+#' @param theframe the dataframe,
+#' @param EndoReportColumn the column of interest,
+#' @param myNotableWords list of words you are interested in
+#' @import ggplot2 
+#' @import stringr
+#' @import ggplus
+#' @keywords patient flow
+#' @export
+#' @examples #The function relies on defined a list of
+#' # words you are interested in and then choosing the column you are
+#' # interested in looking in for these words. This can be for histopathology
+#' # free text columns or endoscopic. In this example it is for endoscopic
+#' # columns
+#' v<-HistolAll(Mypath)
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
+#' b<-Barretts_PathStage(v,'Histology')
+#' aa<-Barretts_PragueScore(b,'Findings')
+#' bb<-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
+#' aa<-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' myNotableWords<-c("No_IM","IM","LGD","HGD","T1a)
+#' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)
+}
 \details{
 PatientFlowBasic <- function(theframe, EndoReportColumn, myNotableWords) {
 

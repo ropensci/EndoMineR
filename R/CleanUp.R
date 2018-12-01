@@ -692,7 +692,7 @@ ColumnCleanUpAll <- function(dataframe) {
 HistolAll <- function(dataframe) {
 
   if("Histology" %in% colnames(dataframe)){
-    dataframe<-HistolHistol(dataframe,'Histology')
+    #dataframe<-HistolHistol(dataframe,'Histology')
     dataframe<-HistolAccessionNumber(dataframe,'Histology','SP-\\d{2}-\\d{7}')
   }
 
@@ -713,34 +713,34 @@ HistolAll <- function(dataframe) {
 }
 
 
-#' Extract the histology data from the report by removing negative findings
-#'
-#' This extracts Histology details data from the report and also removes
-#' negative findings. The Histology details
-#' usually relate to the description of the histological report.
-#' @param dataframe dataframe with column of interest
-#' @param HistolColumn column of interest
-#' @keywords Histology
-#' @export
-#' @importFrom stringr str_replace
-#' @examples ll<-HistolHistol(Mypath,'Histology')
-
-
-HistolHistol <- function(dataframe, HistolColumn) {
-  dataframe<-data.frame(dataframe)
-  # HISTOLOGY
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
-                                           "\n|\r", " ")
-  dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
-  dataframe[, HistolColumn] <- gsub("- ", "\n", dataframe[, HistolColumn],
-                                      fixed = TRUE)
-  dataframe[, HistolColumn] <- gsub("-[A-Z]", "\n",
-                                      dataframe[, HistolColumn]
-                                      , fixed = TRUE)
-  dataframe$Histol_Simplified<- NegativeRemove(dataframe, HistolColumn)
-  dataframe$Histol_Simplified <-str_replace(dataframe$Histol_Simplified,":", "")
-  return(dataframe)
-}
+#' #' Extract the histology data from the report by removing negative findings
+#' #'
+#' #' This extracts Histology details data from the report and also removes
+#' #' negative findings. The Histology details
+#' #' usually relate to the description of the histological report.
+#' #' @param dataframe dataframe with column of interest
+#' #' @param HistolColumn column of interest
+#' #' @keywords Histology
+#' #' @export
+#' #' @importFrom stringr str_replace
+#' #' @examples ll<-HistolHistol(Mypath,'Histology')
+#' 
+#' 
+#' HistolHistol <- function(dataframe, HistolColumn) {
+#'   dataframe<-data.frame(dataframe)
+#'   # HISTOLOGY
+#'   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
+#'                                            "\n|\r", " ")
+#'   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
+#'   dataframe[, HistolColumn] <- gsub("- ", "\n", dataframe[, HistolColumn],
+#'                                       fixed = TRUE)
+#'   dataframe[, HistolColumn] <- gsub("-[A-Z]", "\n",
+#'                                       dataframe[, HistolColumn]
+#'                                       , fixed = TRUE)
+#'   dataframe$Histol_Simplified<- NegativeRemove(dataframe, HistolColumn)
+#'   dataframe$Histol_Simplified <-str_replace(dataframe$Histol_Simplified,":", "")
+#'   return(dataframe)
+#' }
 
 
 
@@ -781,6 +781,9 @@ HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
 #' @export
 #' @examples nn<-HistolDx(Mypath,'Diagnosis')
 
+
+#Think about using the tokenizers package here to split it into sentences 
+#(and maybe to do the same with the endoscopy text too).
 HistolDx <- function(dataframe, HistolColumn) {
   dataframe<-data.frame(dataframe)
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"Dr.*", "")
@@ -794,12 +797,7 @@ HistolDx <- function(dataframe, HistolColumn) {
     gsub("- ", "\n", dataframe$Dx_Simplified, fixed = TRUE)
   dataframe$Dx_Simplified <-
     gsub("-[A-Z]", "\n", dataframe$Dx_Simplified, fixed = TRUE)
-  #dataframe$Dx_Simplified <-
-    #str_replace(dataframe$Dx_Simplified,"[A-Z].*biopsies.*\n", "")
-  #dataframe$Dx_Simplified <-
-    #str_replace(dataframe$Dx_Simplified,"[A-Z].*biopsy.*\n", "")
   return(dataframe)
-
 }
 
 

@@ -211,6 +211,7 @@ SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
 #' # indication needs to be inpoutted. In this case we are looking for all
 #' # endoscopies done
 #' # where the indication is surveillance (so searching on 'Surv' will do fine) .
+#' rm(list=ls(all=TRUE))
 #' ff<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 
 
