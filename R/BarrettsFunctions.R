@@ -302,13 +302,7 @@ Barretts_FUType <- function(dataframe) {
               ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$MStage) & dataframe$MStage < 3,"Rule2",
                      ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule2",
                             ifelse(!is.na(dataframe$MStage) & dataframe$MStage >= 3, "Rule3", 
-                                   ifelse(!is.na(dataframe$CStage) & dataframe$CStage >= 3,"Rule3","NoRules"))))))   
-      
-  
- 
-  
-  
-  
+                                   ifelse(!is.na(dataframe$CStage) & dataframe$CStage >= 3,"Rule3","NoRules"))))))
   return(dataframe)
   
 }

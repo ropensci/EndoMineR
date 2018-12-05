@@ -895,11 +895,14 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
   dataframe <- data.frame(dataframe)
   dataframe <- HistolMacDescrip(dataframe, MacroColumn)
   mylist <-
-    str_match_all(dataframe[, MacroColumn], paste("[0-9]{1,2}.{0,3}",
-                                                  regString, sep = ""))
+    #I need to collapse the unlist
+    str_match_all(dataframe[, MacroColumn], 
+                  paste(unlist(lapply(strsplit(regString,"\\|",fixed=FALSE),
+                                                   FUN=function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
   dataframe$NumbOfBx <-
     vapply(mylist, function(p)
-      sum(as.numeric(gsub(regString, "", p))),numeric(1))
+      #sum(as.numeric(gsub(regString, "", p))),numeric(1))
+  sum(as.numeric(str_replace_all(p,regString,""))),numeric(1))
   return(dataframe)
 }
 
