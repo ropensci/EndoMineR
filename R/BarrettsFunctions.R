@@ -265,8 +265,8 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 #' this is not present then to use the C stage extrapolated using the 
 #' Barretts_Prague function
 #' @param dataframe the dataframe(which has to have been processed by the
-#' Barretts_PathStage function first to get IMorNoIM),
-#' @param EndoReportColumn The field to search (endoscopic findings)
+#' Barretts_PathStage function first to get IMorNoIM and the Barretts_PragueScore
+#' to get the C and M stage if available),
 #' @keywords Follow-Up
 #' @importFrom stringr str_extract str_replace
 #' @export
@@ -285,28 +285,30 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 #' b<-Barretts_PathStage(v,'Histology')
 #' b2<-Barretts_EventType(b,'Histology',
 #' 'ProcedurePerformed','Indications','Findings')
+#' b2<-Barretts_PragueScore(b,'Findings')
 #' #The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' cc<-Barretts_FUType(b2,'Findings')
+#' cc<-Barretts_FUType(b2)
 #' rm(v)
 
-Barretts_FUType <- function(dataframe, EndoReportColumn) {
+Barretts_FUType <- function(dataframe) {
   dataframe <- data.frame(dataframe)
 
  #dataframe$MStage <- as.integer(dataframe$MStage)
   dataframe$FU_Group <-
-    ifelse(
-      dataframe$IMorNoIM == "No_IM" &
-        dataframe$MStage|dataframe$CStage < 3,
-      "Rule1",
-      ifelse(
-        dataframe$IMorNoIM == "IM" &
-          dataframe$MStage|dataframe$CStage < 3,
-        "Rule2",
-        ifelse(dataframe$MStage|dataframe$CStage >= 3, "Rule3", "NoRules")
-      )
-    )
+    ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$MStage) & dataframe$MStage < 3,"Rule1",
+       ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule1",
+              ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$MStage) & dataframe$MStage < 3,"Rule2",
+                     ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule2",
+                            ifelse(!is.na(dataframe$MStage) & dataframe$MStage >= 3, "Rule3", 
+                                   ifelse(!is.na(dataframe$CStage) & dataframe$CStage >= 3,"Rule3","NoRules"))))))   
+      
+  
+ 
+  
+  
+  
   return(dataframe)
   
 }
