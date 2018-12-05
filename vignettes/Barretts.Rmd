@@ -69,7 +69,7 @@ pander(v[23:27,(ncol(v)-4):ncol(v)])
 
 ###Worst pathological stage
 
-We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using 'degradation' so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports to contain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade. 
+We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using 'degradation' so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports to contain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade. It should be run only once HistolDx is run (as this removed negative sentences) and it should be run on the column derived from HistolDx called Dx_Simplified
 
 
 ```{r exampleBarretts_PathStage, echo = TRUE,message=FALSE, warning=FALSE}
@@ -82,7 +82,9 @@ b<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure'
 #Picking out only the Barrett's related endoscopies
 b<-b[grepl("Surv",b$Indications),]
 
-b<-Barretts_PathStage(b,'Histology')
+
+b<-HistolDx(b,'Histology')
+b<-Barretts_PathStage(b,'Dx_Simplified')
 
 ```
 
