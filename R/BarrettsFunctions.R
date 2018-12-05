@@ -260,8 +260,10 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 #' presence of a Prague score. It should be run after
 #' Barretts_PathStage which looks for the worst stage of a
 #' specimen and which will determine the presence or absence of intestinal
-#' metaplasia if the sample is non-dysplastic.
-#' Being the procedure done at the time and the follow-up timings
+#' metaplasia if the sample is non-dysplastic. Because reports often do not record
+#' a Prague score a more pragmatic approach as been to assess the M stage and if 
+#' this is not present then to use the C stage extrapolated using the 
+#' Barretts_Prague function
 #' @param dataframe the dataframe(which has to have been processed by the
 #' Barretts_PathStage function first to get IMorNoIM),
 #' @param EndoReportColumn The field to search (endoscopic findings)
@@ -296,13 +298,13 @@ Barretts_FUType <- function(dataframe, EndoReportColumn) {
   dataframe$FU_Group <-
     ifelse(
       dataframe$IMorNoIM == "No_IM" &
-        dataframe$MStage < 3,
+        dataframe$MStage|dataframe$CStage < 3,
       "Rule1",
       ifelse(
         dataframe$IMorNoIM == "IM" &
-          dataframe$MStage < 3,
+          dataframe$MStage|dataframe$CStage < 3,
         "Rule2",
-        ifelse(dataframe$MStage >= 3, "Rule3", "NoRules")
+        ifelse(dataframe$MStage|dataframe$CStage >= 3, "Rule3", "NoRules")
       )
     )
   return(dataframe)
