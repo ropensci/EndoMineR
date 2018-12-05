@@ -291,28 +291,8 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 
 Barretts_FUType <- function(dataframe, EndoReportColumn) {
   dataframe <- data.frame(dataframe)
-  # Do the follow-up groupings
-  try(dataframe$MStage <-
-        ifelse(
-          grepl("(C(\\s|=)*\\d+)", dataframe[, EndoReportColumn], perl = TRUE),
-          str_extract(dataframe[, EndoReportColumn], "(M(\\s|=)*\\d+)"),
-          ifelse(
-grepl("[Ss]hort|[Tt]iny|[Tt]ongue|[Ss]mall", 
-      dataframe[, EndoReportColumn], perl = TRUE),
-            "0",
-            ifelse(
-              grepl("[1-3]{1}(\\s)*?[cC][mM]",
-                    dataframe[, EndoReportColumn], perl = TRUE),
-              str_extract(dataframe[, EndoReportColumn], 
-                          "[1-3]{1}(\\s)*?[cC][mM]"),
-              NA
-            )
-          )
-        ))
-  
-  dataframe$MStage <- str_replace(dataframe$MStage,"M|cm|=", "")
-  
-  dataframe$MStage <- as.integer(dataframe$MStage)
+
+ #dataframe$MStage <- as.integer(dataframe$MStage)
   dataframe$FU_Group <-
     ifelse(
       dataframe$IMorNoIM == "No_IM" &
