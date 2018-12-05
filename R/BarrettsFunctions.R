@@ -70,15 +70,18 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
   #and misinterpreted as a C stage, the sentence with a length must include Barrett's
   #or columnar lined mucosa. Even this wont be fool proof so act with caution
   dataframe$CStage <-   
-    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe$CStage),str_extract(dataframe$CStage,'(C(\\s|=)*\\d+)'),
-           ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe$CStage),
-                      str_extract(dataframe$CStage,"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"No"))
+    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),str_replace(str_extract(dataframe[,EndoReportColumn],'(C(\\s|=)*\\d+)'),"C", ""),
+           ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe[,EndoReportColumn]),
+                  as.numeric(sapply(str_extract_all(str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),"No"))
   
   #Need to include in the C stage values like 35-40cm and35cm to 40 ## \d+.*?(-|to).*?\d+
   
  #5 cm in length/long etc 
+  #dataframe$CStage <- as.numeric(str_replace(dataframe$CStage,"C", ""))
+  #dataframe$CStage <- stringr::str_extract_all(dataframe$CStage,"\\d{2}")
+  #dataframe$CStage<-as.numeric(sapply(dataframe$CStage, function(x) abs(diff(as.numeric(x)))))
 
-  dataframe$CStage <- as.numeric(str_replace(dataframe$CStage,"C", ""))
+  
   dataframe$MStage <- str_extract(dataframe[, EndoReportColumn],
                                   "(M(\\s|=)*\\d+)")
   dataframe$MStage <- as.numeric(str_replace(dataframe$MStage,"M", ""))
