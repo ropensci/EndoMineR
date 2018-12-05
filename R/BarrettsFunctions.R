@@ -81,8 +81,11 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
 #' and so on. It looks per report not per biopsy (it is more common
 #' for histopathology reports to contain the worst overall grade
 #' rather than individual biopsy grades).
-#' Specfically it extracts the histopathology worst grade
-#' Being the procedure done at the time and the follow-up timings
+#' Specfically it extracts the histopathology worst grade within the specimen
+#' FOr the sake of accuracy this should alwats be used after the HistolDx function
+#' and this removes negative sentences such as 'there is no dysplasia'. 
+#' This current function should be used on the column derived from HistolDx
+#' which is called Dx_Simplified
 #' @param dataframe dataframe with column of interest
 #' @param PathColumn column of interest
 #' @keywords Pathology extraction
@@ -99,7 +102,7 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
 #' 'HospitalNumber')
 #' # The function then takes the Histology column from the merged data set (v).
 #' # It extracts the worst histological grade for a specimen
-#' b<-Barretts_PathStage(v,'Histology')
+#' b<-Barretts_PathStage(v,'Dx_Simplified')
 #' rm(v)
 
 Barretts_PathStage <- function(dataframe, PathColumn) {
@@ -119,30 +122,28 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
                        dataframe[, PathColumn], perl = TRUE),
                  "T1a",
                  ifelse(
-                  grepl("[Hh]igh grade ", dataframe[, PathColumn], perl = TRUE),
+                  grepl("[Hh]igh [Gg]rade ", dataframe[, PathColumn], perl = TRUE),
                    "HGD",
                    ifelse(
-                    grepl("[Ll]ow grade", dataframe[, PathColumn], perl = TRUE),
+                    grepl("[Ll]ow [Gg]rade", dataframe[, PathColumn], perl = TRUE),
                      "LGD",
                      ifelse(
                        grepl("[Ii]ndef", dataframe[, PathColumn], perl = TRUE),
                        "IGD",
                        ifelse(
                          grepl(
-                           "(?<!egative for |No evidence of |[Nn]o |either |
-                           or |and )[Ii]ntestinal [Mm]etaplasia",
+                           "[Ii]ntestinal [Mm]etaplasia",
                            dataframe[, PathColumn],
                            perl = TRUE
                        ),
                        "IM",
                        ifelse(
                          grepl(
-                           "(?<!egative for |No evidence of |[Nn]o |either |
-                           or |and )[Ii]ntestinal [Mm]etaplasia",
+                           "",
                            dataframe[, PathColumn],
                            perl = TRUE
                        ),
-                       "IM",
+                       "No_IM",
                   ifelse(is.na(dataframe[, PathColumn]), "No tissue", "No_IM")
                        )
                        )

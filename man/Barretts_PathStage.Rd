@@ -18,8 +18,11 @@ in the histology specimen and if not found it will look for the next worst
 and so on. It looks per report not per biopsy (it is more common
 for histopathology reports to contain the worst overall grade
 rather than individual biopsy grades).
-Specfically it extracts the histopathology worst grade
-Being the procedure done at the time and the follow-up timings
+Specfically it extracts the histopathology worst grade within the specimen
+FOr the sake of accuracy this should alwats be used after the HistolDx function
+and this removes negative sentences such as 'there is no dysplasia'. 
+This current function should be used on the column derived from HistolDx
+which is called Dx_Simplified
 }
 \examples{
 # Firstly relevant columns are extrapolated from the
@@ -34,7 +37,7 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 'HospitalNumber')
 # The function then takes the Histology column from the merged data set (v).
 # It extracts the worst histological grade for a specimen
-b<-Barretts_PathStage(v,'Histology')
+b<-Barretts_PathStage(v,'Dx_Simplified')
 rm(v)
 }
 \keyword{Pathology}
