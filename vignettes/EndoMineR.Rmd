@@ -211,7 +211,7 @@ And once the function is run the result is here:
 t<-HistolDx(Mypath,'Histology')
 ```
 
-```{r exampleEHistolHistol3, echo = FALSE}
+```{r exampleEHistolDx3, echo = FALSE}
 head(t$Histol_Simplified,2)
 ```
 

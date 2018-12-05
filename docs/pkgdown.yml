@@ -1,6 +1,6 @@
-pandoc: 1.17.2
-pkgdown: 1.0.0
-pkgdown_sha: d43ca38c74827d1d6babc3a80d48cd3a8e8fad8c
+pandoc: 1.19.2.1
+pkgdown: 1.2.0.9000
+pkgdown_sha: c980e84a573614087c6e151d5e6e19a22748b761
 articles:
   Analysis: Analysis.html
   Barretts: Barretts.html

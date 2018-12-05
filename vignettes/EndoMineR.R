@@ -60,13 +60,13 @@ pander(head(v,10))
 ## ----fig.width=12, fig.height=8,fig.align='center',echo=FALSE------------
 knitr::include_graphics("img/EndoMineR_HistopExtrapol.png")
 
-## ----exampleEHistolHistol, echo = FALSE----------------------------------
+## ----exampleEHistolDx, echo = FALSE----------------------------------
 head(Mypath$Histology,2)
 
-## ----exampleEHistolHistol2, echo = TRUE----------------------------------
-t<-HistolHistol(Mypath,'Histology')
+## ----exampleEHistolDx2, echo = TRUE----------------------------------
+t<-HistolDx(Mypath,'Histology')
 
-## ----exampleEHistolHistol3, echo = FALSE---------------------------------
+## ----exampleEHistolDx3, echo = FALSE---------------------------------
 head(t$Histol_Simplified,2)
 
 ## ----exampleHistolDx1, echo = FALSE--------------------------------------
