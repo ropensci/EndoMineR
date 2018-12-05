@@ -63,8 +63,21 @@ if (getRversion() >= "2.15.1")
 #Change to BarrPrague nee Barretts_PragueScore
 Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
   dataframe <- data.frame(dataframe)
-  dataframe$CStage <- str_extract(dataframe[, EndoReportColumn],
-                                  "(C(\\s|=)*\\d+)")
+  #Do C stage as an ifelse- note that if there is no C stage, then the function
+  #will look to see if the total length is reported which is assumed to 
+  #be the total C stage but may not be accurate 
+  #To prevent the length of something else other than Barrett's being described
+  #and misinterpreted as a C stage, the sentence with a length must include Barrett's
+  #or columnar lined mucosa. Even this wont be fool proof so act with caution
+  dataframe$CStage <-   
+    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe$CStage),str_extract(dataframe$CStage,'(C(\\s|=)*\\d+)'),
+           ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe$CStage),
+                      str_extract(dataframe$CStage,"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"No"))
+  
+  #Need to include in the C stage values like 35-40cm and35cm to 40 ## \d+.*?(-|to).*?\d+
+  
+ #5 cm in length/long etc 
+
   dataframe$CStage <- as.numeric(str_replace(dataframe$CStage,"C", ""))
   dataframe$MStage <- str_extract(dataframe[, EndoReportColumn],
                                   "(M(\\s|=)*\\d+)")
