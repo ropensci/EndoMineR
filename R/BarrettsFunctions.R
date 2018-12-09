@@ -70,9 +70,10 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
   #and misinterpreted as a C stage, the sentence with a length must include Barrett's
   #or columnar lined mucosa. Even this wont be fool proof so act with caution
   dataframe$CStage <-   
-    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),str_replace(str_extract(dataframe[,EndoReportColumn],'(C(\\s|=)*\\d+)'),"C", ""),
-           ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe[,EndoReportColumn]),
-                  as.numeric(sapply(str_extract_all(str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),"No"))
+    #If the CStage is present then extract it
+    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),str_replace(str_extract(dataframe[,EndoReportColumn],'(C(\\s|=)*\\d+)'),"C", ""),"Insufficient")
+           
+  
   
   #Need to include in the C stage values like 35-40cm and35cm to 40 ## \d+.*?(-|to).*?\d+
   
@@ -82,9 +83,26 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
   #dataframe$CStage<-as.numeric(sapply(dataframe$CStage, function(x) abs(diff(as.numeric(x)))))
 
   
-  dataframe$MStage <- str_extract(dataframe[, EndoReportColumn],
-                                  "(M(\\s|=)*\\d+)")
-  dataframe$MStage <- as.numeric(str_replace(dataframe$MStage,"M", ""))
+  #dataframe$MStage <- str_extract(dataframe[, EndoReportColumn], "(M(\\s|=)*\\d+)")
+  #dataframe$MStage <- as.numeric(str_replace(dataframe$MStage,"M", ""))
+
+dataframe$MStage <-   
+  #If the MStage is present then extract it
+  ifelse(grepl("(M(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),str_replace(str_extract(dataframe[,EndoReportColumn],'(M(\\s|=)*\\d+)'),"M", ""),
+         #If the M stage is not present then try to extrapolate it from distance ranges given (extract the range, convert to numbers, subtract the numbers and given final figure)
+         ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe[,EndoReportColumn]),
+                as.numeric(sapply(str_extract_all(str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),
+         #If the M stage is still not present then try to extrapolate it using the term tongue or small if Barrett's is also present in the same sentence and equate this to M1
+         ifelse(grepl("(\\.|^)(?=[^\\.]*(small|tiny|tongue|cm))(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),
+                str_replace(dataframe[,EndoReportColumn], "(\\.|^)(?=[^\\.]*(small|tiny|tongue|cm))(?=[^\\.]*Barr)[^\\.]*(\\.|$)","1"),"Insufficient")))
+         
+
+#Need to consider terms that indicate short segment eg have a cm measurement and the term Barrett's and no range and no mention of islands
+
+#eg test cases:
+#"there is a 2cm star shaped segment of Barrett's"
+#"1cm finger of barrett's"
+
   return(dataframe)
 }
 
@@ -298,13 +316,12 @@ Barretts_FUType <- function(dataframe) {
  #dataframe$MStage <- as.integer(dataframe$MStage)
   dataframe$FU_Group <-
     ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$MStage) & dataframe$MStage < 3,"Rule1",
-       ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule1",
-              ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$MStage) & dataframe$MStage < 3,"Rule2",
-                     ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule2",
-                            ifelse(!is.na(dataframe$MStage) & dataframe$MStage >= 3, "Rule3", 
+           ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$MStage) & dataframe$MStage < 3,"Rule2",
+                  ifelse(!is.na(dataframe$MStage) & dataframe$MStage >= 3, "Rule3", 
+                         ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule1",
+                               ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule2",
                                    ifelse(!is.na(dataframe$CStage) & dataframe$CStage >= 3,"Rule3","NoRules"))))))
   return(dataframe)
-  
 }
 
 
@@ -339,7 +356,7 @@ BarrettsAll <- function(dataframe) {
   
   if("Findings" %in% colnames(dataframe)){
     dataframe<-Barretts_PragueScore(dataframe,'Findings')
-    dataframe<-Barretts_FUType(dataframe,'Findings')
+    dataframe<-Barretts_FUType(dataframe)
   }
   
   if("Histology" %in% colnames(dataframe)){

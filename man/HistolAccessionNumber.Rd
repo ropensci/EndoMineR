@@ -28,11 +28,11 @@ HistolHistol <- function(dataframe, HistolColumn) {
   dataframe<-data.frame(dataframe)
   # HISTOLOGY
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
-                                           "\n|\r", " ")
+                                           "\\n|\\r", " ")
   dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
-  dataframe[, HistolColumn] <- gsub("- ", "\n", dataframe[, HistolColumn],
+  dataframe[, HistolColumn] <- gsub("- ", "\\n", dataframe[, HistolColumn],
                                       fixed = TRUE)
-  dataframe[, HistolColumn] <- gsub("-[A-Z]", "\n",
+  dataframe[, HistolColumn] <- gsub("-[A-Z]", "\\n",
                                       dataframe[, HistolColumn]
                                       , fixed = TRUE)
   dataframe$Histol_Simplified<- NegativeRemove(dataframe, HistolColumn)
