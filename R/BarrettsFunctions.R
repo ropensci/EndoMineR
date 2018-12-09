@@ -47,7 +47,7 @@ if (getRversion() >= "2.15.1")
 #' Specfically it extracts the Prague score
 #' @param dataframe dataframe with column of interest
 #' @param EndoReportColumn column of interest
-#' @importFrom stringr str_extract str_replace
+#' @importFrom stringr str_extract str_replace str_extract_all
 #' @keywords  Prague score
 #' @export
 #' @examples #The example takes the endoscopy demo dataset and searches the
@@ -71,7 +71,7 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
   #or columnar lined mucosa. Even this wont be fool proof so act with caution
   dataframe$CStage <-   
     #If the CStage is present then extract it
-    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),str_replace(str_extract(dataframe[,EndoReportColumn],'(C(\\s|=)*\\d+)'),"C", ""),"Insufficient")
+    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'(C(\\s|=)*\\d+)'),"C", ""),"Insufficient")
            
   
   
@@ -88,13 +88,13 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
 
 dataframe$MStage <-   
   #If the MStage is present then extract it
-  ifelse(grepl("(M(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),str_replace(str_extract(dataframe[,EndoReportColumn],'(M(\\s|=)*\\d+)'),"M", ""),
+  ifelse(grepl("(M(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'(M(\\s|=)*\\d+)'),"M", ""),
          #If the M stage is not present then try to extrapolate it from distance ranges given (extract the range, convert to numbers, subtract the numbers and given final figure)
          ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe[,EndoReportColumn]),
-                as.numeric(sapply(str_extract_all(str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),
+                as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),
          #If the M stage is still not present then try to extrapolate it using the term tongue or small if Barrett's is also present in the same sentence and equate this to M1
          ifelse(grepl("(\\.|^)(?=[^\\.]*(small|tiny|tongue|cm))(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),
-                str_replace(dataframe[,EndoReportColumn], "(\\.|^)(?=[^\\.]*(small|tiny|tongue|cm))(?=[^\\.]*Barr)[^\\.]*(\\.|$)","1"),"Insufficient")))
+                stringr::str_replace(dataframe[,EndoReportColumn], ".*","1"),"Insufficient")))
          
 
 #Need to consider terms that indicate short segment eg have a cm measurement and the term Barrett's and no range and no mention of islands
@@ -144,7 +144,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
   dataframe <- data.frame(dataframe)
   dataframe$IMorNoIM <-
     ifelse(grepl("[Ss][Mm]2", dataframe[, PathColumn], perl = TRUE),
-           "SM2",
+           "SM2",  
            ifelse(
              grepl("[Ss][Mm]1", dataframe[, PathColumn], perl = TRUE),
              "SM1",
@@ -315,12 +315,18 @@ Barretts_FUType <- function(dataframe) {
 
  #dataframe$MStage <- as.integer(dataframe$MStage)
   dataframe$FU_Group <-
-    ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$MStage) & dataframe$MStage < 3,"Rule1",
-           ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$MStage) & dataframe$MStage < 3,"Rule2",
-                  ifelse(!is.na(dataframe$MStage) & dataframe$MStage >= 3, "Rule3", 
-                         ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule1",
-                               ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & dataframe$CStage < 3,"Rule2",
-                                   ifelse(!is.na(dataframe$CStage) & dataframe$CStage >= 3,"Rule3","NoRules"))))))
+    ifelse(grepl("SM2|SM1|T1b_Unspec|T1a|LGD|HGD|IGD",dataframe$IMorNoIM,perl = TRUE),"Therapy",
+    ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$MStage) & as.numeric(dataframe$MStage) < 3,"Rule1",
+           ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$MStage) & as.numeric(dataframe$MStage) < 3,"Rule2",
+                  ifelse(!is.na(dataframe$MStage) & as.numeric(dataframe$MStage) >= 3, "Rule3", 
+                         ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$CStage) & as.numeric(dataframe$CStage) < 3,"Rule1",
+                               ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & as.numeric(dataframe$CStage) < 3,"Rule2",
+                                   ifelse(!is.na(dataframe$CStage) & as.numeric(dataframe$CStage) >= 3,"Rule3",
+                                          "NoRules")))))))
+  
+  
+  
+  
   return(dataframe)
 }
 
