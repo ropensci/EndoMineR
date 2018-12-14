@@ -89,7 +89,7 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
 dataframe$MStage <-   
   #If the MStage is present then extract it
   ifelse(grepl("(M(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'(M(\\s|=)*\\d+)'),"M", ""),
-         ifelse(!is.na(dataframe$CStage),dataframe$CStage,
+         ifelse(dataframe$CStage!="Insufficient",dataframe$CStage,
          #If the M stage is not present then try to extrapolate it from distance ranges given (extract the range, convert to numbers, subtract the numbers and given final figure)
          #If no M score then use the C score. This is to prevent there being a C score and then a shorted M score as it has independently detected 'a 1cm finger of Barrett's...) so C7M1 type scores
          ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe[,EndoReportColumn]),
