@@ -49,6 +49,19 @@ You can install EndoMineR from github with:
 devtools::install_github("sebastiz/EndoMineR")
 ```
 
+If you dont have access to github, then download the zip and change the working dirctory to the place you have downloaded it, then do
+
+```{r gh-installation2, eval = FALSE}
+setwd("C:/Users/Desktop/")
+
+#On windows you cand cd to change the directory or us pushd to create a temporary directory indtead of cd and then setwd to the temporary directory
+unzip("EndoMineR.zip")
+file.rename("EndoMineR.zip-master", "EndoMineR.zip")
+shell("R CMD build EndoMineR.zip")
+
+#Then change back to the original working directory
+```
+
 
 ## Getting started
 
