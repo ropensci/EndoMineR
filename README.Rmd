@@ -59,7 +59,9 @@ unzip("EndoMineR.zip")
 file.rename("EndoMineR.zip-master", "EndoMineR.zip")
 shell("R CMD build EndoMineR.zip")
 
-#Then change back to the original working directory
+#Then install the resulting tarball with:
+
+install.packages("EndoMineR_0.2.0.9000.tar.gz", repos = NULL)
 ```
 
 
