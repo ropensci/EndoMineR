@@ -884,7 +884,7 @@ HistolMacDescrip <- function(dataframe, MacroColumn) {
 #' @param dataframe the dataframe
 #' @param MacroColumn Column containing the Macroscopic description text
 #' @param regString The keyword to remove and to stop at in the regex
-#' @importFrom stringr str_match_all
+#' @importFrom stringr str_match_all str_replace_all
 #' @keywords Biopsy number
 #' @export
 #' @examples
@@ -896,13 +896,13 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
   dataframe <- HistolMacDescrip(dataframe, MacroColumn)
   mylist <-
     #I need to collapse the unlist
-    str_match_all(dataframe[, MacroColumn], 
+    stringr::str_match_all(dataframe[, MacroColumn], 
                   paste(unlist(lapply(strsplit(regString,"\\|",fixed=FALSE),
                                                    FUN=function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
   dataframe$NumbOfBx <-
     vapply(mylist, function(p)
       #sum(as.numeric(gsub(regString, "", p))),numeric(1))
-  sum(as.numeric(str_replace_all(p,regString,""))),numeric(1))
+  sum(as.numeric(stringr::str_replace_all(p,regString,""))),numeric(1))
   return(dataframe)
 }
 

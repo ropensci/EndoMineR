@@ -482,7 +482,7 @@ BarrettsSurveil <- function(dataframe,
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b3,'Findings')
+#' b4<-Barretts_FUType(b3)
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' #Finally the unique hospital numbers are obtained according to the follow-up
 #' # rule you are looking for
@@ -605,7 +605,7 @@ BarrettsDocumentQual <- function(dataframe, Findings) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b3,'Findings')
+#' b4<-Barretts_FUType(b3)
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The number of average number of biopsies is then calculated and
 #' # compared to the average Prague C score so that those who are taking
@@ -697,7 +697,7 @@ BarrettsBxQual <- function(dataframe,
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b3,'Findings')
+#' b4<-Barretts_FUType(b3)
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function simply the the histopathological grades overall for
 #' # your dataset and then creates a frequency plot of them
@@ -755,7 +755,7 @@ BarrettsPathDetectQual <- function(dataframe, titlePlot) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b3,'Findings')
+#' b4<-Barretts_FUType(b3)
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function takes the column with the extracted worst grade of
 #' # histopathology and returns the proportion of each finding (ie
@@ -801,7 +801,7 @@ BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b3,'Findings')
+#' b4<-Barretts_FUType(b3)
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function extracts only those rows for patients who have undergone
 #' # EMR and then extracts the EMR grade from the extracted worst histopath
@@ -903,7 +903,7 @@ BarrettsEMRGrades <- function(EndoSubsetEMR) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b3,'Findings')
+#' b4<-Barretts_FUType(b3)
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function groups the overall number of surveillance cases over time
 #' # The endoscopic episodes should be selected,according to surveillance
@@ -962,7 +962,7 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b3,'Findings')
+#' b4<-Barretts_FUType(b3)
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function takes the RFA cases by looking in any free text column where
 #' # endoscopy fingings are described and then summarising by RFA subtype
@@ -1062,7 +1062,7 @@ BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b3,'Findings')
+#' b4<-Barretts_FUType(b3)
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function compares the Paris score 
 #' # from the endoscopy report free text to

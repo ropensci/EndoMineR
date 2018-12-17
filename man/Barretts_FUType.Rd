@@ -4,13 +4,12 @@
 \alias{Barretts_FUType}
 \title{Follow up group determination}
 \usage{
-Barretts_FUType(dataframe, EndoReportColumn)
+Barretts_FUType(dataframe)
 }
 \arguments{
 \item{dataframe}{the dataframe(which has to have been processed by the
-Barretts_PathStage function first to get IMorNoIM),}
-
-\item{EndoReportColumn}{The field to search (endoscopic findings)}
+Barretts_PathStage function first to get IMorNoIM and the Barretts_PragueScore
+to get the C and M stage if available),}
 }
 \description{
 This determines the follow up rule a patient should fit in to (according to
@@ -20,8 +19,10 @@ Prague score so the follow-up group can be determined. It relies on the
 presence of a Prague score. It should be run after
 Barretts_PathStage which looks for the worst stage of a
 specimen and which will determine the presence or absence of intestinal
-metaplasia if the sample is non-dysplastic.
-Being the procedure done at the time and the follow-up timings
+metaplasia if the sample is non-dysplastic. Because reports often do not record
+a Prague score a more pragmatic approach as been to assess the M stage and if 
+this is not present then to use the C stage extrapolated using the 
+Barretts_Prague function
 }
 \examples{
 # Firstly relevant columns are extrapolated from the
@@ -39,10 +40,11 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 b<-Barretts_PathStage(v,'Histology')
 b2<-Barretts_EventType(b,'Histology',
 'ProcedurePerformed','Indications','Findings')
+b2<-Barretts_PragueScore(b,'Findings')
 #The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-cc<-Barretts_FUType(b2,'Findings')
+cc<-Barretts_FUType(b2)
 rm(v)
 }
 \keyword{Follow-Up}

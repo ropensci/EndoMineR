@@ -52,9 +52,9 @@ pander(b[23:27,(ncol(b)-4):ncol(b)])
 ## ----exampleBarretts_FUType, echo = TRUE,message=FALSE, warning=FALSE----
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
 b<-Barretts_PathStage(v,'Histology')
-b1<-Barretts_PragueScore(b,'Findings')
+b1<-Barretts_PragueScore(b)
 b2<-Barretts_EventType(b1,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-b3<-Barretts_FUType(b2,'Findings')
+b3<-Barretts_FUType(b2)
 
 
 ## ----exampleBarretts_FUType2, echo = FALSE,message=FALSE, warning=FALSE,echo=FALSE----

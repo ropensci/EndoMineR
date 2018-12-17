@@ -36,7 +36,7 @@ b3<-Barretts_EventType(b2,'Histology',
 # The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-b4<-Barretts_FUType(b3,'Findings')
+b4<-Barretts_FUType(b3)
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function takes the column with the extracted worst grade of
 # histopathology and returns the proportion of each finding (ie
