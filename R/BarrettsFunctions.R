@@ -91,11 +91,14 @@ dataframe$MStage <-
   ifelse(grepl("(M(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'(M(\\s|=)*\\d+)'),"M", ""),
          ifelse(dataframe$CStage!="Insufficient",dataframe$CStage,
          #If the M stage is not present then try to extrapolate it from distance ranges given (extract the range, convert to numbers, subtract the numbers and given final figure)
+         
          #If no M score then use the C score. This is to prevent there being a C score and then a shorted M score as it has independently detected 'a 1cm finger of Barrett's...) so C7M1 type scores
          ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe[,EndoReportColumn]),
                 as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),
-         #Try to extract lengths if present
-         ifelse(grepl("(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),stringr::str_extract(dataframe[,EndoReportColumn], "\\d"),
+         
+                #Try to extract lengths if present
+         ifelse(grepl("(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),stringr::str_extract(stringr::str_match(dataframe[,EndoReportColumn],"(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)"),"\\d"),
+                
                 #If the M stage is still not present then try to extrapolate it using the term tongue or small if Barrett's is also present in the same sentence and equate this to M1
          ifelse(grepl("(\\.|^)(?=[^\\.]*(small|tiny|tongue))(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),
                 stringr::str_replace(dataframe[,EndoReportColumn], ".*","1"),"Insufficient")))))
@@ -320,13 +323,14 @@ Barretts_FUType <- function(dataframe) {
  #dataframe$MStage <- as.integer(dataframe$MStage)
   dataframe$FU_Group <-
     ifelse(grepl("SM2|SM1|T1b_Unspec|T1a|LGD|HGD|IGD",dataframe$IMorNoIM,perl = TRUE),"Therapy",
+           ifelse(dataframe$CStage == "Insufficient" & dataframe$MStage == "Insufficient","NoRules",
     ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$MStage) & as.numeric(dataframe$MStage) < 3,"Rule1",
            ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$MStage) & as.numeric(dataframe$MStage) < 3,"Rule2",
                   ifelse(!is.na(dataframe$MStage) & as.numeric(dataframe$MStage) >= 3, "Rule3", 
                          ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$CStage) & as.numeric(dataframe$CStage) < 3,"Rule1",
                                ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & as.numeric(dataframe$CStage) < 3,"Rule2",
                                    ifelse(!is.na(dataframe$CStage) & as.numeric(dataframe$CStage) >= 3,"Rule3",
-                                          "NoRules")))))))
+                                          "NoRules"))))))))
   
   
   
