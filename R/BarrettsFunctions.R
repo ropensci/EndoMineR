@@ -94,9 +94,11 @@ dataframe$MStage <-
          #If no M score then use the C score. This is to prevent there being a C score and then a shorted M score as it has independently detected 'a 1cm finger of Barrett's...) so C7M1 type scores
          ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe[,EndoReportColumn]),
                 as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),
-         #If the M stage is still not present then try to extrapolate it using the term tongue or small if Barrett's is also present in the same sentence and equate this to M1
-         ifelse(grepl("(\\.|^)(?=[^\\.]*(small|tiny|tongue|cm))(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),
-                stringr::str_replace(dataframe[,EndoReportColumn], ".*","1"),"Insufficient"))))
+         #Try to extract lengths if present
+         ifelse(grepl("(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),stringr::str_extract(dataframe[,EndoReportColumn], "\\d"),
+                #If the M stage is still not present then try to extrapolate it using the term tongue or small if Barrett's is also present in the same sentence and equate this to M1
+         ifelse(grepl("(\\.|^)(?=[^\\.]*(small|tiny|tongue))(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),
+                stringr::str_replace(dataframe[,EndoReportColumn], ".*","1"),"Insufficient")))))
          
 
 #Need to consider terms that indicate short segment eg have a cm measurement and the term Barrett's and no range and no mention of islands
