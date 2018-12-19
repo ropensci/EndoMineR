@@ -425,7 +425,7 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
 EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
   #dataframe[, FindingsColumn] <-
-    str_replace(dataframe[, FindingsColumn],
+  dataframe[, FindingsColumn]<-str_replace(dataframe[, FindingsColumn],
                                              "cm\\s+[A-Z]|cm.+\\)", "cm\n")
   dataframe$EndoFindingsSimple<- NegativeRemove(dataframe, FindingsColumn)
   #Put in the Negative remove for FindingsSimplified Here

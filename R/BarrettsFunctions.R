@@ -212,6 +212,9 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' @param EndoFindingsColumn The endoscopic findings column if different 
 #' to the Diagnosis column
 #' @keywords Event extraction
+#' @importFrom dplyr mutate case_when
+#' @importFrom rlang sym
+#' @importFrom stringr str_detect
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
@@ -235,46 +238,69 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' 'ProcedurePerformed','Indications','Findings')
 #' rm(v)
 #'
-Barretts_EventType <- function(dataframe, HistolReportColumn, 
-                  ProcPerformedColumn, EndoReportColumn, EndoFindingsColumn) {
-  dataframe <- data.frame(dataframe)
-  # Get all the EVENTS in:
-  dataframe$EVENT <-
-    ifelse(grepl("[Ee][Mm][Rr]", dataframe[, HistolReportColumn], perl = TRUE),
-           "EMR",
-           ifelse(
-             grepl("[Ee]ndoscopic [Mm]ucosal [Rr]esection",
-                   dataframe[, HistolReportColumn], perl = TRUE),
-             "EMR",
-             ifelse(
-            grepl("ndomucosal", dataframe[, HistolReportColumn], perl = TRUE),
-               "EMR",
-               ifelse(
-              grepl("HALO|RFA", dataframe[, ProcPerformedColumn], perl = TRUE),
-                 "RFA",
-                 ifelse(
-                  grepl("APC", dataframe[, ProcPerformedColumn], perl = TRUE),
-                   "APC",
-                   ifelse(
-                grepl("HALO|RFA", dataframe[, EndoReportColumn], perl = TRUE),
-                     "RFA",
-                     ifelse(
-                       grepl("APC", dataframe[, EndoReportColumn], perl = TRUE),
-                       "RFA",
-                       ifelse(
-                grepl("HALO|RFA", dataframe[, EndoFindingsColumn], perl = TRUE),
-                         "RFA",
-      ifelse(grepl("APC", dataframe[, EndoFindingsColumn], perl = TRUE), "APC",
-                                "nothing")
-                       )
-                     )
-                   )
-                 )
-               )
-             )
-           ))
+#'
+
+#Then in a separate function need to converge  functions as a case when for OPCS-4
+
+  Barretts_EventType <- function(dataframe, HistolReportColumn, 
+                                 ProcPerformedColumn, EndoReportColumn, EndoFindingsColumn) {  
+    HistolReportColumna <- sym(HistolReportColumn)
+    ProcPerformedColumna <- sym(ProcPerformedColumn)
+    EndoReportColumna <- sym(EndoReportColumn)
+    EndoFindingsColumna <- sym(EndoFindingsColumn)
+    
+  dataframe <- 
+    dataframe %>% 
+    mutate(
+      EVENT = case_when(
+        str_detect(!!HistolReportColumna, "[Ee]ndoscopic (?:[Ss]ub)*[Mm]ucosal [Rr]esection|EMR|ndomucosal") ~ "EMR", 
+        str_detect(!!ProcPerformedColumna, "HALO|RFA") ~ "RFA", 
+        str_detect(!!ProcPerformedColumna, "APC") ~ "APC", 
+        str_detect(!!EndoReportColumna, "HALO|RFA") ~ "RFA", 
+        str_detect(!!EndoReportColumna, "APC") ~ "APC", 
+        str_detect(!!EndoFindingsColumna, "HALO|RFA") ~ "RFA", 
+        str_detect(!!EndoFindingsColumna, "APC") ~ "APC", 
+         TRUE ~ "No Event"
+      )
+    )
   return(dataframe)
-}
+  }
+  
+  
+  
+  
+  #' Barrett's OPCS-4 Coding 
+  #'
+  #' This function extracts the OPCS-4 codes for all Barrett's procedures
+  #' It should take the OPCS-4 from the EVENT and perhaps also using extent
+  #' depending on how the coding is done. The EVENT column will need to 
+  #' extract multiple findings
+  #' The hope is that the OPCS-4 column will then map from the EVENT column
+  #' 
+  #'
+  #' @param dataframe the dataframe
+  #' @param EVENT the EVENT column
+  #' @keywords OPCS-4 codes extraction
+  #' @importFrom dplyr mutate case_when
+  #' @importFrom rlang sym
+  #' @importFrom stringr str_detect
+  #' @export
+  #' @examples # Firstly relevant columns are extrapolated from the
+  #' # Mypath demo dataset. These functions are all part of Histology data
+  #' # cleaning as part of the package.
+  #'
+  #' # EXAMPLE TO BE WRITTEN v<-HistolAccessionNumber(Mypath,'Histology')
+  
+
+  Barretts_OPCS4 <- function(dataframe, EVENT) {  
+    return(dataframe)
+  }
+
+
+      
+
+      
+      
 
 #' Follow up group determination
 #'

@@ -192,10 +192,11 @@ test_that("NegativeRemove", {
               "The colon was basically inflammed, but no polyp was seen",
                "The Barrett's segment was not biopsied",
                "The C0M7 stretch of Barrett's was flat")
-               anexample<-data.frame(anexample)
+               anexample<-data.frame(anexample,stringsAsFactors = FALSE)
                names(anexample)<-"Thecol"
                res<-NegativeRemove(anexample,"Thecol")
-               res2<-res[grep("Although the prep was poor.",res$Thecol),]
+               res<-data.frame(res,stringsAsFactors = FALSE)
+               res2<-res[grep("Although the prep was poor.",res$res),]
                expect_true( length(res2)>0)
                expect_identical(res2,"Although the prep was poor.\n")
      

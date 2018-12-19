@@ -48,6 +48,7 @@ bb<-Barretts_EventType(v,'Histology',
 'ProcedurePerformed','Indications','Findings')
 rm(v)
 
+
 }
 \keyword{Event}
 \keyword{extraction}
