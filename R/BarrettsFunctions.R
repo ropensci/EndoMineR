@@ -265,9 +265,97 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
     )
   return(dataframe)
   }
+ 
   
   
   
+  ##### Input text ##########
+  df <- data.frame(textcol=c("In this substring would like to find the radiofrequency ablation of this radiofrequency ablation",
+                             "I would also like to find the position of thes EMR endoscopic mucosal resection",
+                             "No match here","No mention of this radifreq7uency ablati0on thing","This is a strng","String string strng strin"))
+  
+  ##### Flatten the text (ie whole thing to lower case ##########
+  df$textcol<-tolower(df$textcol)
+  
+  #Test string 
+  rawText<-df$textcol
+  #Need to define the pattern to match and what to replace it with 
+ 
+  
+  
+  
+  ##### Spelling variation and term mapping ##########
+  findAndReplace<-function(matchPattern,rawText,replace)
+    {
+    
+    positions <- aregexec(matchPattern, rawText, max.distance = 0.1)
+    regmatches(rawText, positions)
+    res <- regmatches(df$textcol, positions)
+    res[lengths(res)==0] <- "XXXX"  # deal with 0 length matches somehow
+    
+    #################### Term mapping ####################
+    df$out <- Vectorize(gsub)(unlist(res), replace, rawText)
+    df$out
+  }
+  
+  
+  
+  
+  
+  
+  dt <-
+    data.table(
+      textcol = c(
+        "In this substring would like to find the radiofrequency ablation of this HALO",
+        "I like to do endoscopic submuocsal resection and also radiofrequency ablation",
+        "No match here",
+        "No mention of this radifreq7uency ablati0on thing"
+      )
+    )
+  
+  dt_gsub <- data.table(
+    textcol = c("submucosal resection",
+                "HALO",
+                "radiofrequency ablation"),
+    textcol2 = c("EMR", "catheter", "RFA")
+  )
+  
+  for (i in 1:nrow(dt))
+    for (j in 1:nrow(dt_gsub))
+      dt[i]$textcol <-
+    gsub(dt_gsub[j, textcol], dt_gsub[j, textcol2], dt[i, textcol])
+  
+  
+  
+  
+  
+  
+  
+  matchPatternEMR <- c("endoscopic mucosal resection")
+  matchPatternRFA <- c("radiofrequency ablation")
+  matchPatternString <- c("a string")
+  
+  repRF<-findAndReplace(matchPatternRFA,rawText,"RFA")
+  repEMR<-findAndReplace(matchPatternEMR,repRF,"EMR")
+  repFinal<-findAndReplace(matchPatternString,repEMR,"STRING")
+  repFinal
+  
+  
+
+  #Have to do this in a loop for each element in the list
+  
+  
+  
+  
+  
+  # library(gsubfn) 
+  # L <- list(APC = "APC", EMR = "EMR", RFA = "RFA")
+  # 
+  # pat <- paste(names(L), collapse = "|")
+  # 
+  # transform(statement, 
+  #           out = fn$sapply(strapply(statement, pat, L, empty = "No Event"), toString),
+  #           stringsAsFactors = FALSE)
   
   #' Barrett's OPCS-4 Coding 
   #'
