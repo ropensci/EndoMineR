@@ -198,6 +198,14 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 }
 
 
+
+
+
+
+
+
+
+
 #' Therapeutic subtypes
 #'
 #' This function extracts the Event- usually a therapeutic event, from the text
@@ -269,93 +277,234 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
   
   
   
-  ##### Input text ##########
-  df <- data.frame(textcol=c("In this substring would like to find the radiofrequency ablation of this radiofrequency ablation",
-                             "I would also like to find the position of thes EMR endoscopic mucosal resection",
-                             "No match here","No mention of this radifreq7uency ablati0on thing","This is a strng","String string strng strin"))
-  
-  ##### Flatten the text (ie whole thing to lower case ##########
-  df$textcol<-tolower(df$textcol)
-  
-  #Test string 
-  rawText<-df$textcol
-  #Need to define the pattern to match and what to replace it with 
- 
-  
-  
-  
-  ##### Spelling variation and term mapping ##########
-  findAndReplace<-function(matchPattern,rawText,replace)
-    {
+
+#' Event list
+#'
+#' This function returns all the conversions from common version of events to 
+#' a standardised event list, much like the Location standardidastion function
+#' It is used in the Barretts_EventType. This does not include EMR as this is 
+#' extracted from the pathology so is part of pathology type.
+#' @keywords Event extraction
+#' @examples # unique(unlist(EventList(), use.names = FALSE))
+#' 
+  EventList<-function(){
     
-    positions <- aregexec(matchPattern, rawText, max.distance = 0.1)
-    regmatches(rawText, positions)
-    res <- regmatches(df$textcol, positions)
-    res[lengths(res)==0] <- "XXXX"  # deal with 0 length matches somehow
+    Event <- list("radiofrequency ablation" = " RFA", 
+                  "argon plasma coagulation" = " APC",
+                  "halo" = " RFA")
+    return(Event)
     
-    #################### Term mapping ####################
-    df$out <- Vectorize(gsub)(unlist(res), replace, rawText)
-    df$out
+  }
+
+  
+  #' Find and Replace function
+  #'
+  #' This is a helper function for finding and replacing from dictionaries like the event list
+  #' It uses fuzzy find and replace to account for spelling errors
+  #' @keywords Find and replace
+  #' @examples # Pending
+  #' 
+
+  
+  findAndReplace <- function(pattern, replacement, x, fixed = FALSE, ...) {
+    m <- aregexec(pattern, x, fixed = fixed,ignore.case = T)
+    r <- regmatches(x, m)
+    lens <- lengths(r)
+    if (all(lens == 0)) return(x) else
+      replace(x, lens > 0, mapply(sub, r[lens > 0], replacement, x[lens > 0]))
   }
   
   
+  ################ Preparation for Event output  ################################ 
   
-  
-  
-  
-  dt <-
-    data.table(
-      textcol = c(
-        "In this substring would like to find the radiofrequency ablation of this HALO",
-        "I like to do endoscopic submuocsal resection and also radiofrequency ablation",
-        "No match here",
-        "No mention of this radifreq7uency ablati0on thing"
-      )
-    )
-  
-  dt_gsub <- data.table(
-    textcol = c("submucosal resection",
-                "HALO",
-                "radiofrequency ablation"),
-    textcol2 = c("EMR", "catheter", "RFA")
-  )
-  
-  for (i in 1:nrow(dt))
-    for (j in 1:nrow(dt_gsub))
-      dt[i]$textcol <-
-    gsub(dt_gsub[j, textcol], dt_gsub[j, textcol2], dt[i, textcol])
-  
-  
-  
-  
-  
-  
-  
-  matchPatternEMR <- c("endoscopic mucosal resection")
-  matchPatternRFA <- c("radiofrequency ablation")
-  matchPatternString <- c("a string")
-  
-  repRF<-findAndReplace(matchPatternRFA,rawText,"RFA")
-  repEMR<-findAndReplace(matchPatternEMR,repRF,"EMR")
-  repFinal<-findAndReplace(matchPatternString,repEMR,"STRING")
-  repFinal
-  
-  
-
   #Have to do this in a loop for each element in the list
   
+  #1. Flatten the text
+  df$textcol<-tolower(df$textcol)
   
   
+  #2. Fuzzy find and replace and term mapping using the find and replace function above
+  L <- EventList()
+  r<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = r, names(L))
   
   
-  # library(gsubfn) 
-  # L <- list(APC = "APC", EMR = "EMR", RFA = "RFA")
-  # 
-  # pat <- paste(names(L), collapse = "|")
-  # 
-  # transform(statement, 
-  #           out = fn$sapply(strapply(statement, pat, L, empty = "No Event"), toString),
-  #           stringsAsFactors = FALSE)
+  #3.Remove all the negative phrases from the endoscopy report:
+   tests<-NegativeRemove(r,"Endo_ResultText")
+   
+   ################ Search algorithm for the Event output  #####################
+   
+   
+   
+  #Extract EVENT subtypes in to their own column ie RFA/APC/Dilatations)
+   ##### Examine the Procedure Performed column first as most accurate.
+           #Then examine the Findings column
+   
+
+
+   # 1a. Find if there is a mention of an event in the procedure performed section. Have to collapse the EVENT list when unlisting
+   SelfOGD_Dunn2$EndoscopyEvent<-str_extract_all(tolower(SelfOGD_Dunn2$PROCEDUREPERFORMED),tolower(paste(unique(unlist(EventList(), use.names = FALSE)),collapse="|")))
+   
+   # 1b. Unlist to keep all the characters of zero length too.
+   SelfOGD_Dunn2$EndoscopyEvent<-lapply(SelfOGD_Dunn2$EndoscopyEvent,function(x) unique(x))
+   
+   # 1c. Paste multiple events in one entry together so the unlisting doesnt result in an unmatched column length
+   SelfOGD_Dunn2$EndoscopyEvent<-lapply(SelfOGD_Dunn2$EndoscopyEvent,function(x) paste(x, collapse = ','))
+   
+   # 1d. Unlist
+   SelfOGD_Dunn2$EndoscopyEvent<-unlist(lapply(SelfOGD_Dunn2$EndoscopyEvent,function(x) if(identical(x,character(0))) ' ' else x))
+   
+   # 2 a. If there is nothing in the Event column then look in the main endoscopy text body
+   SelfOGD_Dunn2$EndoscopyEvent<-ifelse(SelfOGD_Dunn2$EndoscopyEvent=="", 
+          str_extract_all(tolower(SelfOGD_Dunn2$FINDINGS),
+                                                        tolower(unique(unlist(EventList(), use.names = FALSE)))),SelfOGD_Dunn2$EndoscopyEvent)
+   
+   # 2 b. Unlist to keep all the characters of zero length too.
+   SelfOGD_Dunn2$EndoscopyEvent<-unlist(lapply(SelfOGD_Dunn2$EndoscopyEvent,function(x) if(identical(x,character(0))) ' ' else x))
+   
+   
+
+   ################ Preparation for Pathology output  ################################ 
+   SelfOGD_Dunn2<-read_excel("/home/rstudio/GenDev/DevFiles/SelfOGDBlabla.xlsx")
+   
+
+      #1. Flatten the text
+   SelfOGD_Dunn2$Macroscopy<-tolower(SelfOGD_Dunn2$Macroscopy)
+   
+   #2a . Fuzzy find and replace and term mapping using the find and replace function above using the Location list
+   L <- str_split(LocationList(),"\\|")
+   SelfOGD_Dunn2$Macroscopy<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = SelfOGD_Dunn2$Macroscopy, names(L))
+   
+   #2b . Fuzzy find and replace and term mapping using the find and replace function above using the Path_Type list
+   L <- str_split(HistolType(),"\\|")
+   SelfOGD_Dunn2$Macroscopy<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = SelfOGD_Dunn2$Macroscopy, names(L))
+   
+   #3.Remove all the negative phrases from the pathology report:
+   SelfOGD_Dunn2$Macroscopy<-NegativeRemove(SelfOGD_Dunn2,"Macroscopy")
+   
+   
+   ################ Search algorithm for the Pathology output  #####################
+   
+   #This is slightly different to the Event output as we are going to try to extract a tissue site at the same time.
+   #We will do this by extracting the tissue type and the site as colon separated eg Biopsy:Oesophagus from the macroscopic text and comma
+   #separating each duo. If tissue type isnt specified then assume it is a biopsy.
+   
+   #If not present in Macroscopic text then best guess is used from the Diagnosis or Conclusion column but only if no duos are present in the 
+   #Path_Event column
+   
+   
+   ##### Examine the Macroscopic column first as most accurate.
+   #Then examine the Diagnosis or Conclusion column as next most accurate.
+   # 1a. Find if there is a mention of an event in the procedure performed section. 
+   
+   #Tokenize each thing into a new column.
+   SelfOGD_Dunn2$Macroscopy<-stri_split_lines(SelfOGD_Dunn2$Macroscopy, omit_empty = FALSE)
+   
+   
+   # Detect a word in each sentence.
+   #Now need to do nested lapply to detect coexisting words
+   
+   
+   #SelfOGD_Dunn2$PathSite<-str_extract_all(tolower(SelfOGD_Dunn2$Macroscopy),
+                            #tolower(paste(unique(unlist(LocationList(), use.names = FALSE)),collapse="|")))
+   
+   
+   #Need to run the TermStandardLocalizer here to make sure everything standardised.
+   
+   SelfOGD_Dunn2<-TermStandardLocation(SelfOGD_Dunn2,'Macroscopy')
+   
+   r1 <- lapply(SelfOGD_Dunn2$Macroscopy, function (x) lapply(x, function(y) paste(
+    str_extract_all(tolower(y),tolower(LocationList())),":",
+    str_extract_all(tolower(y),tolower(HistolType())))))
+                
+                
+   r1_1<-lapply(r1,function(x) unlist(x))
+   
+
+   r2<-lapply(SelfOGD_Dunn2$Macroscopy, function (x) str_extract_all(tolower(x),
+                                                                 tolower(paste(unique(unlist(HistolType(), use.names = FALSE)),collapse="|"))))
+   r2_1<-lapply(r2,function(x) unlist(x))
+                                                                 
+   
+   str_extract_all(tolower(SelfOGD_Dunn2$Macroscopy),
+                   tolower(paste(unique(unlist(HistolType(), use.names = FALSE)),collapse="|")))
+   
+   
+   
+   
+   #Start by sentence tokenizing the text
+   #For each sentence in Macroscopic paste search for LocationList() term with HistolType list. Paste with joining :
+   #Then
+   #For each sentence in Diagnosis or Conclusion paste search for LocationList() term with HistolType list. Paste with joining :
+   
+   #Output into one column called the Path_TypeSite Column
+   
+   
+   
+   
+   #Start by sentence tokenizing the text and put all sentences in a list, then iterate through the list by:
+   #For each sentence in ProcedurePerformed paste search for LocationList() term with EventList list. Paste with joining:
+   
+   
+      
+   #Then try to create the site of the EVENT- this will have to come from the main text body. It relies on both EVENT and location
+   #being in the same sentence so the sentences have to be split into a list (based on newline)
+   
+
+   library(stringi)
+   #If location and event are mentioned on the same line then add this as the Event Site...To be done.....
+   SelfOGD_Dunn2$EventSite<-
+   
+
+   #If EndoscopyEvent length==0 then look in FINDINGS
+
+   SelfOGD_Dunn2$EndoscopyEvent<-lapply(SelfOGD_Dunn2$EndoscopyEvent, function(p) unique(p))
+   
+   str_extract_all(tolower(SelfOGD_Dunn$FINDINGS),tolower(LocationList()))
+   
+   
+
+   
+   
+   #Then
+   #For each sentence in Findings paste search for LocationList() term with EventList list. Paste with joining:
+   
+   
+   #Output into one column called the Endo_TypeSite Column
+   
+   
+   
+   
+   
+   
+   
+  #4. Extract most distant biopsy site and number into its own column.
+        #Need to remove any EMR specific sentences
+   
+  #Extract comentioned site and EVENT in the following fields
+      #Do so by extracting Termstandard Location
+   
+   
+   
+  #5. Extract the EMR site form histology
+   
+   
+  #6. Extract all other event
+   
+   library(gsubfn) 
+   L <- list(APC = "APC", EMR = "EMR", RFA = "RFA")
+   pat <- paste(names(L), collapse = "|")
+   res<-transform(tests, 
+                  out = fn$sapply(strapply(tests, pat, L, empty = "No Event"), toString),
+                  stringsAsFactors = FALSE)
+
+   
+  #7. List the events but need to do so looks in the histology column first- maybe as a separate column (EVENT from histology including biopsy site)
+   
+   
+   
+   
+   
+   
   
   #' Barrett's OPCS-4 Coding 
   #'
@@ -381,6 +530,19 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
   
 
   Barretts_OPCS4 <- function(dataframe, EVENT) {  
+    
+    
+    #Principle of event extraction is really that of verb extraction.
+    #This requires text preparation (NegEx/spell correction etc.) 
+    # then context extraction (ie action within a field eg extracion of 
+    # EMR from histology likely to be actual EMR vs EMR in endoscopy)
+    #Flatten the text
+    #Fuzzy find and replace
+    #Remove the negatives 
+    #Extract biopy site and number
+    #Extract the EMR site
+    #Extract all other event
+    #List the events but need to do so looks in the histology column first- maybe as a separate column (EVENT from histology including biopsy site)
     return(dataframe)
   }
 
@@ -1329,3 +1491,7 @@ Barretts_CRIM <- function(dataframe, HospNum, EVENT) {
   CRIM<-data.frame(CRIM)
   return(CRIM)
 }
+
+
+
+

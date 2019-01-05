@@ -628,6 +628,42 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 
 
 
+
+#' Use list of standard locations
+#'
+#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
+#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function
+#'
+#'
+#' @keywords Location
+#' @export
+#' @examples #No example needed
+
+LocationList<-function(){
+  
+  tofind <-
+    paste(
+      c(
+        "Ascending","Descending","Sigmoid","Rectum","Transverse",
+        "Caecum","Splenic","Ileum","Rectosigmoid",
+        "Ileocaecal","Hepatic","Colon","Terminal","Terminal Ileum",
+        "Ileoanal","Prepouch","Pouch","Anastomosis",
+        "Stomach","Antrum","Duodenum","Oesophagus","GOJ"
+      ),
+      collapse = "|"
+    )
+  
+  return(tofind)
+  
+}
+
+
+
+
+
+
+
 #' Standardise location of biopsies or tissue samples
 #'
 #' Standardises the location of biopsies by cleaning up the common typos and
@@ -654,148 +690,148 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 
 TermStandardLocation <- function(dataframe, SampleLocation) {
   dataframe<-as.data.frame(dataframe)
-  dataframe$SampleLocation <- tolower(dataframe[, SampleLocation])
-  dataframe$SampleLocation <-
+  dataframe[, SampleLocation] <- tolower(dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
     gsub(
       "[Rr][Ii][Gg][Hh][Tt]|($| )[Rr] |[Aa]sce |[Aa]scending|[Aa]scend[^a-z]|
       [Cc]olon [Rr]|[Rr] [Cc]olon|[Aa]sc ",
       "Ascending ",
-      dataframe$SampleLocation
+      dataframe[, SampleLocation]
     )
-  dataframe$SampleLocation <-
+  dataframe[, SampleLocation] <-
     gsub(
       "[Ll][Ee][Ff][Tt]|lt |[Dd]escending|[Dd]escen[^a-z]|
       [Dd]esc[^a-z]|[Dd]es[^a-z]|[Cc]olon [Ll]|[Ll] [Cc]olon",
       "Descending ",
-      dataframe$SampleLocation
+      dataframe[, SampleLocation]
     )
-  dataframe$SampleLocation <-
+  dataframe[, SampleLocation] <-
     gsub("[Ss]igmoid|[Ss]igm[^a-z]|[Ss]igmo ",
          "Sigmoid ",
-         dataframe$SampleLocation)
-  dataframe$SampleLocation <-
+         dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
     gsub("[Rr]ectal|[Rr]ectum|[Rr]ectum[a-z]|[Rr]ect ",
          "Rectum ",
-         dataframe$SampleLocation)
-  dataframe$SampleLocation <-
+         dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
     gsub(
       "[Tt]ransverse|[Tt]ransv[^a-z]|[Tt]ranv |[Tt]rans ",
       "Transverse ",
-      dataframe$SampleLocation
+      dataframe[, SampleLocation]
     )
-  dataframe$SampleLocation <-
-    gsub("[Cc]aecum|[Cc]aecal", "Caecum ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Ss]plenic", "Splenic ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Ii]leum|[Ii]leal", "Ileum ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Rr]ectosigmoid", "Rectosigmoid ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
+  dataframe[, SampleLocation] <-
+    gsub("[Cc]aecum|[Cc]aecal", "Caecum ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Ss]plenic", "Splenic ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Ii]leum|[Ii]leal", "Ileum ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Rr]ectosigmoid", "Rectosigmoid ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
     gsub(
       "[Ii]leocaecal\\s*|[Ii][Cc][Vv]|[Ii]leo-[Cc]aecum",
       "Ileocaecal ",
-      dataframe$SampleLocation
+      dataframe[, SampleLocation]
     )
-  dataframe$SampleLocation <-
-    gsub("[Hh]ep[^a-z]|[Hh]epatic", "Hepatic ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
+  dataframe[, SampleLocation] <-
+    gsub("[Hh]ep[^a-z]|[Hh]epatic", "Hepatic ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
     gsub("[Cc]olonic|[Cc]olon |[Cc]ol[^a-z]",
          "Colon ",
-         dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Tt]erm |[Tt]erminal", "Terminal ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("TI", "Terminal Ileum ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Cc]aec ", "Caecum ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Ss]ig ", "Sigmoid ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Ii]leo\\s*-\\s*[Aa]nal ", "Ileoanal ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Ii]leo\\s*[Aa]nal ", "Ileoanal ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Pp]re\\s*pouch", "PrePouch ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Pp]re-[Pp]ouch", "PrePouch ", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("pouch", "Pouch ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("IleoAnal([a-zA-Z]+)", "Ileoanal \\1 ", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Aa]nastomosis", "Anastomosis", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("[Xx]\\s*[1-9]|", "",
-                                   dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("[1-9]\\s*[Xx]|", "",
-                                   dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Hh]yperplastic", "", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Dd]istal|[Pp]roximal|[Pp]rox ", "", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("[Ss]essile", "", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("\\d+[Mm]{2}|\\d+[Cc][Mm]", "", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Pp]edunculated|[Pp]seudo", "", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("\\d", "", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub("  ", " ", dataframe$SampleLocation)
-  dataframe$SampleLocation <- gsub(":", "", dataframe$SampleLocation)
+         dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Tt]erm |[Tt]erminal", "Terminal ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("TI", "Terminal Ileum ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Cc]aec ", "Caecum ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Ss]ig ", "Sigmoid ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Ii]leo\\s*-\\s*[Aa]nal ", "Ileoanal ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Ii]leo\\s*[Aa]nal ", "Ileoanal ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Pp]re\\s*pouch", "PrePouch ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Pp]re-[Pp]ouch", "PrePouch ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <- gsub("pouch", "Pouch ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("IleoAnal([a-zA-Z]+)", "Ileoanal \\1 ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Aa]nastomosis", "Anastomosis", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <- gsub("[Xx]\\s*[1-9]|", "",
+                                   dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <- gsub("[1-9]\\s*[Xx]|", "",
+                                   dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Hh]yperplastic", "", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Dd]istal|[Pp]roximal|[Pp]rox ", "", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <- gsub("[Ss]essile", "", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("\\d+[Mm]{2}|\\d+[Cc][Mm]", "", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Pp]edunculated|[Pp]seudo", "", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <- gsub("\\d", "", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <- gsub("  ", " ", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <- gsub(":", "", dataframe[, SampleLocation])
   # For upper GI
-  dataframe$SampleLocation <-
-    gsub("[Gg]astric|[Ss]tomach", "Stomach", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Aa]ntrum|[Aa]ntral", "Antrum", dataframe$SampleLocation)
-  dataframe$SampleLocation <-
+  dataframe[, SampleLocation] <-
+    gsub("[Gg]astric|[Ss]tomach", "Stomach", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Aa]ntrum|[Aa]ntral", "Antrum", dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
     gsub("[Dd]uodenum|[Dd]2|[Dd]uodenal",
          "Duodenum",
-         dataframe$SampleLocation)
-  dataframe$SampleLocation <-
+         dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
     gsub("[Oo]esophageal|[Oo]esophagus|esophag[^a-z]",
          "Oesophagus",
-         dataframe$SampleLocation)
-  dataframe$SampleLocation <-
+         dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
     gsub("[Gg][Oo][Jj]|[Gg]astro[Oo]esophageal",
          "GOJ",
-         dataframe$SampleLocation)
-  dataframe$SampleLocation <-
-    gsub("[Ff]undal|[Ff]undic|[Ff]undus", "GOJ", dataframe$SampleLocation)
+         dataframe[, SampleLocation])
+  dataframe[, SampleLocation] <-
+    gsub("[Ff]undal|[Ff]undic|[Ff]undus", "GOJ", dataframe[, SampleLocation])
 
 #Extract the locations into a separate column
 
 
 
-  tofind <-
-    paste(
-      c(
-        "Ascending",
-        "Descending",
-        "Sigmoid",
-        "Rectum",
-        "Transverse",
-        "Caecum",
-        "Splenic",
-        "Ileum",
-        "Rectosigmoid",
-        "Ileocaecal",
-        "Hepatic",
-        "Colon",
-        "Terminal",
-        "Terminal Ileum",
-        "Ileoanal",
-        "Prepouch",
-        "Pouch",
-        "Anastomosis",
-        "Stomach",
-        "Antrum",
-        "Duodenum",
-        "Oesophagus",
-        "GOJ"
-      ),
-      collapse = "|"
-    )
+  # tofind <-
+  #   paste(
+  #     c(
+  #       "Ascending",
+  #       "Descending",
+  #       "Sigmoid",
+  #       "Rectum",
+  #       "Transverse",
+  #       "Caecum",
+  #       "Splenic",
+  #       "Ileum",
+  #       "Rectosigmoid",
+  #       "Ileocaecal",
+  #       "Hepatic",
+  #       "Colon",
+  #       "Terminal",
+  #       "Terminal Ileum",
+  #       "Ileoanal",
+  #       "Prepouch",
+  #       "Pouch",
+  #       "Anastomosis",
+  #       "Stomach",
+  #       "Antrum",
+  #       "Duodenum",
+  #       "Oesophagus",
+  #       "GOJ"
+  #     ),
+  #     collapse = "|"
+  #   )
   
   
-  so<-str_match_all(dataframe$SampleLocation, tofind)
+  so<-str_match_all(dataframe[, SampleLocation], LocationList())
   #Collapse as str_match_all outputs a list so need to collapse it to make into a character vector
   so<-sapply( so, paste0, collapse=",")
   dataframe$AllSampleLocator<-so

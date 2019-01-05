@@ -424,11 +424,9 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
 
 EndoscFindings <- function(dataframe, FindingsColumn) {
   # Extraction of the FINDINGS
-  #dataframe[, FindingsColumn] <-
   dataframe[, FindingsColumn]<-str_replace(dataframe[, FindingsColumn],
                                              "cm\\s+[A-Z]|cm.+\\)", "cm\n")
   dataframe$EndoFindingsSimple<- NegativeRemove(dataframe, FindingsColumn)
-  #Put in the Negative remove for FindingsSimplified Here
   return(dataframe)
 }
 
@@ -563,6 +561,16 @@ NegativeRemove <- function(dataframe, Column) {
                  dataframe[, Column],
                  perl = TRUE,
                  ignore.case = TRUE)
+  
+  
+  # Time related phrases eg post and previous
+  dataframe[, Column] <- gsub(" (post|previous|prior)[^a-z].+?[A-Za-z]*",
+                              " TIME_REPLACED",
+                              dataframe[, Column],
+                              perl = TRUE,
+                              ignore.case = TRUE)
+  
+  
   return(dataframe[, Column])
 }
 
@@ -935,6 +943,30 @@ HistolBxSize <- function(dataframe, MacroColumn) {
     as.numeric(str_match(dataframe$BxSize, strBxSize)[, 4])
   return(dataframe)
 }
+
+
+#' Extract pathology type
+#'
+#' This standardizes terms to describe the pathology tissue type being exmained
+#' @param dataframe dataframe with column of interest
+#' @keywords Pathology type
+#' @export
+#' @examples #No examples as just returns a list
+
+
+
+HistolType <- function() {
+  
+  #First standardise the terms
+  
+    tofind <-
+      paste(
+        c(
+          "Resection","Biopsy","EMR","ESD","bx"),
+        collapse = "|"
+      )
+    return(tofind)
+  }
 
 
 #' #' Validate columns
