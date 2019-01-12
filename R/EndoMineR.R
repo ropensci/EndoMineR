@@ -629,215 +629,6 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 
 
 
-#' Use list of standard locations
-#'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
-#' therapeutic event. It just returns the list in the function
-#'
-#'
-#' @keywords Location
-#' @export
-#' @examples #No example needed
-
-LocationList<-function(){
-  
-  tofind <-
-    paste(
-      c(
-        "Ascending","Descending","Sigmoid","Rectum","Transverse",
-        "Caecum","Splenic","Ileum","Rectosigmoid",
-        "Ileocaecal","Hepatic","Colon","Terminal","Terminal Ileum",
-        "Ileoanal","Prepouch","Pouch","Anastomosis",
-        "Stomach","Antrum","Duodenum","Oesophagus","GOJ"
-      ),
-      collapse = "|"
-    )
-  
-  return(tofind)
-  
-}
-
-
-
-
-
-
-
-#' Standardise location of biopsies or tissue samples
-#'
-#' Standardises the location of biopsies by cleaning up the common typos and
-#' abbreviations that are commonly used in free text of pathology reports
-#'
-#' @param dataframe The dataframe
-#' @param SampleLocation Column describing the Macroscopic sample from histology
-#' @keywords Withdrawal
-#' @export
-#' @examples #Firstly we extract histology from the raw report
-#' # using the extractor function
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
-#' MypathExtraction<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
-#' names(MypathExtraction)[names(MypathExtraction) == 'Datereceived'] <- 'Dateofprocedure'
-#' MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
-#' # The function then standardises the histology terms through a series of
-#' # regular expressions
-#' ll<-TermStandardLocation(Mypath,'Histology')
-#' rm(MypathExtraction)
-
-
-
-TermStandardLocation <- function(dataframe, SampleLocation) {
-  dataframe<-as.data.frame(dataframe)
-  dataframe[, SampleLocation] <- tolower(dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub(
-      "[Rr][Ii][Gg][Hh][Tt]|($| )[Rr] |[Aa]sce |[Aa]scending|[Aa]scend[^a-z]|
-      [Cc]olon [Rr]|[Rr] [Cc]olon|[Aa]sc ",
-      "Ascending ",
-      dataframe[, SampleLocation]
-    )
-  dataframe[, SampleLocation] <-
-    gsub(
-      "[Ll][Ee][Ff][Tt]|lt |[Dd]escending|[Dd]escen[^a-z]|
-      [Dd]esc[^a-z]|[Dd]es[^a-z]|[Cc]olon [Ll]|[Ll] [Cc]olon",
-      "Descending ",
-      dataframe[, SampleLocation]
-    )
-  dataframe[, SampleLocation] <-
-    gsub("[Ss]igmoid|[Ss]igm[^a-z]|[Ss]igmo ",
-         "Sigmoid ",
-         dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Rr]ectal|[Rr]ectum|[Rr]ectum[a-z]|[Rr]ect ",
-         "Rectum ",
-         dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub(
-      "[Tt]ransverse|[Tt]ransv[^a-z]|[Tt]ranv |[Tt]rans ",
-      "Transverse ",
-      dataframe[, SampleLocation]
-    )
-  dataframe[, SampleLocation] <-
-    gsub("[Cc]aecum|[Cc]aecal", "Caecum ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Ss]plenic", "Splenic ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Ii]leum|[Ii]leal", "Ileum ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Rr]ectosigmoid", "Rectosigmoid ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub(
-      "[Ii]leocaecal\\s*|[Ii][Cc][Vv]|[Ii]leo-[Cc]aecum",
-      "Ileocaecal ",
-      dataframe[, SampleLocation]
-    )
-  dataframe[, SampleLocation] <-
-    gsub("[Hh]ep[^a-z]|[Hh]epatic", "Hepatic ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Cc]olonic|[Cc]olon |[Cc]ol[^a-z]",
-         "Colon ",
-         dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Tt]erm |[Tt]erminal", "Terminal ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("TI", "Terminal Ileum ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Cc]aec ", "Caecum ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Ss]ig ", "Sigmoid ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Ii]leo\\s*-\\s*[Aa]nal ", "Ileoanal ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Ii]leo\\s*[Aa]nal ", "Ileoanal ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Pp]re\\s*pouch", "PrePouch ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Pp]re-[Pp]ouch", "PrePouch ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <- gsub("pouch", "Pouch ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("IleoAnal([a-zA-Z]+)", "Ileoanal \\1 ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Aa]nastomosis", "Anastomosis", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <- gsub("[Xx]\\s*[1-9]|", "",
-                                   dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <- gsub("[1-9]\\s*[Xx]|", "",
-                                   dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Hh]yperplastic", "", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Dd]istal|[Pp]roximal|[Pp]rox ", "", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <- gsub("[Ss]essile", "", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("\\d+[Mm]{2}|\\d+[Cc][Mm]", "", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Pp]edunculated|[Pp]seudo", "", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <- gsub("\\d", "", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <- gsub("  ", " ", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <- gsub(":", "", dataframe[, SampleLocation])
-  # For upper GI
-  dataframe[, SampleLocation] <-
-    gsub("[Gg]astric|[Ss]tomach", "Stomach", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Aa]ntrum|[Aa]ntral", "Antrum", dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Dd]uodenum|[Dd]2|[Dd]uodenal",
-         "Duodenum",
-         dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Oo]esophageal|[Oo]esophagus|esophag[^a-z]",
-         "Oesophagus",
-         dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Gg][Oo][Jj]|[Gg]astro[Oo]esophageal",
-         "GOJ",
-         dataframe[, SampleLocation])
-  dataframe[, SampleLocation] <-
-    gsub("[Ff]undal|[Ff]undic|[Ff]undus", "GOJ", dataframe[, SampleLocation])
-
-#Extract the locations into a separate column
-
-
-
-  # tofind <-
-  #   paste(
-  #     c(
-  #       "Ascending",
-  #       "Descending",
-  #       "Sigmoid",
-  #       "Rectum",
-  #       "Transverse",
-  #       "Caecum",
-  #       "Splenic",
-  #       "Ileum",
-  #       "Rectosigmoid",
-  #       "Ileocaecal",
-  #       "Hepatic",
-  #       "Colon",
-  #       "Terminal",
-  #       "Terminal Ileum",
-  #       "Ileoanal",
-  #       "Prepouch",
-  #       "Pouch",
-  #       "Anastomosis",
-  #       "Stomach",
-  #       "Antrum",
-  #       "Duodenum",
-  #       "Oesophagus",
-  #       "GOJ"
-  #     ),
-  #     collapse = "|"
-  #   )
-  
-  
-  so<-str_match_all(dataframe[, SampleLocation], LocationList())
-  #Collapse as str_match_all outputs a list so need to collapse it to make into a character vector
-  so<-sapply( so, paste0, collapse=",")
-  dataframe$AllSampleLocator<-so
-  
-  return(dataframe)
-}
 
 
 
@@ -871,41 +662,13 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
 
 PolypLocator <- function(dataframe, SampleLocationColumn) {
   dataframe <- data.frame(dataframe)
-  tofind <-
-    paste(
-      c(
-        "Ascending",
-        "Descending",
-        "Sigmoid",
-        "Rectum",
-        "Transverse",
-        "Caecum",
-        "Splenic",
-        "Ileum",
-        "Rectosigmoid",
-        "Ileocaecal",
-        "Hepatic",
-        "Colon",
-        "Terminal",
-        "Terminal Ileum",
-        "Ileoanal",
-        "Prepouch",
-        "Pouch",
-        "Anastomosis",
-        "Stomach",
-        "Antrum",
-        "Duodenum",
-        "Oesophagus",
-        "GOJ"
-      ),
-      collapse = "|"
-    )
+
 
   dataframe$PolypLocator <-
     str_match_all(dataframe[, SampleLocationColumn], ".*[Pp]olyp.*")
 
   dataframe$PolypLocator <- str_match_all(dataframe$PolypLocator
-                                          , tofind)
+                                          , LocationList())
   dataframe$PolypLocator <- lapply(dataframe$PolypLocator, function(p)
     unique(p))
 
@@ -1132,4 +895,104 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
   NumByEndoscopist <- data.frame(table(dataframe[, EndoscopistColumn],
                                        dataframe[, IndicationColumn]))
   return(NumByEndoscopist)
+}
+
+
+
+
+
+
+#' OPCS-4 Coding 
+#'
+#' This function extracts the OPCS-4 codes for all Barrett's procedures
+#' It should take the OPCS-4 from the EVENT and perhaps also using extent
+#' depending on how the coding is done. The EVENT column will need to 
+#' extract multiple findings
+#' The hope is that the OPCS-4 column will then map from the EVENT column. This returns a nested list 
+#' column with the procedure, furthest path site and event performed 
+#' 
+#'
+#' @param dataframe the dataframe
+#' @param EVENT the EVENT column
+#' @keywords OPCS-4 codes extraction
+#' @importFrom dplyr mutate case_when
+#' @importFrom rlang sym
+#' @importFrom stringr str_detect
+#' @export
+#' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
+#' SelfOGD_Dunn$OPCS4w<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+
+
+OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {  
+  dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
+  #Tidy the data
+  #Firstly merge the path with EventSite for emr's so all the events are contained in the one column
+  #Then need to index biopsy sites as a separate column and derive the furthest index point and then translate that into a Z code
+  OPCS4Prepdata<-str_split(paste(dataframe[,Procedure],"xxx",dataframe[,PathSite],"xxx",dataframe[,Event]),"xxx")
+  
+  #Create a named list to refer to them later
+  OPCS4Prepdata<-lapply(OPCS4Prepdata,function(x) setNames(x, c("Procedure", "PathSite","Event")))
+  
+  #Now need to write the case_when rules:
+  
+  return(OPCS4Prepdata)
+  
+  #Take the PathSite codes which should have been coded from PathSite using the HistolBiopsyIndex
+  
+  
+  # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
+  # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
+  # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
+  # SelfOGD_Dunn$PathSite<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
+  #ToSee<-SelfOGD_Dunn%>%select(EndoscopyEvent,FINDINGS,PROCEDUREPERFORMED)%>% filter(grepl("Error", EndoscopyEvent))
+  
+}
+  
+  #For pathology event do the following
+
+  #For each event site:
+  section 1:
+    dataframe$PROCEDUREPERFORMED=="Gastroscopy (OGD)"
+  dataframe$EndoscopyEvent=="oesophagus"
+  dataframe$EndoscopyEvent=="emr"
+  dataframe$EndoscopyEvent=="polypectomy"
+  dataframe$EndoscopyEvent=="apc"
+  dataframe$EndoscopyEvent=="rfa"
+  dataframe$EndoscopyEvent=="esd"
+  dataframe$EndoscopyEvent=="dilatation"
+  
+  
+  
+  if Procedure==OGD
+  if PathSite==Nil
+  if Event_Site contains Oesophagus
+  
+  #Create list of three which is named  so that:
+            #Procedure , PathSite( which is the furthest biopsy site) and Event_Site
+  #Merge the ProcedurePerformed with PathSiteFurthest with the EVENT_Site columns. Keep them separated by ;
+  Section 1 OesophagusEvent
+  If Procedure=OGD;Path_Site=Nil;Event_Site=Nil;..................G169
+  If Procedure=OGD;Path_Site=Nil;Event_Site=EMR;..................G121
+  If Procedure=OGD;Path_Site=Nil;Event_Site=Polypectomy;..........G141
+  If Procedure=OGD;Path_Site=Nil;Event_Site=APC;..................G143
+  If Procedure=OGD;Path_Site=Nil;Event_Site=RFA;..................G145
+  If Procedure=OGD;Path_Site=Nil;Event_Site=ESD;..................G146
+  If Procedure=OGD;Path_Site=Nil;Event_Site=Dilatation;...........G152
+  
+  Section 2 NotOesophagusEvent
+  If Procedure=OGD;Path_Site=Nil;Event_Site=Nil;..................Then is extent is duodenum = G458 or G459
+  If Procedure=OGD;Path_Site=Nil;Event_Site=EMR;..................G423
+  If Procedure=OGD;Path_Site=Nil;Event_Site=Polypectomy;..........G431
+  If Procedure=OGD;Path_Site=Nil;Event_Site=APC;..................G433
+  If Procedure=OGD;Path_Site=Nil;Event_Site=RFA;..................G435
+  If Procedure=OGD;Path_Site=Nil;Event_Site=ESD;..................G421
+  If Procedure=OGD;Path_Site=Nil;Event_Site=Dilatation;...........G443
+  
+  If there is Path_Site=BiopsyOfFurthest the add the Z code for the furthest point of the biopsy
+  
+  Procedure=OGD;Event_Site=Nil;Path_Site=Nil
+  
+  return(dataframe)
+  
+  
 }
