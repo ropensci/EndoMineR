@@ -472,6 +472,8 @@ EndoscopyEvent<-function(dataframe,EventColumn1){
   
   # RUN THE LOOKUP IN THE TWO COLUMNS
   output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
+  
+  
 
   #Need to know if emr done here so can add it
   return(output)
@@ -566,16 +568,27 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
       
       x1 <- str_extract_all(tolower(x),tolower(paste(EventList(), collapse="|")))
       i1 <- which(lengths(x1) > 0)
+      
+      #Convert the 
+      
       try(if(any(i1)) {
-        paste(unlist(Map(c, str_extract_all(tolower(x[i1-1]),  tolower(LocationList())), 
-                         str_extract_all(tolower(x[i1]), tolower(LocationList())))), 
-              toupper(x1[i1]), sep=":", collapse=", ") 
+        # paste(unlist(Map(c, 
+        #                  str_extract_all(tolower(x[i1-3]),  tolower(LocationList())),
+        #                  str_extract_all(tolower(x[i1-2]),  tolower(LocationList())),
+        #                  str_extract_all(tolower(x[i1-1]),  tolower(LocationList())), 
+        #                  str_extract_all(tolower(x[i1]), tolower(LocationList())))), 
+        #       toupper(x1[i1]), sep=":", collapse=", ") 
+        #For lookbehind regex here
         
       } else "")
       
     }
     )
     return(text)
+  
+  #To do: Get rid of the errors
+  #Make lookbehind regex to get the nearest location to each event
+  #Then test to make sure it is picking up what it should be
 }
 
 
@@ -1116,11 +1129,12 @@ HistolBxSize <- function(dataframe, MacroColumn) {
 #'
 #' This needs some blurb to be written. Used in the OPCS4 coding
 #' @keywords Find and replace
+#' @param Procedure The procedure performed
 #' @param EventColumn1 The relevant pathology text column
 #' @param EventColumn2 The alternative pathology text column
-#' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
+#' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 
-HistolTypeAndSite<-function(dataframe,EventColumn1,EventColumn2){
+HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
   library(stringi)
   library(stringr)
   
@@ -1134,11 +1148,16 @@ HistolTypeAndSite<-function(dataframe,EventColumn1,EventColumn2){
   
   #If the 
   output<-str_replace_all(output, ":,|:$", ":biopsy,")
+  
+  output<-ifelse(grepl("Gastroscopy",dataframe[,Procedure]),
+               str_remove_all(output, tolower(LocationListLower())),
+         ifelse(grepl("Colonoscopy|Flexi",dataframe[,Procedure]),
+         str_remove_all(output, paste(tolower(LocationListUpper()),".*?,")),output))
   return(output)
   
   #To Do:
   #1. Get the sens and spec of the Path Site column and figure out the problems eg is ileum being inserted 
-  #when it shouldnt be
+  #when it shouldnt be- because it extracts from the macroscopical description.
 }
 
 
@@ -1183,6 +1202,9 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
                       tibble(key = .x) %>%
                       regex_left_join(d1) %>%
                       pull(val))
+  
+  ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
+  ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
 
   return(ToIndex)
 }
@@ -1229,12 +1251,28 @@ HistolType <- function() {
 LocationList<-function(){
   
   tofind <-
+    paste(LocationListLower(),LocationListUpper(),LocationListUniversal(),collapse = "|")
+  
+  return(tofind)
+  
+}
+
+#' Use list of standard locations for upper GI endoscopy
+#'
+#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
+#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function
+#'
+#'
+#' @keywords Location
+#' @export
+#' @examples #No example needed
+
+LocationListUpper<-function(){
+  
+  tofind <-
     paste(
       c(
-        "Ascending","Descending","Sigmoid","Rectum","Transverse",
-        "Caecum","Splenic","Ileum","Rectosigmoid",
-        "Ileocaecal","Hepatic","Colon","Terminal","Terminal Ileum",
-        "Ileoanal","Prepouch","Pouch","Anastomosis",
         "Stomach","Antrum","Duodenum","Oesophagus","GOJ"
       ),
       collapse = "|"
@@ -1244,7 +1282,59 @@ LocationList<-function(){
   
 }
 
+#' Use list of standard locations for upper GI endoscopy
+#'
+#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
+#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function
+#'
+#'
+#' @keywords Location
+#' @export
+#' @examples #No example needed
 
+LocationListUniversal<-function(){
+  
+  tofind <-
+    paste(
+      c(
+        "Anastomosis"
+      ),
+      collapse = "|"
+    )
+  
+  return(tofind)
+  
+}
+
+
+#' Use list of standard locations for lower GI endoscopy
+#'
+#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
+#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function
+#'
+#'
+#' @keywords Location
+#' @export
+#' @examples #No example needed
+
+LocationListLower<-function(){
+  
+  tofind <-
+    paste(
+      c(
+        "Ascending","Descending","Sigmoid","Rectum","Transverse",
+        "Caecum","Splenic","Ileum","Rectosigmoid",
+        "Ileocaecal","Hepatic","Colon","Terminal","Terminal Ileum",
+        "Ileoanal","Prepouch","Pouch"
+      ),
+      collapse = "|"
+    )
+  
+  return(tofind)
+  
+}
 
 
 
@@ -1280,7 +1370,7 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
   dataframe[, SampleLocation] <-
     #|r|ri[Gg][Hh]t|
     gsub(
-      "($| )r |asce |ascending|ascend[^a-z]| colon r 
+      "asce |ascending|ascend[^a-z]| colon r 
        r colon|asc |right colon ",
       "Ascending ",
       dataframe[, SampleLocation],
@@ -1382,6 +1472,8 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
          dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
     gsub("fundal|fundic|fundus", "GOJ", dataframe[, SampleLocation],ignore.case = TRUE)
+  dataframe[, SampleLocation] <-
+    gsub("bx", "biopsy", dataframe[, SampleLocation],ignore.case = TRUE)
   
   so<-str_match_all(dataframe[, SampleLocation], LocationList())
   #Collapse as str_match_all outputs a list so need to collapse it to make into a character vector

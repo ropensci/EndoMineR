@@ -923,6 +923,20 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
 #' SelfOGD_Dunn$OPCS4w<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
 
 
+#Take the PathSite codes which should have been coded from PathSite using the HistolBiopsyIndex
+
+
+# SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
+# for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
+# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
+# SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
+# SelfOGD_Dunn$PathSite<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
+# ouput<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+# ForRules<-ouput%>%filter(grepl("Gastroscopy",SelfOGD_Dunn$PROCEDUREPERFORMED))%>%select(ExtentofExam,HISTOLOGY,FINDINGS,EndoscopyEvent,PathSite,PROCEDUREPERFORMED,OPCS4Primary,OPCS4ZCode)%>%sample_n(10)
+# ToSee<-SelfOGD_Dunn%>%select(FINDINGS,EndoscopyEvent,PathSite,PROCEDUREPERFORMED)%>% filter(grepl("Error", EndoscopyEvent))
+
+#For each event site:
+
 OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {  
   dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
   #Tidy the data
@@ -933,66 +947,76 @@ OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
   #Create a named list to refer to them later
   OPCS4Prepdata<-lapply(OPCS4Prepdata,function(x) setNames(x, c("Procedure", "PathSite","Event")))
   
-  #Now need to write the case_when rules:
-  
-  return(OPCS4Prepdata)
-  
-  #Take the PathSite codes which should have been coded from PathSite using the HistolBiopsyIndex
-  
-  
-  # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
-  # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
-  # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
-  # SelfOGD_Dunn$PathSite<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
-  #ToSee<-SelfOGD_Dunn%>%select(EndoscopyEvent,FINDINGS,PROCEDUREPERFORMED)%>% filter(grepl("Error", EndoscopyEvent))
-  
-}
-  
-  #For pathology event do the following
 
-  #For each event site:
-  section 1:
-    dataframe$PROCEDUREPERFORMED=="Gastroscopy (OGD)"
-  dataframe$EndoscopyEvent=="oesophagus"
-  dataframe$EndoscopyEvent=="emr"
-  dataframe$EndoscopyEvent=="polypectomy"
-  dataframe$EndoscopyEvent=="apc"
-  dataframe$EndoscopyEvent=="rfa"
-  dataframe$EndoscopyEvent=="esd"
-  dataframe$EndoscopyEvent=="dilatation"
-  
-  
-  
-  if Procedure==OGD
-  if PathSite==Nil
-  if Event_Site contains Oesophagus
-  
-  #Create list of three which is named  so that:
-            #Procedure , PathSite( which is the furthest biopsy site) and Event_Site
-  #Merge the ProcedurePerformed with PathSiteFurthest with the EVENT_Site columns. Keep them separated by ;
-  Section 1 OesophagusEvent
-  If Procedure=OGD;Path_Site=Nil;Event_Site=Nil;..................G169
-  If Procedure=OGD;Path_Site=Nil;Event_Site=EMR;..................G121
-  If Procedure=OGD;Path_Site=Nil;Event_Site=Polypectomy;..........G141
-  If Procedure=OGD;Path_Site=Nil;Event_Site=APC;..................G143
-  If Procedure=OGD;Path_Site=Nil;Event_Site=RFA;..................G145
-  If Procedure=OGD;Path_Site=Nil;Event_Site=ESD;..................G146
-  If Procedure=OGD;Path_Site=Nil;Event_Site=Dilatation;...........G152
-  
-  Section 2 NotOesophagusEvent
-  If Procedure=OGD;Path_Site=Nil;Event_Site=Nil;..................Then is extent is duodenum = G458 or G459
-  If Procedure=OGD;Path_Site=Nil;Event_Site=EMR;..................G423
-  If Procedure=OGD;Path_Site=Nil;Event_Site=Polypectomy;..........G431
-  If Procedure=OGD;Path_Site=Nil;Event_Site=APC;..................G433
-  If Procedure=OGD;Path_Site=Nil;Event_Site=RFA;..................G435
-  If Procedure=OGD;Path_Site=Nil;Event_Site=ESD;..................G421
-  If Procedure=OGD;Path_Site=Nil;Event_Site=Dilatation;...........G443
-  
-  If there is Path_Site=BiopsyOfFurthest the add the Z code for the furthest point of the biopsy
-  
-  Procedure=OGD;Event_Site=Nil;Path_Site=Nil
-  
+#For the primary codes:
+  dataframe<-dataframe %>%   
+  mutate(OPCS4Primary = case_when(
+    grepl("OGD", dataframe$PROCEDUREPERFORMED) ~  case_when(
+      #Oesophageal event               
+                    grepl("oesophagus",dataframe$EndoscopyEvent) ~  case_when(
+      grepl("APC",dataframe$EndoscopyEvent) ~ "G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",
+      grepl("EMR",dataframe$EndoscopyEvent) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
+      grepl("Polypectomy",dataframe$EndoscopyEvent) ~ "G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",
+      grepl("RFA",dataframe$EndoscopyEvent) ~ "G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",
+      grepl("ESD",dataframe$EndoscopyEvent) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
+      grepl("Dilatation",dataframe$EndoscopyEvent) ~ "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",
+                    ),
+      #Non-Oesophageal event 
+                    !grepl("oesophagus",dataframe$EndoscopyEvent) ~  case_when(
+      grepl("APC",dataframe$EndoscopyEvent) ~ "G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",
+      grepl("EMR",dataframe$EndoscopyEvent) ~ "G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",
+      grepl("Polypectomy",dataframe$EndoscopyEvent) ~ "G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",
+      grepl("RFA",dataframe$EndoscopyEvent) ~ "G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",
+      grepl("ESD",dataframe$EndoscopyEvent) ~ "G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",
+      grepl("Dilatation",dataframe$EndoscopyEvent) ~ "G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",
+                    ),
+      #No event and no biopsy taken:
+      dataframe$EndoscopyEvent==""&dataframe$PathSite=="" ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
+                 
+      #No event and upper GI biopsy taken:
+      SelfOGD_Dunn$EndoscopyEvent==""& grepl("O",dataframe$PathSite) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
+      
+      #Event (oesophageal) and upper GI biopsy taken
+      grepl("oesophagus",dataframe$EndoscopyEvent) & grepl("O",dataframe$PathSite) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus",
+      
+      ),
+   TRUE ~ "SomethingElse"
+  )
+  )
+    
+  #Also check the Procedure performed column maybe in a helper function
+ #Also how to create small test columns and filters
+          #Decide what you want to compare with the code and then use those columns PathSite/ EndoscopyEvent/Findings/HistologyReport
+#Also need to check all the building functions eg: EndoscopyEvent and HistolTypeAndSite with a test set.
+  #To get the secondary (Z) codes:  
+
+
+#If a biopsy was taken then give this as the distance
+#If no biopsy was taken then give the maximum extent only
+#If an EMR was done then give this as the distance (I think)
+
+dataframe$MAXOFPATHSITE<-str_extract_all(dataframe$PathSite,"\\d")
+dataframe$MAXOFPATHSITE<-lapply(dataframe$MAXOFPATHSITE,function(x) max(as.numeric(x)))
+
+dataframe<-dataframe %>%   
+  mutate(OPCS4ZCode = case_when( 
+    dataframe$PathSite==""~ case_when(
+    #1. if no biopsy and no Event (covers oesophageal and non-oesophageal), then give the extent reached
+      dataframe$ExtentofExam=="second part of duodenum"~  "Z27.4",
+      dataframe$ExtentofExam=="pylorus"~  "Z27.3",
+      dataframe$ExtentofExam=="stomach"~  "Z27.2",
+      dataframe$ExtentofExam=="oesophagus"~  "Z27.1",
+    ),
+    
+    #2.If event (oesophageal) and biopsy 
+    dataframe$PathSite!="" ~ case_when(
+      dataframe$MAXOFPATHSITE== 5 ~  "Z27.4",
+      dataframe$MAXOFPATHSITE== 4 ~  "Z27.3",
+      dataframe$MAXOFPATHSITE== 3 ~  "Z27.2",
+      dataframe$MAXOFPATHSITE== 1|2 ~  "Z27.1",
+    ),
+    TRUE ~ "No code here"
+  )
+  )
   return(dataframe)
-  
-  
 }
