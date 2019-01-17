@@ -460,29 +460,36 @@ EventList<-function(){
 #' the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
 #' added to the event. Used in the OPCS4 coding
 #' @keywords Find and replace
-#' @param EventColumn1 The relevant pathology text column
-#' @param EventColumn2 The alternative pathology text column
-#' @examples # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
+#' @param EventColumn1 The relevant endoscopt free text column describing the findings
+#' @param Procedure Column saying which procedure was performed
+#' @param Macroscopic Column describing all the macroscopic specimens
+#' @param Histology Column with free text histology (usually microscopic histology)
+#' @examples # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 
-EndoscopyEvent<-function(dataframe,EventColumn1){
+EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology){
   library(stringi)
   library(stringr)
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   
-  # RUN THE LOOKUP IN THE TWO COLUMNS
+  # Extract the events from the 
   output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
   
+  MyHistolEvents<-HistolTypeAndSite(dataframe,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+  output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
+  
+  #Add emr only if this is seen in the histopath
+  #Remove EMR from events if not seen in histopath
+  
+  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE),paste0(output,";","emr"),output)
   
 
   #Need to know if emr done here so can add it
   return(output)
   
   ######To do
-  #1. Sort out why gettting errors with message "Error in mapply(FUN = f, ..., SIMPLIFY = FALSE)" etc.
-  #2. Add the emr as a therapy
-  #3. Make sure that if the column is empty or there is an error that the Procedure 
-  #Column is then looked at and entereed
+  #2. Add the emr as a therapy- get this from where?
+  #3. Make sure that if the column is empty or there is an error that the Procedure Column is then looked at and entereed
   #4. 
 }
 
@@ -524,7 +531,10 @@ textPrep<-function(dataframe,EventColumn){
   
   #1. Flatten the text
   dataframe[,EventColumn]<-tolower(dataframe[,EventColumn])
+
   
+  #1b. Get rid of unnecessary punctuation
+  dataframe[,EventColumn]<-gsub("'","",dataframe[,EventColumn],fixed=TRUE)
   #2a . Fuzzy find and replace and term mapping using the find and replace function above using the Location list
   L <- str_split(LocationList(),"\\|")
   dataframe[,EventColumn]<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
@@ -558,38 +568,58 @@ textPrep<-function(dataframe,EventColumn){
 #' @keywords Find and replace
 #' @param EventColumn1 The relevant pathology text column
 #' @param EventColumn2 The alternative pathology text column
-#' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_Dunn,"FINDINGS")
+#' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_DunnOGD_RFA,"FINDINGS")
 
 EntityPairs_TwoSentence<-function(dataframe,EventColumn){
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   text<-textPrep(dataframe,EventColumn)
+  text<-lapply(text,function(x) gsub("^ +$","taco",x))
+  text<-lapply(text,function(x) gsub("[[:punct:]]+","taco",x))
+  text<-lapply(text,function(x) gsub("^$","taco",x))
+
   text<-sapply(text,function(x) {
-      
-      x1 <- str_extract_all(tolower(x),tolower(paste(EventList(), collapse="|")))
+
+    try(words <-
+      x %>%
+      unlist() %>%
+      str_replace_na()%>%
+      str_c(collapse = ' ') %>%
+      str_split(' ') %>%
+      `[[`(1))
+    
+    EventList<-c("rfa","dilat","apc")
+      x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
       i1 <- which(lengths(x1) > 0)
       
       #Convert the 
-      
+   
       try(if(any(i1)) {
-        # paste(unlist(Map(c, 
-        #                  str_extract_all(tolower(x[i1-3]),  tolower(LocationList())),
-        #                  str_extract_all(tolower(x[i1-2]),  tolower(LocationList())),
-        #                  str_extract_all(tolower(x[i1-1]),  tolower(LocationList())), 
-        #                  str_extract_all(tolower(x[i1]), tolower(LocationList())))), 
-        #       toupper(x1[i1]), sep=":", collapse=", ") 
-        #For lookbehind regex here
+        
+        tofind <-paste(c("stomach", "antrum", "duodenum", "oesophagus", "goj"),collapse = "|")
+        
+        EventList %>%
+          map(
+            ~words %>%
+              str_which(paste0('^.*', .x)) %>%
+              map_chr(
+                ~words[1:.x] %>%
+                  str_c(collapse = ' ') %>%
+                  str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
+                  `[[`(1) %>%
+                  .[length(.)]
+              ) %>%
+              paste0(':', .x)
+          ) %>%
+          unlist() %>%
+          str_subset('.+:')
         
       } else "")
       
     }
     )
     return(text)
-  
-  #To do: Get rid of the errors
-  #Make lookbehind regex to get the nearest location to each event
-  #Then test to make sure it is picking up what it should be
-}
+  }
 
 
 #' EntityPairs_OneSentence 
@@ -1150,14 +1180,10 @@ HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
   output<-str_replace_all(output, ":,|:$", ":biopsy,")
   
   output<-ifelse(grepl("Gastroscopy",dataframe[,Procedure]),
-               str_remove_all(output, tolower(LocationListLower())),
+               str_remove_all(output, paste0('(',tolower(LocationListLower()),')',':biopsy')),
          ifelse(grepl("Colonoscopy|Flexi",dataframe[,Procedure]),
-         str_remove_all(output, paste(tolower(LocationListUpper()),".*?,")),output))
+         str_remove_all(output, paste0('(',tolower(LocationListUpper()),')',':biopsy')),output))
   return(output)
-  
-  #To Do:
-  #1. Get the sens and spec of the Path Site column and figure out the problems eg is ileum being inserted 
-  #when it shouldnt be- because it extracts from the macroscopical description.
 }
 
 
@@ -1205,6 +1231,10 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   
   ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
   ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
+  
+  #To do: Add the emr and polyp specimens as a separate site
+  #Check to make sure that the path site os all being extracted
+  #Check to make sure that there are no missing parts of the path site
 
   return(ToIndex)
 }
@@ -1251,7 +1281,7 @@ HistolType <- function() {
 LocationList<-function(){
   
   tofind <-
-    paste(LocationListLower(),LocationListUpper(),LocationListUniversal(),collapse = "|")
+    paste0(LocationListLower(),"|",LocationListUpper(),"|",LocationListUniversal(),collapse = "|")
   
   return(tofind)
   
@@ -1273,7 +1303,7 @@ LocationListUpper<-function(){
   tofind <-
     paste(
       c(
-        "Stomach","Antrum","Duodenum","Oesophagus","GOJ"
+        "Stomach","Antrum","Duodenum","Oesophagus","GOJ","Cardia"
       ),
       collapse = "|"
     )
@@ -1298,7 +1328,7 @@ LocationListUniversal<-function(){
   tofind <-
     paste(
       c(
-        "Anastomosis"
+        "|Anastomosis"
       ),
       collapse = "|"
     )
@@ -1367,6 +1397,9 @@ LocationListLower<-function(){
 TermStandardLocation <- function(dataframe, SampleLocation) {
   dataframe<-as.data.frame(dataframe)
   dataframe[, SampleLocation] <- tolower(dataframe[, SampleLocation])
+  #Has to be high up here as numbers are removed lower down so D2 becomes D and doesnt work
+  dataframe[, SampleLocation] <-
+    gsub("duodenum|d2|D2|duodenal","Duodenum",dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
     #|r|ri[Gg][Hh]t|
     gsub(
@@ -1459,10 +1492,6 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
   dataframe[, SampleLocation] <-
     gsub("antrum|antral", "Antrum", dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
-    gsub("duodenum|d2|duodenal",
-         "Duodenum",
-         dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
     gsub("oesophageal|oesophagus|esophag[^a-z]",
          "Oesophagus",
          dataframe[, SampleLocation],ignore.case = TRUE)
@@ -1472,6 +1501,8 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
          dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
     gsub("fundal|fundic|fundus", "GOJ", dataframe[, SampleLocation],ignore.case = TRUE)
+  dataframe[, SampleLocation] <-
+    gsub("pyloric", "Pylorus", dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
     gsub("bx", "biopsy", dataframe[, SampleLocation],ignore.case = TRUE)
   

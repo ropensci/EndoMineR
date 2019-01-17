@@ -928,7 +928,7 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
 
 # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
 # for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
-# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
+# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
 # SelfOGD_Dunn$PathSite<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
 # ouput<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
@@ -951,33 +951,33 @@ OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
 #For the primary codes:
   dataframe<-dataframe %>%   
   mutate(OPCS4Primary = case_when(
-    grepl("OGD", dataframe$PROCEDUREPERFORMED) ~  case_when(
+    grepl("OGD", dataframe$PROCEDUREPERFORMED,ignore.case = TRUE) ~  case_when(
       #Oesophageal event               
-                    grepl("oesophagus",dataframe$EndoscopyEvent) ~  case_when(
-      grepl("APC",dataframe$EndoscopyEvent) ~ "G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",
-      grepl("EMR",dataframe$EndoscopyEvent) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
-      grepl("Polypectomy",dataframe$EndoscopyEvent) ~ "G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",
-      grepl("RFA",dataframe$EndoscopyEvent) ~ "G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",
-      grepl("ESD",dataframe$EndoscopyEvent) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
-      grepl("Dilatation",dataframe$EndoscopyEvent) ~ "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",
+                    grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) ~  case_when(
+      grepl("APC",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",
+      grepl("EMR",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
+      grepl("Polypectomy",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",
+      grepl("RFA",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",
+      grepl("ESD",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
+      grepl("Dilatation",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",
                     ),
       #Non-Oesophageal event 
-                    !grepl("oesophagus",dataframe$EndoscopyEvent) ~  case_when(
-      grepl("APC",dataframe$EndoscopyEvent) ~ "G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",
-      grepl("EMR",dataframe$EndoscopyEvent) ~ "G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",
-      grepl("Polypectomy",dataframe$EndoscopyEvent) ~ "G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",
-      grepl("RFA",dataframe$EndoscopyEvent) ~ "G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",
-      grepl("ESD",dataframe$EndoscopyEvent) ~ "G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",
-      grepl("Dilatation",dataframe$EndoscopyEvent) ~ "G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",
+                    !grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)&dataframe$EndoscopyEvent!="" ~  case_when(
+      grepl("APC",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",
+      grepl("EMR",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",
+      grepl("Polypectomy",dataframe$EndoscopyEvent,ignore.case= TRUE)  ~ "G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",
+      grepl("RFA",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",
+      grepl("ESD",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",
+      grepl("Dilatation",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",
                     ),
       #No event and no biopsy taken:
       dataframe$EndoscopyEvent==""&dataframe$PathSite=="" ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
                  
       #No event and upper GI biopsy taken:
-      SelfOGD_Dunn$EndoscopyEvent==""& grepl("O",dataframe$PathSite) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
+      dataframe$EndoscopyEvent==""& grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
       
       #Event (oesophageal) and upper GI biopsy taken
-      grepl("oesophagus",dataframe$EndoscopyEvent) & grepl("O",dataframe$PathSite) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus",
+      grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus",
       
       ),
    TRUE ~ "SomethingElse"
@@ -1002,10 +1002,10 @@ dataframe<-dataframe %>%
   mutate(OPCS4ZCode = case_when( 
     dataframe$PathSite==""~ case_when(
     #1. if no biopsy and no Event (covers oesophageal and non-oesophageal), then give the extent reached
-      dataframe$ExtentofExam=="second part of duodenum"~  "Z27.4",
-      dataframe$ExtentofExam=="pylorus"~  "Z27.3",
-      dataframe$ExtentofExam=="stomach"~  "Z27.2",
-      dataframe$ExtentofExam=="oesophagus"~  "Z27.1",
+      tolower(dataframe$ExtentofExam)=="second part of duodenum"~  "Z27.4",
+      tolower(dataframe$ExtentofExam)=="pylorus"~  "Z27.3",
+      tolower(dataframe$ExtentofExam)=="stomach"~  "Z27.2",
+      tolower(dataframe$ExtentofExam)=="oesophagus"~  "Z27.1",
     ),
     
     #2.If event (oesophageal) and biopsy 
