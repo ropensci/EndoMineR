@@ -481,7 +481,14 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   #Add emr only if this is seen in the histopath
   #Remove EMR from events if not seen in histopath
   
-  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE),paste0(output,";","emr"),output)
+  #If emr is in the histology and in the event then leave it
+  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("oesophagus:emr",output,ignore.case = TRUE),output,
+                 #If emr is in the histology but not in the event then add it
+                 ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),paste0(output,";","emr"),
+                        #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
+                        ifelse(!grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
+  
+
   
 
   #Need to know if emr done here so can add it
