@@ -445,7 +445,14 @@ EventList<-function(){
   
   Event <- list("radiofrequency ablation" = " RFA", 
                 "argon plasma coagulation" = " APC",
-                "halo" = " RFA")
+                "halo" = " RFA",
+                "rfa",
+                "Dilatation"="dilat",
+                "Dilated"="dilat",
+                " apc"=" APC",
+                "emr"=" EMR",
+                "clip"="clip",
+                "balloon"="balloon")
   return(Event)
 }
 
@@ -482,7 +489,7 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   #Remove EMR from events if not seen in histopath
   
   #If emr is in the histology and in the event then leave it
-  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("oesophagus:emr",output,ignore.case = TRUE),output,
+  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("(oesophagus|goj):emr",output,ignore.case = TRUE),output,
                  #If emr is in the histology but not in the event then add it
                  ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),paste0(output,";","emr"),
                         #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
@@ -595,7 +602,7 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
       str_split(' ') %>%
       `[[`(1))
     
-    EventList<-c("rfa","dilat","apc")
+    EventList<-c("rfa","dilat","apc","emr","clip","balloon")
       x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
       i1 <- which(lengths(x1) > 0)
       

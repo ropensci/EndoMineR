@@ -932,7 +932,7 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
 # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
 # SelfOGD_Dunn$PathSite<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
 # ouput<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
-# ForRules<-ouput%>%filter(grepl("Gastroscopy",SelfOGD_Dunn$PROCEDUREPERFORMED))%>%select(ExtentofExam,HISTOLOGY,FINDINGS,EndoscopyEvent,PathSite,PROCEDUREPERFORMED,OPCS4Primary,OPCS4ZCode)%>%sample_n(10)
+# ForRules<-ouput%>%filter(grepl("Gastroscopy",SelfOGD_Dunn$PROCEDUREPERFORMED))%>%select(ExtentofExam,HISTOLOGY,FINDINGS,EndoscopyEvent,PROCEDUREPERFORMED)%>%sample_n(50)
 # ToSee<-SelfOGD_Dunn%>%select(FINDINGS,EndoscopyEvent,PathSite,PROCEDUREPERFORMED)%>% filter(grepl("Error", EndoscopyEvent))
 
 #For each event site:
