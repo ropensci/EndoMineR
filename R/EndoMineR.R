@@ -92,7 +92,7 @@ SurveilLastToNow <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-
+    
     ret<-dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
       mutate(diffDate = difftime(Sys.Date(), last(!!Endo_ResultPerformeda),
@@ -174,7 +174,7 @@ SurveilFirstTest <-
 SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
   Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
   ret<-dataframe %>% mutate(month =format(as.Date(!!Endo_ResultPerformeda), "%m"),
-                       year = format(!!Endo_ResultPerformeda, "%Y")) %>%
+                            year = format(!!Endo_ResultPerformeda, "%Y")) %>%
     group_by(year,month) %>% summarise(n = n())
   dataframe<-data.frame(ret)
   return(dataframe)
@@ -235,21 +235,21 @@ HowManyTests <-
     TestNumbers$MonthYear <-
       paste("01_", TestNumbers$month, "_", TestNumbers$year, sep = "")
     TestNumbers$MonthYear <- dmy(TestNumbers$MonthYear)
-
+    
     TestNumbers<-data.frame(TestNumbers)%>% arrange(year,month,week,day)
     TestNumbers2<-TestNumbers%>%select(year,freq) %>%
       group_by(year) %>%
       summarise(FreqYear=n())
     TestNumbers2<-data.frame(TestNumbers2)
-
-
+    
+    
     # # Then just plot it:
     Myplot <-
       ggplot(data = TestNumbers2, aes(x = year, y = FreqYear)) +
       geom_point() +
       geom_line() +
       geom_smooth(method = "loess") +
-    theme_bw() +
+      theme_bw() +
       labs(title="Number of procedures per year")
     functionResults <-
       list(Myplot = Myplot, TestNumbers = TestNumbers)
@@ -355,13 +355,13 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
   # Create the Sankey diagrams
   Sankey <-
     reshape2::dcast(setDT(dfw)[, .SD, PatientID],
-          PatientID ~ rowid(PatientID),
-          value.var = ProcPerformedColumn)
+                    PatientID ~ rowid(PatientID),
+                    value.var = ProcPerformedColumn)
   PtFlow <- Sankey
   PtFlow <- data.frame(PtFlow)
   PtFlow <- PtFlow[!is.na(names(PtFlow))]
   r <- c()
-
+  
   #names(PtFlow)<-gsub("X(\\d+)","Event\\1",names(PtFlow))
   for (i in seq_along(PtFlow)) {
     t <- paste("ord", i, sep = "")
@@ -373,20 +373,20 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
   for (i in 3:ncol(orders)) {
     ord.cache <-
       orders %>% group_by(orders[, i - 1], orders[, i]) %>% summarise(n = n())
-
+    
     colnames(ord.cache)[1:2] <- c("from", "to")
-
+    
     # adding tags to carts
     ord.cache$from <-
       paste(ord.cache$from, "(", i - 1, ")", sep = "")
     ord.cache$to <- paste(ord.cache$to, "(", i, ")", sep = "")
-
+    
     ord.cache <- data.frame(ord.cache)
     orders.plot <- rbind(orders.plot, ord.cache)
-
+    
   }
-
-
+  
+  
   orders.plot <- data.frame(orders.plot)
   orders.plot <-
     orders.plot[grepl("[A-Z]", orders.plot$from) &
@@ -461,7 +461,7 @@ PatientFlow_CircosPlots <-
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     HospNum_Ida <- sym(HospNum_Id)
     ProcPerformeda <- sym(ProcPerformed)
-
+    
     mydf <-
       dataframe %>% arrange(!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
@@ -470,24 +470,24 @@ PatientFlow_CircosPlots <-
       select(origin, destination, PatientID) %>%
       group_by(origin, destination, PatientID) %>%
       summarise(n = n()) %>% ungroup()
-
+    
     mydf <- data.frame(reshape2::dcast(mydf, origin ~ destination))
-
+    
     # Get rid of NA's
     mydf <- mydf[complete.cases(mydf),]
-
+    
     V1 <- c("2", "7", "3", "10")
     V2 <- c("210,150,12", "110,255,233", "125,175,0", "255,219,0")
-
+    
     mydf <- cbind(V1, V2, mydf)
-
+    
     df_format <-
       mydf %>% select(1:3) %>% rename(order = V1,
                                       rgb = V2,
                                       region = origin) %>%
       mutate(region = gsub("_", " ", region))
     # flow matrix. Need to add V1 and V2 to the matrix here
-
+    
     matmydf <- as.matrix(mydf[,-(1:3)])
     dimnames(matmydf) <-
       list(orig = df_format$region, dest = df_format$region)
@@ -497,9 +497,9 @@ PatientFlow_CircosPlots <-
       separate(rgb, c("r", "g", "b")) %>%
       mutate(col = rgb(r, g, b, max = 255),
              max = rowSums(matmydf) + colSums(matmydf))
-
-
-
+    
+    
+    
     circlize::circos.clear()
     par(mar = rep(0, 4), cex = 0.9)
     circlize::circos.par(start.degree = 90, gap.degree = 4)
@@ -514,8 +514,8 @@ PatientFlow_CircosPlots <-
       annotationTrackHeight = c(0.1, 0.1),
       diffHeight = -0.04
     )
-
-
+    
+    
     circlize::circos.trackPlotRegion(
       track.index = 1,
       panel.fun = function(x, y) {
@@ -571,7 +571,7 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
   d <- data.frame(word = names(v), freq = v)
   d$word <- as.character(d$word)
   d$Prop <- (d$freq / nrow(theframe)) * 100
-
+  
   # group all the words containing stems as per myNotableWords
   d <-
     vapply(myNotableWords, function(x)
@@ -611,15 +611,15 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
   group <- sym(Column)
   variable <- sym(EndoscopistColumn)
-
+  
   NumBxPlot <-
     dataframe %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>%
     summarise(avg = mean(!!variable))
-
-
+  
+  
   ggplot(NumBxPlot) + geom_point(aes(x = Endoscopist, y = avg),
-                      colour = "red",
-                     size = 3) + labs(title = "Average  by endoscopist") +
+                                 colour = "red",
+                                 size = 3) + labs(title = "Average  by endoscopist") +
     theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) +
     theme(axis.text.x = element_text(angle = -90)) +
     theme(axis.text.y = element_text(angle = -90)) +
@@ -662,17 +662,17 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 
 PolypLocator <- function(dataframe, SampleLocationColumn) {
   dataframe <- data.frame(dataframe)
-
-
+  
+  
   dataframe$PolypLocator <-
     str_match_all(dataframe[, SampleLocationColumn], ".*[Pp]olyp.*")
-
+  
   dataframe$PolypLocator <- str_match_all(dataframe$PolypLocator
                                           , LocationList())
   dataframe$PolypLocator <- lapply(dataframe$PolypLocator, function(p)
     unique(p))
-
-
+  
+  
   return(dataframe)
 }
 
@@ -732,9 +732,9 @@ GRS_Type_Assess_By_Unit <-
            Dx,
            Histol) {
     dataframe <- data.frame(dataframe)
-
+    
     # Adenomas by endoscopist ============
-
+    
     dataframe <- dataframe[grepl("Colonoscopy", dataframe[, ProcPerformed]),]
     MyColonDataAdenomaDetectionByEndoscopist <-
       dataframe[grep(".*[Aa]denom.*", dataframe[, Dx]),]
@@ -742,11 +742,11 @@ GRS_Type_Assess_By_Unit <-
       MyColonDataAdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumAdenomas = nrow(.)))
-
+    
     MyColonDataColonoscopiesByEndoscopist <-
       dataframe %>% group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumColons = nrow(.)))
-
+    
     # Merge the two above by column to get proportion:
     MyColonDataADR <-
       full_join(
@@ -756,17 +756,17 @@ GRS_Type_Assess_By_Unit <-
       )
     MyColonDataADR$PropAdenomas <-
       (MyColonDataADR$NumAdenomas / MyColonDataADR$NumColons) * 100
-
+    
     # Adenocarcinomas (without adenomas) by endoscopist=====
-
+    
     MyColonDataAdenoCarcinomaDetectionByEndoscopist <-
       dataframe[grepl(".*denoca.*", dataframe[, Histol]) &
-          !grepl(".*denom.*", dataframe[, Histol]),]
+                  !grepl(".*denom.*", dataframe[, Histol]),]
     MyColonDataAdenoCarcinomaDetectionByEndoscopist <-
       MyColonDataAdenoCarcinomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumAdenocarcinomas = nrow(.)))
-
+    
     MyColonDataAdenocarcinomas <-
       full_join(
         MyColonDataAdenoCarcinomaDetectionByEndoscopist,
@@ -778,24 +778,24 @@ GRS_Type_Assess_By_Unit <-
         MyColonDataAdenocarcinomas$NumAdenocarcinomas /
           MyColonDataAdenocarcinomas$NumColons
       ) * 100
-
+    
     # Dysplastic grade of adenomas by endoscopist (from whole dataset) =====
     MyColonData_HG_AdenomaDetectionByEndoscopist <-
       dataframe[grepl(".*denoma.*", dataframe[, Histol]) &
-          grepl(".*[Hh]igh [Gg]rade.*", dataframe[, Histol]),]
+                  grepl(".*[Hh]igh [Gg]rade.*", dataframe[, Histol]),]
     MyColonData_HG_AdenomaDetectionByEndoscopist <-
       MyColonData_HG_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumHighGradeAdenomas = nrow(.)))
-
+    
     MyColonData_LG_AdenomaDetectionByEndoscopist <-
       dataframe[grepl(".*denoma.*", dataframe[, Histol]) &
-          grepl(".*[Ll]ow [Gg]rade.*", dataframe[, Histol]),]
+                  grepl(".*[Ll]ow [Gg]rade.*", dataframe[, Histol]),]
     MyColonData_LG_AdenomaDetectionByEndoscopist <-
       MyColonData_LG_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumLowGradeAdenomas = nrow(.)))
-
+    
     MyColonDataHGD_Adenomas <-
       full_join(
         MyColonData_HG_AdenomaDetectionByEndoscopist,
@@ -807,7 +807,7 @@ GRS_Type_Assess_By_Unit <-
         MyColonDataHGD_Adenomas$NumHighGradeAdenomas /
           MyColonDataHGD_Adenomas$NumColons
       ) * 100
-
+    
     MyColonDataLGD_Adenomas <-
       full_join(
         MyColonData_LG_AdenomaDetectionByEndoscopist,
@@ -819,14 +819,14 @@ GRS_Type_Assess_By_Unit <-
         MyColonDataLGD_Adenomas$NumLowGradeAdenomas /
           MyColonDataLGD_Adenomas$NumColons
       ) * 100
-
+    
     MyColonData_Serr_AdenomaDetectionByEndoscopist <-
       dataframe[grepl(".*[Ss]errated.*", dataframe[, Histol]),]
     MyColonData_Serr_AdenomaDetectionByEndoscopist <-
       MyColonData_Serr_AdenomaDetectionByEndoscopist %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumSerrAdenomas = nrow(.)))
-
+    
     MyColonDataSerr_Adenomas <-
       full_join(
         MyColonData_Serr_AdenomaDetectionByEndoscopist,
@@ -836,17 +836,17 @@ GRS_Type_Assess_By_Unit <-
     MyColonDataSerr_Adenomas$PropSerrAdenomas <-
       (MyColonDataSerr_Adenomas$NumSerrAdenomas /
          MyColonDataSerr_Adenomas$NumColons) * 100
-
+    
     # Hyperplastic detection rate by endoscopist (from whole dataset) ====
     MyColonDataHyperplasticDetectionByEndoscopist <-
       dataframe[grep(".*yperplastic.*", dataframe[, Dx]),] %>%
       group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumHyperplastics = nrow(.)))
-
+    
     MyColonDataColonoscopiesByEndoscopist <-
       dataframe %>% group_by_(Endo_Endoscopist) %>%
       do(data.frame(NumColons = nrow(.)))
-
+    
     # Merge the two above by column to get proportion:
     MyColonDataHDR <-
       full_join(
@@ -856,16 +856,16 @@ GRS_Type_Assess_By_Unit <-
       )
     MyColonDataHDR$PropHyperplastic <-
       (MyColonDataHDR$NumHyperplastics / MyColonDataHDR$NumColons) * 100
-
+    
     FinalTable <-
       full_join(MyColonDataADR, MyColonDataHDR, by = Endo_Endoscopist)
     FinalTable <-
       full_join(FinalTable, MyColonDataAdenocarcinomas, by = Endo_Endoscopist)
     FinalTable$HyperplasticToAdenomaRatio <-
       FinalTable$PropAdenomas / FinalTable$PropHyperplastic
-
+    
     # Rename one column
-
+    
     names(FinalTable)[names(FinalTable) == "NumColons.y"] <-
       "Colons(Count)"
     FinalTable<-data.frame(FinalTable)
@@ -925,15 +925,16 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
 
 #Take the PathSite codes which should have been coded from PathSite using the HistolBiopsyIndex
 
-
-# SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
-# for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
-# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
-# SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
-# SelfOGD_Dunn$PathSite<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
-# ouput<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
-# ForRules<-ouput%>%filter(grepl("Gastroscopy",SelfOGD_Dunn$PROCEDUREPERFORMED))%>%select(ExtentofExam,HISTOLOGY,FINDINGS,EndoscopyEvent,PROCEDUREPERFORMED)%>%sample_n(50)
-# ToSee<-SelfOGD_Dunn%>%select(FINDINGS,EndoscopyEvent,PathSite,PROCEDUREPERFORMED)%>% filter(grepl("Error", EndoscopyEvent))
+# 
+SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
+for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
+SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
+SelfOGD_Dunn$PathSiteIndex<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
+ouput<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+ForRules<-ouput%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(ExtentofExam,HISTOLOGY,FINDINGS,EndoscopyEvent,PathSite,PathSiteIndex,PROCEDUREPERFORMED)%>%sample_n(50)
+View(ForRules)
+ToSee<-SelfOGD_Dunn%>%select(FINDINGS,EndoscopyEvent,PathSite,PROCEDUREPERFORMED)%>% filter(grepl("Error", EndoscopyEvent))
 
 #For each event site:
 
@@ -947,76 +948,76 @@ OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
   #Create a named list to refer to them later
   OPCS4Prepdata<-lapply(OPCS4Prepdata,function(x) setNames(x, c("Procedure", "PathSite","Event")))
   
-
-#For the primary codes:
+  
+  #For the primary codes:
   dataframe<-dataframe %>%   
-  mutate(OPCS4Primary = case_when(
-    grepl("OGD", dataframe$PROCEDUREPERFORMED,ignore.case = TRUE) ~  case_when(
-      #Oesophageal event               
-                    grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) ~  case_when(
-      grepl("APC",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",
-      grepl("EMR",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
-      grepl("Polypectomy",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",
-      grepl("RFA",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",
-      grepl("ESD",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
-      grepl("Dilatation",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",
-                    ),
-      #Non-Oesophageal event 
-                    !grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)&dataframe$EndoscopyEvent!="" ~  case_when(
-      grepl("APC",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",
-      grepl("EMR",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",
-      grepl("Polypectomy",dataframe$EndoscopyEvent,ignore.case= TRUE)  ~ "G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",
-      grepl("RFA",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",
-      grepl("ESD",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",
-      grepl("Dilatation",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",
-                    ),
-      #No event and no biopsy taken:
-      dataframe$EndoscopyEvent==""&dataframe$PathSite=="" ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
-                 
-      #No event and upper GI biopsy taken:
-      dataframe$EndoscopyEvent==""& grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
-      
-      #Event (oesophageal) and upper GI biopsy taken
-      grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus",
-      
+    mutate(OPCS4Primary = case_when(
+      grepl("OGD", dataframe$PROCEDUREPERFORMED,ignore.case = TRUE) ~  case_when(
+        #Oesophageal event               
+        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) ~  case_when(
+          grepl("APC",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",
+          grepl("EMR",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
+          grepl("Polypectomy",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",
+          grepl("RFA",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",
+          grepl("ESD",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
+          grepl("Dilatation",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",
+        ),
+        #Non-Oesophageal event 
+        !grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)&dataframe$EndoscopyEvent!="" ~  case_when(
+          grepl("APC",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",
+          grepl("EMR",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",
+          grepl("Polypectomy",dataframe$EndoscopyEvent,ignore.case= TRUE)  ~ "G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",
+          grepl("RFA",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",
+          grepl("ESD",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",
+          grepl("Dilatation",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",
+        ),
+        #No event and no biopsy taken:
+        dataframe$EndoscopyEvent==""&dataframe$PathSite=="" ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
+        
+        #No event and upper GI biopsy taken:
+        dataframe$EndoscopyEvent==""& grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
+        
+        #Event (oesophageal) and upper GI biopsy taken
+        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus",
+        
       ),
-   TRUE ~ "SomethingElse"
-  )
-  )
-    
+      TRUE ~ "SomethingElse"
+    )
+    )
+  
   #Also check the Procedure performed column maybe in a helper function
- #Also how to create small test columns and filters
-          #Decide what you want to compare with the code and then use those columns PathSite/ EndoscopyEvent/Findings/HistologyReport
-#Also need to check all the building functions eg: EndoscopyEvent and HistolTypeAndSite with a test set.
+  #Also how to create small test columns and filters
+  #Decide what you want to compare with the code and then use those columns PathSite/ EndoscopyEvent/Findings/HistologyReport
+  #Also need to check all the building functions eg: EndoscopyEvent and HistolTypeAndSite with a test set.
   #To get the secondary (Z) codes:  
-
-
-#If a biopsy was taken then give this as the distance
-#If no biopsy was taken then give the maximum extent only
-#If an EMR was done then give this as the distance (I think)
-
-dataframe$MAXOFPATHSITE<-str_extract_all(dataframe$PathSite,"\\d")
-dataframe$MAXOFPATHSITE<-lapply(dataframe$MAXOFPATHSITE,function(x) max(as.numeric(x)))
-
-dataframe<-dataframe %>%   
-  mutate(OPCS4ZCode = case_when( 
-    dataframe$PathSite==""~ case_when(
-    #1. if no biopsy and no Event (covers oesophageal and non-oesophageal), then give the extent reached
-      tolower(dataframe$ExtentofExam)=="second part of duodenum"~  "Z27.4",
-      tolower(dataframe$ExtentofExam)=="pylorus"~  "Z27.3",
-      tolower(dataframe$ExtentofExam)=="stomach"~  "Z27.2",
-      tolower(dataframe$ExtentofExam)=="oesophagus"~  "Z27.1",
-    ),
-    
-    #2.If event (oesophageal) and biopsy 
-    dataframe$PathSite!="" ~ case_when(
-      dataframe$MAXOFPATHSITE== 5 ~  "Z27.4",
-      dataframe$MAXOFPATHSITE== 4 ~  "Z27.3",
-      dataframe$MAXOFPATHSITE== 3 ~  "Z27.2",
-      dataframe$MAXOFPATHSITE== 1|2 ~  "Z27.1",
-    ),
-    TRUE ~ "No code here"
-  )
-  )
+  
+  
+  #If a biopsy was taken then give this as the distance
+  #If no biopsy was taken then give the maximum extent only
+  #If an EMR was done then give this as the distance (I think)
+  
+  dataframe$MAXOFPATHSITE<-str_extract_all(dataframe$PathSite,"\\d")
+  dataframe$MAXOFPATHSITE<-lapply(dataframe$MAXOFPATHSITE,function(x) max(as.numeric(x)))
+  
+  dataframe<-dataframe %>%   
+    mutate(OPCS4ZCode = case_when( 
+      dataframe$PathSite==""~ case_when(
+        #1. if no biopsy and no Event (covers oesophageal and non-oesophageal), then give the extent reached
+        tolower(dataframe$ExtentofExam)=="second part of duodenum"~  "Z27.4",
+        tolower(dataframe$ExtentofExam)=="pylorus"~  "Z27.3",
+        tolower(dataframe$ExtentofExam)=="stomach"~  "Z27.2",
+        tolower(dataframe$ExtentofExam)=="oesophagus"~  "Z27.1",
+      ),
+      
+      #2.If event (oesophageal) and biopsy 
+      dataframe$PathSite!="" ~ case_when(
+        dataframe$MAXOFPATHSITE== 5 ~  "Z27.4",
+        dataframe$MAXOFPATHSITE== 4 ~  "Z27.3",
+        dataframe$MAXOFPATHSITE== 3 ~  "Z27.2",
+        dataframe$MAXOFPATHSITE== 1|2 ~  "Z27.1",
+      ),
+      TRUE ~ "No code here"
+    )
+    )
   return(dataframe)
 }

@@ -446,13 +446,17 @@ EventList<-function(){
   Event <- list("radiofrequency ablation" = " RFA", 
                 "argon plasma coagulation" = " APC",
                 "halo" = " RFA",
-                "rfa",
-                "Dilatation"="dilat",
-                "Dilated"="dilat",
+                "rfa"= " RFA",
+                "dilatation"="dilat",
+                "dilated"="dilat",
                 " apc"=" APC",
                 "emr"=" EMR",
                 "clip"="clip",
-                "balloon"="balloon")
+                "coag"="coag",
+                "iodine"="iodine",
+                "acetic"="acetic",
+                "NAC"="NAC"
+                )
   return(Event)
 }
 
@@ -495,9 +499,9 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
                         #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
                         ifelse(!grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
   
-
   
-
+  
+  
   #Need to know if emr done here so can add it
   return(output)
   
@@ -545,7 +549,7 @@ textPrep<-function(dataframe,EventColumn){
   
   #1. Flatten the text
   dataframe[,EventColumn]<-tolower(dataframe[,EventColumn])
-
+  
   
   #1b. Get rid of unnecessary punctuation
   dataframe[,EventColumn]<-gsub("'","",dataframe[,EventColumn],fixed=TRUE)
@@ -591,49 +595,49 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
   text<-lapply(text,function(x) gsub("^ +$","taco",x))
   text<-lapply(text,function(x) gsub("[[:punct:]]+","taco",x))
   text<-lapply(text,function(x) gsub("^$","taco",x))
-
+  
   text<-sapply(text,function(x) {
-
-    try(words <-
-      x %>%
-      unlist() %>%
-      str_replace_na()%>%
-      str_c(collapse = ' ') %>%
-      str_split(' ') %>%
-      `[[`(1))
     
-    EventList<-c("rfa","dilat","apc","emr","clip","balloon")
-      x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
-      i1 <- which(lengths(x1) > 0)
-      
-      #Convert the 
-   
-      try(if(any(i1)) {
-        
-        tofind <-paste(c("stomach", "antrum", "duodenum", "oesophagus", "goj"),collapse = "|")
-        
-        EventList %>%
-          map(
-            ~words %>%
-              str_which(paste0('^.*', .x)) %>%
-              map_chr(
-                ~words[1:.x] %>%
-                  str_c(collapse = ' ') %>%
-                  str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
-                  `[[`(1) %>%
-                  .[length(.)]
-              ) %>%
-              paste0(':', .x)
-          ) %>%
+    try(words <-
+          x %>%
           unlist() %>%
-          str_subset('.+:')
-        
-      } else "")
+          str_replace_na()%>%
+          str_c(collapse = ' ') %>%
+          str_split(' ') %>%
+          `[[`(1))
+    
+    EventList<-unlist(EventList(),use.names = FALSE)
+    x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
+    i1 <- which(lengths(x1) > 0)
+    
+    #Convert the 
+    
+    try(if(any(i1)) {
       
-    }
-    )
-    return(text)
+      tofind <-paste(c("stomach", "antrum", "duodenum", "oesophagus", "goj"),collapse = "|")
+      
+      EventList %>%
+        map(
+          ~words %>%
+            str_which(paste0('^.*', .x)) %>%
+            map_chr(
+              ~words[1:.x] %>%
+                str_c(collapse = ' ') %>%
+                str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
+                `[[`(1) %>%
+                .[length(.)]
+            ) %>%
+            paste0(':', .x)
+        ) %>%
+        unlist() %>%
+        str_subset('.+:')
+      
+    } else "")
+    
   }
+  )
+  return(text)
+}
 
 
 #' EntityPairs_OneSentence 
@@ -647,7 +651,7 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
 EntityPairs_OneSentence<-function(dataframe,EventColumn){
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
-
+  
   
   text<-textPrep(dataframe,EventColumn)
   r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(LocationList())), str_extract_all(tolower(x),tolower(HistolType())), MoreArgs = list(sep=":")))
@@ -1016,7 +1020,8 @@ HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
 #(and maybe to do the same with the endoscopy text too).
 HistolDx <- function(dataframe, HistolColumn) {
   dataframe<-data.frame(dataframe)
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],"Dr.*", "")
+  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
+                                           "Dr.*?[A-Za-z]+", "")
   dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
                                            "[Rr]eported.*", "")
   # Column-generic cleanup
@@ -1194,9 +1199,9 @@ HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
   output<-str_replace_all(output, ":,|:$", ":biopsy,")
   
   output<-ifelse(grepl("Gastroscopy",dataframe[,Procedure]),
-               str_remove_all(output, paste0('(',tolower(LocationListLower()),')',':biopsy')),
-         ifelse(grepl("Colonoscopy|Flexi",dataframe[,Procedure]),
-         str_remove_all(output, paste0('(',tolower(LocationListUpper()),')',':biopsy')),output))
+                 str_remove_all(output, paste0('(',tolower(LocationListLower()),')',':biopsy')),
+                 ifelse(grepl("Colonoscopy|Flexi",dataframe[,Procedure]),
+                        str_remove_all(output, paste0('(',tolower(LocationListUpper()),')',':biopsy')),output))
   return(output)
 }
 
@@ -1218,17 +1223,17 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   ToIndex<-str_extract_all(dataframe$PathSite,"(^|,)[a-z]*?:biopsy(|$)")
   ToIndex<-lapply(ToIndex, function(x) unique(x))
   #Give each an index in the list (taken from the location list)
-
+  
   
   #The results to replace 
   replace<-c("ileum:biopsy","ileocaecal:biopsy","caecum:biopsy","ascending:biops","hepatic:biopsy","transverse:biopsy", "splenic:biopsy","descending:biopsy",
              "sigmoid:biopsy","rectosigmoid:biopsy","rectum:biopsy", 
              "ileoanal:biopsy","prepouch:biopsy","pouch:biopsy", 
              "duodenum:biopsy","antrum:biopsy","stomach:biopsy","goj:biopsy", 
-             "oesophagus:biopsy","colon:biopsy")
+             "oesophagus:biopsy","colon:biopsy","oesophagus:emr","stomach:emr","duodenum:emr")
   
   #C stand for colon (and all lower bowel investigations) S stands for surgical O stands for OGD. 
-  replaceValue<-c("C11","C10","C9","C8","C7","C6","C5","C4","C3","C2","C1","S1","S2","S3","O5","O4","O3","O2","O1","colon")
+  replaceValue<-c("C11","C10","C9","C8","C7","C6","C5","C4","C3","C2","C1","S1","S2","S3","O5","O4","O3","O2","O1","colon","oesophagus:emr","stomach:emr","duodenum:emr")
   
   #Create a tibble to merge with the list
   d1 <- tibble(key = replace, val = replaceValue)
@@ -1239,9 +1244,9 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   
   #Do the merge
   ToIndex[i1] <- map(ToIndex[i1], ~ 
-                      tibble(key = .x) %>%
-                      regex_left_join(d1) %>%
-                      pull(val))
+                       tibble(key = .x) %>%
+                       regex_left_join(d1) %>%
+                       pull(val))
   
   ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
   ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
@@ -1249,7 +1254,7 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   #To do: Add the emr and polyp specimens as a separate site
   #Check to make sure that the path site os all being extracted
   #Check to make sure that there are no missing parts of the path site
-
+  
   return(ToIndex)
 }
 
@@ -1317,7 +1322,7 @@ LocationListUpper<-function(){
   tofind <-
     paste(
       c(
-        "Stomach","Antrum","Duodenum","Oesophagus","GOJ","Cardia"
+        "Stomach","Antrum","Duodenum","Oesophagus","GOJ","OGJ","Cardia"
       ),
       collapse = "|"
     )
@@ -1342,7 +1347,7 @@ LocationListUniversal<-function(){
   tofind <-
     paste(
       c(
-        "|Anastomosis"
+        "Anastomosis"
       ),
       collapse = "|"
     )
@@ -1418,7 +1423,7 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
     #|r|ri[Gg][Hh]t|
     gsub(
       "asce |ascending|ascend[^a-z]| colon r 
-       r colon|asc |right colon ",
+      r colon|asc |right colon ",
       "Ascending ",
       dataframe[, SampleLocation],
       ignore.case = TRUE)
