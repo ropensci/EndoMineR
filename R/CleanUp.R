@@ -163,51 +163,6 @@ Extractor2 <- function(x, y, stra, strb, t) {
 
 
 
-#' Extracts the columns from the raw report
-#'
-#' This is the parent cleaning function for the endoscopy report. It contains
-#' all the other functions for the endoscopy report to be cleaned up. It
-#' relies on the columns being named in a standardised way as below
-
-#' @param dataframe the dataframe
-#' @keywords Extraction
-#' @export
-#' @examples
-#' # Rename the columns in whatever endoscopy dataframe you have
-#' names(Myendo)<-c("OGDReportWhole","HospitalNumber","PatientName",
-#' "GeneralPractitioner","Dateofprocedure","Endoscopist","Secondendoscopist",
-#' "Medications","Instrument","ExtentofExam","Indications","ProcedurePerformed",
-#' "Findings" )
-#' #Now use the function
-#' bb<-EndoscAll(Myendo)
-#' rm(Myendo)
-
-
-EndoscAll<- function(dataframe) {
-  
-  if("Medications" %in% colnames(dataframe)){
-    dataframe<-EndoscMeds(Myendo,'Medications')
-    
-  }
-  if("Instruments" %in% colnames(dataframe)){
-    dataframe<-EndoscInstrument(dataframe,'Instruments')
-  }
-  if("Indications" %in% colnames(dataframe)){
-    dataframe<-EndoscIndications(dataframe,'Indications')
-  }
-  if("Procedure Performed" %in% colnames(dataframe)){
-    dataframe<-EndoscProcPerformed(dataframe,'ProcedurePerformed')
-  }
-  if("Findings" %in% colnames(dataframe)){
-    dataframe<-EndoscFindings(dataframe,'Findings')
-  }
-  if("Endoscopist" %in% colnames(dataframe)){
-    dataframe<-EndoscEndoscopist(dataframe,'Endoscopist')
-  }
-  return(dataframe)
-}
-
-
 
 #' Cleans endoscopist column if present
 #'
@@ -432,33 +387,7 @@ EndoscFindings <- function(dataframe, FindingsColumn) {
 
 
 
-#' Event list
-#'
-#' This function returns all the conversions from common version of events to 
-#' a standardised event list, much like the Location standardidastion function
-#' It is used in the Barretts_EventType. This does not include EMR as this is 
-#' extracted from the pathology so is part of pathology type.
-#' @keywords Event extraction
-#' @examples # unique(unlist(EventList(), use.names = FALSE))
-#' 
-EventList<-function(){
-  
-  Event <- list("radiofrequency ablation" = " RFA", 
-                "argon plasma coagulation" = " APC",
-                "halo" = " RFA",
-                "rfa"= " RFA",
-                "dilatation"="dilat",
-                "dilated"="dilat",
-                " apc"=" APC",
-                "emr"=" EMR",
-                "clip"="clip",
-                "coag"="coag",
-                "iodine"="iodine",
-                "acetic"="acetic",
-                "NAC"="NAC"
-                )
-  return(Event)
-}
+
 
 
 
@@ -483,10 +412,12 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   
+  
+  
   # Extract the events from the 
   output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
   
-  MyHistolEvents<-HistolTypeAndSite(dataframe,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+  MyHistolEvents<-HistolTypeAndSite(dataframe,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","Histo_ResultText")
   output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
   
   #Add emr only if this is seen in the histopath
@@ -501,7 +432,11 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   
   
   
-  
+  d<-lapply(output, function(x) strsplit(x,";"))
+  t<-lapply(d,function(x) unlist(x))
+  out<-lapply(t,function(x) unique(x))
+  output<-unlist(lapply(out, function(x) paste(x,collapse=";")))
+  #output<-unlist(output)
   #Need to know if emr done here so can add it
   return(output)
   
@@ -551,18 +486,23 @@ textPrep<-function(dataframe,EventColumn){
   dataframe[,EventColumn]<-tolower(dataframe[,EventColumn])
   
   
-  #1b. Get rid of unnecessary punctuation
+  #1b General cleanup tasks
+  dataframe[, EventColumn] <- ColumnCleanUp(dataframe, EventColumn)
+  
+  #1c. Get rid of unnecessary punctuation
   dataframe[,EventColumn]<-gsub("'","",dataframe[,EventColumn],fixed=TRUE)
+  
+  
   #2a . Fuzzy find and replace and term mapping using the find and replace function above using the Location list
-  L <- str_split(LocationList(),"\\|")
+  L <- tolower(str_split(LocationList(),"\\|"))
   dataframe[,EventColumn]<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
   
   #2b . Fuzzy find and replace and term mapping using the find and replace function above using the Path_Type list
-  L <- str_split(HistolType(),"\\|")
+  L <- tolower(str_split(HistolType(),"\\|"))
   dataframe[,EventColumn]<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
   
   #2c. Fuzzy find and replace and term mapping using the find and replace function above
-  L <- unique(unlist(EventList(), use.names = FALSE))
+  L <- tolower(unique(unlist(EventList(), use.names = FALSE)))
   dataframe[,EventColumn]<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
   
   #3.Remove all the negative phrases from the pathology report:
@@ -586,17 +526,28 @@ textPrep<-function(dataframe,EventColumn){
 #' @keywords Find and replace
 #' @param EventColumn1 The relevant pathology text column
 #' @param EventColumn2 The alternative pathology text column
-#' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_DunnOGD_RFA,"FINDINGS")
+#' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_Dunn,"FINDINGS")
 
 EntityPairs_TwoSentence<-function(dataframe,EventColumn){
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   text<-textPrep(dataframe,EventColumn)
-  text<-lapply(text,function(x) gsub("^ +$","taco",x))
-  text<-lapply(text,function(x) gsub("[[:punct:]]+","taco",x))
-  text<-lapply(text,function(x) gsub("^$","taco",x))
   
+  #Some clean up to get rid of white space- all of this prob already covered in the ColumnCleanUp function but for investigation later
+  #text<-lapply(text,function(x) gsub("\n ","\n",x))
+  #text<-lapply(text,function(x) gsub("\\s{2,10}","\n",x)) 
+  #text<-lapply(text,function(x) gsub("^ +$","taco",x))
+  text<-lapply(text,function(x) gsub("[[:punct:]]+"," ",x))
+  #text<-lapply(text,function(x) gsub("^$","taco",x))
+  
+  tofind <-tolower(LocationList())
+  EventList<-unique(tolower(unlist(EventList(),use.names = FALSE)))
+  
+
   text<-sapply(text,function(x) {
+   
+  
+    x<-trimws(x)
     
     try(words <-
           x %>%
@@ -606,15 +557,20 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
           str_split(' ') %>%
           `[[`(1))
     
-    EventList<-unlist(EventList(),use.names = FALSE)
+    
+    
+    words<-words[words != ""] 
     x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
     i1 <- which(lengths(x1) > 0)
     
     #Convert the 
     
+   
+  
+    
     try(if(any(i1)) {
       
-      tofind <-paste(c("stomach", "antrum", "duodenum", "oesophagus", "goj"),collapse = "|")
+      
       
       EventList %>%
         map(
@@ -623,8 +579,12 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
             map_chr(
               ~words[1:.x] %>%
                 str_c(collapse = ' ') %>%
+                
                 str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
+                map_if(is_empty, ~ NA_character_) %>%
+                flatten_chr()%>%
                 `[[`(1) %>%
+              
                 .[length(.)]
             ) %>%
             paste0(':', .x)
@@ -703,7 +663,7 @@ NegativeRemove <- function(dataframe, Column) {
   dataframe <- (data.frame(dataframe))
   # Conjunctions
   dataframe[, Column] <- gsub(
-    "(but|although|however|though|apart|otherwise
+    "(but|although|however|though|apart| -|otherwise
     |unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|
     unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*",
     "\\.\n",
@@ -714,7 +674,7 @@ NegativeRemove <- function(dataframe, Column) {
   dataframe[, Column] <-
     gsub(
       "(no |negative|unremarkable|-ve| normal) .*?([Bb]ut|
-      [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| [Oo]therwise|
+      [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| -|[Oo]therwise|
       [Uu]nremarkable)\\R*",
       "",
       dataframe[, Column],
@@ -800,7 +760,7 @@ NegativeRemove <- function(dataframe, Column) {
   
   
   # Time related phrases eg post and previous
-  dataframe[, Column] <- gsub(" (post|previous|prior)[^a-z].+?[A-Za-z]*",
+  dataframe[, Column] <- gsub(" (post|previous|prior)[^a-z].+?[A-Za-z]{3}",
                               " TIME_REPLACED",
                               dataframe[, Column],
                               perl = TRUE,
@@ -829,33 +789,21 @@ NegativeRemove <- function(dataframe, Column) {
 
 
 ColumnCleanUp <- function(dataframe, Column) {
-  #Get rid of the empty lines with floating puctuation
-  dataframe[, "Column"] <- str_replace(dataframe[, Column],"^\\.\n", "")
-  dataframe[, Column] <- str_replace(dataframe[, Column],"^\\.", "")
-  dataframe[, Column] <- str_replace(dataframe[, Column],"^:", "")
+
+  #Tokenise the sentences
+  standardisedTextOutput<-stri_split_lines(dataframe[,Column], omit_empty = TRUE)
   
-  #Get rid of breaks between lines
-  dataframe[, Column] <- str_replace(dataframe[, Column],"(\n|\r){2,}", "\n")
-  dataframe[, Column] <- str_replace(dataframe[, Column],
-                                     "\\.\n\\.\n|\\.\r\\.\r", "\\.")
+  #Get rid of whitespace
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
   
-  #Get rid of floating whitespace
-  dataframe[, Column] <- str_replace(dataframe[, Column],"\\s{5,}", "")
-  dataframe[, Column] <- str_replace(dataframe[, Column],"$\\.", "")
+  #Get rid of trailing punctuation
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   
-  #Get rid of floating commas at the end of lines
-  dataframe[, Column] <- str_replace(dataframe[, Column],"\n,", "\n")
-  #Standardise the carriage returns
-  dataframe[, Column] <- str_replace(dataframe[, Column],
-                                     "\r\n", "\n")
-  
-  
-  
-  #Get rid of trailing dots from previous conversions
-  dataframe[, Column] <- str_replace(dataframe[, Column],"\\.{2,}", "\\.")
+  dataframe[, Column]<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
   
   #Convert sentence endings to newlines as the sentence boundary
-  dataframe[, Column] <- gsub(".", "\n", dataframe[, Column], fixed = TRUE)
+  #dataframe[, Column] <- gsub(".", "\n", dataframe[, Column], fixed = TRUE)
   return(dataframe[, Column])
 }
 
@@ -877,515 +825,56 @@ ColumnCleanUp <- function(dataframe, Column) {
 
 ColumnCleanUpAll <- function(dataframe) {
   
-  #Get rid of the empty lines with floating puctuation
-  dataframe <- str_replace(dataframe,"^\\.\n", "")
-  dataframe <- str_replace(dataframe,"^\\.", "")
-  dataframe <- str_replace(dataframe,"^:", "")
+  # #Get rid of the empty lines with floating puctuation
+  # dataframe <- str_replace(dataframe,"^\\.\n", "")
+  # dataframe <- str_replace(dataframe,"^\\.", "")
+  # dataframe <- str_replace(dataframe,"^:", "")
+  # 
+  # #Get rid of breaks between lines
+  # dataframe <- str_replace(dataframe,"(\n|\r){2,}", "\n")
+  # dataframe<- str_replace(dataframe,"\\.\n\\.\n|\\.\r\\.\r", "\\.")
+  # 
+  # #Get rid of floating whitespace
+  # dataframe <- str_replace(dataframe,"\\s{5,}", "")
+  # dataframe <- str_replace(dataframe,"$\\.", "")
+  # 
+  # #Get rid of floating commas at the end of lines
+  # dataframe <- str_replace(dataframe,"\n,", "\n")
+  # 
+  # #Get rid of trailing dots from previous conversions
+  # dataframe <- str_replace(dataframe,"\\.{2,}", "\\.")
+  # 
+  # #Standardise the carriage returns
+  # dataframe<- str_replace(dataframe,"\r\n", "\n")
+  # 
+  # #Convert sentence endings to newlines as the sentence boundary
+  # dataframe <- gsub(".", "\n", dataframe, fixed = TRUE)
   
-  #Get rid of breaks between lines
-  dataframe <- str_replace(dataframe,"(\n|\r){2,}", "\n")
-  dataframe<- str_replace(dataframe,"\\.\n\\.\n|\\.\r\\.\r", "\\.")
   
-  #Get rid of floating whitespace
-  dataframe <- str_replace(dataframe,"\\s{5,}", "")
-  dataframe <- str_replace(dataframe,"$\\.", "")
   
-  #Get rid of floating commas at the end of lines
-  dataframe <- str_replace(dataframe,"\n,", "\n")
   
-  #Get rid of trailing dots from previous conversions
-  dataframe <- str_replace(dataframe,"\\.{2,}", "\\.")
   
-  #Standardise the carriage returns
-  dataframe<- str_replace(dataframe,"\r\n", "\n")
   
-  #Convert sentence endings to newlines as the sentence boundary
-  dataframe <- gsub(".", "\n", dataframe, fixed = TRUE)
-  return(dataframe)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-####### Histology Clean Up functions #######
-
-
-#' Clean up all Histology data
-#'
-#' This is a parent function for all the functions below
-#' @param dataframe dataframe with column of interest
-#' @keywords Macroscopic
-#' @export
-#' @importFrom stringr str_replace
-#' @examples
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
-#' MypathExtracted<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
-#' names(Mypath)<-c("Original","HospitalNumber","PatientName","DOB",
-#' "GeneralPractitioner","Datereceived","ClinicalDetails",
-#' "Macroscopicdescription","Histology","Diagnosis")
-#' kk<-HistolAll(MypathExtracted)
-#' rm(MypathExtracted)
-
-
-
-HistolAll <- function(dataframe) {
   
-  if("Histology" %in% colnames(dataframe)){
-    #dataframe<-HistolHistol(dataframe,'Histology')
-    dataframe<-HistolAccessionNumber(dataframe,'Histology','SP-\\d{2}-\\d{7}')
-  }
   
-  if("Macroscopicdescription" %in% colnames(dataframe)){
-    dataframe<-HistolMacDescrip(dataframe,'Macroscopicdescription')
-    dataframe<-HistolNumbOfBx(Mypath,'Macroscopicdescription',
-                              'specimen')
-    dataframe<- HistolBxSize(Mypath,'Macroscopicdescription')
-  }
   
-  if("Diagnosis" %in% colnames(dataframe)){
-    dataframe<-HistolDx(dataframe,'Diagnosis')
-    dataframe<-HistolExtrapolDx(dataframe,'Diagnosis',"")
-  }
-  dataframe<-data.frame(dataframe)
+  #Tokenise the sentences
+  standardisedTextOutput<-stri_split_lines(dataframe, omit_empty = TRUE)
+  
+  #Get rid of whitespace
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
+  
+  #Get rid of trailing punctuation
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
+  
+  dataframe<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
+  
+
+  
   
   return(dataframe)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-#' Extract histological accession number
-#'
-#' This extracts Accession Number data data from the report where one is
-#' present. The Accession number relates to the actual specimen number as
-#' ascribed by the pathology service.
-#' @param dataframe dataframe name and
-#' @param  AccessionColumn the column name as a string.
-#' @param  regString regular expression needed as a string
-#' @importFrom stringr str_extract
-#' @keywords Sample Accession number
-#' @export
-#' @examples mm<-HistolAccessionNumber(Mypath,'Histology',
-#' "SP-\\d{2}-\\d{7}")
-
-HistolAccessionNumber <- function(dataframe, AccessionColumn, regString) {
-  dataframe <- data.frame(dataframe)
-  # Accession number samples- not really necessary to extract:
-  dataframe$AccessionNumber <-
-    str_extract(dataframe[, AccessionColumn], regString)
-  return(dataframe)
-}
-
-
-
-
-
-
-#' Extracts histological diagnosis
-#'
-#' This extracts Diagnosis data from the report. The Diagnosis is the overall
-#' impression of the pathologist for that specimen. At the moment, Only Capital
-#' D included (not lower case d) to make sure picks up subtitle header as
-#' opposed to mentioning 'diagnosis' as part of a sentence.  Column specific
-#' cleanup and negative remover have also been implemented here.
-#'
-#' @param dataframe dataframe
-#' @param HistolColumn column containing the Histopathology report
-#' @importFrom stringr str_extract str_replace
-#' @keywords Histology Diagnosis
-#' @export
-#' @examples nn<-HistolDx(Mypath,'Diagnosis')
-
-
-#Think about using the tokenizers package here to split it into sentences 
-#(and maybe to do the same with the endoscopy text too).
-HistolDx <- function(dataframe, HistolColumn) {
-  dataframe<-data.frame(dataframe)
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
-                                           "Dr.*?[A-Za-z]+", "")
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
-                                           "[Rr]eported.*", "")
-  # Column-generic cleanup
-  dataframe[, HistolColumn] <- ColumnCleanUp(dataframe, HistolColumn)
-  dataframe[, HistolColumn]<- NegativeRemove(dataframe, HistolColumn)
-  dataframe$Dx_Simplified <- dataframe[, HistolColumn]
-  dataframe$Dx_Simplified <-
-    gsub("- ", "\n", dataframe$Dx_Simplified, fixed = TRUE)
-  dataframe$Dx_Simplified <-
-    gsub("-[A-Z]", "\n", dataframe$Dx_Simplified, fixed = TRUE)
-  return(dataframe)
-}
-
-
-#' Extract specific diagnoses from the histology report
-#'
-#' This extracts other specific diagnoses from the report. These have been hard
-#' coded to look for dysplasia cancer and GIST. Optional use for the user to
-#' add regular expressions as well. All the diagnoses are extracted into
-#' one column and made unique.
-#'
-#' @param dataframe dataframe containing histology results,
-#' @param Column the column to extract dysplasia, cancer, and GIST from-
-#' often the Histology diagnosis column
-#' @param userString user defined string search for (regular expression)
-#' @importFrom stringr str_extract_all
-#' @keywords Histology diagnosis
-#' @export
-#' @examples oo<-HistolExtrapolDx(Mypath,'Diagnosis',"")
-
-HistolExtrapolDx <- function(dataframe, Column,userString) {
-  # Some further extraction to get commonly searched for data
-  dataframe$Extracted <-
-    str_extract_all(dataframe[, Column],
-                    paste0("[Cc]arcin|[Cc]ance|[Ll]ymphoma|[Tt]umour|[Dd]yspla|G[Ii][Ss][Tt]|[Ss]tromal|[Ll]eio|[Cc]rohn",userString),
-                    simplify = FALSE)
-  #Make each entry unique
-  dataframe$Extracted<-sapply(dataframe$Extracted, toString)
-  return(dataframe)
-}
-
-
-#' Cleans spelt numbers in histology report
-#'
-#' This extracts numbers from written (spelt) numbers in the Macroscopic
-#' description text. This means the text can then be used to extract the number
-#' and size of biopsies.This is used as part of the
-#' HistolNumOfBx function below and normally not used as a stand alone
-#' function.
-#'
-#' @param dataframe dataframe
-#' @param MacroColumn column to extract the numbers from. Usually the column
-#' with the Nature of the specimen or the Macroscopic description in it
-#' @keywords Macroscopic
-#' @importFrom stringr str_replace
-#' @export
-#' @examples pp<-HistolMacDescrip(Mypath, 'Macroscopicdescription')
-
-
-HistolMacDescrip <- function(dataframe, MacroColumn) {
-  dataframe <- data.frame(dataframe)
-  
-  # Column specific cleanup
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Dd]ictated by.*", "")
-  # Conversion of text numbers to allow number of biopsies to be extracted
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Oo]ne", "1")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ss]ingle", "1")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Tt]wo", "2")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Tt]hree", "3")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ff]our", "4")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ff]ive", "5")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ss]ix", "6")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ss]even", "7")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ee]ight", "8")
-  return(dataframe)
-}
-
-#' Extract the number of biopsies taken from histology report
-#'
-#' This extracts the number of biopsies taken from the pathology report.
-#' This is usually from the Macroscopic description column.
-#' It collects everything from the regex [0-9]{1,2}.{0,3}
-#' to whatever the string boundary is (z).
-#'
-#' @param dataframe the dataframe
-#' @param MacroColumn Column containing the Macroscopic description text
-#' @param regString The keyword to remove and to stop at in the regex
-#' @importFrom stringr str_match_all str_replace_all
-#' @keywords Biopsy number
-#' @export
-#' @examples
-#' qq<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
-
-
-HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
-  dataframe <- data.frame(dataframe)
-  dataframe <- HistolMacDescrip(dataframe, MacroColumn)
-  mylist <-
-    #I need to collapse the unlist
-    stringr::str_match_all(dataframe[, MacroColumn], 
-                           paste(unlist(lapply(strsplit(regString,"\\|",fixed=FALSE),
-                                               FUN=function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
-  dataframe$NumbOfBx <-
-    vapply(mylist, function(p)
-      #sum(as.numeric(gsub(regString, "", p))),numeric(1))
-      sum(as.numeric(stringr::str_replace_all(p,regString,""))),numeric(1))
-  return(dataframe)
-}
-
-
-#' Determine the largest biopsy size from the histology report
-#'
-#' This extracts the biopsy size from the report. If there are multiple
-#' biopsies it will extract the overall size of each one (size is calculated
-#' usually in cubic mm from the three dimensions provided). This will result
-#' in row duplication.
-#'
-#' This is usually from the Macroscopic description column.
-#' @param dataframe dataframe
-#' @param MacroColumn Macdescrip
-#' @importFrom stringr  str_match str_replace
-#' @keywords biopsy size
-#' @export
-#' @examples rr<-HistolBxSize(Mypath,'Macroscopicdescription')
-
-HistolBxSize <- function(dataframe, MacroColumn) {
-  # What's the average biopsy size this month?
-  dataframe$BxSize <- str_extract(dataframe[, MacroColumn], "the largest.*?mm")
-  dataframe$BxSize <- str_replace(dataframe$BxSize,"the largest measuring ", "")
-  dataframe$BxSize <- str_replace(dataframe$BxSize,"mm", "")
-  dataframe$BxSize <- str_replace(dataframe$BxSize,"less than", "")
-  strBxSize <- "([0-9]+).*?([0-9])+.*?([0-9])"
-  dataframe$BxSize <-
-    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 2]) *
-    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 3]) *
-    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 4])
-  return(dataframe)
-}
-
-
-
-
-#' HistolTypeAndSite 
-#'
-#' This needs some blurb to be written. Used in the OPCS4 coding
-#' @keywords Find and replace
-#' @param Procedure The procedure performed
-#' @param EventColumn1 The relevant pathology text column
-#' @param EventColumn2 The alternative pathology text column
-#' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
-
-HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
-  library(stringi)
-  library(stringr)
-  
-  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
-  
-  # RUN THE LOOKUP IN THE TWO COLUMNS
-  
-  output<-ifelse(EntityPairs_OneSentence(dataframe,EventColumn1)=="NA:NA", 
-                 EntityPairs_OneSentence(dataframe,EventColumn2),
-                 EntityPairs_OneSentence(dataframe,EventColumn1))
-  
-  #If the 
-  output<-str_replace_all(output, ":,|:$", ":biopsy,")
-  
-  output<-ifelse(grepl("Gastroscopy",dataframe[,Procedure]),
-                 str_remove_all(output, paste0('(',tolower(LocationListLower()),')',':biopsy')),
-                 ifelse(grepl("Colonoscopy|Flexi",dataframe[,Procedure]),
-                        str_remove_all(output, paste0('(',tolower(LocationListUpper()),')',':biopsy')),output))
-  return(output)
-}
-
-
-
-#' HistolTissueIndex 
-#'
-#' This returns a number for all the biopsies taken based on distance from orifice. It is for biopsies only
-#' @keywords Pathology biopsy index
-#' @param PathSite The column that has the pathology locatio and tissue type from HistolTypeAndSite
-#' @examples # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
-#' SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
-#' HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
-
-HistolBiopsyIndex<-function(dataframe,PathSite){
-  library(stringr)
-  library(fuzzyjoin)
-  library(tidyverse)
-  ToIndex<-str_extract_all(dataframe$PathSite,"(^|,)[a-z]*?:biopsy(|$)")
-  ToIndex<-lapply(ToIndex, function(x) unique(x))
-  #Give each an index in the list (taken from the location list)
-  
-  
-  #The results to replace 
-  replace<-c("ileum:biopsy","ileocaecal:biopsy","caecum:biopsy","ascending:biops","hepatic:biopsy","transverse:biopsy", "splenic:biopsy","descending:biopsy",
-             "sigmoid:biopsy","rectosigmoid:biopsy","rectum:biopsy", 
-             "ileoanal:biopsy","prepouch:biopsy","pouch:biopsy", 
-             "duodenum:biopsy","antrum:biopsy","stomach:biopsy","goj:biopsy", 
-             "oesophagus:biopsy","colon:biopsy","oesophagus:emr","stomach:emr","duodenum:emr")
-  
-  #C stand for colon (and all lower bowel investigations) S stands for surgical O stands for OGD. 
-  replaceValue<-c("C11","C10","C9","C8","C7","C6","C5","C4","C3","C2","C1","S1","S2","S3","O5","O4","O3","O2","O1","colon","oesophagus:emr","stomach:emr","duodenum:emr")
-  
-  #Create a tibble to merge with the list
-  d1 <- tibble(key = replace, val = replaceValue)
-  
-  
-  #Select the elements that have characters in them
-  i1 <- lengths(ToIndex) > 0 
-  
-  #Do the merge
-  ToIndex[i1] <- map(ToIndex[i1], ~ 
-                       tibble(key = .x) %>%
-                       regex_left_join(d1) %>%
-                       pull(val))
-  
-  ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
-  ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
-  
-  #To do: Add the emr and polyp specimens as a separate site
-  #Check to make sure that the path site os all being extracted
-  #Check to make sure that there are no missing parts of the path site
-  
-  return(ToIndex)
-}
-
-
-
-#' Extract pathology type
-#'
-#' This standardizes terms to describe the pathology tissue type being exmained
-#' @param dataframe dataframe with column of interest
-#' @keywords Pathology type
-#' @export
-#' @examples #No examples as just returns a list
-
-
-
-HistolType <- function() {
-  
-  #First standardise the terms
-  
-  tofind <-
-    paste(
-      c(
-        "Resection","Biopsy","EMR","ESD","bx"),
-      collapse = "|"
-    )
-  return(tofind)
-}
-
-
-
-
-#' Use list of standard locations
-#'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
-#' therapeutic event. It just returns the list in the function
-#'
-#'
-#' @keywords Location
-#' @export
-#' @examples #No example needed
-
-LocationList<-function(){
-  
-  tofind <-
-    paste0(LocationListLower(),"|",LocationListUpper(),"|",LocationListUniversal(),collapse = "|")
-  
-  return(tofind)
-  
-}
-
-#' Use list of standard locations for upper GI endoscopy
-#'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
-#' therapeutic event. It just returns the list in the function
-#'
-#'
-#' @keywords Location
-#' @export
-#' @examples #No example needed
-
-LocationListUpper<-function(){
-  
-  tofind <-
-    paste(
-      c(
-        "Stomach","Antrum","Duodenum","Oesophagus","GOJ","OGJ","Cardia"
-      ),
-      collapse = "|"
-    )
-  
-  return(tofind)
-  
-}
-
-#' Use list of standard locations for upper GI endoscopy
-#'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
-#' therapeutic event. It just returns the list in the function
-#'
-#'
-#' @keywords Location
-#' @export
-#' @examples #No example needed
-
-LocationListUniversal<-function(){
-  
-  tofind <-
-    paste(
-      c(
-        "Anastomosis"
-      ),
-      collapse = "|"
-    )
-  
-  return(tofind)
-  
-}
-
-
-#' Use list of standard locations for lower GI endoscopy
-#'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
-#' therapeutic event. It just returns the list in the function
-#'
-#'
-#' @keywords Location
-#' @export
-#' @examples #No example needed
-
-LocationListLower<-function(){
-  
-  tofind <-
-    paste(
-      c(
-        "Ascending","Descending","Sigmoid","Rectum","Transverse",
-        "Caecum","Splenic","Ileum","Rectosigmoid",
-        "Ileocaecal","Hepatic","Colon","Terminal","Terminal Ileum",
-        "Ileoanal","Prepouch","Pouch"
-      ),
-      collapse = "|"
-    )
-  
-  return(tofind)
-  
-}
-
-
 
 
 
@@ -1535,9 +1024,402 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
 
 
 
+##########Histology clean up functions##########
+
+
+#' Extracts histological diagnosis
+#'
+#' This extracts Diagnosis data from the report. The Diagnosis is the overall
+#' impression of the pathologist for that specimen. At the moment, Only Capital
+#' D included (not lower case d) to make sure picks up subtitle header as
+#' opposed to mentioning 'diagnosis' as part of a sentence.  Column specific
+#' cleanup and negative remover have also been implemented here.
+#'
+#' @param dataframe dataframe
+#' @param HistolColumn column containing the Histopathology report
+#' @importFrom stringr str_extract str_replace
+#' @keywords Histology Diagnosis
+#' @export
+#' @examples nn<-HistolDx(Mypath,'Diagnosis')
+
+
+HistolDx <- function(dataframe, HistolColumn) {
+  dataframe<-data.frame(dataframe)
+  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
+                                           "Dr.*?[A-Za-z]+", "")
+  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
+                                           "[Rr]eported.*", "")
+  # Column-generic cleanup
+  
+  ListToConvert<-textPrep(dataframe, HistolColumn)
+  
+  dataframe[, HistolColumn] <- sapply(ListToConvert, function(x) paste(x,collapse="\n"))
+    
+    
+  dataframe$Dx_Simplified <- dataframe[, HistolColumn]
+  
+  # Column-specific cleanup
+  dataframe$Dx_Simplified <-
+    gsub("- ", "\n", dataframe$Dx_Simplified, fixed = TRUE)
+  dataframe$Dx_Simplified <-
+    gsub("-[A-Z]", "\n", dataframe$Dx_Simplified, fixed = TRUE)
+  return(dataframe)
+}
 
 
 
+#' Cleans spelt numbers in histology report
+#'
+#' This extracts numbers from written (spelt) numbers in the Macroscopic
+#' description text. This means the text can then be used to extract the number
+#' and size of biopsies.This is used as part of the
+#' HistolNumOfBx function below and normally not used as a stand alone
+#' function.
+#'
+#' @param dataframe dataframe
+#' @param MacroColumn column to extract the numbers from. Usually the column
+#' with the Nature of the specimen or the Macroscopic description in it
+#' @keywords Macroscopic
+#' @importFrom stringr str_replace
+#' @export
+#' @examples pp<-HistolMacDescrip(Mypath, 'Macroscopicdescription')
+
+
+HistolMacDescrip <- function(dataframe, MacroColumn) {
+  dataframe <- data.frame(dataframe)
+  
+  # Column specific cleanup
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Dd]ictated by.*", "")
+  # Conversion of text numbers to allow number of biopsies to be extracted
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Oo]ne", "1")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ss]ingle", "1")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Tt]wo", "2")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Tt]hree", "3")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ff]our", "4")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ff]ive", "5")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ss]ix", "6")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ss]even", "7")
+  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
+                                          "[Ee]ight", "8")
+  return(dataframe)
+}
+
+#' Extract the number of biopsies taken from histology report
+#'
+#' This extracts the number of biopsies taken from the pathology report.
+#' This is usually from the Macroscopic description column.
+#' It collects everything from the regex [0-9]{1,2}.{0,3}
+#' to whatever the string boundary is (z).
+#'
+#' @param dataframe the dataframe
+#' @param MacroColumn Column containing the Macroscopic description text
+#' @param regString The keyword to remove and to stop at in the regex
+#' @importFrom stringr str_match_all str_replace_all
+#' @keywords Biopsy number
+#' @export
+#' @examples
+#' qq<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+
+
+HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
+  dataframe <- data.frame(dataframe)
+  dataframe <- HistolMacDescrip(dataframe, MacroColumn)
+  mylist <-
+    #I need to collapse the unlist
+    stringr::str_match_all(dataframe[, MacroColumn], 
+                           paste(unlist(lapply(strsplit(regString,"\\|",fixed=FALSE),
+                                               FUN=function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
+  dataframe$NumbOfBx <-
+    vapply(mylist, function(p)
+      sum(as.numeric(stringr::str_replace_all(p,regString,""))),numeric(1))
+  return(dataframe)
+}
+
+
+#' Determine the largest biopsy size from the histology report
+#'
+#' This extracts the biopsy size from the report. If there are multiple
+#' biopsies it will extract the overall size of each one (size is calculated
+#' usually in cubic mm from the three dimensions provided). This will result
+#' in row duplication.
+#'
+#' This is usually from the Macroscopic description column.
+#' @param dataframe dataframe
+#' @param MacroColumn Macdescrip
+#' @importFrom stringr  str_match str_replace
+#' @keywords biopsy size
+#' @export
+#' @examples rr<-HistolBxSize(Mypath,'Macroscopicdescription')
+
+HistolBxSize <- function(dataframe, MacroColumn) {
+  # What's the average biopsy size this month?
+  dataframe$BxSize <- str_extract(dataframe[, MacroColumn], "the largest.*?mm")
+  dataframe$BxSize <- str_replace(dataframe$BxSize,"the largest measuring ", "")
+  dataframe$BxSize <- str_replace(dataframe$BxSize,"mm", "")
+  dataframe$BxSize <- str_replace(dataframe$BxSize,"less than", "")
+  strBxSize <- "([0-9]+).*?([0-9])+.*?([0-9])"
+  dataframe$BxSize <-
+    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 2]) *
+    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 3]) *
+    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 4])
+  return(dataframe)
+}
+
+
+
+
+#' HistolTypeAndSite 
+#'
+#' This needs some blurb to be written. Used in the OPCS4 coding
+#' @keywords Find and replace
+#' @param Procedure The procedure performed
+#' @param EventColumn1 The relevant pathology text column
+#' @param EventColumn2 The alternative pathology text column
+#' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+
+HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
+  library(stringi)
+  library(stringr)
+  
+  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
+  
+  # RUN THE LOOKUP IN THE TWO COLUMNS
+  
+  output<-ifelse(EntityPairs_OneSentence(dataframe,EventColumn1)=="NA:NA", 
+                 EntityPairs_OneSentence(dataframe,EventColumn2),
+                 EntityPairs_OneSentence(dataframe,EventColumn1))
+  
+  #If the 
+  output<-str_replace_all(output, ":,|:$", ":biopsy,")
+  
+  output<-ifelse(grepl("Gastroscopy",dataframe[,Procedure]),
+                 str_remove_all(output, paste0('(',tolower(LocationListLower()),')',':biopsy')),
+                 ifelse(grepl("Colonoscopy|Flexi",dataframe[,Procedure]),
+                        str_remove_all(output, paste0('(',tolower(LocationListUpper()),')',':biopsy')),output))
+  return(output)
+}
+
+
+
+#' HistolTissueIndex 
+#'
+#' This returns a number for all the biopsies taken based on distance from orifice. It is for biopsies only
+#' @keywords Pathology biopsy index
+#' @param PathSite The column that has the pathology locatio and tissue type from HistolTypeAndSite
+#' @examples # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
+#' SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
+#' HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
+
+HistolBiopsyIndex<-function(dataframe,PathSite){
+  library(stringr)
+  library(fuzzyjoin)
+  library(tidyverse)
+  ToIndex<-str_extract_all(dataframe$PathSite,"(^|,)[a-z]*?:biopsy(|$)")
+  ToIndex<-lapply(ToIndex, function(x) unique(x))
+  #Give each an index in the list (taken from the location list)
+  
+  
+  #The results to replace 
+  replace<-c("ileum:biopsy","ileocaecal:biopsy","caecum:biopsy","ascending:biops","hepatic:biopsy","transverse:biopsy", "splenic:biopsy","descending:biopsy",
+             "sigmoid:biopsy","rectosigmoid:biopsy","rectum:biopsy", 
+             "ileoanal:biopsy","prepouch:biopsy","pouch:biopsy", 
+             "duodenum:biopsy","antrum:biopsy","stomach:biopsy","goj:biopsy", 
+             "oesophagus:biopsy","colon:biopsy","oesophagus:emr","stomach:emr","duodenum:emr")
+  
+  #C stand for colon (and all lower bowel investigations) S stands for surgical O stands for OGD. 
+  replaceValue<-c("C11","C10","C9","C8","C7","C6","C5","C4","C3","C2","C1","S1","S2","S3","O5","O4","O3","O2","O1","colon","oesophagus:emr","stomach:emr","duodenum:emr")
+  
+  #Create a tibble to merge with the list
+  d1 <- tibble(key = replace, val = replaceValue)
+  
+  
+  #Select the elements that have characters in them
+  i1 <- lengths(ToIndex) > 0 
+  
+  #Do the merge
+  ToIndex[i1] <- map(ToIndex[i1], ~ 
+                       tibble(key = .x) %>%
+                       regex_left_join(d1) %>%
+                       pull(val))
+  
+  ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
+  ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
+  
+  #To do: Add the emr and polyp specimens as a separate site
+  #Check to make sure that the path site os all being extracted
+  #Check to make sure that there are no missing parts of the path site
+  
+  return(ToIndex)
+}
+
+
+
+#' Extract pathology type
+#'
+#' This standardizes terms to describe the pathology tissue type being exmained
+#' @param dataframe dataframe with column of interest
+#' @keywords Pathology type
+#' @export
+#' @examples #No examples as just returns a list
+
+
+
+HistolType <- function() {
+  
+  #First standardise the terms
+  
+  tofind <-
+    paste(
+      c(
+        "Resection","Biopsy","EMR","ESD","bx"),
+      collapse = "|"
+    )
+  return(tofind)
+}
+
+
+##########Lists##########
+
+
+#' Use list of standard locations
+#'
+#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
+#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function
+#'
+#'
+#' @keywords Location
+#' @export
+#' @examples #No example needed
+
+LocationList<-function(){
+  
+  tofind <-
+    paste0(LocationListLower(),"|",LocationListUpper(),"|",LocationListUniversal(),collapse = "|")
+  
+  return(tofind)
+  
+}
+
+#' Use list of standard locations for upper GI endoscopy
+#'
+#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
+#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function
+#'
+#'
+#' @keywords Location
+#' @export
+#' @examples #No example needed
+
+LocationListUpper<-function(){
+  
+  tofind <-
+    paste(
+      c(
+        "Stomach","Antrum","Duodenum","Oesophagus","GOJ","OGJ","Cardia"
+      ),
+      collapse = "|"
+    )
+  
+  return(tofind)
+  
+}
+
+#' Use list of standard locations for upper GI endoscopy
+#'
+#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
+#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function
+#'
+#'
+#' @keywords Location
+#' @export
+#' @examples #No example needed
+
+LocationListUniversal<-function(){
+  
+  tofind <-
+    paste(
+      c(
+        "Anastomosis"
+      ),
+      collapse = "|"
+    )
+  
+  return(tofind)
+  
+}
+
+
+#' Use list of standard locations for lower GI endoscopy
+#'
+#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
+#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function
+#'
+#'
+#' @keywords Location
+#' @export
+#' @examples #No example needed
+
+LocationListLower<-function(){
+  
+  tofind <-
+    paste(
+      c(
+        "Ascending","Descending","Sigmoid","Rectum","Transverse",
+        "Caecum","Splenic","Ileum","Rectosigmoid",
+        "Ileocaecal","Hepatic","Colon","Terminal","Terminal Ileum",
+        "Ileoanal","Prepouch","Pouch"
+      ),
+      collapse = "|"
+    )
+  
+  return(tofind)
+  
+}
+
+
+#' Event list
+#'
+#' This function returns all the conversions from common version of events to 
+#' a standardised event list, much like the Location standardidastion function
+#' It is used in the Barretts_EventType. This does not include EMR as this is 
+#' extracted from the pathology so is part of pathology type.
+#' @keywords Event extraction
+#' @examples # unique(unlist(EventList(), use.names = FALSE))
+#' 
+EventList<-function(){
+  
+  Event <- list("radiofrequency ablation" = "RFA", 
+                "argon plasma coagulation" = "APC",
+                "halo" = "RFA",
+                " rfa"= "RFA",
+                "dilatation"="dilat",
+                "dilated"="dilat",
+                " apc"="APC",
+                " emr"="EMR",
+                "clip"="clip",
+                "grasp"="grasp",
+                "probe"="probe",
+                "iodine"="iodine",
+                "acetic"="acetic",
+                "NAC"="NAC",
+                "PEG"="PEG",
+                "botox"="botox"
+  )
+  return(Event)
+}
 
 
 

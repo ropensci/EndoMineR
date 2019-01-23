@@ -927,75 +927,80 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
 
 # 
 SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
+EndoscTree<-list("Patient Name","Date of Birth","General Practicioner","Hospital Number","Date of Procedure","Endoscopist","Second endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Complications","Co-morbidity","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED","FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP","OPCS4 Code")
 for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
-SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","Histo_ResultText")
 SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
 SelfOGD_Dunn$PathSiteIndex<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
-ouput<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
-ForRules<-ouput%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(ExtentofExam,HISTOLOGY,FINDINGS,EndoscopyEvent,PathSite,PathSiteIndex,PROCEDUREPERFORMED)%>%sample_n(50)
+SelfOGD_Dunn<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+
+ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(INDICATIONSFOREXAMINATION,ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent)%>%sample_n(100)
 View(ForRules)
-ToSee<-SelfOGD_Dunn%>%select(FINDINGS,EndoscopyEvent,PathSite,PROCEDUREPERFORMED)%>% filter(grepl("Error", EndoscopyEvent))
+
+
+#Checking against actual coding data
+ManualOPCS_4<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/TB_ALLPATID_Dunn_2013ToPresent.xls")
+library(janitor)
+selectedClean<-ManualOPCS_4%>%select("Prim Proc Code & Description","2nd Proc Code","Trust ID","Surname","Forename","Consultant","Admission Date","Prim Diag Code & Description")
+selectedClean<-clean_names(selectedClean,"snake")
+names(selectedClean) <- gsub('admission_date', 'Endo_ResultEntered', names(selectedClean))
+names(selectedClean) <- gsub('trust_id', 'PatientID', names(selectedClean))
+
+#convert the date column names so can do a merge
+SelfOGD_Dunn$Endo_ResultEntered<-as.Date(SelfOGD_Dunn$Endo_ResultEntered)
+selectedClean$Endo_ResultEntered<-as.Date(selectedClean$Endo_ResultEntered)
+
+mergedData <- merge(selectedClean,SelfOGD_Dunn,by=c("Endo_ResultEntered","PatientID"))
+
+
+ForRules<-mergedData%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent,prim_proc_code_description,x2nd_proc_code,PathSite,PathSiteIndex)%>%sample_n(100)
+View(ForRules)
+ToSee<-ForRules%>%select(FINDINGS,EndoscopyEvent,PathSite)%>% filter(grepl("Error", EndoscopyEvent))
+
 
 #For each event site:
 
 OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {  
   dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
-  #Tidy the data
-  #Firstly merge the path with EventSite for emr's so all the events are contained in the one column
-  #Then need to index biopsy sites as a separate column and derive the furthest index point and then translate that into a Z code
-  OPCS4Prepdata<-str_split(paste(dataframe[,Procedure],"xxx",dataframe[,PathSite],"xxx",dataframe[,Event]),"xxx")
-  
-  #Create a named list to refer to them later
-  OPCS4Prepdata<-lapply(OPCS4Prepdata,function(x) setNames(x, c("Procedure", "PathSite","Event")))
-  
+
+
   
   #For the primary codes:
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):apc","G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):emr","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)  
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):polypectomy","G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) 
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):rfa","G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):esd","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):dilat", "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("APC","G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE) 
+  dataframe$EndoscopyEvent<-gsub("EMR","G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)  
+  dataframe$EndoscopyEvent<-gsub("Polypectomy","G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case= TRUE)
+  dataframe$EndoscopyEvent<-gsub("RFA","G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("ESD","G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("Dilatation","G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  
+  
+  #For the non-event entries:
+
   dataframe<-dataframe %>%   
     mutate(OPCS4Primary = case_when(
       grepl("OGD", dataframe$PROCEDUREPERFORMED,ignore.case = TRUE) ~  case_when(
-        #Oesophageal event               
-        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) ~  case_when(
-          grepl("APC",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",
-          grepl("EMR",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
-          grepl("Polypectomy",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",
-          grepl("RFA",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",
-          grepl("ESD",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",
-          grepl("Dilatation",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",
-        ),
-        #Non-Oesophageal event 
-        !grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)&dataframe$EndoscopyEvent!="" ~  case_when(
-          grepl("APC",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",
-          grepl("EMR",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",
-          grepl("Polypectomy",dataframe$EndoscopyEvent,ignore.case= TRUE)  ~ "G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",
-          grepl("RFA",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",
-          grepl("ESD",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",
-          grepl("Dilatation",dataframe$EndoscopyEvent,ignore.case = TRUE) ~ "G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",
-        ),
+       
         #No event and no biopsy taken:
-        dataframe$EndoscopyEvent==""&dataframe$PathSite=="" ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
+        dataframe$EndoscopyEvent==""&(dataframe$PathSite==""|dataframe$PathSite=="NA:NA") ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
         
         #No event and upper GI biopsy taken:
         dataframe$EndoscopyEvent==""& grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
         
         #Event (oesophageal) and upper GI biopsy taken
-        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus",
+        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus"
         
       ),
       TRUE ~ "SomethingElse"
-    )
-    )
+    ))
+    
   
-  #Also check the Procedure performed column maybe in a helper function
-  #Also how to create small test columns and filters
-  #Decide what you want to compare with the code and then use those columns PathSite/ EndoscopyEvent/Findings/HistologyReport
-  #Also need to check all the building functions eg: EndoscopyEvent and HistolTypeAndSite with a test set.
-  #To get the secondary (Z) codes:  
-  
-  
-  #If a biopsy was taken then give this as the distance
-  #If no biopsy was taken then give the maximum extent only
-  #If an EMR was done then give this as the distance (I think)
-  
+  #For the secondary codes:
   dataframe$MAXOFPATHSITE<-str_extract_all(dataframe$PathSite,"\\d")
   dataframe$MAXOFPATHSITE<-lapply(dataframe$MAXOFPATHSITE,function(x) max(as.numeric(x)))
   

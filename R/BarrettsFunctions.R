@@ -97,8 +97,11 @@ dataframe$MStage <-
                 as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),
          
                 #Try to extract lengths if present
-         ifelse(grepl("(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),stringr::str_extract(stringr::str_match(dataframe[,EndoReportColumn],"(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)"),"\\d"),
+         #ifelse(grepl("(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),stringr::str_extract(stringr::str_match(dataframe[,EndoReportColumn],"(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)"),"\\d"),
+         #length of Barrett's?       
+         ifelse(grepl("(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)(?=[^\\.]*(of |length))[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),stringr::str_extract(stringr::str_match(dataframe[,EndoReportColumn],"(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)"),"\\d"),
                 
+         
                 #If the M stage is still not present then try to extrapolate it using the term tongue or small if Barrett's is also present in the same sentence and equate this to M1
          ifelse(grepl("(\\.|^)(?=[^\\.]*(small|tiny|tongue))(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),
                 stringr::str_replace(dataframe[,EndoReportColumn], ".*","1"),"Insufficient")))))
