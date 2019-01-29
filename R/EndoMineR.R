@@ -46,7 +46,8 @@ if (getRversion() >= "2.15.1")
 
 #' Extract the time difference between each test in days
 #'
-#' This determines the time difference between each test for a patient in days.
+#' This determines the time difference between each test for a patient in days
+#' It returns the time since the first and the last study.
 #'
 #' @param dataframe dataframe,
 #' @param HospNum_Id Patient ID
@@ -65,41 +66,15 @@ SurveilTimeByRow <-
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     ret<-dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
-      mutate(diffDate = difftime(as.Date(!!Endo_ResultPerformeda), lead(as.Date(
+      mutate(TimeToNext = difftime(as.Date(!!Endo_ResultPerformeda), lead(as.Date(
         !!Endo_ResultPerformeda
-      ), 1), units = "days"))
-    dataframe<-data.frame(ret)
-    return(dataframe)
-  }
-
-#' Extract the last test done by a patient in days and how long ago
-#'
-#' This determines the last test done by that patient and the time
-#' between now and that last test in days
-#'
-#' @param dataframe dataframe
-#' @param  HospNum_Id Patient ID
-#' @param Endo_ResultPerformed Date of the Endoscopy
-#' @importFrom magrittr '%>%'
-#' @importFrom dplyr arrange group_by mutate lead last
-#' @importFrom rlang sym
-#' @keywords Surveillance
-#' @export
-#' @examples bb<-SurveilLastToNow(Myendo,'HospitalNumber',
-#' 'Dateofprocedure')
-
-SurveilLastToNow <-
-  function(dataframe, HospNum_Id, Endo_ResultPerformed) {
-    HospNum_Ida <- sym(HospNum_Id)
-    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    
-    ret<-dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
-      group_by(!!HospNum_Ida) %>%
-      mutate(diffDate = difftime(Sys.Date(), last(!!Endo_ResultPerformeda),
+      ), 1), units = "days")) %>%
+      mutate(TimeSinceLast = difftime(Sys.Date(), last(!!Endo_ResultPerformeda),
                                  units = "days"))
-    dataframe<-data.frame(ret)
-    return(dataframe)
+     dataframe<-data.frame(ret)
+     return(dataframe)
   }
+
 
 
 #' Extract the last test done by a patient only
@@ -898,7 +873,7 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
 }
 
 
-
+############################# Coding ################################
 
 
 
@@ -928,20 +903,41 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
 # 
 SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
 EndoscTree<-list("Patient Name","Date of Birth","General Practicioner","Hospital Number","Date of Procedure","Endoscopist","Second endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Complications","Co-morbidity","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED","FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP","OPCS4 Code")
-for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
-SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","Histo_ResultText")
-SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
-SelfOGD_Dunn$PathSiteIndex<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
-SelfOGD_Dunn<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
 
-ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(INDICATIONSFOREXAMINATION,ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent)%>%sample_n(100)
-View(ForRules)
+SelfOGD_Dunn<-SelfOGD_Dunn%>%select(PatientID,Endo_ResultText,Histo_ResultText)
+for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
+PathTree<-c("NATURE OF SPECIMEN","CLINICAL DETAILS","MACROSCOPICAL DESCRIPTION","HISTOLOGY","DIAGNOSIS")
+for(i in 1:(length(PathTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Histo_ResultText',as.character(PathTree[i]),as.character(PathTree[i+1]),as.character(PathTree[i]))}
+
+SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","Histo_ResultText","MACROSCOPICALDESCRIPTION")
+SelfOGD_Dunn$PathSiteIndex<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite")
+
+SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
+
+
+#ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED),grepl("OESOPHAGUS: Barrett's oesophagus C0 M1 ",FINDINGS))
+#EndoscopyEvent(ForRules,"FINDINGS")
+
+#ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(INDICATIONSFOREXAMINATION,ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent,PathSite,PathSiteIndex)
+#View(ForRules)
+SelfOGD_Dunn<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
+
 
 
 #Checking against actual coding data
 ManualOPCS_4<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/TB_ALLPATID_Dunn_2013ToPresent.xls")
 library(janitor)
-selectedClean<-ManualOPCS_4%>%select("Prim Proc Code & Description","2nd Proc Code","Trust ID","Surname","Forename","Consultant","Admission Date","Prim Diag Code & Description")
+selectedClean<-ManualOPCS_4%>%select("Prim Proc Code & Description","2nd Proc Code","Trust ID",
+                                     "Consultant","Admission Date","Prim Diag Code & Description",
+                                     "2nd Diagnosis Code",
+                                     "3rd Diagnosis Code",
+                                     "5th Diagnosis Code",
+                                     "6th Diagnosis Code",
+                                     "7th Diagnosis Code",
+                                     "8th Diagnosis Code",
+                                     "9th Diagnosis Code",
+                                     "10th Diagnosis Code")
 selectedClean<-clean_names(selectedClean,"snake")
 names(selectedClean) <- gsub('admission_date', 'Endo_ResultEntered', names(selectedClean))
 names(selectedClean) <- gsub('trust_id', 'PatientID', names(selectedClean))
@@ -953,7 +949,7 @@ selectedClean$Endo_ResultEntered<-as.Date(selectedClean$Endo_ResultEntered)
 mergedData <- merge(selectedClean,SelfOGD_Dunn,by=c("Endo_ResultEntered","PatientID"))
 
 
-ForRules<-mergedData%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent,prim_proc_code_description,x2nd_proc_code,PathSite,PathSiteIndex)%>%sample_n(100)
+ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent,prim_proc_code_description,x2nd_proc_code,PathSite,PathSiteIndex)%>%sample_n(100)
 View(ForRules)
 ToSee<-ForRules%>%select(FINDINGS,EndoscopyEvent,PathSite)%>% filter(grepl("Error", EndoscopyEvent))
 
@@ -1025,4 +1021,151 @@ OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
     )
     )
   return(dataframe)
+}
+
+
+#' Primary Diagnosis from Endoscopy
+#'
+#' This function extracts the primary diagnosis from the endoscopy free text. It will also add
+#' pathology diagnosis to the final primary code
+#' 
+#'
+#' @param dataframe the dataframe
+#' @param EVENT the EVENT column
+#' @keywords OPCS-4 codes extraction
+#' @importFrom dplyr mutate case_when
+#' @importFrom rlang sym
+#' @importFrom stringr str_detect
+#' @export
+#' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
+#' SelfOGD_Dunn$OPCS4w<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+
+
+
+#The plan: 
+#1. Look at th ENDOSCOPICDIAGNOSIS column first and implement algorithm to look for keywords that map to diagnostic codes
+#2. Need to establish an order of importance of diagnostic codes.
+#3. Map all the diagnoses from the drop down box to primary diagnosis codes
+EndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIAGNOSIS,EndoscopyEvent) { 
+  
+  
+  #Just get the uppers for now:
+  SelfOGD_DunnOGD<-SelfOGD_Dunn[grepl("Gastroscopy",SelfOGD_Dunn$PROCEDUREPERFORMED),]
+  
+  #Merge the findings in with the myDx:
+  SelfOGD_DunnOGD$FINDINGSmyDx<-paste(SelfOGD_DunnOGD$FINDINGS,SelfOGD_DunnOGD$ENDOSCOPICDIAGNOSIS)
+  
+  #Split into a string
+  SelfOGD_DunnOGD$FINDINGSmyDx<-stringi::stri_split_lines(SelfOGD_DunnOGD$FINDINGSmyDx,omit_empty = TRUE)
+  
+  #Copy over to a new column to be sampled
+  SelfOGD_DunnOGD$FindingsAfterProcessing<-SelfOGD_DunnOGD$FINDINGSmyDx
+  
+  
+  #Use case when on nested list to generate ICD-10 codes and then remove from the list.
+  
+  #If it matches the grep then add the diagnosis, and then chop into list and remove that string
+  
+ 
+  
+  
+
+  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
+    mutate(
+      PrimaryDiagnosisCode = map(
+        FINDINGSmyDx, ~ case_when(
+          grepl("mitotic|emr|tumour", unlist(tolower(.x)),ignore.case=TRUE) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
+          grepl("dysplasia", unlist(tolower(.x)),ignore.case=TRUE) ~ "K229  -  Disease of oesophagus - unspecified",
+          grepl("stricture", unlist(tolower(.x)),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
+          grepl("barrett", unlist(tolower(.x)),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
+          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
+          grepl("hiatus",tolower(.x), unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
+          grepl("oesophagitis",tolower(.x), unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K20  -  Oesophagitis",
+          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
+          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
+          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
+        TRUE ~ "")
+    )
+)
+  
+  SelfOGD_DunnOGD$FINDINGSmyDx<-lapply(SelfOGD_DunnOGD$FINDINGSmyDx, function(x) x[!grepl("OESOPH.*","", x,ignore.case=TRUE,perl=TRUE)])
+  
+  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%  FindingsAfterProcessing = map(
+    FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
+  )
+  
+  
+  
+  
+  ######### Go through it again for the second codes:
+  
+  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
+    mutate(
+      OverallDiagnosisCode = map(
+        FindingsAfterProcessing, ~ case_when(
+          grepl("mitotic|emr|tumour", tolower(.x)) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
+          grepl("dysplasia", tolower(.x)) ~ "K229  -  Disease of oesophagus - unspecified",
+          grepl("stricture",tolower(.x),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
+          grepl("barrett",tolower(.x),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
+          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
+          grepl("hiatus",tolower(.x),ignore.case=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
+          grepl("oesophagitis",tolower(.x),ignore.case=TRUE) ~  "K20  -  Oesophagitis",
+          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
+          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
+          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
+          grepl("gastritis",tolower(.x),ignore.case=TRUE) ~  "K297  -  Gastritis - unspecified",
+          grepl("duodenitis",tolower(.x),ignore.case=TRUE) ~  "K298  -  Duodenitis",
+          grepl("(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K317  -  Polyp of stomach and duodenum",
+          grepl("candid",tolower(.x),ignore.case=TRUE) ~  "B387  -  Candidiasis of other sites",
+          TRUE ~ "")
+      ),
+      FindingsAfterProcessing = map(
+        FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
+                                         hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
+                                             (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
+      )
+    )
+  
+  
+  SelfOGD_DunnOGD$OverallDiagnosisCode<-lapply(SelfOGD_DunnOGD$OverallDiagnosisCode,function(x) (unique(x)))
+  SelfOGD_DunnOGD$OverallDiagnosisCode<-lapply(SelfOGD_DunnOGD$OverallDiagnosisCode, function(x) x[x != "" & x != "\n"])
+  
+  
+  #Now go through the OverallCodes and determine the 
+  
+  
+  ######### Go through it again for the third codes: 
+  
+  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
+    mutate(
+      ThirdDiagnosisCode = map(
+        FindingsAfterProcessing, ~ case_when(
+          grepl("mitotic|emr|tumour", tolower(.x)) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
+          grepl("dysplasia", tolower(.x)) ~ "K229  -  Disease of oesophagus - unspecified",
+          grepl("stricture",tolower(.x),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
+          grepl("barrett",tolower(.x),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
+          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
+          grepl("hiatus",tolower(.x),ignore.case=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
+          grepl("oesophagitis",tolower(.x),ignore.case=TRUE) ~  "K20  -  Oesophagitis",
+          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
+          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
+          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
+          grepl("gastritis",tolower(.x),ignore.case=TRUE) ~  "K297  -  Gastritis - unspecified",
+          grepl("duodenitis",tolower(.x),ignore.case=TRUE) ~  "K298  -  Duodenitis",
+          grepl("(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K317  -  Polyp of stomach and duodenum",
+          grepl("candid",tolower(.x),ignore.case=TRUE) ~  "B387  -  Candidiasis of other sites",
+          TRUE ~ "")
+      ),
+      FindingsAfterProcessing = map(
+        FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
+                                         hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
+                                             (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
+      )
+    )
+  
+  #To Do: Also assess the findings column
+  
+  
+  
+  return(primDxVector)
 }

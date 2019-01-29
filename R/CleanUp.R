@@ -77,7 +77,7 @@ Extractor <- function(dataframeIn, Column, delim) {
   dataframeInForLater<-dataframeIn
   ColumnForLater<-Column
   Column <- rlang::sym(Column)
-  dataframeIn <- data.frame(dataframeIn)
+  dataframeIn <- data.frame(dataframeIn,stringsAsFactors = FALSE)
   dataframeIn<-dataframeIn %>%
     tidyr::separate(!!Column, into = c("added_name",delim),
                     sep = paste(delim, collapse = "|"),
@@ -87,15 +87,16 @@ Extractor <- function(dataframeIn, Column, delim) {
   dataframeIn <- apply(dataframeIn, 2, function(x) gsub("       ", "", x))
   
   #Convert back to a dataframe as has been converted to a matrix
-  dataframeIn<-data.frame(dataframeIn)
+  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
   dataframeIn<-dataframeIn[,-1]
-  dataframeIn<-lapply(dataframeIn, ColumnCleanUpAll)
+
+  dataframeIn<- lapply(dataframeIn, function(x) ColumnCleanUp(x))
+  
   names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=TRUE)
-  dataframeIn<-data.frame(dataframeIn)
+  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
   #Add the original column back in so have the original reference
-  dataframeIn<-cbind(dataframeInForLater[,ColumnForLater],dataframeIn)
-  colnames(dataframeIn)[1]<-"Original"
-  dataframeIn<-data.frame(dataframeIn)
+  dataframeIn$Original<-dataframeInForLater[,ColumnForLater]
+  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
   return(dataframeIn)
 }
 
@@ -141,21 +142,26 @@ Extractor <- function(dataframeIn, Column, delim) {
 Extractor2 <- function(x, y, stra, strb, t) {
   x <- data.frame(x)
   t <- gsub("[^[:alnum:],]", " ", t)
-  t <- gsub(" ", "", t, fixed = TRUE)
-  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
+  
+      t <- gsub(" ", "", t, fixed = TRUE)
+  
+         
+             x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
                                                               "(.*)", strb, sep = ""), dotall = TRUE))
   
   
-  x[, t] <- gsub("\\\\.*", "", x[, t])
+                  x[, t] <- gsub("\\\\.*", "", x[, t])
   
-  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
-  x[, t] <- gsub("       ", "", x[, t])
+                      names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
+                          x[, t] <- gsub("       ", "", x[, t])
   x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
-  if (strb != "") {
+      if (strb != "") {
     x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
   }
   x[, t] <- gsub("       ", "", x[, t])
-  x[, t] <- ColumnCleanUp(x, t)
+  x[, t]<- ColumnCleanUp(x[, t])
+ 
+
   return(x)
 }
 
@@ -217,7 +223,7 @@ EndoscMeds <- function(dataframe, MedColumn) {
   
   
   dataframe$Fent <-
-    str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+    str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d*(\\.\\d+)?)\\s*mcg")
   dataframe$Fent <- str_replace(dataframe$Fent,"Fentanyl", "")
   dataframe$Fent <- str_replace(dataframe$Fent,"mcg", "")
   dataframe$Fent <- as.numeric(dataframe$Fent)
@@ -233,14 +239,14 @@ EndoscMeds <- function(dataframe, MedColumn) {
   
   # Extract the pethidine if present
   dataframe$Peth <-
-    str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+    str_extract(dataframe[, MedColumn], "Pethidine\\s*(\\d*(\\.\\d+)?)\\s*mcg")
   dataframe$Peth <- str_replace(dataframe$Peth,"Pethidine", "")
   dataframe$Peth <- str_replace(dataframe$Peth,"mcg", "")
   dataframe$Peth <- as.numeric(dataframe$Peth)
   
   # Extract the propofol if present
   dataframe$Prop <-
-    str_extract(dataframe[, MedColumn], "\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+    str_extract(dataframe[, MedColumn], "Propofol\\s*(\\d*(\\.\\d+)?)\\s*mcg")
   dataframe$Prop <- str_replace(dataframe$Prop,"Propofol", "")
   dataframe$Prop <- str_replace(dataframe$Prop,"mcg", "")
   dataframe$Prop <- as.numeric(dataframe$Prop)
@@ -297,29 +303,6 @@ EndoscInstrument <- function(dataframe, InstrumentColumn) {
   return(dataframe)
 }
 
-#' Cleans indications column if present
-#'
-#' This cleans the Indication from the report assuming such a column exists.
-#' It largely gets rid of carriage returns especially if used after the
-#' NewLinesfunction. There may be multiple indications.
-#' It should be used after the Extractor and the optional NewLines has
-#' been used.
-#' @param dataframe dataframe with column of interest
-#' @param IndicationColumn column of interest
-#' @keywords Indications
-#' @importFrom stringr str_replace
-#' @export
-#' @examples ee<-EndoscIndications(Myendo,'Indications')
-
-EndoscIndications <- function(dataframe, IndicationColumn) {
-  # Extraction of the Indications for examination
-  # eg chest pain/ dysphagia etc.
-  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],
-                                               "\r\n", "\n")
-  dataframe[, IndicationColumn] <- str_replace(dataframe[, IndicationColumn],
-                                               "\\.\n\\.\n|\\.\r\\.\r", "\\.")
-  return(dataframe)
-}
 
 
 #'  Cleans Procedure performed column if present
@@ -347,44 +330,18 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
                                             "Adequate.*|Good.*|Poor.*|None.*", "")
   dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
                                             "FINDINGS", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "-\\s*$|-$|-\\s+$", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "([A-Z])-", "\\1 -")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "\\.", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "-([A-Z])", "-\\1")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "\\)-", ") -")
+  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+  #                                           "-\\s*$|-$|-\\s+$", "")
+  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+  #                                           "([A-Z])-", "\\1 -")
+  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+  #                                           "\\.", "")
+  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+  #                                           "-([A-Z])", "-\\1")
+  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
+  #                                           "\\)-", ") -")
   return(dataframe)
 }
-
-
-#' Cleans Procedure performed column if present
-#'
-#' This cleans the Findings column from the report assuming
-#' such a column exists. Findings relates to what was found at the endoscopy
-#' This is usually a separate entry to the overall 'Diagnosis' but any
-#' are in which the description of the endoscopic findings, including
-#' overall diagnosis or not, can be used.
-#' It should be used after the Extractor and the optional NewLines
-#' has been used. At present it only cleans cm measurement
-#' @param dataframe dataframe with column of interest
-#' @param FindingsColumn column of interest
-#' @keywords Procedure
-#' @export
-#' @importFrom stringr str_replace
-#' @examples gg<-EndoscFindings(Myendo,'Findings')
-
-EndoscFindings <- function(dataframe, FindingsColumn) {
-  # Extraction of the FINDINGS
-  dataframe[, FindingsColumn]<-str_replace(dataframe[, FindingsColumn],
-                                           "cm\\s+[A-Z]|cm.+\\)", "cm\n")
-  dataframe$EndoFindingsSimple<- NegativeRemove(dataframe, FindingsColumn)
-  return(dataframe)
-}
-
 
 
 
@@ -412,12 +369,10 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   
-  
-  
   # Extract the events from the 
   output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
   
-  MyHistolEvents<-HistolTypeAndSite(dataframe,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","Histo_ResultText")
+  MyHistolEvents<-HistolTypeAndSite(dataframe,"PROCEDUREPERFORMED","Histo_ResultText","MACROSCOPICALDESCRIPTION")
   output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
   
   #Add emr only if this is seen in the histopath
@@ -428,7 +383,7 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
                  #If emr is in the histology but not in the event then add it
                  ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),paste0(output,";","emr"),
                         #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
-                        ifelse(!grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
+                        ifelse(!grepl("emr|nodul",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
   
   
   
@@ -448,75 +403,7 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
 
 
 
-##########Single column clean up functions##########
-
-#' Find and Replace function
-#'
-#' This is a helper function for finding and replacing from dictionaries like the event list
-#' It uses fuzzy find and replace to account for spelling errors
-#' @keywords Find and replace
-#' @examples # Pending
-#' 
-
-
-findAndReplace <- function(pattern, replacement, x, fixed = FALSE, ...) {
-  m <- aregexec(pattern, x, fixed = fixed,ignore.case = T)
-  r <- regmatches(x, m)
-  lens <- lengths(r)
-  if (all(lens == 0)) return(x) else
-    replace(x, lens > 0, mapply(sub, r[lens > 0], replacement, x[lens > 0]))
-}
-
-
-
-
-#' textPrep function
-#'
-#' This is a helper function to prepare the data for the extraction of event, tissue type and site
-#' from raw pathology and endoscopy files associated with the endoscopy. This is used within the 
-#' BarrettsPathSite and BarrettsEventType function and is also used to generate OPCS-4 codes. Note
-#' it needs a dataframe not a tibble so this needs to be converted prior to usage.
-#' @keywords Find and replace
-#' @param EventColumn The relevant pathology text column
-#' @examples # textPrep(SelfOGD_Dunn,"FINDINGS")
-#' 
-textPrep<-function(dataframe,EventColumn){
-  
-  #1. Flatten the text
-  dataframe[,EventColumn]<-tolower(dataframe[,EventColumn])
-  
-  
-  #1b General cleanup tasks
-  dataframe[, EventColumn] <- ColumnCleanUp(dataframe, EventColumn)
-  
-  #1c. Get rid of unnecessary punctuation
-  dataframe[,EventColumn]<-gsub("'","",dataframe[,EventColumn],fixed=TRUE)
-  
-  
-  #2a . Fuzzy find and replace and term mapping using the find and replace function above using the Location list
-  L <- tolower(str_split(LocationList(),"\\|"))
-  dataframe[,EventColumn]<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
-  
-  #2b . Fuzzy find and replace and term mapping using the find and replace function above using the Path_Type list
-  L <- tolower(str_split(HistolType(),"\\|"))
-  dataframe[,EventColumn]<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
-  
-  #2c. Fuzzy find and replace and term mapping using the find and replace function above
-  L <- tolower(unique(unlist(EventList(), use.names = FALSE)))
-  dataframe[,EventColumn]<-Reduce(function(x, nm) findAndReplace(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
-  
-  #3.Remove all the negative phrases from the pathology report:
-  dataframe[,EventColumn]<-NegativeRemove(dataframe,EventColumn)
-  
-  #4. Need to run the TermStandardLocalizer here to make sure everything standardised.
-  dataframe<-TermStandardLocation(dataframe,EventColumn)
-  
-  #5. Split the lines so text is tokenized by sentence
-  standardisedTextOutput<-stri_split_lines(dataframe[,EventColumn], omit_empty = TRUE)
-  
-  return(standardisedTextOutput)
-}
-
+##########Entity Relation functions ###################
 
 
 
@@ -534,19 +421,14 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
   text<-textPrep(dataframe,EventColumn)
   
   #Some clean up to get rid of white space- all of this prob already covered in the ColumnCleanUp function but for investigation later
-  #text<-lapply(text,function(x) gsub("\n ","\n",x))
-  #text<-lapply(text,function(x) gsub("\\s{2,10}","\n",x)) 
-  #text<-lapply(text,function(x) gsub("^ +$","taco",x))
   text<-lapply(text,function(x) gsub("[[:punct:]]+"," ",x))
-  #text<-lapply(text,function(x) gsub("^$","taco",x))
-  
   tofind <-tolower(LocationList())
   EventList<-unique(tolower(unlist(EventList(),use.names = FALSE)))
   
-
-  text<-sapply(text,function(x) {
-   
   
+  text<-sapply(text,function(x) {
+    
+    
     x<-trimws(x)
     
     try(words <-
@@ -565,8 +447,8 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
     
     #Convert the 
     
-   
-  
+    
+    
     
     try(if(any(i1)) {
       
@@ -584,7 +466,7 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
                 map_if(is_empty, ~ NA_character_) %>%
                 flatten_chr()%>%
                 `[[`(1) %>%
-              
+                
                 .[length(.)]
             ) %>%
             paste0(':', .x)
@@ -626,256 +508,58 @@ EntityPairs_OneSentence<-function(dataframe,EventColumn){
 
 
 
+##########Single column clean up functions##########
 
 
 
 
 
-#' Removes negative and normal sentences
+
+#' textPrep function
 #'
-#' Extraction of the Negative sentences so that normal findings can be
-#' removed and not counted when searching for true diseases. eg remove
-#' No evidence of candidal infection so it doesn't get included if
-#' looking for candidal infections.
-#' It should be used after the Extractor and the optional
-#' NewLines has been used. It can be used as part of the other functions
-#' or as a way of providing a 'positive diagnosis only' type output (see
-#' HistolDx)
-#' @param dataframe dataframe with column of interest
-#' @param Column column of interest
-#' @keywords Negative Sentences
-#' @importFrom stringr str_replace
-#' @export
-#' @examples # Build a character vector and then
-#' # incorporate into a dataframe
-#' anexample<-c("There is no evidence of polyp here",
-#' "Although the prep was poor,there was no adenoma found",
-#' "The colon was basically inflammed, but no polyp was seen",
-#' "The Barrett's segment was not biopsied",
-#' "The C0M7 stretch of Barrett's was flat")
-#' anexample<-data.frame(anexample)
-#' names(anexample)<-"Thecol"
-#' # Run the function on the dataframe and it should get rid of sentences (and
-#' # parts of sentences) with negative parts in them.
-#' hh<-NegativeRemove(anexample,"Thecol")
-
-NegativeRemove <- function(dataframe, Column) {
-  dataframe <- (data.frame(dataframe))
-  # Conjunctions
-  dataframe[, Column] <- gsub(
-    "(but|although|however|though|apart| -|otherwise
-    |unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|
-    unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*",
-    "\\.\n",
-    dataframe[, Column],
-    perl = TRUE,
-    ignore.case = TRUE
-  )
-  dataframe[, Column] <-
-    gsub(
-      "(no |negative|unremarkable|-ve| normal) .*?([Bb]ut|
-      [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| -|[Oo]therwise|
-      [Uu]nremarkable)\\R*",
-      "",
-      dataframe[, Column],
-      perl = TRUE,
-      ignore.case = TRUE
-    )
-  # Nots
-  dataframe[, Column] <-
-    gsub(
-      ".*(does|is|was|were|are|have) not.*?(\\.|\n|:|$)\\R*",
-      "",
-      dataframe[, Column],
-      perl = TRUE,
-      ignore.case = TRUE
-    )
-  dataframe[, Column] <-
-    gsub(
-      "not (biop|seen).*?(\\.|\n|:|$)\\R*",
-      "",
-      dataframe[, Column],
-      perl = TRUE,
-      ignore.case = TRUE
-    )
-  # Nos
-  dataframe[, Column] <-
-    gsub(
-      ".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b(?![?:A-Za-z])|
-      ([?:]\\s*N?![A-Za-z])).*\\R*",
-      "",
-      dataframe[, Column],
-      perl = TRUE,
-      ignore.case = TRUE
-      )
-  dataframe[, Column] <-
-    gsub(
-      ".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)
-      \\R*",
-      "",
-      dataframe[, Column],
-      perl = TRUE,
-      ignore.case = TRUE
-    )
-  dataframe[, Column] <-
-    gsub(
-      ".*(negative|neither).*?(\\.|\n|:|$)\\R*",
-      "",
-      dataframe[, Column],
-      perl = TRUE,
-      ignore.case = TRUE
-    )
-  # Keep abnormal in- don't ignore case as it messes it up
-  dataframe[, Column] <- str_replace(dataframe[, Column],
-                                     ".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "")
-  # Other negatives
-  dataframe[, Column] <- gsub(
-    ".*there (is|are|were) \\bno\\b .*?(\\.|\n|:|$)\\R*",
-    "",
-    dataframe[, Column],
-    perl = TRUE,
-    ignore.case = TRUE
-  )
-  dataframe[, Column] <- gsub(
-    "(within|with) (normal|\\bno\\b) .*?(\\.|\n|:|$)\\R*",
-    "",
-    dataframe[, Column],
-    perl = TRUE,
-    ignore.case = TRUE
-  )
-  # Specific cases
-  dataframe[, Column] <- gsub(
-    ".*duct.*clear.*?(\\.|\n|:|$)\\R*",
-    "",
-    dataframe[, Column],
-    perl = TRUE,
-    ignore.case = TRUE
-  )
-  # Unanswered prompt lines
-  dataframe[, Column] <- gsub(".*:(\\.|\n)\\R*",
-                              "",
-                              dataframe[, Column],
-                              perl = TRUE,
-                              ignore.case = TRUE)
+#' This is a helper function to prepare the data for the extraction of event, tissue type and site
+#' from raw pathology and endoscopy files associated with the endoscopy. This is used within the 
+#' BarrettsPathSite and BarrettsEventType function and is also used to generate OPCS-4 codes. Note
+#' it needs a dataframe not a tibble so this needs to be converted prior to usage.
+#' @keywords Find and replace
+#' @param EventColumn The relevant pathology text column
+#' @examples # textPrep(SelfOGD_Dunn,"FINDINGS")
+#' 
+textPrep<-function(dataframe,EventColumn){
   
+  #1. Flatten the text
+  dataframe[,EventColumn]<-tolower(dataframe[,EventColumn])
   
-  # Time related phrases eg post and previous
-  dataframe[, Column] <- gsub(" (post|previous|prior)[^a-z].+?[A-Za-z]{3}",
-                              " TIME_REPLACED",
-                              dataframe[, Column],
-                              perl = TRUE,
-                              ignore.case = TRUE)
+  #1b General cleanup tasks
+  dataframe[, EventColumn] <- ColumnCleanUp(dataframe[,EventColumn])
   
+  #1c. Get rid of unnecessary punctuation
+  dataframe[,EventColumn]<-gsub("'","",dataframe[,EventColumn],fixed=TRUE)
   
-  return(dataframe[, Column])
+  #2a . Fuzzy find and replace and term mapping using the find and replace function above using the Location list
+  L <- tolower(str_split(LocationList(),"\\|"))
+  dataframe[,EventColumn]<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
+  
+  #2b . Fuzzy find and replace and term mapping using the find and replace function above using the Path_Type list
+  L <- tolower(str_split(HistolType(),"\\|"))
+  dataframe[,EventColumn]<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
+  
+  #2c. Fuzzy find and replace and term mapping using the find and replace function above
+  L <- tolower(unique(unlist(EventList(), use.names = FALSE)))
+  dataframe[,EventColumn]<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
+  
+  #3.Remove all the negative phrases from the report:
+  dataframe[,EventColumn]<-NegativeRemove(dataframe,EventColumn)
+  
+  #4. Need to run the TermStandardLocalizer here to make sure everything standardised.
+  dataframe<-TermStandardLocation(dataframe,EventColumn)
+  
+  #5. Split the lines so text is tokenized by sentence
+  standardisedTextOutput<-stri_split_boundaries(dataframe[,EventColumn], type="sentence")
+  
+  #returns a nested list
+  return(standardisedTextOutput)
 }
-
-
-
-#' Tidies up messy columns
-#'
-#' This does a general clean up of whitespace,
-#' semi-colons,full stops at the start
-#' of lines and converts end sentence full stops to new lines.
-#' It should be used after the Extractor.
-#' It is used for columns where there is a lot of free text to extract. It
-#' really extracts and standardises the sentences.
-#' @param dataframe dataframe with column of interest
-#' @param Column column of interest
-#' @keywords Cleaner
-#' @export
-#' @importFrom stringr str_replace
-#' @examples ii<-ColumnCleanUp(Myendo,"Findings")
-
-
-ColumnCleanUp <- function(dataframe, Column) {
-
-  #Tokenise the sentences
-  standardisedTextOutput<-stri_split_lines(dataframe[,Column], omit_empty = TRUE)
-  
-  #Get rid of whitespace
-  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
-  
-  #Get rid of trailing punctuation
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
-  
-  dataframe[, Column]<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
-  
-  #Convert sentence endings to newlines as the sentence boundary
-  #dataframe[, Column] <- gsub(".", "\n", dataframe[, Column], fixed = TRUE)
-  return(dataframe[, Column])
-}
-
-#' Tidies up all columns
-#'
-#' This does a general clean up of whitespace,
-#' semi-colons,full stops at the start
-#' of lines and converts end sentence full stops to new lines.
-#' It it used as part of the Extractor function
-#' It can be used as part of the other functions
-#' or as a way of providing a 'positive diagnosis only' type output (see
-#' HistolDx)
-#' @param dataframe dataframe with column of interest
-#' @keywords Cleaner
-#' @export
-#' @importFrom stringr str_replace
-#' @examples jj<-lapply(Myendo, ColumnCleanUpAll)
-#'
-
-ColumnCleanUpAll <- function(dataframe) {
-  
-  # #Get rid of the empty lines with floating puctuation
-  # dataframe <- str_replace(dataframe,"^\\.\n", "")
-  # dataframe <- str_replace(dataframe,"^\\.", "")
-  # dataframe <- str_replace(dataframe,"^:", "")
-  # 
-  # #Get rid of breaks between lines
-  # dataframe <- str_replace(dataframe,"(\n|\r){2,}", "\n")
-  # dataframe<- str_replace(dataframe,"\\.\n\\.\n|\\.\r\\.\r", "\\.")
-  # 
-  # #Get rid of floating whitespace
-  # dataframe <- str_replace(dataframe,"\\s{5,}", "")
-  # dataframe <- str_replace(dataframe,"$\\.", "")
-  # 
-  # #Get rid of floating commas at the end of lines
-  # dataframe <- str_replace(dataframe,"\n,", "\n")
-  # 
-  # #Get rid of trailing dots from previous conversions
-  # dataframe <- str_replace(dataframe,"\\.{2,}", "\\.")
-  # 
-  # #Standardise the carriage returns
-  # dataframe<- str_replace(dataframe,"\r\n", "\n")
-  # 
-  # #Convert sentence endings to newlines as the sentence boundary
-  # dataframe <- gsub(".", "\n", dataframe, fixed = TRUE)
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  #Tokenise the sentences
-  standardisedTextOutput<-stri_split_lines(dataframe, omit_empty = TRUE)
-  
-  #Get rid of whitespace
-  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
-  
-  #Get rid of trailing punctuation
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
-  
-  dataframe<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
-  
-
-  
-  
-  return(dataframe)
-}
-
 
 
 #' Standardise location of biopsies or tissue samples
@@ -1008,11 +692,13 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
          "GOJ",
          dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
-    gsub("fundal|fundic|fundus", "GOJ", dataframe[, SampleLocation],ignore.case = TRUE)
+    gsub("fundal|fundus", "stomach", dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
     gsub("pyloric", "Pylorus", dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
     gsub("bx", "biopsy", dataframe[, SampleLocation],ignore.case = TRUE)
+  dataframe[, SampleLocation] <-
+    gsub("gastric cardia", "Cardia", dataframe[, SampleLocation],ignore.case = TRUE)
   
   so<-str_match_all(dataframe[, SampleLocation], LocationList())
   #Collapse as str_match_all outputs a list so need to collapse it to make into a character vector
@@ -1021,6 +707,231 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
   
   return(dataframe)
 }
+
+
+
+
+
+
+
+
+#' Removes negative and normal sentences
+#'
+#' Extraction of the Negative sentences so that normal findings can be
+#' removed and not counted when searching for true diseases. eg remove
+#' No evidence of candidal infection so it doesn't get included if
+#' looking for candidal infections.
+#' It should be used after the Extractor and the optional
+#' NewLines has been used. It can be used as part of the other functions
+#' or as a way of providing a 'positive diagnosis only' type output (see
+#' HistolDx)
+#' @param dataframe dataframe with column of interest
+#' @param Column column of interest
+#' @keywords Negative Sentences
+#' @importFrom stringr str_replace
+#' @export
+#' @examples # Build a character vector and then
+#' # incorporate into a dataframe
+#' anexample<-c("There is no evidence of polyp here",
+#' "Although the prep was poor,there was no adenoma found",
+#' "The colon was basically inflammed, but no polyp was seen",
+#' "The Barrett's segment was not biopsied",
+#' "The C0M7 stretch of Barrett's was flat")
+#' anexample<-data.frame(anexample)
+#' names(anexample)<-"Thecol"
+#' # Run the function on the dataframe and it should get rid of sentences (and
+#' # parts of sentences) with negative parts in them.
+#' hh<-NegativeRemove(anexample,"Thecol")
+
+NegativeRemove <- function(dataframe, Column) {
+  dataframe <- (data.frame(dataframe))
+  # Conjunctions
+  dataframe[, Column] <- gsub(
+    "(but|although|however|though|apart| -|otherwise
+    |unremarkable|\\,)[a-zA-Z0-9_ ]+(no |negative|
+    unremarkable|-ve|normal).*?(\\.|\\n|:|$)\\R*",
+    "\\.\n",
+    dataframe[, Column],
+    perl = TRUE,
+    ignore.case = TRUE
+  )
+  dataframe[, Column] <-
+    gsub(
+      "(no |negative|unremarkable|-ve| normal) .*?([Bb]ut|
+      [Aa]lthough| [Hh]owever| [Tt]hough| [Aa]part| -|[Oo]therwise|
+      [Uu]nremarkable)\\R*",
+      "",
+      dataframe[, Column],
+      perl = TRUE,
+      ignore.case = TRUE
+    )
+  # Nots
+  dataframe[, Column] <-
+    gsub(
+      ".*(?:does|is|was|were|are|have) not.*?(\\.|\n|:|$)\\R*",
+      "",
+      dataframe[, Column],
+      perl = TRUE,
+      ignore.case = TRUE
+    )
+  dataframe[, Column] <-
+    gsub(
+      "not (biop|seen).*?(\\.|\n|:|$)\\R*",
+      "",
+      dataframe[, Column],
+      perl = TRUE,
+      ignore.case = TRUE
+    )
+  # Nos
+  dataframe[, Column] <-
+    gsub(
+      ".*(?:((?<!with)|(?<!there is )|(?<!there are ))\\bno\\b(?![?:A-Za-z])|
+      ([?:]\\s*N?![A-Za-z])).*\\R*",
+      "",
+      dataframe[, Column],
+      perl = TRUE,
+      ignore.case = TRUE
+      )
+  
+  #Withouts
+  dataframe[, Column] <-
+    gsub(
+      ".*without.*\\R*",
+      "",
+      dataframe[, Column],
+      perl = TRUE,
+      ignore.case = TRUE
+    )
+  
+  
+  dataframe[, Column] <-
+    gsub(
+      ".*(:|[?])\\s*(\\bno\\b|n)\\s*[^A-Za-z0-9].*?(\\.|\n|:|$)
+      \\R*",
+      "",
+      dataframe[, Column],
+      perl = TRUE,
+      ignore.case = TRUE
+    )
+  dataframe[, Column] <-
+    gsub(
+      ".*(negative|neither).*?(\\.|\n|:|$)\\R*",
+      "",
+      dataframe[, Column],
+      perl = TRUE,
+      ignore.case = TRUE
+    )
+  # Keep abnormal in- don't ignore case as it messes it up
+  dataframe[, Column] <- str_replace(dataframe[, Column],
+                                     ".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "")
+  # Other negatives
+  dataframe[, Column] <- gsub(
+    ".*there (is|are|were) \\bno\\b .*?(\\.|\n|:|$)\\R*",
+    "",
+    dataframe[, Column],
+    perl = TRUE,
+    ignore.case = TRUE
+  )
+  dataframe[, Column] <- gsub(
+    "(within|with) (normal|\\bno\\b) .*?(\\.|\n|:|$)\\R*",
+    "",
+    dataframe[, Column],
+    perl = TRUE,
+    ignore.case = TRUE
+  )
+  # Specific cases
+  dataframe[, Column] <- gsub(
+    ".*duct.*clear.*?(\\.|\n|:|$)\\R*",
+    "",
+    dataframe[, Column],
+    perl = TRUE,
+    ignore.case = TRUE
+  )
+  # Unanswered prompt lines
+  dataframe[, Column] <- gsub(".*:(\\.|\n)\\R*",
+                              "",
+                              dataframe[, Column],
+                              perl = TRUE,
+                              ignore.case = TRUE)
+  
+  
+  # Time related phrases eg post and previous
+  dataframe[, Column] <- gsub(" (post|previous|prior)[^a-z].+?[A-Za-z]{3}",
+                              " TIME_REPLACED",
+                              dataframe[, Column],
+                              perl = TRUE,
+                              ignore.case = TRUE)
+  
+  
+  return(dataframe[, Column])
+}
+
+#' Find and Replace function
+#'
+#' This is a helper function for finding and replacing from dictionaries like the event list
+#' It uses fuzzy find and replace to account for spelling errors
+#' @keywords Find and replace
+#' @examples # Pending
+#' 
+
+
+spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
+  m <- aregexec(pattern, x, fixed = fixed,ignore.case = T)
+  r <- regmatches(x, m)
+  lens <- lengths(r)
+  if (all(lens == 0)) return(x) else
+    replace(x, lens > 0, mapply(sub, r[lens > 0], replacement, x[lens > 0]))
+}
+
+#' Tidies up messy columns
+#'
+#' This does a general clean up of whitespace,
+#' semi-colons,full stops at the start
+#' of lines and converts end sentence full stops to new lines.
+#' It should be used after the Extractor.
+#' It is used for columns where there is a lot of free text to extract. It
+#' really extracts and standardises the sentences.
+#' @param dataframe dataframe with column of interest
+#' @param Column column of interest
+#' @keywords Cleaner
+#' @export
+#' @importFrom stringr str_replace
+#' @examples ii<-ColumnCleanUp(Myendo$Findings)
+
+
+ColumnCleanUp <- function(vector) {
+
+
+  #Optimise for tokenisation eg full stops followed by a number need to change so add a Letter before the number
+  vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
+  vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
+  vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
+  
+  
+  standardisedTextOutput<-stri_split_boundaries(vector, type="sentence")
+  
+  #Get rid of whitespace
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
+  
+  #Get rid of trailing punctuation
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
+  #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
+   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[A-Za-z]+.*\\?.*[A-Za-z]+.*","",x))
+  
+  
+  #Get rid of strange things
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\,"," ",x))
+  
+  retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
+  return(retVector)
+}
+
+
+
+
+
+
 
 
 
@@ -1137,7 +1048,7 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
     #I need to collapse the unlist
     stringr::str_match_all(dataframe[, MacroColumn], 
                            paste(unlist(lapply(strsplit(regString,"\\|",fixed=FALSE),
-                                               FUN=function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
+                                              function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
   dataframe$NumbOfBx <-
     vapply(mylist, function(p)
       sum(as.numeric(stringr::str_replace_all(p,regString,""))),numeric(1))
@@ -1198,8 +1109,11 @@ HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
                  EntityPairs_OneSentence(dataframe,EventColumn2),
                  EntityPairs_OneSentence(dataframe,EventColumn1))
   
-  #If the 
+  #If there is only a colon (punctuation) and then empty then assume it is a biopsy
   output<-str_replace_all(output, ":,|:$", ":biopsy,")
+  
+  #Make sure only unique values represented:
+  output<-lapply(output, function(x) paste(unlist(unique(unlist(strsplit(x,",")))),collapse=","))
   
   output<-ifelse(grepl("Gastroscopy",dataframe[,Procedure]),
                  str_remove_all(output, paste0('(',tolower(LocationListLower()),')',':biopsy')),
@@ -1223,7 +1137,10 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   library(stringr)
   library(fuzzyjoin)
   library(tidyverse)
-  ToIndex<-str_extract_all(dataframe$PathSite,"(^|,)[a-z]*?:biopsy(|$)")
+  ToIndex<-str_extract_all(dataframe$PathSite,paste0("(^|,)[a-z]+:?(",tolower(HistolType()),")(|$)"))
+
+  paste0("(^|,)[a-z]+:?(",tolower(HistolType()),")(|$)")
+  tolower(HistolType())
   ToIndex<-lapply(ToIndex, function(x) unique(x))
   #Give each an index in the list (taken from the location list)
   
@@ -1232,11 +1149,11 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   replace<-c("ileum:biopsy","ileocaecal:biopsy","caecum:biopsy","ascending:biops","hepatic:biopsy","transverse:biopsy", "splenic:biopsy","descending:biopsy",
              "sigmoid:biopsy","rectosigmoid:biopsy","rectum:biopsy", 
              "ileoanal:biopsy","prepouch:biopsy","pouch:biopsy", 
-             "duodenum:biopsy","antrum:biopsy","stomach:biopsy","goj:biopsy", 
-             "oesophagus:biopsy","colon:biopsy","oesophagus:emr","stomach:emr","duodenum:emr")
+             "duodenum:biopsy","antrum:biopsy","stomach:biopsy","goj:biopsy", "cardia:biopsy",
+             "oesophagus:biopsy","colon:biopsy","oesophagus:emr","goj:emr","stomach:emr","duodenum:emr")
   
   #C stand for colon (and all lower bowel investigations) S stands for surgical O stands for OGD. 
-  replaceValue<-c("C11","C10","C9","C8","C7","C6","C5","C4","C3","C2","C1","S1","S2","S3","O5","O4","O3","O2","O1","colon","oesophagus:emr","stomach:emr","duodenum:emr")
+  replaceValue<-c("C11","C10","C9","C8","C7","C6","C5","C4","C3","C2","C1","S1","S2","S3","O5","O4","O3","O1","O2","O1","colon","O1","O1","O3","O5")
   
   #Create a tibble to merge with the list
   d1 <- tibble(key = replace, val = replaceValue)
@@ -1254,14 +1171,14 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
   ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
   
-  #To do: Add the emr and polyp specimens as a separate site
-  #Check to make sure that the path site os all being extracted
-  #Check to make sure that there are no missing parts of the path site
-  
   return(ToIndex)
 }
 
 
+
+
+
+##########Lists##########
 
 #' Extract pathology type
 #'
@@ -1280,14 +1197,12 @@ HistolType <- function() {
   tofind <-
     paste(
       c(
-        "Resection","Biopsy","EMR","ESD","bx"),
+        "Resection","Biopsy","EMR","ESD","bx","nodul","polyp"),
       collapse = "|"
     )
   return(tofind)
 }
 
-
-##########Lists##########
 
 
 #' Use list of standard locations
@@ -1407,13 +1322,14 @@ EventList<-function(){
                 " rfa"= "RFA",
                 "dilatation"="dilat",
                 "dilated"="dilat",
-                " apc"="APC",
+                "apc"="APC",
                 " emr"="EMR",
                 "clip"="clip",
                 "grasp"="grasp",
                 "probe"="probe",
                 "iodine"="iodine",
                 "acetic"="acetic",
+                
                 "NAC"="NAC",
                 "PEG"="PEG",
                 "botox"="botox"

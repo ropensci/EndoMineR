@@ -69,49 +69,43 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
   #To prevent the length of something else other than Barrett's being described
   #and misinterpreted as a C stage, the sentence with a length must include Barrett's
   #or columnar lined mucosa. Even this wont be fool proof so act with caution
+  
+  #Split report in to sentences
+
+
+  
   dataframe$CStage <-   
     #If the CStage is present then extract it
-    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'(C(\\s|=)*\\d+)'),"C", ""),"Insufficient")
-           
+    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),
+           stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'([Cc](\\s|=)*\\d+)'),"C", ""),"Insufficient")
   
-  
-  #Need to include in the C stage values like 35-40cm and35cm to 40 ## \d+.*?(-|to).*?\d+
-  
- #5 cm in length/long etc 
-  #dataframe$CStage <- as.numeric(str_replace(dataframe$CStage,"C", ""))
-  #dataframe$CStage <- stringr::str_extract_all(dataframe$CStage,"\\d{2}")
-  #dataframe$CStage<-as.numeric(sapply(dataframe$CStage, function(x) abs(diff(as.numeric(x)))))
+dataframe$CStage<-trimws(unlist(dataframe$CStage))
 
-  
-  #dataframe$MStage <- str_extract(dataframe[, EndoReportColumn], "(M(\\s|=)*\\d+)")
-  #dataframe$MStage <- as.numeric(str_replace(dataframe$MStage,"M", ""))
+dataframe$mytext<-stri_split_boundaries(dataframe[,EndoReportColumn], type="sentence")
+dataframe$mytext<-lapply(dataframe$mytext,function(x) trimws(x))
 
-dataframe$MStage <-   
-  #If the MStage is present then extract it
-  ifelse(grepl("(M(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'(M(\\s|=)*\\d+)'),"M", ""),
-         ifelse(dataframe$CStage!="Insufficient",dataframe$CStage,
-         #If the M stage is not present then try to extrapolate it from distance ranges given (extract the range, convert to numbers, subtract the numbers and given final figure)
-         
-         #If no M score then use the C score. This is to prevent there being a C score and then a shorted M score as it has independently detected 'a 1cm finger of Barrett's...) so C7M1 type scores
-         ifelse(grepl("\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*",dataframe[,EndoReportColumn]),
-                as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(dataframe[,EndoReportColumn],"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(x) abs(diff(as.numeric(x))))),
-         
-                #Try to extract lengths if present
-         #ifelse(grepl("(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),stringr::str_extract(stringr::str_match(dataframe[,EndoReportColumn],"(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)"),"\\d"),
-         #length of Barrett's?       
-         ifelse(grepl("(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)(?=[^\\.]*(of |length))[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),stringr::str_extract(stringr::str_match(dataframe[,EndoReportColumn],"(\\.|^)(?=[^\\.]*cm)(?=[^\\.]*Barr)[^\\.]*(\\.|$)"),"\\d"),
-                
-         
-                #If the M stage is still not present then try to extrapolate it using the term tongue or small if Barrett's is also present in the same sentence and equate this to M1
-         ifelse(grepl("(\\.|^)(?=[^\\.]*(small|tiny|tongue))(?=[^\\.]*Barr)[^\\.]*(\\.|$)", dataframe[,EndoReportColumn], perl=TRUE),
-                stringr::str_replace(dataframe[,EndoReportColumn], ".*","1"),"Insufficient")))))
-         
 
-#Need to consider terms that indicate short segment eg have a cm measurement and the term Barrett's and no range and no mention of islands
+dataframe<-dataframe %>%
+  mutate(
+    MStage = map(
+      mytext, ~ case_when(
+        grepl("( M(\\s|=)*\\d+)",.x) ~ stringr::str_replace(stringr::str_extract(.x,"( M(\\s|=)*\\d+)"),"M", ""),
+        #dataframe[,CStage]!="Insufficient" ~ dataframe[,CStage],
+        grepl("(?=[^\\.]*Barr)[^\\.]*\\s+\\d{2}\\s*[cm]*\\s*(to |-| and)\\s*\\d{2}\\s*[cm]*\\s*",.x,ignore.case = TRUE,perl=TRUE)  ~ as.character(as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(.x,"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(y) abs(diff(as.numeric(y)))))),
+        grepl("(?=[^\\.]*cm)(?=[^\\.]*Barr)(?=[^\\.]*(of |length))[^\\.]*", .x, perl=TRUE)  ~  stringr::str_extract(paste0(stringr::str_match(.x,"(?=[^\\.]*cm)(?=[^\\.]*[Bb]arr)(?=[^\\.]*(of |length))[^\\.]*"),collapse=""),"\\d+"),
+        grepl("(\\.|^|\n)(?=[^\\.]*(small|tiny|tongue|finger))(?=[^\\.]*Barr)[^\\.]*(\\.|\n|$)", .x, perl=TRUE) ~  stringr::str_replace(.x, ".*","1"),
+                TRUE ~ "Insufficient")
+    )
+  )
 
-#eg test cases:
-#"there is a 2cm star shaped segment of Barrett's"
-#"1cm finger of barrett's"
+
+
+dataframe$MStage<-lapply(dataframe$MStage, function(x) gsub("Insufficient","",x))
+
+dataframe$MStage<-unlist(lapply(dataframe$MStage, function(x) max(as.numeric(x),na.rm=TRUE)))
+#If there are more than two numbers pick the highest one
+
+dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!="Insufficient",dataframe$CStage,"Insufficient"),dataframe$MStage)
 
   return(dataframe)
 }
@@ -139,45 +133,47 @@ dataframe$MStage <-
 #' # cleaning
 #' # as part of the package.
 #'
-#' v<-HistolAll(Mypath)
+#'
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' # The function then takes the Histology column from the merged data set (v).
 #' # It extracts the worst histological grade for a specimen
-#' b<-Barretts_PathStage(v,'Dx_Simplified')
+#' nn<-HistolDx(Mypath,'Diagnosis')
+#' b<-Barretts_PathStage(nn,'Dx_Simplified')
 #' rm(v)
 
 Barretts_PathStage <- function(dataframe, PathColumn) {
   # Get the worst pathology for that sample inc SM stages
   dataframe <- data.frame(dataframe)
   dataframe$IMorNoIM <-
-    ifelse(grepl("[Ss][Mm]2", dataframe[, PathColumn], perl = TRUE),
+    ifelse(grepl("[Ss][Mm]2", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
            "SM2",  
            ifelse(
-             grepl("[Ss][Mm]1", dataframe[, PathColumn], perl = TRUE),
+             grepl("[Ss][Mm]1", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
              "SM1",
              ifelse(
-               grepl("T1b", dataframe[, PathColumn], perl = TRUE),
+               grepl("T1b", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
                "T1b_Unspec",
                ifelse(
                  grepl("T1a|ntramucosal",
-                       dataframe[, PathColumn], perl = TRUE),
+                       dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
                  "T1a",
                  ifelse(
-                  grepl("[Hh]igh [Gg]rade ", dataframe[, PathColumn], perl = TRUE),
+                  grepl("[Hh]igh [Gg]rade ", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
                    "HGD",
                    ifelse(
-                    grepl("[Ll]ow [Gg]rade", dataframe[, PathColumn], perl = TRUE),
+                    grepl("[Ll]ow [Gg]rade", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
                      "LGD",
                      ifelse(
-                       grepl("[Ii]ndef", dataframe[, PathColumn], perl = TRUE),
+                       grepl("[Ii]ndef", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
                        "IGD",
                        ifelse(
                          grepl(
                            "[Ii]ntestinal [Mm]etaplasia",
                            dataframe[, PathColumn],
+                           ignore.case=TRUE,
                            perl = TRUE
                        ),
                        "IM",
@@ -185,6 +181,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
                          grepl(
                            "",
                            dataframe[, PathColumn],
+                           ignore.case=TRUE,
                            perl = TRUE
                        ),
                        "No_IM",

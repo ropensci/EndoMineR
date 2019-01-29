@@ -150,15 +150,7 @@ test_that("EndoscInstrument", {
   expect_identical(MyEndoscInstrTest$Instrument,"FG5")
 })
 
-#### EndoscIndications test ####
 
-test_that("EndoscIndications", {
-  MyEndoscIndicTest<-data.frame(c("Follow up ulcer healing.\n.\n"))
-  names(MyEndoscIndicTest)<-"Indication"
-  MyEndoscIndicTest <- EndoscIndications(MyEndoscIndicTest, "Indication")
-  expect_true(all(!is.na(MyEndoscIndicTest$Indication)))
-  expect_identical(MyEndoscIndicTest$Indication,"Follow up ulcer healing.")
-})
 
 #### EndoscProcPerformed test ####
 
