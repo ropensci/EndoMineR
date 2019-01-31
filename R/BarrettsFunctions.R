@@ -47,6 +47,7 @@ if (getRversion() >= "2.15.1")
 #' Specfically it extracts the Prague score
 #' @param dataframe dataframe with column of interest
 #' @param EndoReportColumn column of interest
+#' @param EndoReportColumn2 second column of interest
 #' @importFrom stringr str_extract str_replace str_extract_all
 #' @keywords  Prague score
 #' @export
@@ -58,26 +59,20 @@ if (getRversion() >= "2.15.1")
 #' # too
 #'
 #'
-#' aa<-Barretts_PragueScore(Myendo,'Findings')
+#' aa<-Barretts_PragueScore(Myendo,'Findings','Original')
 
 #Change to BarrPrague nee Barretts_PragueScore
-Barretts_PragueScore <- function(dataframe, EndoReportColumn) {
+Barretts_PragueScore <- function(dataframe, EndoReportColumn,EndoReportColumn2) {
   dataframe <- data.frame(dataframe)
-  #Do C stage as an ifelse- note that if there is no C stage, then the function
-  #will look to see if the total length is reported which is assumed to 
-  #be the total C stage but may not be accurate 
-  #To prevent the length of something else other than Barrett's being described
-  #and misinterpreted as a C stage, the sentence with a length must include Barrett's
-  #or columnar lined mucosa. Even this wont be fool proof so act with caution
-  
-  #Split report in to sentences
-
 
   
   dataframe$CStage <-   
     #If the CStage is present then extract it
-    ifelse(grepl("(C(\\s|=)*\\d+)",dataframe[,EndoReportColumn]),
-           stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'([Cc](\\s|=)*\\d+)'),"C", ""),"Insufficient")
+    ifelse(grepl("([Cc](\\s|=)*\\d+)",dataframe[,EndoReportColumn]),
+           stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'([Cc](\\s|=)*\\d+)'),"[Cc]", ""),
+           ifelse(grepl("([Cc](\\s|=)*\\d+)",dataframe[,EndoReportColumn2]),
+                  stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn2],'([Cc](\\s|=)*\\d+)'),"[Cc]", ""),
+                  "Insufficient"))
   
 dataframe$CStage<-trimws(unlist(dataframe$CStage))
 
@@ -97,7 +92,6 @@ dataframe<-dataframe %>%
                 TRUE ~ "Insufficient")
     )
   )
-
 
 
 dataframe$MStage<-lapply(dataframe$MStage, function(x) gsub("Insufficient","",x))

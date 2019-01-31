@@ -671,11 +671,10 @@ TermStandardLocation <- function(dataframe, SampleLocation) {
   dataframe[, SampleLocation] <-
     gsub("distal|proximal|prox ", "", dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <- gsub("sessile", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("\\d+m{2}|\\d+cm", "", dataframe[, SampleLocation],ignore.case = TRUE)
+  #dataframe[, SampleLocation] <-gsub("\\d+m{2}|\\d+cm", "", dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <-
     gsub("pedunculated|pseudo", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <- gsub("\\d", "", dataframe[, SampleLocation],ignore.case = TRUE)
+  #dataframe[, SampleLocation] <- gsub("\\d", "", dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <- gsub("  ", " ", dataframe[, SampleLocation],ignore.case = TRUE)
   dataframe[, SampleLocation] <- gsub(":", "", dataframe[, SampleLocation],ignore.case = TRUE)
   # For upper GI
@@ -1404,3 +1403,58 @@ EventList<-function(){
 #'   write.xlsx(ff, paste0(getwd(),"/MyValidation.xlsx"))
 #' }
 #' #dataframe[,pHospitalNum],
+#' 
+
+
+#' Sensitivity and Specificity of text mining functions
+#'
+#'This is part of the validation workflow. The idea is that 
+#'There is a dataframe which contains a column with the reference value
+#'and another column with the actual value. If the test or reference has not
+#'detected a value then this is a negative and is labelled as 'Insufficient'
+#'
+
+#'
+#' @param dataframe dataframe
+#' @param ref The column with the reference values
+#' @param actual The column with the actual values
+#' @importFrom rlang sym
+#' @importFrom dplyr case_when mutate
+#' @keywords sensitivity and specificity
+#' @export
+#' @examples #To be set up 
+
+
+SensAndSpecif<-function(dataframe,ref,actual){
+  
+  library(rlang)
+  refa <- sym(ref)
+  actuala <- sym(actual)
+  
+  df<-dataframe %>%
+    mutate(
+      SensAndSpec= case_when(
+        !grepl("Insufficient",!!actuala,ignore.case = TRUE) & !!actuala==!!refa ~ "TP",
+        !!actuala!=!!refa & !grepl("Insufficient",!!actuala) ~  "FP",
+        grepl("Insufficient",!!actuala) & !!actuala!=!!refa ~ "FN",
+        grepl("Insufficient",!!actuala,ignore.case = TRUE) & grepl("Insufficient",!!refa,ignore.case = TRUE) ~ "TN",
+        TRUE~"other")
+    )
+  
+  
+  TP<-ifelse(is.na(as.integer(table(df$SensAndSpec)["TP"])),0,as.integer(table(df$SensAndSpec)["TP"]))
+  FP<-ifelse(is.na(as.integer(table(df$SensAndSpec)["FP"])),0,as.integer(table(df$SensAndSpec)["FP"]))
+  TN<-ifelse(is.na(as.integer(table(df$SensAndSpec)["TN"])),0,as.integer(table(df$SensAndSpec)["TN"]))
+  FN<-ifelse(is.na(as.integer(table(df$SensAndSpec)["FN"])),0,as.integer(table(df$SensAndSpec)["FN"]))
+
+  
+  Sensitivity<-round(TP/(TP+FN)*100,digits=2)
+  Specificity<-round(TN/(TN+FP)*100,digits=2)
+  PPV<-round(TP / (TP + FP),digits=2)
+  NPV<- round(TN / (FN + TN),digits=2)
+  Accuracy<-round(TP+TN/(TP+TN+FP+FN),digits=2)
+  
+  stats<-list(Sensitivity=Sensitivity,Specificity=Specificity,PPV=PPV,NPV=NPV,Accuracy=Accuracy)
+  
+  return(stats)
+}
