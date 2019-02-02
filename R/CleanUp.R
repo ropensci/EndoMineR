@@ -906,6 +906,9 @@ ColumnCleanUp <- function(vector) {
   vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
   vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
   
+  #Get rid of query type punctuation:
+  vector<-gsub("(.*)\?(.*[A-Za-z]+)","\\1 \\2",vector)
+  
   
   standardisedTextOutput<-stri_split_boundaries(vector, type="sentence")
   
@@ -1355,7 +1358,7 @@ EventList<-function(){
 #' #' @export
 #' #' @examples #ValidationR(HistolBxSize,myHistol,"histology_report")
 #' 
-#' ValidationR<-function(FUN =funct,dataframe,Column,pHospitalNum){
+#' sensAndSpecificMultip<-function(FUN =funct,dataframe,Column,pHospitalNum){
 #'   dd<-funct(dataframe,Column)
 #'   #Now just want the columns that have changed or have been added from the original as well
 #'   #as well as the columns that sound very similar to the original
@@ -1377,8 +1380,9 @@ EventList<-function(){
 #' #' This is an attempt to determine whether functions are accurate in their extraction
 #' #' It is part of a validation pipeline to make sure the data outputted from a function
 #' #' is accurate
-#' #' It essentially is a comparison of actual vs expected output. The intention is to 
-#' #' then quantify the output of a function for a specific dataset.
+#' #' It essentially is a comparison of actual vs expected output where there are multiple 
+#' #' outputs in the column
+#' #' The intention is to then quantify the output of a function for a specific dataset.
 #' #'
 #' #' @param dataframe dataframe
 #' #' @param testcolumn The dataframe column to run the function on

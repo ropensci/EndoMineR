@@ -84,7 +84,7 @@ dataframe<-dataframe %>%
   mutate(
     MStage = map(
       mytext, ~ case_when(
-        grepl("( M(\\s|=)*\\d+)",.x) ~ stringr::str_replace(stringr::str_extract(.x,"( M(\\s|=)*\\d+)"),"M", ""),
+        grepl("( [Mm](\\s|=)*\\d+)",.x) ~ stringr::str_replace(stringr::str_extract(.x,"( [Mm](\\s|=)*\\d+)"),"M", ""),
         #dataframe[,CStage]!="Insufficient" ~ dataframe[,CStage],
         grepl("(?=[^\\.]*Barr)[^\\.]*\\s+\\d{2}\\s*[cm]*\\s*(to |-| and)\\s*\\d{2}\\s*[cm]*\\s*",.x,ignore.case = TRUE,perl=TRUE)  ~ as.character(as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(.x,"\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"),"\\d{2}"), function(y) abs(diff(as.numeric(y)))))),
         grepl("(?=[^\\.]*cm)(?=[^\\.]*Barr)(?=[^\\.]*(of |length))[^\\.]*", .x, perl=TRUE)  ~  stringr::str_extract(paste0(stringr::str_match(.x,"(?=[^\\.]*cm)(?=[^\\.]*[Bb]arr)(?=[^\\.]*(of |length))[^\\.]*"),collapse=""),"\\d+"),
