@@ -380,8 +380,9 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   
   #If emr is in the histology and in the event then leave it
   output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("(oesophagus|goj):emr",output,ignore.case = TRUE),output,
-                 #If emr is in the histology but not in the event then add it
-                 ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),paste0(output,";","emr"),
+                 #If emr is in the histology but not in the event then dont add it (sometimes EMR written in the request as past therapy
+                 #but  it hasn't actually been done)
+                 ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),
                         #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
                         ifelse(!grepl("emr|nodul",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
   
@@ -419,7 +420,9 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   text<-textPrep(dataframe,EventColumn)
+  text<-lapply(text,function(x) tolower(x))
   
+
   #Some clean up to get rid of white space- all of this prob already covered in the ColumnCleanUp function but for investigation later
   text<-lapply(text,function(x) gsub("[[:punct:]]+"," ",x))
   tofind <-tolower(LocationList())
@@ -428,9 +431,10 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
   
   text<-sapply(text,function(x) {
     
-    
+    #browser()
     x<-trimws(x)
     
+    #browser()
     try(words <-
           x %>%
           unlist() %>%
@@ -444,16 +448,9 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
     words<-words[words != ""] 
     x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
     i1 <- which(lengths(x1) > 0)
-    
-    #Convert the 
-    
-    
-    
+
     
     try(if(any(i1)) {
-      
-      
-      
       EventList %>%
         map(
           ~words %>%
@@ -465,7 +462,7 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
                 str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
                 map_if(is_empty, ~ NA_character_) %>%
                 flatten_chr()%>%
-                `[[`(1) %>%
+                `[[`(length(.)) %>%
                 
                 .[length(.)]
             ) %>%
@@ -907,7 +904,7 @@ ColumnCleanUp <- function(vector) {
   vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
   
   #Get rid of query type punctuation:
-  vector<-gsub("(.*)\?(.*[A-Za-z]+)","\\1 \\2",vector)
+  vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
   
   
   standardisedTextOutput<-stri_split_boundaries(vector, type="sentence")
@@ -1328,13 +1325,10 @@ EventList<-function(){
                 " emr"="EMR",
                 "clip"="clip",
                 "grasp"="grasp",
-                "probe"="probe",
                 "iodine"="iodine",
                 "acetic"="acetic",
-                
                 "NAC"="NAC",
-                "PEG"="PEG",
-                "botox"="botox"
+                "Brushings"="brushings"
   )
   return(Event)
 }
@@ -1438,10 +1432,10 @@ SensAndSpecif<-function(dataframe,ref,actual){
   df<-dataframe %>%
     mutate(
       SensAndSpec= case_when(
-        !grepl("Insufficient",!!actuala,ignore.case = TRUE) & !!actuala==!!refa ~ "TP",
-        !!actuala!=!!refa & !grepl("Insufficient",!!actuala) ~  "FP",
-        grepl("Insufficient",!!actuala) & !!actuala!=!!refa ~ "FN",
-        grepl("Insufficient",!!actuala,ignore.case = TRUE) & grepl("Insufficient",!!refa,ignore.case = TRUE) ~ "TN",
+        !grepl("[Ii]nsufficient",!!actuala,ignore.case = TRUE) & !!actuala==!!refa ~ "TP",
+        !!actuala!=!!refa & !grepl("[Ii]nsufficient",!!actuala) ~  "FP",
+        grepl("[Ii]nsufficient",!!actuala) & !!actuala!=!!refa ~ "FN",
+        grepl("[Ii]nsufficient",!!actuala,ignore.case = TRUE) & grepl("[Ii]nsufficient",!!refa,ignore.case = TRUE) ~ "TN",
         TRUE~"other")
     )
   

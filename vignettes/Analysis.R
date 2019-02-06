@@ -13,8 +13,6 @@ knitr::include_graphics("img/EndoMineR_Surveillance.svg")
 ## ----exampleSurveillanceTimeByRow, eval = TRUE---------------------------
 em1<-SurveilTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
 pander(head(data.frame(em1[2],em1[ncol(em1)]),5))
-em2<-SurveilLastToNow(Myendo,'HospitalNumber','Dateofprocedure')
-pander(head(data.frame(em2[2],em2[ncol(em2)]),5))
 em3<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 pander(head(data.frame(em3[2],em3[5]),5))
 em4<-SurveilFirstTest(Myendo,'HospitalNumber','Dateofprocedure')

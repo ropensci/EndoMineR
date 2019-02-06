@@ -4,7 +4,7 @@
 \alias{ColumnCleanUp}
 \title{Tidies up messy columns}
 \usage{
-ColumnCleanUp(dataframe, Column)
+ColumnCleanUp(vector)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}
@@ -20,6 +20,6 @@ It is used for columns where there is a lot of free text to extract. It
 really extracts and standardises the sentences.
 }
 \examples{
-ii<-ColumnCleanUp(Myendo,"Findings")
+ii<-ColumnCleanUp(Myendo$Findings)
 }
 \keyword{Cleaner}

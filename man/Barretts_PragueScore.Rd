@@ -4,12 +4,14 @@
 \alias{Barretts_PragueScore}
 \title{Prague score extraction}
 \usage{
-Barretts_PragueScore(dataframe, EndoReportColumn)
+Barretts_PragueScore(dataframe, EndoReportColumn, EndoReportColumn2)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}
 
 \item{EndoReportColumn}{column of interest}
+
+\item{EndoReportColumn2}{second column of interest}
 }
 \description{
 The aim is to extract a C and M stage (Prague score) for Barrett's samples.
@@ -26,7 +28,7 @@ Specfically it extracts the Prague score
 # too
 
 
-aa<-Barretts_PragueScore(Myendo,'Findings')
+aa<-Barretts_PragueScore(Myendo,'Findings','Original')
 }
 \keyword{Prague}
 \keyword{score}

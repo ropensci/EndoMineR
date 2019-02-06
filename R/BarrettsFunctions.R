@@ -72,9 +72,13 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn,EndoReportColumn2) 
            stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'([Cc](\\s|=)*\\d+)'),"[Cc]", ""),
            ifelse(grepl("([Cc](\\s|=)*\\d+)",dataframe[,EndoReportColumn2]),
                   stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn2],'([Cc](\\s|=)*\\d+)'),"[Cc]", ""),
-                  "Insufficient"))
+                  ifelse(grepl("([Cc](\\s|=)*O(\\s)*[Mm](\\s)*\\d+)",dataframe[,EndoReportColumn]),
+                         stringr::str_replace(stringr::str_extract(dataframe[,EndoReportColumn],'([Cc](\\s|=)*O(\\s)*[Mm](\\s)*\\d+)'),"[Cc]", ""),
+                  "Insufficient")))
   
 dataframe$CStage<-trimws(unlist(dataframe$CStage))
+dataframe$CStage<-gsub("O","0",dataframe$CStage)
+dataframe$CStage<-gsub("M.*","",dataframe$CStage)
 
 dataframe$mytext<-stri_split_boundaries(dataframe[,EndoReportColumn], type="sentence")
 dataframe$mytext<-lapply(dataframe$mytext,function(x) trimws(x))
@@ -95,6 +99,7 @@ dataframe<-dataframe %>%
 
 
 dataframe$MStage<-lapply(dataframe$MStage, function(x) gsub("Insufficient","",x))
+dataframe$MStage<-lapply(dataframe$MStage, function(x) gsub("m","",x))
 
 dataframe$MStage<-unlist(lapply(dataframe$MStage, function(x) max(as.numeric(x),na.rm=TRUE)))
 #If there are more than two numbers pick the highest one
@@ -165,7 +170,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
                        "IGD",
                        ifelse(
                          grepl(
-                           "[Ii]ntestinal [Mm]etaplasia",
+                           "[Ii]ntestinal|[^-][Ss]pecialised",
                            dataframe[, PathColumn],
                            ignore.case=TRUE,
                            perl = TRUE
@@ -173,13 +178,13 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
                        "IM",
                        ifelse(
                          grepl(
-                           "",
+                           "[Mm]etaplasia|[Cc]olumnar|Glandular",
                            dataframe[, PathColumn],
                            ignore.case=TRUE,
                            perl = TRUE
                        ),
                        "No_IM",
-                  ifelse(is.na(dataframe[, PathColumn]), "No tissue", "No_IM")
+                  ifelse(is.na(dataframe[, PathColumn]), "Insufficient", "Insufficient")
                        )
                        )
                        )
@@ -260,54 +265,7 @@ Barretts_FUType <- function(dataframe) {
 
 
 
-#' Follow up group determination
-#'
-#' This function collects all the Barrett's functions togather as a 
-#' parent function. The function checks the column names and performs
-#' the necessary subfunction as long as the column is named correctly. 
-#' The function follows the Histology function. You can use the same column
-#' names as suggested with the parent function HistolAll
-#' @param dataframe the dataframe(merged endoscopy and histology).
-#' @keywords Barretts
-#' @importFrom stringr str_extract str_replace
-#' @export
-#' @examples  
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
-#' 'HospitalNumber')
-#' #The function relies on the other Barrett's functions being run as well:
-#' dd<-BarrettsAll(v)
-#' rm(v)
 
-
-
-BarrettsAll <- function(dataframe) {
-  if("Histology" %in% colnames(dataframe)){
-    dataframe<-Barretts_PathStage(dataframe,'Histology')
-  }
-  
-  
-  if("Findings" %in% colnames(dataframe)){
-    dataframe<-Barretts_PragueScore(dataframe,'Findings')
-    dataframe<-Barretts_FUType(dataframe)
-  }
-  
-  if("Histology" %in% colnames(dataframe)){
-    if("ProcedurePerformed" %in% colnames(dataframe)){
-      if("Indications" %in% colnames(dataframe)){
-        if("Findings" %in% colnames(dataframe)){
-          dataframe<-Barretts_EventType(dataframe,'Histology',
-                       'ProcedurePerformed','Indications','Findings')
-        }
-      }
-    }
-  }
-  dataframe<-data.frame(dataframe)
-  
-  return(dataframe)
-  
-  }
 
 ############## Surveillance functions ########
 

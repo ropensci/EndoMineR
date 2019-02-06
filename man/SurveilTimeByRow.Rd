@@ -14,7 +14,8 @@ SurveilTimeByRow(dataframe, HospNum_Id, Endo_ResultPerformed)
 \item{Endo_ResultPerformed}{Date of the Endoscopy}
 }
 \description{
-This determines the time difference between each test for a patient in days.
+This determines the time difference between each test for a patient in days
+It returns the time since the first and the last study.
 }
 \examples{
 aa<-SurveilTimeByRow(Myendo,'HospitalNumber',

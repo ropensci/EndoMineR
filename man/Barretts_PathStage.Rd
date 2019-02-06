@@ -30,14 +30,15 @@ which is called Dx_Simplified
 # cleaning
 # as part of the package.
 
-v<-HistolAll(Mypath)
+
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 'HospitalNumber')
 # The function then takes the Histology column from the merged data set (v).
 # It extracts the worst histological grade for a specimen
-b<-Barretts_PathStage(v,'Dx_Simplified')
+nn<-HistolDx(Mypath,'Diagnosis')
+b<-Barretts_PathStage(nn,'Dx_Simplified')
 rm(v)
 }
 \keyword{Pathology}
