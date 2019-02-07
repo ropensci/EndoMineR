@@ -511,25 +511,6 @@ test_that("Barretts_PathStage", {
 })
 
 
-#### Barretts_EventType ####
-
-test_that("Barretts_EventType", {
-  f1<-"Some more text"
-  f2<-"RFA as HALO 90 given with good effect"
-  f3<-"  More text here"
-  f4<-" A bit more chat"
-  ff<-data.frame(f1,f2,f3,f4)
-  names(ff)<-c("Histology","ProcedurePerformed","EndoscopicDiagnosis",
-               "Findings")
-  
-  ff<-Barretts_EventType(ff,'Histology','ProcedurePerformed',
-                         'EndoscopicDiagnosis',
-                         'Findings')
-  expect_true(nrow(ff) > 0)
-  expect_identical(ff$EVENT,"RFA")
-  
-})
-
 
 #### Barretts_FUType ####
 
@@ -545,9 +526,7 @@ test_that("Barretts_FUType", {
                "Findings")
   
   ff1<-Barretts_PathStage(ff,'Histology')
-  b2<-Barretts_EventType(ff1,'Histology',
-  'ProcedurePerformed','EndoscopicDiagnosis','Findings')
-  b3<-Barretts_FUType(b2)
+  b3<-Barretts_FUType(ff1)
   expect_true(nrow(b3) > 0)
   expect_identical(b3$FU_Group,"Rule2")
   
@@ -579,9 +558,8 @@ test_that("BarrettsSurveil_HospNum", {
                "Findings","HospitalNumber")
   
   ff1<-Barretts_PathStage(ff,'Histology')
-  b2<-Barretts_EventType(ff1,'Histology',
-                         'ProcedurePerformed','EndoscopicDiagnosis','Findings')
-  b3<-Barretts_FUType(b2)
+
+  b3<-Barretts_FUType(ff1)
   colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
   Rule<-BarrettsSurveil_HospNum(b3,'Rule2','HospitalNumber')
   expect_identical(as.character(Rule$x),"Z433255")
@@ -606,9 +584,8 @@ test_that("BarrettsBxQual", {
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
-  b3<-Barretts_EventType(b2,'Histology','ProcedurePerformed',
-                               'OGDReportWhole','Findings')
-  b4<-Barretts_FUType(b3)
+
+  b4<-Barretts_FUType(b2)
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsBxQual(b4,'Date.x','HospitalNumber',
                                        'Endoscopist')
@@ -640,10 +617,8 @@ test_that("BarrettsDDRQual", {
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
-  b3<-Barretts_EventType(b2,'Histology',
-                               'ProcedurePerformed','OGDReportWhole',
-                               'Findings')
-  b4<-Barretts_FUType(b3)
+
+  b4<-Barretts_FUType(b2)
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsDDRQual(b4,'Endoscopist','IMorNoIM')
 })
@@ -659,9 +634,8 @@ test_that("BarrettsEMRGrades", {
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
-  b3<-Barretts_EventType(b2,'Histology',
-  'ProcedurePerformed','OGDReportWhole','Findings')
-  b4<-Barretts_FUType(b3)
+
+  b4<-Barretts_FUType(b2)
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsEMRGrades(b4)
 })
@@ -678,9 +652,8 @@ test_that("BarrettsBasicNumbers", {
                 "Dateofprocedure","HospitalNumber")
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
-  b3<-Barretts_EventType(b2,'Histology',
-                         'ProcedurePerformed','OGDReportWhole','Findings')
-  b4<-Barretts_FUType(b3)
+
+  b4<-Barretts_FUType(b2)
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsBasicNumbers(b4,"Date.x")
 })
@@ -695,9 +668,8 @@ test_that("BarrettssRFACath", {
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
-  b3<-Barretts_EventType(b2,'Histology',
-                       'ProcedurePerformed','OGDReportWhole','Findings')
-  b4<-Barretts_FUType(b3)
+
+  b4<-Barretts_FUType(b2)
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettssRFACath(b4,"ProcedurePerformed","Findings")
 })
@@ -712,9 +684,7 @@ test_that("BarrettsParisEMR", {
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
-  b3<-Barretts_EventType(b2,'Histology',
-                     'ProcedurePerformed','OGDReportWhole','Findings')
-  b4<-Barretts_FUType(b3)
+  b4<-Barretts_FUType(b2)
   colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
   BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
 })
@@ -728,9 +698,7 @@ test_that("Barretts_CRIM", {
   v<-HistolBxSize(v,'Macroscopicdescription')
   b1<-Barretts_PragueScore(v,'Findings')
   b2<-Barretts_PathStage(b1,'Histology')
-  b3<-Barretts_EventType(b2,'Histology',
-                     'ProcedurePerformed','OGDReportWhole','Findings')
-  colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
+  colnames(b2)[colnames(b2) == 'pHospitalNum'] <- 'HospitalNumber'
   sz<-Barretts_CRIM(b3,'HospitalNumber',"EVENT")
   sz<-data.frame(sz)
   expect_true(nrow(sz) > 0)

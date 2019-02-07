@@ -38,14 +38,13 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 # The function relies on the other Barrett's functions being run as well:
 b1<-Barretts_PragueScore(v,'Findings')
 b2<-Barretts_PathStage(b1,'Histology')
-b3<-Barretts_EventType(b2,'Histology',
-'ProcedurePerformed','Indications','Findings')
-colnames(b3)[colnames(b3) == 'pHospitalNum'] <- 'HospitalNumber'
+colnames(b2)[colnames(b2) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function groups the procedures by patient and then looks at those which
 # have 'nothing' in the event column (which means biopsies only) which was
 # preceded by radiofrequency ablation (RFA) so that these patients are
 # labelled as having clearance of intestinal metaplasia. The result is a true
 # or false column.
+b2$EVENT<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 nn<-Barretts_CRIM(b3,'HospitalNumber',"EVENT")
 rm(v)
 }

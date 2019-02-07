@@ -41,20 +41,13 @@ pander(b[20:23,(ncol(b)-4):ncol(b)])
 ## ----exampleBarretts_EventType, echo = TRUE,message=FALSE, warning=FALSE----
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
 
-#Pick out the therapeutic procedures:
-b<-v[grepl("Therap",v$Indications),]
-b<-Barretts_EventType(b,'Histology', 'ProcedurePerformed','OGDReportWhole','Findings')
 
-
-## ----exampleBarretts_EventType2, echo = TRUE,message=FALSE, warning=FALSE,echo=FALSE----
-pander(b[23:27,(ncol(b)-4):ncol(b)])
 
 ## ----exampleBarretts_FUType, echo = TRUE,message=FALSE, warning=FALSE----
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
 b<-Barretts_PathStage(v,'Histology')
 b1<-Barretts_PragueScore(b)
-b2<-Barretts_EventType(b1,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-b3<-Barretts_FUType(b2)
+b3<-Barretts_FUType(b1)
 
 
 ## ----exampleBarretts_FUType2, echo = FALSE,message=FALSE, warning=FALSE,echo=FALSE----
@@ -62,19 +55,7 @@ b3<-Barretts_FUType(b2)
 panderOptions('table.split.table', Inf)
 pander(b3[23:27,(ncol(b3)-4):ncol(b3)])
 
-## ----exampleBarrettsAll, echo = TRUE,message=FALSE, warning=FALSE--------
 
- # The histology is then merged with the Endoscopy dataset. The merge occurs
- # according to date and Hospital number
- v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
- 'HospitalNumber')
- #The function relies on the other Barrett's functions being run as well:
- b3<-BarrettsAll(v)
-
-
-## ----exampleBarrettsAll1, echo = FALSE,message=FALSE, warning=FALSE------
- panderOptions('table.split.table', Inf)
- pander(b3[23:27,(ncol(b3)-4):ncol(b3)])
 
 ## ----exampleBarretts_LesionRecognitionEMR2, echo = TRUE,fig.width=7,fig.height=5,message=FALSE, warning=FALSE----
 # As long as the code int he chunk above has been run then all that needs to be done is:

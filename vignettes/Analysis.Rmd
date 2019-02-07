@@ -84,7 +84,7 @@ For example, if we have a dataset with events such as 'radiofrequency ablation' 
 
 
 ```{r exampleSurveySankey, eval = FALSE}
-how<-SurveySankey(Myendo,"ProcPerformed")
+how<-SurveySankey(Myendo,"ProcedurePerformed")
 ```
 
 <br>
@@ -103,7 +103,7 @@ knitr::include_graphics("img/EndoMineR_Sankey.svg")
 We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
 
 ```{r examplePatientFlow_CircosPlots, eval = FALSE}
-flow<-PatientFlow_CircosPlots(v,"Dateofprocedure","HospitalNumber","ProcedurePerformed")
+flow<-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")
 ```
 
 <br>
@@ -190,7 +190,7 @@ pander(head(fgg,10))
 Once this is done, a column called SampleLocation is appended to the existing dataset. This will attempt to state the location of all samples whether they are resections/ biopsies or polyps. If polyps specifically need to be located then the PolypLocator function can be used (after the TermStandardLocation function).
 
 ```{r examplePolypTidyUpLocator}
-fgg<-PolypLocator(fgg,'SampleLocation') 
+fgg<-PolypLocator(fgg,'AllSampleLocator') 
 
 #Just some column selection
 fg<-data.frame(fgg[(ncol(fgg)-2)],fgg[(ncol(fgg)-1)],fgg[(ncol(fgg))])

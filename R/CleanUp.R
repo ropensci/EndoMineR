@@ -361,6 +361,7 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
 #' @param Procedure Column saying which procedure was performed
 #' @param Macroscopic Column describing all the macroscopic specimens
 #' @param Histology Column with free text histology (usually microscopic histology)
+#' @export
 #' @examples # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 
 EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology){
@@ -414,6 +415,8 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
 #' @keywords Find and replace
 #' @param EventColumn1 The relevant pathology text column
 #' @param EventColumn2 The alternative pathology text column
+#' @importFrom stringr str_replace_na str_c str_split str_which
+#' @importFrom purrr flatten_chr map_chr map map_if
 #' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_Dunn,"FINDINGS")
 
 EntityPairs_TwoSentence<-function(dataframe,EventColumn){
@@ -891,7 +894,8 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
 #' @param Column column of interest
 #' @keywords Cleaner
 #' @export
-#' @importFrom stringr str_replace
+#' @importFrom stringr str_replace 
+#' @importFrom stringi stri_split_boundaries
 #' @examples ii<-ColumnCleanUp(Myendo$Findings)
 
 
@@ -905,7 +909,6 @@ ColumnCleanUp <- function(vector) {
   
   #Get rid of query type punctuation:
   vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
-  
   
   standardisedTextOutput<-stri_split_boundaries(vector, type="sentence")
   
@@ -1094,6 +1097,7 @@ HistolBxSize <- function(dataframe, MacroColumn) {
 #' @param Procedure The procedure performed
 #' @param EventColumn1 The relevant pathology text column
 #' @param EventColumn2 The alternative pathology text column
+#' @export
 #' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 
 HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
@@ -1127,6 +1131,7 @@ HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
 #'
 #' This returns a number for all the biopsies taken based on distance from orifice. It is for biopsies only
 #' @keywords Pathology biopsy index
+#' @export
 #' @param PathSite The column that has the pathology locatio and tissue type from HistolTypeAndSite
 #' @examples # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
 #' SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")

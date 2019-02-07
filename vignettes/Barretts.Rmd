@@ -101,18 +101,6 @@ We also need to process any endoscopies where an event other than surveillance h
 <br>
 
 
-```{r exampleBarretts_EventType, echo = TRUE,message=FALSE, warning=FALSE}
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
-
-#Pick out the therapeutic procedures:
-b<-v[grepl("Therap",v$Indications),]
-b<-Barretts_EventType(b,'Histology', 'ProcedurePerformed','OGDReportWhole','Findings')
-
-```
-
-```{r exampleBarretts_EventType2, echo = TRUE,message=FALSE, warning=FALSE,echo=FALSE}
-pander(b[23:27,(ncol(b)-4):ncol(b)])
-```
 
 
 So far we have extracted the worst pathological stage per sample as well as the length of the Barrett's segment where available. We have also extracted any therapeutic events that have occurred. These separate columns are the building blocks for further analyses.
@@ -129,8 +117,8 @@ Having done these pre-processing steps, the follow-up group to which the last en
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
 b<-Barretts_PathStage(v,'Histology')
 b1<-Barretts_PragueScore(b,'Findings')
-b2<-Barretts_EventType(b1,'Histology','ProcedurePerformed','OGDReportWhole','Findings')
-b3<-Barretts_FUType(b2)
+b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
+b3<-Barretts_FUType(b1)
 
 ```
 
@@ -141,29 +129,6 @@ panderOptions('table.split.table', Inf)
 pander(b3[23:27,(ncol(b3)-4):ncol(b3)])
 ```
 
-###Running all the Barrett's functions:
-
-It is sometimes useful to run all the Barrett's functions rather than one by one.
-This is provided by the function BarrettsAll which is a parent function for
-Barretts_PathStage, Barretts_EventType, Barretts_FUType. It relies on the columns being named in a standardised way but not all the columns need to be present- if they are not present the BarrettsAll function will just skip them.
-
-
-
-```{r exampleBarrettsAll, echo = TRUE,message=FALSE, warning=FALSE}
-
- # The histology is then merged with the Endoscopy dataset. The merge occurs
- # according to date and Hospital number
- v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
- 'HospitalNumber')
- #The function relies on the other Barrett's functions being run as well:
- b3<-BarrettsAll(v)
-
-```
-
-```{r exampleBarrettsAll1, echo = FALSE,message=FALSE, warning=FALSE}
- panderOptions('table.split.table', Inf)
- pander(b3[23:27,(ncol(b3)-4):ncol(b3)])
-```
 
 
 ## Assessment of Barrett's therapeutics

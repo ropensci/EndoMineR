@@ -25,8 +25,7 @@
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b<-Barretts_PathStage(v,'Histology')
 #' aa<-Barretts_PragueScore(b,'Findings')
-#' bb<-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
-#' aa<-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' aa<-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
 #' myNotableWords<-c("No_IM","IM","LGD","HGD","T1a)
 #' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)}
 \usage{
@@ -65,8 +64,7 @@ eg hostpital number}
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b<-Barretts_PathStage(v,'Histology')
 #' aa<-Barretts_PragueScore(b,'Findings')
-#' bb<-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
-#' aa<-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' aa<-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
 #' myNotableWords<-c("No_IM","IM","LGD","HGD","T1a)
 #' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)
 }

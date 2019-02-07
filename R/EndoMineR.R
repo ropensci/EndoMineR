@@ -69,7 +69,7 @@ SurveilTimeByRow <-
       mutate(TimeToNext = difftime(as.Date(!!Endo_ResultPerformeda), lead(as.Date(
         !!Endo_ResultPerformeda
       ), 1), units = "days")) %>%
-      mutate(TimeSinceLast = difftime(Sys.Date(), last(!!Endo_ResultPerformeda),
+      mutate(TimeSinceLast = difftime(Sys.Date(), dplyr::last(!!Endo_ResultPerformeda),
                                  units = "days"))
      dataframe<-data.frame(ret)
      return(dataframe)
@@ -262,8 +262,7 @@ HowManyTests <-
 #' #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' #' b<-Barretts_PathStage(v,'Histology')
 #' #' aa<-Barretts_PragueScore(b,'Findings')
-#' #' bb<-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
-#' #' aa<-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' #' aa<-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
 #' #' myNotableWords<-c("No_IM","IM","LGD","HGD","T1a)
 #' #' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)
 #' 

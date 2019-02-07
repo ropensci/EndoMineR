@@ -32,12 +32,10 @@ v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
 # The function relies on the other Barrett's functions being run as well:
 b1<-Barretts_PragueScore(v,'Findings')
 b2<-Barretts_PathStage(b1,'Histology')
-b3<-Barretts_EventType(b2,'Histology',
-'ProcedurePerformed','Indications','Findings')
 # The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-b4<-Barretts_FUType(b3)
+b4<-Barretts_FUType(b2)
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function takes the RFA cases by looking in any free text column where
 # endoscopy fingings are described and then summarising by RFA subtype

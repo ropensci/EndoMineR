@@ -27,6 +27,7 @@ pander::panderOptions('table.split.table', Inf)
 pander(head(em5))
 
 ## ----exampleHowManyTests-------------------------------------------------
+Myendo<-data.frame(Myendo)
 how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 how[1]
 
@@ -67,7 +68,7 @@ fgg<-data.frame(f[(ncol(f)-1)],f[(ncol(f))])
 pander(head(fgg,10))
 
 ## ----examplePolypTidyUpLocator-------------------------------------------
-fgg<-PolypLocator(fgg,'SampleLocation') 
+fgg<-PolypLocator(fgg,'AllSampleLocator') 
 
 #Just some column selection
 fg<-data.frame(fgg[(ncol(fgg)-2)],fgg[(ncol(fgg)-1)],fgg[(ncol(fgg))])
