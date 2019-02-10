@@ -1168,3 +1168,42 @@ EndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIA
   
   return(primDxVector)
 }
+
+
+###### Graphics ########################################## 
+
+EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
+
+# Create the matrix
+df3 <-
+  data.frame(EndoSubsetEMR$ParisClass, EndoSubsetEMR$IMorNoIM)
+# Reorganise the column names and rows Get rid of no Paris EMR's
+dfy <- df3[!df3$EndoSubsetEMR.ParisClass == "No_Paris", ]
+# Get the histology proportions by the Paris grade
+tr4 <- as.data.frame.matrix(prop.table(table(dfy), 1))
+
+tr5 <- as.matrix(tr4)
+tr5 <- head(tr5, -1)
+# Create the heatmap par(oma = c(4, 0, 0, 4))
+
+tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
+tr5 <- t(tr5)
+tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
+tr5 <- t(tr5)
+if (nrow(tr5) > 2 & ncol(tr5) > 2) {
+  colors <- c(seq(-1, 0.2, length = 100),
+              seq(0.21, 0.8, length = 100),
+              seq(0.81, 1, length = 100))
+  
+  gplots::heatmap.2(
+    tr5,
+    trace = "none",
+    breaks = colors,
+    density.info = "none",
+    dendrogram = "none",
+    Rowv = FALSE,
+    Colv = FALSE,
+    cexRow = 3.5,
+    cexCol = 1.5
+  )
+}

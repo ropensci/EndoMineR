@@ -373,7 +373,7 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   # Extract the events from the 
   output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
   
-  MyHistolEvents<-HistolTypeAndSite(dataframe,"PROCEDUREPERFORMED","Histo_ResultText","MACROSCOPICALDESCRIPTION")
+  MyHistolEvents<-HistolTypeAndSite(dataframe,Procedure,Histology,Macroscopic)
   output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
   
   #Add emr only if this is seen in the histopath
@@ -488,6 +488,7 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
 #' @keywords PathPairLookup
 #' @param EventColumn1 The relevant pathology text column
 #' @param EventColumn2 The alternative pathology text column
+#' @importFrom purrr flatten_chr map_chr map map_if
 #' @examples # tbb<-EntityPairs_OneSentence(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION")
 
 EntityPairs_OneSentence<-function(dataframe,EventColumn){
@@ -523,6 +524,7 @@ EntityPairs_OneSentence<-function(dataframe,EventColumn){
 #' it needs a dataframe not a tibble so this needs to be converted prior to usage.
 #' @keywords Find and replace
 #' @param EventColumn The relevant pathology text column
+#' @importFrom stringi stri_split_boundaries
 #' @examples # textPrep(SelfOGD_Dunn,"FINDINGS")
 #' 
 textPrep<-function(dataframe,EventColumn){
@@ -1330,7 +1332,7 @@ EventList<-function(){
                 " emr"="EMR",
                 "clip"="clip",
                 "grasp"="grasp",
-                "iodine"="iodine",
+                "iodine"="iodine", 
                 "acetic"="acetic",
                 "NAC"="NAC",
                 "Brushings"="brushings"

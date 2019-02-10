@@ -128,6 +128,7 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 #' @param PathColumn column of interest
 #' @keywords Pathology extraction
 #' @export
+#' @import rlang sym
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data 
 #' # cleaning
@@ -147,54 +148,25 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 Barretts_PathStage <- function(dataframe, PathColumn) {
   # Get the worst pathology for that sample inc SM stages
   dataframe <- data.frame(dataframe)
-  dataframe$IMorNoIM <-
-    ifelse(grepl("[Ss][Mm]2", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
-           "SM2",  
-           ifelse(
-             grepl("[Ss][Mm]1", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
-             "SM1",
-             ifelse(
-               grepl("T1b", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
-               "T1b_Unspec",
-               ifelse(
-                 grepl("T1a|ntramucosal",
-                       dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
-                 "T1a",
-                 ifelse(
-                  grepl("[Hh]igh [Gg]rade ", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
-                   "HGD",
-                   ifelse(
-                    grepl("[Ll]ow [Gg]rade", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
-                     "LGD",
-                     ifelse(
-                       grepl("[Ii]ndef", dataframe[, PathColumn], ignore.case=TRUE,perl = TRUE),
-                       "IGD",
-                       ifelse(
-                         grepl(
-                           "[Ii]ntestinal|[^-][Ss]pecialised",
-                           dataframe[, PathColumn],
-                           ignore.case=TRUE,
-                           perl = TRUE
-                       ),
-                       "IM",
-                       ifelse(
-                         grepl(
-                           "[Mm]etaplasia|[Cc]olumnar|Glandular",
-                           dataframe[, PathColumn],
-                           ignore.case=TRUE,
-                           perl = TRUE
-                       ),
-                       "No_IM",
-                  ifelse(is.na(dataframe[, PathColumn]), "Insufficient", "Insufficient")
-                       )
-                       )
-                       )
-                     )
-                 )
-               )
-             )
-               ))
-  return(dataframe)
+  PathColumna <- sym(PathColumn)
+  
+  df<-dataframe %>%
+    mutate(
+      IMorNoIM = case_when(
+          grepl("sm2", !!PathColumna,ignore.case=TRUE) ~ "SM2",
+          grepl("sm1", !!PathColumna,ignore.case=TRUE) ~ "SM1",
+          grepl("T1b", !!PathColumna,ignore.case=TRUE) ~  "T1b",
+          grepl("T1a|ntramucosal", !!PathColumna,ignore.case=TRUE) ~  "T1a",
+          grepl("[Hh]igh [Gg]rade ", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "HGD",
+          grepl("[Ll]ow [Gg]rade", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "LGD",
+          grepl("[Ii]ndef", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "IGD",
+          grepl("[Ii]ntestinal|[^-][Ss]pecialised", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "IM",
+          grepl("[Mm]etaplasia|[Cc]olumnar|Glandular", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "No_IM",
+          is.na(!!PathColumna) ~  "Insufficient",
+          TRUE ~ "Insufficient")
+      )
+    
+  return(df)
 }
 
 
@@ -245,6 +217,7 @@ Barretts_FUType <- function(dataframe) {
   dataframe <- data.frame(dataframe)
 
  #dataframe$MStage <- as.integer(dataframe$MStage)
+  suppressWarnings(
   dataframe$FU_Group <-
     ifelse(grepl("SM2|SM1|T1b_Unspec|T1a|LGD|HGD|IGD",dataframe$IMorNoIM,perl = TRUE),"Therapy",
            ifelse(dataframe$CStage == "Insufficient" & dataframe$MStage == "Insufficient","NoRules",
@@ -255,6 +228,7 @@ Barretts_FUType <- function(dataframe) {
                                ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & as.numeric(dataframe$CStage) < 3,"Rule2",
                                    ifelse(!is.na(dataframe$CStage) & as.numeric(dataframe$CStage) >= 3,"Rule3",
                                           "NoRules"))))))))
+  )
   
   
   
@@ -263,6 +237,147 @@ Barretts_FUType <- function(dataframe) {
 }
 
 
+#' Therapeutic subtypes
+#'
+#' This function extracts the Event- usually a therapeutic event, from the text
+#' eg endoscopic mucosal resection, radiofrequency ablation etc.
+#' It does not currently include stricture
+#' dilatation.Specfically it extracts the event
+#'
+#' @param dataframe the dataframe
+#' @param HistolReportColumn The histology main text
+#' @param ProcPerformedColumn The Procedure Performed column
+#' @param EndoReportColumn The endoscopic diagnosis column
+#' @param EndoFindingsColumn The endoscopic findings column if different 
+#' to the Diagnosis column
+#' @keywords Event extraction
+#' @export
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#'
+#' v<-Mypath
+#' v<-HistolDx(v,'Diagnosis')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' 'HospitalNumber')
+#' # The function then looks within the Histology and the
+#' # Procedure performed, free text endoscopic Findings and the original
+#' # whole endoscopy report columns from the merged data set (v) for
+#' # EMR/APC/RFA/HALO so that the event for the procedure, is recorded.
+#' v$EndoscopyEvent<-EndoscopyEvent(v,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
+#' rm(v)
+#'
+Barretts_EventType <- function(dataframe, HistolReportColumn, 
+                               ProcPerformedColumn, EndoReportColumn, EndoFindingsColumn) {
+  
+  return(dataframe)
+}
+
+#' RFA catheter use
+#'
+#' This looks at the basic numbers of RFA by catheter type used.
+#' This should only be run after all the BarrettsDataAccord functions.
+#' @param EndoSubsetRFA The dataframe
+#' @param Column report field of interest
+#' @param Column2 Another endoscopy report field of interest
+#' @keywords RFA, Radiofrequency ablation
+#' @export
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date #and Hospital number
+#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
+#' "Dateofprocedure","HospitalNumber")
+#' # The function relies on the other Barrett's functions being run as well:
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
+#' # Findings column for permutations of the Prague score.
+#' b4<-Barretts_FUType(b2)
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function takes the RFA cases by looking in any free text column where
+#' # endoscopy fingings are described and then summarising by RFA subtype
+#' ll<-BarrettssRFACath(b4,"ProcedurePerformed","Findings")
+#' rm(v)
+
+BarrettssRFACath <- function(Column, Column2) {
+  
+  #Paste the two columns together so they can be searched as one
+  NewCol<-paste0(Column, Column2)
+  
+  #Extract all the ablation types from the merged columns
+  ablationPositive<- str_extract_all(NewCol,"90|360|HALO60| 60|TTS|[Cc]hannel|APC")
+}
+
+#' Paris vs histopath Barrett's
+#'
+#' This looks at the Paris grades of each EMR and then creates a heatmap
+#' of pathological grade vs
+#' endoscopic Paris grade.This should only be run after all the
+#' BarrettsDataAccord functions.
+#' @param EndoSubsetEMR The dataframe
+#' @param Column Endoscopy report field of interest
+#' @param Column2 Another endoscopy report field of interest
+#' @keywords Does something with data
+#' @export
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#' v<-Mypath
+#' v<-HistolDx(v,'Diagnosis')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' 'HospitalNumber')
+#' #The function relies on the other Barrett's functions being run as well:
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
+#' # Findings column for permutations of the Prague score.
+#' b4<-Barretts_FUType(b2)
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function compares the Paris score 
+#' # from the endoscopy report free text to
+#' # the histopathology scores for the same endoscopies so you can see what the
+#' # lesion recognition is like overall
+#' mm<-BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
+#' rm(v)
+
+BarrettsParisEMR <- function(dataframe, Column, Column2) {
+  
+  NewCol<-paste0(Column, Column2)
+  # Get the worst pathology for that sample inc SM stages
+  #dataframe <- data.frame(dataframe)
+  
+  NewCol<-paste0(dataframe$Column, dataframe$Column)
+  NewCol <- data.frame(NewCol,stringsAsFactors = FALSE)
+  
+  df<-NewCol %>%
+    mutate(
+      ParisClass = case_when(
+        grepl("11a_c|2a_c|[Ii][Ii]a_c", !!PathColumna,ignore.case=TRUE) ~ "2a_c",
+        grepl("[Ii][Ii]a|2a|11a", !!PathColumna,ignore.case=TRUE) ~ "2a",
+        grepl("[Ii][Ii]b|2b|11b", !!PathColumna,ignore.case=TRUE) ~  "2b",
+        grepl("[Ii][Ii][Ii]|III", !!PathColumna,ignore.case=TRUE) ~  "3",
+        grepl("Paris [Tt]ype [Ii]s|1s ", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "!s",
+        grepl("[Ii]p|1p", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "1p",
+        TRUE ~ "No_Paris")
+    )
+  
+  return(df)
+  
+
+  
+}
 
 
 
@@ -347,8 +462,7 @@ BarrettsSurveil <- function(dataframe,
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolAccessionNumber(Mypath,'Histology',
-#' 'SP-\\d{2}-\\d{7}')
+#' v<-Mypath
 #' v<-HistolDx(v,'Diagnosis')
 #' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
@@ -505,10 +619,10 @@ BarrettsBxQual <- function(dataframe,
   Endoscopista <- rlang::sym(Endoscopist)
   
   GroupedByEndoscopy <-
-    dataframe %>% filter(!is.na(CStage), !is.na(NumbOfBx)) %>%
+    suppressWarnings(dataframe %>% filter(!is.na(CStage), !is.na(NumbOfBx)) %>%
     group_by(as.Date(!!Endo_ResultPerformeda),!!PatientID,
              !!Endoscopista) %>%
-    summarise(Sum = sum(NumbOfBx), AvgC = mean(CStage))
+    summarise(Sum = sum(NumbOfBx), AvgC = mean(CStage)))
   
   GroupedByEndoscopy$ExpectedNumber <-
     (GroupedByEndoscopy$AvgC + 1) * 2
@@ -563,7 +677,6 @@ BarrettsBxQual <- function(dataframe,
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -750,83 +863,6 @@ BarrettsEMRGrades <- function(EndoSubsetEMR) {
 
 
 
-#' Therapeutic subtypes
-#'
-#' This function extracts the Event- usually a therapeutic event, from the text
-#' eg endoscopic mucosal resection, radiofrequency ablation etc.
-#' It does not currently include stricture
-#' dilatation.Specfically it extracts the event
-#'
-#' @param dataframe the dataframe
-#' @param HistolReportColumn The histology main text
-#' @param ProcPerformedColumn The Procedure Performed column
-#' @param EndoReportColumn The endoscopic diagnosis column
-#' @param EndoFindingsColumn The endoscopic findings column if different 
-#' to the Diagnosis column
-#' @keywords Event extraction
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#'
-#' v<-HistolAccessionNumber(Mypath,'Histology',
-#' 'SP-\\d{2}-\\d{7}')
-#' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' # The function then looks within the Histology and the
-#' # Procedure performed, free text endoscopic Findings and the original
-#' # whole endoscopy report columns from the merged data set (v) for
-#' # EMR/APC/RFA/HALO so that the event for the procedure, is recorded.
-#' bb<-Barretts_EventType(v,'Histology',
-#' 'ProcedurePerformed','Indications','Findings')
-#' rm(v)
-#'
-Barretts_EventType <- function(dataframe, HistolReportColumn, 
-                               ProcPerformedColumn, EndoReportColumn, EndoFindingsColumn) {
-  dataframe <- data.frame(dataframe)
-  # Get all the EVENTS in:
-  dataframe$EVENT <-
-    ifelse(grepl("[Ee][Mm][Rr]", dataframe[, HistolReportColumn], perl = TRUE),
-           "EMR",
-           ifelse(
-             grepl("[Ee]ndoscopic [Mm]ucosal [Rr]esection",
-                   dataframe[, HistolReportColumn], perl = TRUE),
-             "EMR",
-             ifelse(
-               grepl("ndomucosal", dataframe[, HistolReportColumn], perl = TRUE),
-               "EMR",
-               ifelse(
-                 grepl("HALO|RFA", dataframe[, ProcPerformedColumn], perl = TRUE),
-                 "RFA",
-                 ifelse(
-                   grepl("APC", dataframe[, ProcPerformedColumn], perl = TRUE),
-                   "APC",
-                   ifelse(
-                     grepl("HALO|RFA", dataframe[, EndoReportColumn], perl = TRUE),
-                     "RFA",
-                     ifelse(
-                       grepl("APC", dataframe[, EndoReportColumn], perl = TRUE),
-                       "RFA",
-                       ifelse(
-                         grepl("HALO|RFA", dataframe[, EndoFindingsColumn], perl = TRUE),
-                         "RFA",
-                         ifelse(grepl("APC", dataframe[, EndoFindingsColumn], perl = TRUE), "APC",
-                                "nothing")
-                       )
-                     )
-                   )
-                 )
-               )
-             )
-           ))
-  return(dataframe)
-}
 
 
 
@@ -894,221 +930,11 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
   return(functionResults)
 }
 
-#' RFA catheter use
-#'
-#' This looks at the basic numbers of RFA by catheter type used.
-#' This should only be run after all the BarrettsDataAccord functions.
-#' @param EndoSubsetRFA The dataframe
-#' @param Column report field of interest
-#' @param Column2 Another endoscopy report field of interest
-#' @keywords RFA, Radiofrequency ablation
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date #and Hospital number
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
-#' "Dateofprocedure","HospitalNumber")
-#' # The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function takes the RFA cases by looking in any free text column where
-#' # endoscopy fingings are described and then summarising by RFA subtype
-#' ll<-BarrettssRFACath(b4,"ProcedurePerformed","Findings")
-#' rm(v)
-
-BarrettssRFACath <- function(EndoSubsetRFA, Column, Column2) {
-  EndoSubsetRFA <- EndoSubsetRFA[EndoSubsetRFA$EVENT == "RFA", ]
-  HALO90a <-
-    EndoSubsetRFA[grepl("90", EndoSubsetRFA[, Column], perl = TRUE), ]
-  HALO90b <-
-    EndoSubsetRFA[grepl("90", EndoSubsetRFA[, Column2], perl = TRUE), ]
-  HALO90c <- rbind(HALO90a, HALO90b)
-  
-  HALO360a <-
-    EndoSubsetRFA[grepl("360", EndoSubsetRFA[, Column], perl = TRUE), ]
-  HALO360b <-
-    EndoSubsetRFA[grepl("360", EndoSubsetRFA[, Column2], perl = TRUE), ]
-  HALO360c <- rbind(HALO360a, HALO360b)
-  
-  HALO60a <-
-    EndoSubsetRFA[grepl("HALO60| 60",
-                        EndoSubsetRFA[, Column], perl = TRUE), ]
-  HALO60b <-
-    EndoSubsetRFA[grepl("HALO60| 60", 
-                        EndoSubsetRFA[, Column2], perl = TRUE), ]
-  HALO60c <- rbind(HALO60a, HALO60b)
-  
-  HALOTTSa <-
-    EndoSubsetRFA[grepl("TTS|[Cc]hannel", 
-                        EndoSubsetRFA[, Column], perl = TRUE), ]
-  HALOTTSb <-
-    EndoSubsetRFA[grepl("TTS|[Cc]hannel", 
-                        EndoSubsetRFA[, Column2], perl = TRUE), ]
-  HALOTTSc <- rbind(HALOTTSa, HALOTTSb)
-  
-  HALOAPCa <-
-    EndoSubsetRFA[grepl("APC", EndoSubsetRFA[, Column], perl = TRUE), ]
-  HALOAPCb <-
-    EndoSubsetRFA[grepl("APC", EndoSubsetRFA[, Column2], perl = TRUE), ]
-  HALOAPCc <- rbind(HALOAPCa, HALOAPCb)
-  
-  
-  n <- c(nrow(HALO90c),
-         nrow(HALO360c),
-         nrow(HALO60c),
-         nrow(HALOTTSc),
-         nrow(HALOAPCc))
-  s <- c("HALO 90", "HALO 360", "HALO 60", "HALO TTS", "APC")
-  EMRResult <- data.frame(s, n)
-  # axis(1, at=mids, labels=EMRResult%s) axis(1, at=mids)
-  barplot(
-    EMRResult$n,
-    names.arg = c("HALO 90", "HALO 360", "HALO 60", "HALO TTS", "APC"),
-    xlab = "Catheter type",
-    ylab = "Number of RFA's",
-    cex.lab = 1.5,
-    cex.axis = 1.5,
-    cex.main = 1.5,
-    cex.names = 1.5,
-    main = "RFA Catheter type usage"
-  )
-}
 
 
 
 
-#' Paris vs histopath Barrett's
-#'
-#' This looks at the Paris grades of each EMR and then creates a heatmap
-#' of pathological grade vs
-#' endoscopic Paris grade.This should only be run after all the
-#' BarrettsDataAccord functions.
-#' @param EndoSubsetEMR The dataframe
-#' @param Column Endoscopy report field of interest
-#' @param Column2 Another endoscopy report field of interest
-#' @keywords Does something with data
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-HistolAccessionNumber(Mypath,'Histology',
-#' 'SP-\\d{2}-\\d{7}')
-#' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' #The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function compares the Paris score 
-#' # from the endoscopy report free text to
-#' # the histopathology scores for the same endoscopies so you can see what the
-#' # lesion recognition is like overall
-#' mm<-BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
-#' rm(v)
 
-BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
-  EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
-  EndoSubsetEMR$ParisClass <-
-    ifelse(
-      grepl("11a_c|2a_c|[Ii][Ii]a_c", EndoSubsetEMR[, Column], perl = TRUE) |
-        grepl("11a_c|2a_c|[Ii][Ii]a_c", EndoSubsetEMR[, Column2], perl = TRUE),
-      "2a_c",
-      ifelse(
-        grepl("[Ii][Ii]a|2a|11a",
-              EndoSubsetEMR[, Column], perl = TRUE) |
-          grepl("[Ii][Ii]a|2a|11a", EndoSubsetEMR[, Column2], perl = TRUE),
-        "2a",
-        ifelse(
-          grepl("[Ii][Ii]b|2b|11b", EndoSubsetEMR[, Column], perl = TRUE) |
-            grepl("[Ii][Ii]b|2b|11b",
-                  EndoSubsetEMR[, Column2], perl = TRUE),
-          "2b",
-          ifelse(
-            grepl("[Ii][Ii]c|2c|11c", EndoSubsetEMR[, Column], perl = TRUE) |
-              grepl("[Ii][Ii]c|2c|11c", 
-                    EndoSubsetEMR[, Column2], perl = TRUE),
-            "2c",
-            ifelse(
-              grepl("[Ii][Ii][Ii]|III",
-                    EndoSubsetEMR[, Column], perl = TRUE) |
-                grepl("[Ii][Ii][Ii]|III", 
-                      EndoSubsetEMR[, Column2], perl = TRUE),
-              "3",
-              ifelse(
-                grepl("Paris [Tt]ype [Ii]s|1s "
-                      , EndoSubsetEMR[, Column], perl = TRUE) |
-                  grepl("Paris [Tt]ype [Ii]s|1s",
-                        EndoSubsetEMR[, Column2], perl = TRUE),
-                "1s",
-                ifelse(
-                  grepl("[Ii]p|1p", EndoSubsetEMR[, Column], perl = TRUE) |
-                    grepl("[Ii]p|1p", EndoSubsetEMR[, Column2], perl = TRUE),
-                  "1p",
-                  "No_Paris"
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-  
-  # Create the matrix
-  df3 <-
-    data.frame(EndoSubsetEMR$ParisClass, EndoSubsetEMR$IMorNoIM)
-  # Reorganise the column names and rows Get rid of no Paris EMR's
-  dfy <- df3[!df3$EndoSubsetEMR.ParisClass == "No_Paris", ]
-  # Get the histology proportions by the Paris grade
-  tr4 <- as.data.frame.matrix(prop.table(table(dfy), 1))
-  
-  tr5 <- as.matrix(tr4)
-  tr5 <- head(tr5, -1)
-  # Create the heatmap par(oma = c(4, 0, 0, 4))
-  
-  tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
-  tr5 <- t(tr5)
-  tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
-  tr5 <- t(tr5)
-  if (nrow(tr5) > 2 & ncol(tr5) > 2) {
-    colors <- c(seq(-1, 0.2, length = 100),
-                seq(0.21, 0.8, length = 100),
-                seq(0.81, 1, length = 100))
-    
-    gplots::heatmap.2(
-      tr5,
-      trace = "none",
-      breaks = colors,
-      density.info = "none",
-      dendrogram = "none",
-      Rowv = FALSE,
-      Colv = FALSE,
-      cexRow = 3.5,
-      cexCol = 1.5
-    )
-  }
-  
-}
 
 #' CRIM status Barrett's
 #'
@@ -1128,8 +954,7 @@ BarrettsParisEMR <- function(EndoSubsetEMR, Column, Column2) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolAccessionNumber(Mypath,'Histology',
-#' 'SP-\\d{2}-\\d{7}')
+#' v<-Mypath
 #' v<-HistolDx(v,'Diagnosis')
 #' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')

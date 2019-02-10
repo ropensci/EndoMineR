@@ -291,25 +291,6 @@ Mypath3<-data.frame(Mypath["HospitalNumber"],Mypath["Diagnosis"])
 pander(head(Mypath3,10))
 ```
 
-```{r exampleHistolExtrapolDx3, echo = TRUE}
-Mypath3<-HistolExtrapolDx(Mypath3,"Diagnosis","")
-```
-
-
-```{r exampleHistolExtrapolDx4, echo = FALSE}
-pander(head(Mypath3,10))
-```
-
-
-Other less useful functions include but which may be useful in certain hospitals and certain situations in
-
-1. HistolAccessionNumber which extracts Accession Number  data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.
-
-
-```{r exampleOtherFunctionsHistology, eval = FALSE}
-
-v<-HistolAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
-```
 
 <br>
 <br>

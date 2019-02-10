@@ -245,19 +245,7 @@ test_that("HistolExtrapolDx", {
                    "dyspla")
 })
 
-#### HistolAccessionNumber test ####
 
-test_that("HistolAccessionNumber", {
-  
-  ff<-"Barrett's oesophagus- dysplasia seen SP-56-1500801"
-  ff<-data.frame(ff)
-  names(ff)<-"AccessionNumber"
-  HistolAccessionNumberTest<-HistolAccessionNumber(ff,'AccessionNumber',
-                                                   "SP-\\d{2}-\\d{7}")
-  expect_true(all(!is.na(HistolAccessionNumberTest$AccessionNumber)))
-  expect_identical(HistolAccessionNumberTest$AccessionNumber,
-                   "SP-56-1500801")
-})
 
 #### HistolMacDescrip test ####
 

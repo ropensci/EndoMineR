@@ -103,9 +103,6 @@ Mypath3<-HistolExtrapolDx(Mypath3,"Diagnosis","")
 ## ----exampleHistolExtrapolDx4, echo = FALSE------------------------------
 pander(head(Mypath3,10))
 
-## ----exampleOtherFunctionsHistology, eval = FALSE------------------------
-#  
-#  v<-HistolAccessionNumber(Mypath,"Histology","SP-\\d{2}-\\d{7}")
 
 ## ----exampleNeg, echo = FALSE--------------------------------------------
 Mypath[7,10]

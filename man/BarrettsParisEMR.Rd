@@ -23,8 +23,7 @@ BarrettsDataAccord functions.
 # Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
-v<-HistolAccessionNumber(Mypath,'Histology',
-'SP-\\\\d{2}-\\\\d{7}')
+v<-Mypath
 v<-HistolDx(v,'Diagnosis')
 v<-HistolExtrapolDx(v,'Diagnosis',"")
 v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
