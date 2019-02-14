@@ -32,9 +32,6 @@ dilatation.Specfically it extracts the event
 
 v<-Mypath
 v<-HistolDx(v,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis',"")
-v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -43,8 +40,7 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 # Procedure performed, free text endoscopic Findings and the original
 # whole endoscopy report columns from the merged data set (v) for
 # EMR/APC/RFA/HALO so that the event for the procedure, is recorded.
-bb<-Barretts_EventType(v,'Histology',
-'ProcedurePerformed','Indications','Findings')
+v$EndoscopyEvent<-EndoscopyEvent(v,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
 rm(v)
 
 }

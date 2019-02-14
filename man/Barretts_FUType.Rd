@@ -4,7 +4,7 @@
 \alias{Barretts_FUType}
 \title{Follow up group determination}
 \usage{
-Barretts_FUType(dataframe)
+Barretts_FUType(dataframe, CStage, MStage, IMorNoIM)
 }
 \arguments{
 \item{dataframe}{the dataframe(which has to have been processed by the

@@ -128,7 +128,7 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 #' @param PathColumn column of interest
 #' @keywords Pathology extraction
 #' @export
-#' @import rlang sym
+#' @importFrom rlang sym
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data 
 #' # cleaning
@@ -148,7 +148,7 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 Barretts_PathStage <- function(dataframe, PathColumn) {
   # Get the worst pathology for that sample inc SM stages
   dataframe <- data.frame(dataframe)
-  PathColumna <- sym(PathColumn)
+  PathColumna <- rlang::sym(PathColumn)
   
   df<-dataframe %>%
     mutate(
@@ -213,27 +213,29 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' cc<-Barretts_FUType(b2)
 #' rm(v)
 
-Barretts_FUType <- function(dataframe) {
+Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
   dataframe <- data.frame(dataframe)
+  
+  CStagea<-rlang::sym(CStage)
+  MStagea<-rlang::sym(MStage)
+  IMorNoIMa<-rlang::sym(IMorNoIM)
 
- #dataframe$MStage <- as.integer(dataframe$MStage)
-  suppressWarnings(
-  dataframe$FU_Group <-
-    ifelse(grepl("SM2|SM1|T1b_Unspec|T1a|LGD|HGD|IGD",dataframe$IMorNoIM,perl = TRUE),"Therapy",
-           ifelse(dataframe$CStage == "Insufficient" & dataframe$MStage == "Insufficient","NoRules",
-    ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$MStage) & as.numeric(dataframe$MStage) < 3,"Rule1",
-           ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$MStage) & as.numeric(dataframe$MStage) < 3,"Rule2",
-                  ifelse(!is.na(dataframe$MStage) & as.numeric(dataframe$MStage) >= 3, "Rule3", 
-                         ifelse(dataframe$IMorNoIM == "No_IM" & !is.na(dataframe$CStage) & as.numeric(dataframe$CStage) < 3,"Rule1",
-                               ifelse(dataframe$IMorNoIM == "IM" & !is.na(dataframe$CStage) & as.numeric(dataframe$CStage) < 3,"Rule2",
-                                   ifelse(!is.na(dataframe$CStage) & as.numeric(dataframe$CStage) >= 3,"Rule3",
-                                          "NoRules"))))))))
-  )
+  df<-dataframe %>%
+    mutate(
+      ParisClass = case_when(
+        grepl("SM2|SM1|T1b_Unspec|T1a|LGD|HGD|IGD", !!IMorNoIMa,ignore.case=TRUE) ~ "Therapy",
+        !!CStagea == "Insufficient" & !!MStagea == "Insufficient" ~ "NoRules",
+        !!IMorNoIMa == "No_IM" & !is.na(!!MStagea) & as.numeric(!!MStagea) < 3 ~ "Rule1",
+        !!IMorNoIMa == "IM" & !is.na(!!MStagea) & as.numeric(!!MStagea) < 3 ~ "Rule2",
+        (!is.na(!!MStagea) & as.numeric(!!MStagea)) >= 3 ~ "Rule3",
+        !!IMorNoIMa == "No_IM" & !is.na(!!CStagea) & as.numeric(!!CStagea) < 3 ~"Rule1",
+        !!IMorNoIMa == "IM" & !is.na(!!CStagea) & as.numeric(!!CStagea) < 3 ~"Rule2",
+        (!is.na(!!CStagea) & as.numeric(!!CStagea)) >= 3 ~ "Rule3",
+        TRUE ~ "NoRules")
+    )
   
-  
-  
-  
-  return(dataframe)
+  return(df)
+
 }
 
 
@@ -275,47 +277,6 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
   return(dataframe)
 }
 
-#' RFA catheter use
-#'
-#' This looks at the basic numbers of RFA by catheter type used.
-#' This should only be run after all the BarrettsDataAccord functions.
-#' @param EndoSubsetRFA The dataframe
-#' @param Column report field of interest
-#' @param Column2 Another endoscopy report field of interest
-#' @keywords RFA, Radiofrequency ablation
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date #and Hospital number
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
-#' "Dateofprocedure","HospitalNumber")
-#' # The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function takes the RFA cases by looking in any free text column where
-#' # endoscopy fingings are described and then summarising by RFA subtype
-#' ll<-BarrettssRFACath(b4,"ProcedurePerformed","Findings")
-#' rm(v)
-
-BarrettssRFACath <- function(Column, Column2) {
-  
-  #Paste the two columns together so they can be searched as one
-  NewCol<-paste0(Column, Column2)
-  
-  #Extract all the ablation types from the merged columns
-  ablationPositive<- str_extract_all(NewCol,"90|360|HALO60| 60|TTS|[Cc]hannel|APC")
-}
 
 #' Paris vs histopath Barrett's
 #'
@@ -355,12 +316,10 @@ BarrettssRFACath <- function(Column, Column2) {
 BarrettsParisEMR <- function(dataframe, Column, Column2) {
   
   NewCol<-paste0(Column, Column2)
-  # Get the worst pathology for that sample inc SM stages
-  #dataframe <- data.frame(dataframe)
-  
   NewCol<-paste0(dataframe$Column, dataframe$Column)
   NewCol <- data.frame(NewCol,stringsAsFactors = FALSE)
   
+  # Get the worst pathology for that sample inc SM stages
   df<-NewCol %>%
     mutate(
       ParisClass = case_when(
@@ -415,8 +374,8 @@ BarrettsSurveil <- function(dataframe,
                                               Endo_ResultPerformed,
                                               IndicationsFroExamination) {
   dataframe <- data.frame(dataframe)
-  PatientIDa <- sym(PatientID)
-  Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
+  PatientIDa <- rlang::sym(PatientID)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
   IndicationsFroExaminationa <-
     sym(IndicationsFroExamination)
   # So you want all those whose last endoscopy was non surveillance but who
@@ -929,67 +888,4 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
     list(ProcNumbers = xNum, ProcNumbersPlot = xNumPlot)
   return(functionResults)
 }
-
-
-
-
-
-
-
-#' CRIM status Barrett's
-#'
-#' This collects the patients in whom it is assumed that complete clearance of
-#' intestinal metasplasia has occurred (CRIM) after ablation therapy.
-#' This is done by collecting those endoscopies where the last EVENT was
-#' equal to 'nothing' when the patient had undergone radiofrequency ablation at
-#' some point
-#' @param dataframe The dataframe
-#' @param HospNum The Hospital Number column
-#' @param EVENT The column  called EVENT that determines what procedure the
-#' patient had at that endoscopy
-#' @keywords CRIM
-#' @importFrom dplyr group_by slice mutate lead
-#' @importFrom rlang sym
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-Mypath
-#' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' # The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-#' colnames(b2)[colnames(b2) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function groups the procedures by patient and then looks at those which
-#' # have 'nothing' in the event column (which means biopsies only) which was
-#' # preceded by radiofrequency ablation (RFA) so that these patients are
-#' # labelled as having clearance of intestinal metaplasia. The result is a true
-#'# or false column.
-#' b2$EVENT<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
-#' nn<-Barretts_CRIM(b3,'HospitalNumber',"EVENT")
-#' rm(v)
-
-Barretts_CRIM <- function(dataframe, HospNum, EVENT) {
-  dataframe <- data.frame(dataframe)
-  HospNuma <- sym(HospNum)
-  EVENTa <- sym(EVENT)
-  
-  CRIM <-
-    dataframe %>% group_by(!!HospNuma) %>%
-    mutate(ind = (!!EVENTa) == "RFA" &
-             lead(!!EVENTa) == "nothing") %>%
-    slice(sort(c(which(ind), which(ind) + 1)))
-  CRIM<-data.frame(CRIM)
-  return(CRIM)
-}
-
-
-
 

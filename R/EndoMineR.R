@@ -62,7 +62,7 @@ if (getRversion() >= "2.15.1")
 
 SurveilTimeByRow <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
-    HospNum_Ida <- sym(HospNum_Id)
+    HospNum_Ida <- rlang::sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
     ret<-dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
@@ -70,9 +70,9 @@ SurveilTimeByRow <-
         !!Endo_ResultPerformeda
       ), 1), units = "days")) %>%
       mutate(TimeSinceLast = difftime(Sys.Date(), dplyr::last(!!Endo_ResultPerformeda),
-                                 units = "days"))
-     dataframe<-data.frame(ret)
-     return(dataframe)
+                                      units = "days"))
+    dataframe<-data.frame(ret)
+    return(dataframe)
   }
 
 
@@ -94,8 +94,8 @@ SurveilTimeByRow <-
 
 SurveilLastTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
-    HospNum_Ida <- sym(HospNum_Id)
-    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
+    HospNum_Ida <- rlang::sym(HospNum_Id)
+    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
     ret<-dataframe %>% group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == n())
@@ -122,7 +122,7 @@ SurveilLastTest <-
 SurveilFirstTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- sym(HospNum_Id)
-    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
+    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
     ret<-dataframe %>% group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == 1)
@@ -147,7 +147,7 @@ SurveilFirstTest <-
 #' @examples ee<-SurveilCapacity(Myendo,'Dateofprocedure')
 
 SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
-  Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
+  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
   ret<-dataframe %>% mutate(month =format(as.Date(!!Endo_ResultPerformeda), "%m"),
                             year = format(!!Endo_ResultPerformeda, "%Y")) %>%
     group_by(year,month) %>% summarise(n = n())
@@ -195,7 +195,7 @@ HowManyTests <-
            Indication,
            Endo_ResultPerformed,
            StringToSearch) {
-    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
+    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
     TestNumbers <-
       dataframe %>% filter(
         str_detect(dataframe[, Indication], StringToSearch)) %>%
@@ -232,7 +232,59 @@ HowManyTests <-
   }
 
 
+#' CRIM status Barrett's
+#'
+#' This collects the patients in whom it is assumed that complete clearance of
+#' intestinal metasplasia has occurred (CRIM) after ablation therapy.
+#' This is done by collecting those endoscopies where the last EVENT was
+#' equal to 'nothing' when the patient had undergone radiofrequency ablation at
+#' some point
+#' @param dataframe The dataframe
+#' @param HospNum The Hospital Number column
+#' @param EVENT The column  called EVENT that determines what procedure the
+#' patient had at that endoscopy
+#' @keywords CRIM
+#' @importFrom dplyr group_by slice mutate lead
+#' @importFrom rlang sym
+#' @export
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#' v<-Mypath
+#' v<-HistolDx(v,'Diagnosis')
+#' v<-HistolExtrapolDx(v,'Diagnosis',"")
+#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
+#' v<-HistolBxSize(v,'Macroscopicdescription')
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' 'HospitalNumber')
+#' # The function relies on the other Barrett's functions being run as well:
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' colnames(b2)[colnames(b2) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function groups the procedures by patient and then looks at those which
+#' # have 'nothing' in the event column (which means biopsies only) which was
+#' # preceded by radiofrequency ablation (RFA) so that these patients are
+#' # labelled as having clearance of intestinal metaplasia. The result is a true
+#'# or false column.
+#' b2$EVENT<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+#' nn<-Barretts_CRIM(b3,'HospitalNumber',"EVENT")
+#' rm(v)
 
+Barretts_CRIM <- function(dataframe, HospNum, EVENT) {
+  dataframe <- data.frame(dataframe)
+  HospNuma <- rlang::sym(HospNum)
+  EVENTa <- rlang::sym(EVENT)
+  
+  CRIM <-
+    dataframe %>% group_by(!!HospNuma) %>%
+    mutate(ind = (!!EVENTa) == "RFA" &
+             lead(!!EVENTa) == "nothing") %>%
+    slice(sort(c(which(ind), which(ind) + 1)))
+  CRIM<-data.frame(CRIM)
+  return(CRIM)
+}
 
 ########################################## Patient flow functions#######
 
@@ -432,9 +484,9 @@ PatientFlow_CircosPlots <-
            Endo_ResultPerformed,
            HospNum_Id,
            ProcPerformed) {
-    Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    HospNum_Ida <- sym(HospNum_Id)
-    ProcPerformeda <- sym(ProcPerformed)
+    Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    HospNum_Ida <- rlang::sym(HospNum_Id)
+    ProcPerformeda <- rlang::sym(ProcPerformed)
     
     mydf <-
       dataframe %>% arrange(!!Endo_ResultPerformeda) %>%
@@ -583,8 +635,8 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 
 
 MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
-  group <- sym(Column)
-  variable <- sym(EndoscopistColumn)
+  group <- rlang::sym(Column)
+  variable <- rlang::sym(EndoscopistColumn)
   
   NumBxPlot <-
     dataframe %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>%
@@ -604,51 +656,6 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 
 
 
-
-
-
-#' Determine polyp location
-#'
-#' This should be used after the TermStandardizer
-#' as it relies on the presence of a SampleLocation column
-#' which the TermStandardLocation produces.
-#' @param dataframe The dataframe
-#' @param SampleLocationColumn The column containing the SampleLocation from the
-#' TermStandardLocation
-#' @keywords Withdrawal
-#' @importFrom stringr str_match_all
-#' @export
-#' @examples
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
-#' MypathExtract1<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
-#' names(MypathExtract1)[names(MypathExtract1) == 'Datereceived'] <- 'Dateofprocedure'
-#' MypathExtract1$Dateofprocedure <- as.Date(MypathExtract1$Dateofprocedure)
-#' # The polyp locator then determines where the biopsies were taken from
-#' # by assessing the SampleLocation column which comes from the
-#' # TermStandardLocation function.
-#' f<-TermStandardLocation(MypathExtract1,'Histology')
-#' mm<-PolypLocator(f,'SampleLocation')
-#' rm(MypathExtract1)
-
-
-
-PolypLocator <- function(dataframe, SampleLocationColumn) {
-  dataframe <- data.frame(dataframe)
-  
-  
-  dataframe$PolypLocator <-
-    str_match_all(dataframe[, SampleLocationColumn], ".*[Pp]olyp.*")
-  
-  dataframe$PolypLocator <- str_match_all(dataframe$PolypLocator
-                                          , LocationList())
-  dataframe$PolypLocator <- lapply(dataframe$PolypLocator, function(p)
-    unique(p))
-  
-  
-  return(dataframe)
-}
 
 
 
@@ -707,129 +714,26 @@ GRS_Type_Assess_By_Unit <-
            Histol) {
     dataframe <- data.frame(dataframe)
     
-    # Adenomas by endoscopist ============
     
     dataframe <- dataframe[grepl("Colonoscopy", dataframe[, ProcPerformed]),]
-    MyColonDataAdenomaDetectionByEndoscopist <-
-      dataframe[grep(".*[Aa]denom.*", dataframe[, Dx]),]
-    MyColonDataAdenomaDetectionByEndoscopist <-
-      MyColonDataAdenomaDetectionByEndoscopist %>%
-      group_by_(Endo_Endoscopist) %>%
-      do(data.frame(NumAdenomas = nrow(.)))
     
-    MyColonDataColonoscopiesByEndoscopist <-
-      dataframe %>% group_by_(Endo_Endoscopist) %>%
-      do(data.frame(NumColons = nrow(.)))
+    #Function should get proportions of a procedure that result in a finding:
+    Adenoma<-"[Aa]denoma"
+    Adenocarcinoma<-".*denoca.*"
+    HGD<-".*[Hh]igh [Gg]rade.*"
+    LGD<-".*[Ll]ow [Gg]rade.*"
+    Serrated<-".*[Ss]errated.*"
+    Hyperplastic<-".*yperplastic.*"
     
-    # Merge the two above by column to get proportion:
-    MyColonDataADR <-
-      full_join(
-        MyColonDataAdenomaDetectionByEndoscopist,
-        MyColonDataColonoscopiesByEndoscopist,
-        by = Endo_Endoscopist
-      )
-    MyColonDataADR$PropAdenomas <-
-      (MyColonDataADR$NumAdenomas / MyColonDataADR$NumColons) * 100
     
-    # Adenocarcinomas (without adenomas) by endoscopist=====
+    dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma=(sum(grepl("Colonoscopy", ProcedurePerformed) & grepl(Adenoma, Original.y))/n())*100)
+    dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma=(sum(grepl("Colonoscopy", ProcedurePerformed) & grepl(Adenocarcinoma, Original.y))/n())*100)
+    dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD=(sum(grepl("Colonoscopy", ProcedurePerformed) & grepl(HGD, Original.y))/n())*100)
+    dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD=(sum(grepl("Colonoscopy", ProcedurePerformed) & grepl(LGD, Original.y))/n())*100)
+    dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated=(sum(grepl("Colonoscopy", ProcedurePerformed) & grepl(Serrated, Original.y))/n())*100)
+    dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic=(sum(grepl("Colonoscopy", ProcedurePerformed) & grepl(Hyperplastic, Original.y))/n())*100)
     
-    MyColonDataAdenoCarcinomaDetectionByEndoscopist <-
-      dataframe[grepl(".*denoca.*", dataframe[, Histol]) &
-                  !grepl(".*denom.*", dataframe[, Histol]),]
-    MyColonDataAdenoCarcinomaDetectionByEndoscopist <-
-      MyColonDataAdenoCarcinomaDetectionByEndoscopist %>%
-      group_by_(Endo_Endoscopist) %>%
-      do(data.frame(NumAdenocarcinomas = nrow(.)))
     
-    MyColonDataAdenocarcinomas <-
-      full_join(
-        MyColonDataAdenoCarcinomaDetectionByEndoscopist,
-        MyColonDataColonoscopiesByEndoscopist,
-        by = Endo_Endoscopist
-      )
-    MyColonDataAdenocarcinomas$PropAdenocarcinomas <-
-      (
-        MyColonDataAdenocarcinomas$NumAdenocarcinomas /
-          MyColonDataAdenocarcinomas$NumColons
-      ) * 100
-    
-    # Dysplastic grade of adenomas by endoscopist (from whole dataset) =====
-    MyColonData_HG_AdenomaDetectionByEndoscopist <-
-      dataframe[grepl(".*denoma.*", dataframe[, Histol]) &
-                  grepl(".*[Hh]igh [Gg]rade.*", dataframe[, Histol]),]
-    MyColonData_HG_AdenomaDetectionByEndoscopist <-
-      MyColonData_HG_AdenomaDetectionByEndoscopist %>%
-      group_by_(Endo_Endoscopist) %>%
-      do(data.frame(NumHighGradeAdenomas = nrow(.)))
-    
-    MyColonData_LG_AdenomaDetectionByEndoscopist <-
-      dataframe[grepl(".*denoma.*", dataframe[, Histol]) &
-                  grepl(".*[Ll]ow [Gg]rade.*", dataframe[, Histol]),]
-    MyColonData_LG_AdenomaDetectionByEndoscopist <-
-      MyColonData_LG_AdenomaDetectionByEndoscopist %>%
-      group_by_(Endo_Endoscopist) %>%
-      do(data.frame(NumLowGradeAdenomas = nrow(.)))
-    
-    MyColonDataHGD_Adenomas <-
-      full_join(
-        MyColonData_HG_AdenomaDetectionByEndoscopist,
-        MyColonDataColonoscopiesByEndoscopist,
-        by = Endo_Endoscopist
-      )
-    MyColonDataHGD_Adenomas$PropHGAdenomas <-
-      (
-        MyColonDataHGD_Adenomas$NumHighGradeAdenomas /
-          MyColonDataHGD_Adenomas$NumColons
-      ) * 100
-    
-    MyColonDataLGD_Adenomas <-
-      full_join(
-        MyColonData_LG_AdenomaDetectionByEndoscopist,
-        MyColonDataColonoscopiesByEndoscopist,
-        by = Endo_Endoscopist
-      )
-    MyColonDataLGD_Adenomas$PropLGAdenomas <-
-      (
-        MyColonDataLGD_Adenomas$NumLowGradeAdenomas /
-          MyColonDataLGD_Adenomas$NumColons
-      ) * 100
-    
-    MyColonData_Serr_AdenomaDetectionByEndoscopist <-
-      dataframe[grepl(".*[Ss]errated.*", dataframe[, Histol]),]
-    MyColonData_Serr_AdenomaDetectionByEndoscopist <-
-      MyColonData_Serr_AdenomaDetectionByEndoscopist %>%
-      group_by_(Endo_Endoscopist) %>%
-      do(data.frame(NumSerrAdenomas = nrow(.)))
-    
-    MyColonDataSerr_Adenomas <-
-      full_join(
-        MyColonData_Serr_AdenomaDetectionByEndoscopist,
-        MyColonDataColonoscopiesByEndoscopist,
-        by = Endo_Endoscopist
-      )
-    MyColonDataSerr_Adenomas$PropSerrAdenomas <-
-      (MyColonDataSerr_Adenomas$NumSerrAdenomas /
-         MyColonDataSerr_Adenomas$NumColons) * 100
-    
-    # Hyperplastic detection rate by endoscopist (from whole dataset) ====
-    MyColonDataHyperplasticDetectionByEndoscopist <-
-      dataframe[grep(".*yperplastic.*", dataframe[, Dx]),] %>%
-      group_by_(Endo_Endoscopist) %>%
-      do(data.frame(NumHyperplastics = nrow(.)))
-    
-    MyColonDataColonoscopiesByEndoscopist <-
-      dataframe %>% group_by_(Endo_Endoscopist) %>%
-      do(data.frame(NumColons = nrow(.)))
-    
-    # Merge the two above by column to get proportion:
-    MyColonDataHDR <-
-      full_join(
-        MyColonDataHyperplasticDetectionByEndoscopist,
-        MyColonDataColonoscopiesByEndoscopist,
-        by = Endo_Endoscopist
-      )
-    MyColonDataHDR$PropHyperplastic <-
-      (MyColonDataHDR$NumHyperplastics / MyColonDataHDR$NumColons) * 100
     
     FinalTable <-
       full_join(MyColonDataADR, MyColonDataHDR, by = Endo_Endoscopist)
@@ -957,8 +861,8 @@ NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
 
 OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {  
   dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
-
-
+  
+  
   
   #For the primary codes:
   dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):apc","G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
@@ -976,11 +880,11 @@ OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
   
   
   #For the non-event entries:
-
+  
   dataframe<-dataframe %>%   
     mutate(OPCS4Primary = case_when(
       grepl("OGD", dataframe$PROCEDUREPERFORMED,ignore.case = TRUE) ~  case_when(
-       
+        
         #No event and no biopsy taken:
         dataframe$EndoscopyEvent==""&(dataframe$PathSite==""|dataframe$PathSite=="NA:NA") ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
         
@@ -993,7 +897,7 @@ OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
       ),
       TRUE ~ "SomethingElse"
     ))
-    
+  
   
   #For the secondary codes:
   dataframe$MAXOFPATHSITE<-str_extract_all(dataframe$PathSite,"\\d")
@@ -1065,10 +969,10 @@ EndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIA
   
   #If it matches the grep then add the diagnosis, and then chop into list and remove that string
   
- 
   
   
-
+  
+  
   SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
     mutate(
       PrimaryDiagnosisCode = map(
@@ -1083,9 +987,9 @@ EndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIA
           grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
           grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
           grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
-        TRUE ~ "")
+          TRUE ~ "")
+      )
     )
-)
   
   SelfOGD_DunnOGD$FINDINGSmyDx<-lapply(SelfOGD_DunnOGD$FINDINGSmyDx, function(x) x[!grepl("OESOPH.*","", x,ignore.case=TRUE,perl=TRUE)])
   
@@ -1120,10 +1024,10 @@ EndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIA
       ),
       FindingsAfterProcessing = map(
         FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
-                                         hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
+                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
                                              (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
       )
-    )
+        )
   
   
   SelfOGD_DunnOGD$OverallDiagnosisCode<-lapply(SelfOGD_DunnOGD$OverallDiagnosisCode,function(x) (unique(x)))
@@ -1157,10 +1061,10 @@ EndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIA
       ),
       FindingsAfterProcessing = map(
         FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
-                                         hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
+                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
                                              (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
       )
-    )
+        )
   
   #To Do: Also assess the findings column
   
@@ -1172,38 +1076,38 @@ EndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIA
 
 ###### Graphics ########################################## 
 
-EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
-
-# Create the matrix
-df3 <-
-  data.frame(EndoSubsetEMR$ParisClass, EndoSubsetEMR$IMorNoIM)
-# Reorganise the column names and rows Get rid of no Paris EMR's
-dfy <- df3[!df3$EndoSubsetEMR.ParisClass == "No_Paris", ]
-# Get the histology proportions by the Paris grade
-tr4 <- as.data.frame.matrix(prop.table(table(dfy), 1))
-
-tr5 <- as.matrix(tr4)
-tr5 <- head(tr5, -1)
-# Create the heatmap par(oma = c(4, 0, 0, 4))
-
-tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
-tr5 <- t(tr5)
-tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
-tr5 <- t(tr5)
-if (nrow(tr5) > 2 & ncol(tr5) > 2) {
-  colors <- c(seq(-1, 0.2, length = 100),
-              seq(0.21, 0.8, length = 100),
-              seq(0.81, 1, length = 100))
-  
-  gplots::heatmap.2(
-    tr5,
-    trace = "none",
-    breaks = colors,
-    density.info = "none",
-    dendrogram = "none",
-    Rowv = FALSE,
-    Colv = FALSE,
-    cexRow = 3.5,
-    cexCol = 1.5
-  )
-}
+# EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
+# 
+# # Create the matrix
+# df3 <-
+#   data.frame(EndoSubsetEMR$ParisClass, EndoSubsetEMR$IMorNoIM)
+# # Reorganise the column names and rows Get rid of no Paris EMR's
+# dfy <- df3[!df3$EndoSubsetEMR.ParisClass == "No_Paris", ]
+# # Get the histology proportions by the Paris grade
+# tr4 <- as.data.frame.matrix(prop.table(table(dfy), 1))
+# 
+# tr5 <- as.matrix(tr4)
+# tr5 <- head(tr5, -1)
+# # Create the heatmap par(oma = c(4, 0, 0, 4))
+# 
+# tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
+# tr5 <- t(tr5)
+# tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
+# tr5 <- t(tr5)
+# if (nrow(tr5) > 2 & ncol(tr5) > 2) {
+#   colors <- c(seq(-1, 0.2, length = 100),
+#               seq(0.21, 0.8, length = 100),
+#               seq(0.81, 1, length = 100))
+#   
+#   gplots::heatmap.2(
+#     tr5,
+#     trace = "none",
+#     breaks = colors,
+#     density.info = "none",
+#     dendrogram = "none",
+#     Rowv = FALSE,
+#     Colv = FALSE,
+#     cexRow = 3.5,
+#     cexCol = 1.5
+#   )
+# }

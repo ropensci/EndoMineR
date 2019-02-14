@@ -116,9 +116,9 @@ Having done these pre-processing steps, the follow-up group to which the last en
 ```{r exampleBarretts_FUType, echo = TRUE,message=FALSE, warning=FALSE}
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
 b<-Barretts_PathStage(v,'Histology')
-b1<-Barretts_PragueScore(b,'Findings')
+b1<-Barretts_PragueScore(b,'Findings','Findings')
 b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
-b3<-Barretts_FUType(b1)
+b3<-Barretts_FUType(b1,"CStage","MStage","IMorNoIM")
 
 ```
 
@@ -152,28 +152,6 @@ The therapeutic functions are fairly self-explanatory. The function to determine
 #BarrettsBasicNumbers(b3,"Date.x")
 ``` 
 
-<br>
-
-
- To assess the number of different catheter types used (for renumeration purposes for example) the following function BarrettssRFACath can be used. Because the use of a catheter may be part of the ProcedurePerformed column or in the free text of Findings, more than one column can be searched in.
- 
-```{r exampleBarrettsTherapeuticsRFA_ByCatheter,echo = TRUE,fig.width=7,fig.height=5,message=FALSE, warning=FALSE}
-#BarrettssRFACath(b3,"ProcedurePerformed","Findings")
-``` 
-
-<br>
-
-One of the most important aspects of therapeutics is the assessment of outcome which is defined as clearance of intestinal metaplasia (CRIM), usually on at least two endoscopies. As most patients undergoing Barrett's ablation will require radiofrequency ablation after the initial endoscopic mucosal resection, we can define CRIM as being an endoscopy where the therapeutic procedure is listed as 'nothing' in the EVENT column (this will only work if the Barrett's pre-processing functions have been used) after a course of RFA or EMR
-
-```{r exampleBarrettsCRIM, echo = TRUE,message=FALSE, warning=FALSE} 
-#ds<-Barretts_CRIM(b3,'pHospitalNum',"EVENT")
-#ds2<-data.frame(ds$pHospitalNum,ds$ind)
-``` 
-
-```{r exampleBarrettsCRIM1, echo = FALSE,message=FALSE, warning=FALSE}
-#panderOptions('table.split.table', Inf)
-#pander(head(ds2,10))
-``` 
 
 <br>
 
@@ -264,7 +242,7 @@ Perhaps we are also interested in how many patients fall under each follow-up ca
 v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
 Barr<- Barretts_PathStage(v,'Histology')
 Barr<- Barretts_PragueScore(Barr,'ClinicalDetails','PathReportWhole')
-b4<-Barretts_FUType(Barr)
+b4<-Barretts_FUType(Barr,"CStage","MStage","IMorNoIM")
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 Rule<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
 ```

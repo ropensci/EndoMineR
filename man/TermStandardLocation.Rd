@@ -4,7 +4,7 @@
 \alias{TermStandardLocation}
 \title{Standardise location of biopsies or tissue samples}
 \usage{
-TermStandardLocation(dataframe, SampleLocation)
+TermStandardLocation(inputString)
 }
 \arguments{
 \item{dataframe}{The dataframe}
@@ -26,7 +26,7 @@ names(MypathExtraction)[names(MypathExtraction) == 'Datereceived'] <- 'Dateofpro
 MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
 # The function then standardises the histology terms through a series of
 # regular expressions
-ll<-TermStandardLocation(Mypath,'Histology')
+ll<-TermStandardLocation(Mypath$Histology)
 rm(MypathExtraction)
 }
 \keyword{Withdrawal}

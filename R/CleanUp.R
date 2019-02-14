@@ -39,7 +39,7 @@ if (getRversion() >= "2.15.1")
   )
 
 
-############## Endoscopy Clean-up functions##############
+#############Main extraction################
 
 
 #' Extracts the columns from the raw report
@@ -89,7 +89,7 @@ Extractor <- function(dataframeIn, Column, delim) {
   #Convert back to a dataframe as has been converted to a matrix
   dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
   dataframeIn<-dataframeIn[,-1]
-
+  
   dataframeIn<- lapply(dataframeIn, function(x) ColumnCleanUp(x))
   
   names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=TRUE)
@@ -143,25 +143,25 @@ Extractor2 <- function(x, y, stra, strb, t) {
   x <- data.frame(x)
   t <- gsub("[^[:alnum:],]", " ", t)
   
-      t <- gsub(" ", "", t, fixed = TRUE)
+  t <- gsub(" ", "", t, fixed = TRUE)
   
-         
-             x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
+  
+  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
                                                               "(.*)", strb, sep = ""), dotall = TRUE))
   
   
-                  x[, t] <- gsub("\\\\.*", "", x[, t])
+  x[, t] <- gsub("\\\\.*", "", x[, t])
   
-                      names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
-                          x[, t] <- gsub("       ", "", x[, t])
+  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
+  x[, t] <- gsub("       ", "", x[, t])
   x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
-      if (strb != "") {
+  if (strb != "") {
     x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
   }
   x[, t] <- gsub("       ", "", x[, t])
   x[, t]<- ColumnCleanUp(x[, t])
- 
-
+  
+  
   return(x)
 }
 
@@ -170,238 +170,6 @@ Extractor2 <- function(x, y, stra, strb, t) {
 
 
 
-#' Cleans endoscopist column if present
-#'
-#' If an endoscopist column is part of the dataset once the extractor
-#' function has been used this cleans the endoscopist column from the report.
-#' It gets rid of titles
-#' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional NewLines
-#' has been used.
-#'
-#' @param dataframe dataframe
-#' @param EndoReportColumn The endoscopy text column
-#' @keywords Endoscopist extraction
-#' @export
-#' @importFrom stringr str_replace
-#' @examples de<-EndoscEndoscopist(Myendo,'Endoscopist')
-
-
-EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
-  # Extraction of the Endoscopist
-  dataframe <- data.frame(dataframe)
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
-                                               "Mr|Professor|Prof|Dr", "")
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
-                                               "[^[:alnum:],]", "")
-  # Put gaps between names
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
-                                               "([a-z])([A-Z])", "\\1 \\2")
-  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
-                                               "2nd.*", "")
-  dataframe[, EndoReportColumn] <- trimws(dataframe[, EndoReportColumn],
-                                          which = c("both"))
-  return(dataframe)
-}
-
-#' Cleans medication column if present
-#'
-#' This cleans medication column from the report assuming such a column exists.
-#' It gets rid of common entries that are not needed. It also splits the
-#' medication into fentanyl and midazolam doses for use in the global rating
-#' scale tables later. It should be used after the Extractor and the optional
-#' NewLines has been used.
-#' @param dataframe dataframe with column of interest
-#' @param MedColumn column of interest
-#' @keywords Endoscopy medications
-#' @importFrom stringr str_extract str_replace
-#' @export
-#' @examples cc<-EndoscMeds(Myendo,'Medications')
-
-EndoscMeds <- function(dataframe, MedColumn) {
-  # Extraction of the Medications: Extract the fentanyl if present
-  
-  
-  dataframe$Fent <-
-    str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Fent <- str_replace(dataframe$Fent,"Fentanyl", "")
-  dataframe$Fent <- str_replace(dataframe$Fent,"mcg", "")
-  dataframe$Fent <- as.numeric(dataframe$Fent)
-  
-  
-  # Extract the midazolam if present
-  
-  dataframe$Midaz <-
-    str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
-  dataframe$Midaz <- str_replace(dataframe$Midaz,"Midazolam ", "")
-  dataframe$Midaz <- str_replace(dataframe$Midaz,"mg", "")
-  dataframe$Midaz <- as.numeric(dataframe$Midaz)
-  
-  # Extract the pethidine if present
-  dataframe$Peth <-
-    str_extract(dataframe[, MedColumn], "Pethidine\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Peth <- str_replace(dataframe$Peth,"Pethidine", "")
-  dataframe$Peth <- str_replace(dataframe$Peth,"mcg", "")
-  dataframe$Peth <- as.numeric(dataframe$Peth)
-  
-  # Extract the propofol if present
-  dataframe$Prop <-
-    str_extract(dataframe[, MedColumn], "Propofol\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Prop <- str_replace(dataframe$Prop,"Propofol", "")
-  dataframe$Prop <- str_replace(dataframe$Prop,"mcg", "")
-  dataframe$Prop <- as.numeric(dataframe$Prop)
-  
-  return(dataframe)
-}
-
-
-#' Cleans instrument column if present
-#'
-#' This cleans Instument column from the report assuming such a column exists
-#' (where instrument usually refers to the endoscope number being used.
-#' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional
-#' NewLines has been used.
-#' @param dataframe dataframe with column of interest
-#' @param InstrumentColumn column of interest
-#' @keywords Instrument
-#' @importFrom stringr str_replace
-#' @export
-#' @examples dd<-EndoscInstrument(Myendo,'Instrument')
-
-EndoscInstrument <- function(dataframe, InstrumentColumn) {
-  # Extraction of the Instrument used:
-  
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
-                                               "-.*", "")
-  dataframe[, InstrumentColumn] <-
-    gsub("X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
-         Loan Scope \\(specify serial no:|
-         Loan Scope \\(specify\\s*serial no|\\)|-.*",
-         "",dataframe[, InstrumentColumn]
-         )
-  dataframe[, InstrumentColumn] <-
-    str_replace(dataframe[, InstrumentColumn],
-                ",.*|:|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |
-                ^,",
-                ""
-    )
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
-                                               "FC ", "FC")
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
-                                               "^\\s*([1-9])", "A\\1")
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
-                                               "[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]
-                                               \\(specify serial no\\)\\s*",
-                                               "")
-  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
-                                               "[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]
-                                               \\(specify serial no:\\)\\s*",
-                                               "")
-  dataframe[, InstrumentColumn] <- toupper(dataframe[, InstrumentColumn])
-  dataframe[, InstrumentColumn] <- trimws(dataframe[, InstrumentColumn])
-  return(dataframe)
-}
-
-
-
-#'  Cleans Procedure performed column if present
-#'
-#' This cleans the Procedure Performed column from the report assuming
-#' such a column exists. Procedure Performed relates to whether this was a
-#' Gastroscopy or Colonoscopy and or the type of therapy used etc.
-#' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional NewLines
-#' has been used.
-#' @param dataframe dataframe with column of interest
-#' @param ProcPerformed column of interest
-#' @keywords Procedure
-#' @importFrom stringr str_replace
-#' @export
-#' @examples ff<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
-
-EndoscProcPerformed <- function(dataframe, ProcPerformed) {
-  # Extraction of the eg Colonoscopy or gastroscopy etc:
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "Withdrawal.*", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "Quality.*", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "Adequate.*|Good.*|Poor.*|None.*", "")
-  dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-                                            "FINDINGS", "")
-  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-  #                                           "-\\s*$|-$|-\\s+$", "")
-  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-  #                                           "([A-Z])-", "\\1 -")
-  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-  #                                           "\\.", "")
-  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-  #                                           "-([A-Z])", "-\\1")
-  # dataframe[, ProcPerformed] <- str_replace(dataframe[, ProcPerformed],
-  #                                           "\\)-", ") -")
-  return(dataframe)
-}
-
-
-
-
-
-
-
-
-
-#' EndoscopyEvent 
-#'
-#' This extracts the endoscopic event. It looks for the event term and then looks in the event sentence as well as the one above to see if
-#' the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
-#' added to the event. Used in the OPCS4 coding
-#' @keywords Find and replace
-#' @param EventColumn1 The relevant endoscopt free text column describing the findings
-#' @param Procedure Column saying which procedure was performed
-#' @param Macroscopic Column describing all the macroscopic specimens
-#' @param Histology Column with free text histology (usually microscopic histology)
-#' @export
-#' @examples # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
-
-EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology){
-  library(stringi)
-  library(stringr)
-  
-  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
-  
-  # Extract the events from the 
-  output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
-  
-  MyHistolEvents<-HistolTypeAndSite(dataframe,Procedure,Histology,Macroscopic)
-  output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
-  
-  #Add emr only if this is seen in the histopath
-  #Remove EMR from events if not seen in histopath
-  
-  #If emr is in the histology and in the event then leave it
-  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("(oesophagus|goj):emr",output,ignore.case = TRUE),output,
-                 #If emr is in the histology but not in the event then dont add it (sometimes EMR written in the request as past therapy
-                 #but  it hasn't actually been done)
-                 ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),
-                        #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
-                        ifelse(!grepl("emr|nodul",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
-  
-  
-  
-  d<-lapply(output, function(x) strsplit(x,";"))
-  t<-lapply(d,function(x) unlist(x))
-  out<-lapply(t,function(x) unique(x))
-  output<-unlist(lapply(out, function(x) paste(x,collapse=";")))
-  #output<-unlist(output)
-  #Need to know if emr done here so can add it
-  return(output)
-  
-  ######To do
-  #2. Add the emr as a therapy- get this from where?
-  #3. Make sure that if the column is empty or there is an error that the Procedure Column is then looked at and entereed
-  #4. 
-}
 
 
 
@@ -425,7 +193,7 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
   text<-textPrep(dataframe,EventColumn)
   text<-lapply(text,function(x) tolower(x))
   
-
+  
   #Some clean up to get rid of white space- all of this prob already covered in the ColumnCleanUp function but for investigation later
   text<-lapply(text,function(x) gsub("[[:punct:]]+"," ",x))
   tofind <-tolower(LocationList())
@@ -451,7 +219,7 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
     words<-words[words != ""] 
     x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
     i1 <- which(lengths(x1) > 0)
-
+    
     
     try(if(any(i1)) {
       EventList %>%
@@ -464,7 +232,7 @@ EntityPairs_TwoSentence<-function(dataframe,EventColumn){
                 
                 str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
                 map_if(is_empty, ~ NA_character_) %>%
-                flatten_chr()%>%
+                purrr::flatten_chr()%>%
                 `[[`(length(.)) %>%
                 
                 .[length(.)]
@@ -513,9 +281,6 @@ EntityPairs_OneSentence<-function(dataframe,EventColumn){
 
 
 
-
-
-
 #' textPrep function
 #'
 #' This is a helper function to prepare the data for the extraction of event, tissue type and site
@@ -554,7 +319,7 @@ textPrep<-function(dataframe,EventColumn){
   dataframe[,EventColumn]<-NegativeRemove(dataframe,EventColumn)
   
   #4. Need to run the TermStandardLocalizer here to make sure everything standardised.
-  dataframe<-TermStandardLocation(dataframe,EventColumn)
+  dataframe[,EventColumn]<-TermStandardLocation(dataframe[,EventColumn])
   
   #5. Split the lines so text is tokenized by sentence
   standardisedTextOutput<-stri_split_boundaries(dataframe[,EventColumn], type="sentence")
@@ -583,130 +348,68 @@ textPrep<-function(dataframe,EventColumn){
 #' MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions
-#' ll<-TermStandardLocation(Mypath,'Histology')
+#' ll<-TermStandardLocation(Mypath$Histology)
 #' rm(MypathExtraction)
 
 
 
-TermStandardLocation <- function(dataframe, SampleLocation) {
-  dataframe<-as.data.frame(dataframe)
-  dataframe[, SampleLocation] <- tolower(dataframe[, SampleLocation])
-  #Has to be high up here as numbers are removed lower down so D2 becomes D and doesnt work
-  dataframe[, SampleLocation] <-
-    gsub("duodenum|d2|D2|duodenal","Duodenum",dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    #|r|ri[Gg][Hh]t|
-    gsub(
-      "asce |ascending|ascend[^a-z]| colon r 
-      r colon|asc |right colon ",
-      "Ascending ",
-      dataframe[, SampleLocation],
-      ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub(
-      "descending|descen[^a-z]|
-      desc[^a-z]|des[^a-z]|colon l|l colon|left colon",
-      "Descending ",
-      dataframe[, SampleLocation],
-      ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("sigmoid|sigm[^a-z]|sigmo ",
-         "Sigmoid ",
-         dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("rectal|rectum|rectum[a-z]|rect ",
-         "Rectum ",
-         dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub(
-      "transverse|transv[^a-z]|tranv |trans ",
-      "Transverse ",
-      dataframe[, SampleLocation],
-      ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("caecum|caecal", "Caecum ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("splenic", "Splenic ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("ileum | ileal ", "Ileum ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("rectosigmoid", "Rectosigmoid ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub(
-      "ileocaecal\\s*|icv|ileo-caecum",
-      "Ileocaecal ",
-      dataframe[, SampleLocation],
-      ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("hep[^a-z]|[Hh]epatic", "Hepatic ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("colonic|colon |col[^a-z]",
-         "Colon ",
-         dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("term |terminal", "Terminal ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub(" TI ", "Terminal Ileum ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("caec ", "Caecum ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("[Ss]ig ", "Sigmoid ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("ileo\\s*-\\s*anal ", "Ileoanal ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("ileo\\s*anal ", "Ileoanal ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("pre\\s*pouch", "PrePouch ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("pre-[Pp]ouch", "PrePouch ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <- gsub("pouch", "Pouch ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("IleoAnal([a-zA-Z]+)", "Ileoanal \\1 ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("anastomosis", "Anastomosis", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <- gsub("[Xx]\\s*[1-9]|", "",
-                                      dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <- gsub("[1-9]\\s*[Xx]|", "",
-                                      dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("hyperplastic", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("distal|proximal|prox ", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <- gsub("sessile", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  #dataframe[, SampleLocation] <-gsub("\\d+m{2}|\\d+cm", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("pedunculated|pseudo", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  #dataframe[, SampleLocation] <- gsub("\\d", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <- gsub("  ", " ", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <- gsub(":", "", dataframe[, SampleLocation],ignore.case = TRUE)
-  # For upper GI
-  dataframe[, SampleLocation] <-
-    gsub("gastric|stomach", "Stomach", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("antrum|antral", "Antrum", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("oesophageal|oesophagus|esophag[^a-z]",
-         "Oesophagus",
-         dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("goj|gastrooesophageal",
-         "GOJ",
-         dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("fundal|fundus", "stomach", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("pyloric", "Pylorus", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("bx", "biopsy", dataframe[, SampleLocation],ignore.case = TRUE)
-  dataframe[, SampleLocation] <-
-    gsub("gastric cardia", "Cardia", dataframe[, SampleLocation],ignore.case = TRUE)
+TermStandardLocation <- function(inputString) {
   
-  so<-str_match_all(dataframe[, SampleLocation], LocationList())
+  
+  #ListEndo <- read.csv("//gstt.local/Users/17/SZEKI/Desktop/ListEndo.csv",stringsAsFactors=FALSE)
+  
+  lookup <- list("duodenum|d2|D2|duodenal" = "Duodenum", 
+                 "asce |ascending|(ascend[^a-z])|( colon r )|(r colon)|(asc )|(right colon)" = "Ascending ",
+                 "descending|(descen[^a-z])|(desc[^a-z])|(des[^a-z])|(colon l)|(l colon)|(left colon)" = "Descending ",
+                 "sigmoid|(sigm[^a-z])|sigmo "= "Sigmoid ",
+                 "rectal|rectum|(rectum[a-z])|rect "="Rectum ",
+                 "transverse|(transv[^a-z])|tranv |trans "="Transverse ",
+                 "caecum|caecal"="Caecum ",
+                 "splenic"="Splenic ",
+                 "(ileum )|( ileal )"="Ileum ",
+                 "rectosigmoid"="Rectosigmoid ",
+                 "(ileocaecal\\s*)|icv|(ileo-caecum)"="Ileocaecal", 
+                 "(hep[^a-z])|([Hh]epatic)"="Hepatic ",
+                 "colonic|colon |(col[^a-z])"="Colon ",
+                 "term |terminal"="Terminal",
+                 "TI "="Terminal",
+                 "caec"="Caecum ",
+                 "[Ss]ig "="Sigmoid ",
+                 "ileo\\s*-\\s*anal|ileo\\s*anal "="Ileoanal ",
+                 "(pre\\s*pouch)|(pre-[Pp]ouch)"="PrePouch",
+                 "pouch"="Pouch",
+                 "IleoAnal([a-zA-Z]+)"="Ileoanal \\1 ",
+                 "anastomosis"="Anastomosis",
+                 "term |terminal"="Terminal",
+                 "distal|proximal|prox|sessile|pedunculated|pseudo|hyperplastic|([1-9]\\s*[Xx]|[Xx]\\s*[1-9])"="",
+                 "gastric|stomach"="Stomach",
+                 "antrum|antral"="Antrum",
+                 "goj|gastrooesophageal"="GOJ",
+                 "fundal|fundus"="stomach",
+                 "pyloric"="Pylorus",
+                 "bx"="biopsy",
+                 "gastric cardia"="Cardia"
+  )
+  
+  
+  key<-names(lookup)
+  value<-as.character(t(data.frame(lookup,stringsAsFactors=FALSE))[,1])
+  lookup<-data.frame(key,value,stringsAsFactors = FALSE)
+  
+  new_string <- inputString
+  vapply(1:nrow(lookup),
+         function (k) {
+           new_string <<- gsub(lookup$key[k], lookup$value[k], new_string)
+           0L
+         }, integer(1))
+  
+  #dataframe<-as.data.frame(dataframe,stringsAsFactors=FALSE)
+  #so<-str_match_all(new_string, LocationList())
   #Collapse as str_match_all outputs a list so need to collapse it to make into a character vector
-  so<-sapply( so, paste0, collapse=",")
-  dataframe$AllSampleLocator<-so
+  #so<-sapply( so, paste0, collapse=",")
+  #dataframe$AllSampleLocator<-so
   
-  return(dataframe)
+  return(new_string)
 }
 
 
@@ -755,7 +458,7 @@ NegativeRemove <- function(dataframe, Column) {
     dataframe[, Column],
     perl = TRUE,
     ignore.case = TRUE
-  )
+    )
   dataframe[, Column] <-
     gsub(
       "(no |negative|unremarkable|-ve| normal) .*?([Bb]ut|
@@ -765,7 +468,7 @@ NegativeRemove <- function(dataframe, Column) {
       dataframe[, Column],
       perl = TRUE,
       ignore.case = TRUE
-    )
+      )
   # Nots
   dataframe[, Column] <-
     gsub(
@@ -902,8 +605,8 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
 
 
 ColumnCleanUp <- function(vector) {
-
-
+  
+  
   #Optimise for tokenisation eg full stops followed by a number need to change so add a Letter before the number
   vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
   vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
@@ -912,6 +615,8 @@ ColumnCleanUp <- function(vector) {
   #Get rid of query type punctuation:
   vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
   
+  
+  #Have to tokenize here so you can strip punctuation without getting rid of newlines
   standardisedTextOutput<-stri_split_boundaries(vector, type="sentence")
   
   #Get rid of whitespace
@@ -921,7 +626,7 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
-   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[A-Za-z]+.*\\?.*[A-Za-z]+.*","",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
   
   
   #Get rid of strange things
@@ -932,7 +637,223 @@ ColumnCleanUp <- function(vector) {
 }
 
 
+#' Extrapolation from lists
+#'
+#'This takes a list of terms that you want to look for and
+#'then extracts these into a new column
+#'
 
+#'
+#' @param dataframe dataframe
+#' @param Column The column you want to extract from 
+#' @param mylist The list of values
+#' @importFrom stringr str_extract_all
+#' @keywords sensitivity and specificity
+#' @export
+#' @examples #To be set up 
+
+
+##########Extrapolation##########
+ExtrapolateFromLists <- function(Column,mylist) {
+  #Extract all the ablation types from the merged columns
+  ablationPositive<- str_extract_all(Column,mylist)
+}
+
+
+############## Endoscopy Clean-up functions##############
+
+
+#' Cleans endoscopist column if present
+#'
+#' If an endoscopist column is part of the dataset once the extractor
+#' function has been used this cleans the endoscopist column from the report.
+#' It gets rid of titles
+#' It gets rid of common entries that are not needed.
+#' It should be used after the Extractor and the optional NewLines
+#' has been used.
+#'
+#' @param dataframe dataframe
+#' @param EndoReportColumn The endoscopy text column
+#' @keywords Endoscopist extraction
+#' @export
+#' @importFrom stringr str_replace
+#' @examples de<-EndoscEndoscopist(Myendo,'Endoscopist')
+
+
+EndoscEndoscopist <- function(dataframe, EndoReportColumn) {
+  # Extraction of the Endoscopist
+  dataframe <- data.frame(dataframe)
+  dataframe[, EndoReportColumn] <- str_replace_all(dataframe[, EndoReportColumn],
+                                                   "Mr|Professor|Prof|Dr|2nd.*|[^[:alnum:],]", "")
+  # Put gaps between names
+  dataframe[, EndoReportColumn] <- str_replace(dataframe[, EndoReportColumn],
+                                               "([a-z])([A-Z])", "\\1 \\2")
+  dataframe[, EndoReportColumn] <- trimws(dataframe[, EndoReportColumn],
+                                          which = c("both"))
+  return(dataframe)
+}
+
+#' Cleans medication column if present
+#'
+#' This cleans medication column from the report assuming such a column exists.
+#' It gets rid of common entries that are not needed. It also splits the
+#' medication into fentanyl and midazolam doses for use in the global rating
+#' scale tables later. It should be used after the Extractor and the optional
+#' NewLines has been used.
+#' @param dataframe dataframe with column of interest
+#' @param MedColumn column of interest
+#' @keywords Endoscopy medications
+#' @importFrom stringr str_extract str_replace
+#' @export
+#' @examples cc<-EndoscMeds(Myendo,'Medications')
+
+EndoscMeds <- function(dataframe, MedColumn) {
+  # Extraction of the Medications: Extract the fentanyl if present
+  
+  
+  dataframe$Fent <-
+    str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Fent <- as.numeric(str_replace_all(dataframe$Fent,"Fentanyl|mcg ", ""))
+  
+  # Extract the midazolam if present
+  
+  dataframe$Midaz <-
+    str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
+  dataframe$Midaz <- as.numeric(str_replace_all(dataframe$Midaz,"Midazolam|mg ", ""))
+  
+  
+  # Extract the pethidine if present
+  dataframe$Peth <-
+    str_extract(dataframe[, MedColumn], "Pethidine\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Peth <- as.numeric(str_replace_all(dataframe$Peth,"Pethidine|mcg ", ""))
+  
+  
+  # Extract the propofol if present
+  dataframe$Prop <-
+    str_extract(dataframe[, MedColumn], "Propofol\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Prop <- as.numeric(str_replace_all(dataframe$Prop,"Propofol|mcg ", ""))
+  
+  return(dataframe)
+}
+
+
+#' Cleans instrument column if present
+#'
+#' This cleans Instument column from the report assuming such a column exists
+#' (where instrument usually refers to the endoscope number being used.
+#' It gets rid of common entries that are not needed.
+#' It should be used after the Extractor and the optional
+#' NewLines has been used.
+#' @param dataframe dataframe with column of interest
+#' @param InstrumentColumn column of interest
+#' @keywords Instrument
+#' @importFrom stringr str_replace
+#' @export
+#' @examples dd<-EndoscInstrument(Myendo,'Instrument')
+
+EndoscInstrument <- function(dataframe, InstrumentColumn) {
+  # Extraction of the Instrument used:
+  
+  dataframe[, InstrumentColumn] <- trimws(toupper(str_replace_all(dataframe[, InstrumentColumn],
+                                                                  "X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
+                                                                  Loan Scope \\(specify serial no:|
+                                                                  Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
+                                                                  :|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |^,|
+                                                                  [Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]\\(specify serial no\\)\\s*|
+                                                                  [Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]\\(specify serial no:\\)\\s*", "")))
+  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
+                                               "FC ", "FC")
+  dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
+                                               "^\\s*([1-9])", "A\\1")
+  
+  return(dataframe)
+}
+
+
+
+#'  Cleans Procedure performed column if present
+#'
+#' This cleans the Procedure Performed column from the report assuming
+#' such a column exists. Procedure Performed relates to whether this was a
+#' Gastroscopy or Colonoscopy and or the type of therapy used etc.
+#' It gets rid of common entries that are not needed.
+#' It should be used after the Extractor and the optional NewLines
+#' has been used.
+#' @param dataframe dataframe with column of interest
+#' @param ProcPerformed column of interest
+#' @keywords Procedure
+#' @importFrom stringr str_replace
+#' @export
+#' @examples ff<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
+
+EndoscProcPerformed <- function(dataframe, ProcPerformed) {
+  # Extraction of the eg Colonoscopy or gastroscopy etc:
+  dataframe[, ProcPerformed] <- str_replace_all(dataframe[, ProcPerformed],
+                                                "Withdrawal.*|Quality.*|Adequate.*|
+                                                Good.*|Poor.*|None.*|FINDINGS", "")
+  
+  return(dataframe)
+}
+
+
+
+
+
+
+
+
+
+#' EndoscopyEvent 
+#'
+#' This extracts the endoscopic event. It looks for the event term and then looks in the event sentence as well as the one above to see if
+#' the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
+#' added to the event. Used in the OPCS4 coding
+#' @keywords Find and replace
+#' @param EventColumn1 The relevant endoscopt free text column describing the findings
+#' @param Procedure Column saying which procedure was performed
+#' @param Macroscopic Column describing all the macroscopic specimens
+#' @param Histology Column with free text histology (usually microscopic histology)
+#' @export
+#' @examples # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+
+EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology){
+  library(stringi)
+  library(stringr)
+  
+  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
+  
+  # Extract the events from the 
+  output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
+  
+  MyHistolEvents<-HistolTypeAndSite(dataframe,Procedure,Histology,Macroscopic)
+  output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
+  
+  #Add emr only if this is seen in the histopath
+  #Remove EMR from events if not seen in histopath
+  
+  #If emr is in the histology and in the event then leave it
+  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("(oesophagus|goj):emr",output,ignore.case = TRUE),output,
+                 #If emr is in the histology but not in the event then dont add it (sometimes EMR written in the request as past therapy
+                 #but  it hasn't actually been done)
+                 ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),
+                        #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
+                        ifelse(!grepl("emr|nodul",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
+  
+  
+  
+  d<-lapply(output, function(x) strsplit(x,";"))
+  t<-lapply(d,function(x) unlist(x))
+  out<-lapply(t,function(x) unique(x))
+  output<-unlist(lapply(out, function(x) paste(x,collapse=";")))
+  #output<-unlist(output)
+  #Need to know if emr done here so can add it
+  return(output)
+  
+  ######To do
+  #2. Add the emr as a therapy- get this from where?
+  #3. Make sure that if the column is empty or there is an error that the Procedure Column is then looked at and entereed
+  #4. 
+}
 
 
 
@@ -969,8 +890,8 @@ HistolDx <- function(dataframe, HistolColumn) {
   ListToConvert<-textPrep(dataframe, HistolColumn)
   
   dataframe[, HistolColumn] <- sapply(ListToConvert, function(x) paste(x,collapse="\n"))
-    
-    
+  
+  
   dataframe$Dx_Simplified <- dataframe[, HistolColumn]
   
   # Column-specific cleanup
@@ -1052,7 +973,7 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
     #I need to collapse the unlist
     stringr::str_match_all(dataframe[, MacroColumn], 
                            paste(unlist(lapply(strsplit(regString,"\\|",fixed=FALSE),
-                                              function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
+                                               function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
   dataframe$NumbOfBx <-
     vapply(mylist, function(p)
       sum(as.numeric(stringr::str_replace_all(p,regString,""))),numeric(1))
@@ -1078,9 +999,7 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
 HistolBxSize <- function(dataframe, MacroColumn) {
   # What's the average biopsy size this month?
   dataframe$BxSize <- str_extract(dataframe[, MacroColumn], "the largest.*?mm")
-  dataframe$BxSize <- str_replace(dataframe$BxSize,"the largest measuring ", "")
-  dataframe$BxSize <- str_replace(dataframe$BxSize,"mm", "")
-  dataframe$BxSize <- str_replace(dataframe$BxSize,"less than", "")
+  dataframe$BxSize <- str_replace(dataframe$BxSize,"the largest measuring |mm|less than", "")
   strBxSize <- "([0-9]+).*?([0-9])+.*?([0-9])"
   dataframe$BxSize <-
     as.numeric(str_match(dataframe$BxSize, strBxSize)[, 2]) *
@@ -1144,7 +1063,7 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   library(fuzzyjoin)
   library(tidyverse)
   ToIndex<-str_extract_all(dataframe$PathSite,paste0("(^|,)[a-z]+:?(",tolower(HistolType()),")(|$)"))
-
+  
   paste0("(^|,)[a-z]+:?(",tolower(HistolType()),")(|$)")
   tolower(HistolType())
   ToIndex<-lapply(ToIndex, function(x) unique(x))
@@ -1179,6 +1098,7 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
   
   return(ToIndex)
 }
+
 
 
 
@@ -1311,6 +1231,29 @@ LocationListLower<-function(){
 }
 
 
+#' Use list of catheters used in radiofrequency ablation
+#'
+#' The takes a list of catheters used in radiofrequency ablation
+#'
+#' @keywords RFA
+#' @export
+#' @examples #No example needed
+
+RFACath<-function(){
+  
+  tofind <-
+    paste(
+      c(
+        "90","360","HALO60"," 60","TTS",
+        "[Cc]hannel","APC"
+      ),
+      collapse = "|"
+    )
+  
+  return(tofind)
+  
+}
+
 #' Event list
 #'
 #' This function returns all the conversions from common version of events to 
@@ -1411,6 +1354,7 @@ EventList<-function(){
 #' 
 
 
+##################Validatation Workflow##########################
 #' Sensitivity and Specificity of text mining functions
 #'
 #'This is part of the validation workflow. The idea is that 
@@ -1432,9 +1376,8 @@ EventList<-function(){
 
 SensAndSpecif<-function(dataframe,ref,actual){
   
-  library(rlang)
-  refa <- sym(ref)
-  actuala <- sym(actual)
+  refa <- rlang::sym(ref)
+  actuala <- rlang::sym(actual)
   
   df<-dataframe %>%
     mutate(
@@ -1451,7 +1394,7 @@ SensAndSpecif<-function(dataframe,ref,actual){
   FP<-ifelse(is.na(as.integer(table(df$SensAndSpec)["FP"])),0,as.integer(table(df$SensAndSpec)["FP"]))
   TN<-ifelse(is.na(as.integer(table(df$SensAndSpec)["TN"])),0,as.integer(table(df$SensAndSpec)["TN"]))
   FN<-ifelse(is.na(as.integer(table(df$SensAndSpec)["FN"])),0,as.integer(table(df$SensAndSpec)["FN"]))
-
+  
   
   Sensitivity<-round(TP/(TP+FN)*100,digits=2)
   Specificity<-round(TN/(TN+FP)*100,digits=2)
@@ -1463,3 +1406,6 @@ SensAndSpecif<-function(dataframe,ref,actual){
   
   return(stats)
 }
+
+
+

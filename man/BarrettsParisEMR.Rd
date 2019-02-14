@@ -4,14 +4,14 @@
 \alias{BarrettsParisEMR}
 \title{Paris vs histopath Barrett's}
 \usage{
-BarrettsParisEMR(EndoSubsetEMR, Column, Column2)
+BarrettsParisEMR(dataframe, Column, Column2)
 }
 \arguments{
-\item{EndoSubsetEMR}{The dataframe}
-
 \item{Column}{Endoscopy report field of interest}
 
 \item{Column2}{Another endoscopy report field of interest}
+
+\item{EndoSubsetEMR}{The dataframe}
 }
 \description{
 This looks at the Paris grades of each EMR and then creates a heatmap
@@ -25,9 +25,6 @@ BarrettsDataAccord functions.
 # cleaning as part of the package.
 v<-Mypath
 v<-HistolDx(v,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis',"")
-v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
