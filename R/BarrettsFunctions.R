@@ -60,7 +60,7 @@ if (getRversion() >= "2.15.1")
 #' # too
 #'
 #'
-#' aa<-Barretts_PragueScore(Myendo,'Findings','Original')
+#' aa<-Barretts_PragueScore(Myendo,'Findings','OGDReportWhole')
 
 #Change to BarrPrague nee Barretts_PragueScore
 Barretts_PragueScore <- function(dataframe, EndoReportColumn,EndoReportColumn2) {
@@ -133,8 +133,7 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 #' # Mypath demo dataset. These functions are all part of Histology data 
 #' # cleaning
 #' # as part of the package.
-#'
-#'
+#' v<-HistolDx(Mypath,'Diagnosis')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -197,7 +196,6 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -206,11 +204,11 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' 'HospitalNumber')
 #' #The function relies on the other Barrett's functions being run as well:
 #' b<-Barretts_PathStage(v,'Histology')
-#' b2<-Barretts_PragueScore(b2,'Findings')
+#' b2<-Barretts_PragueScore(b,'Findings')
 #' #The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' cc<-Barretts_FUType(b2)
+#' cc<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 #' rm(v)
 
 Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
@@ -304,7 +302,7 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
+#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function compares the Paris score 
 #' # from the endoscopy report free text to
@@ -315,20 +313,20 @@ Barretts_EventType <- function(dataframe, HistolReportColumn,
 
 BarrettsParisEMR <- function(dataframe, Column, Column2) {
   
-  NewCol<-paste0(Column, Column2)
-  NewCol<-paste0(dataframe$Column, dataframe$Column)
+  #NewCol<-paste0(Column, Column2)
+  NewCol<-paste0(dataframe[,Column], dataframe[,Column2])
   NewCol <- data.frame(NewCol,stringsAsFactors = FALSE)
   
   # Get the worst pathology for that sample inc SM stages
   df<-NewCol %>%
     mutate(
       ParisClass = case_when(
-        grepl("11a_c|2a_c|[Ii][Ii]a_c", !!PathColumna,ignore.case=TRUE) ~ "2a_c",
-        grepl("[Ii][Ii]a|2a|11a", !!PathColumna,ignore.case=TRUE) ~ "2a",
-        grepl("[Ii][Ii]b|2b|11b", !!PathColumna,ignore.case=TRUE) ~  "2b",
-        grepl("[Ii][Ii][Ii]|III", !!PathColumna,ignore.case=TRUE) ~  "3",
-        grepl("Paris [Tt]ype [Ii]s|1s ", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "!s",
-        grepl("[Ii]p|1p", !!PathColumna,ignore.case=TRUE,perl=TRUE) ~  "1p",
+        grepl("11a_c|2a_c|[Ii][Ii]a_c", NewCol,ignore.case=TRUE) ~ "2a_c",
+        grepl("[Ii][Ii]a|2a|11a", NewCol,ignore.case=TRUE) ~ "2a",
+        grepl("[Ii][Ii]b|2b|11b", NewCol,ignore.case=TRUE) ~  "2b",
+        grepl("[Ii][Ii][Ii]|III", NewCol,ignore.case=TRUE) ~  "3",
+        grepl("Paris [Tt]ype [Ii]s|1s ", NewCol,ignore.case=TRUE,perl=TRUE) ~  "!s",
+        grepl("[Ii]p|1p", NewCol,ignore.case=TRUE,perl=TRUE) ~  "1p",
         TRUE ~ "No_Paris")
     )
   
@@ -377,7 +375,7 @@ BarrettsSurveil <- function(dataframe,
   PatientIDa <- rlang::sym(PatientID)
   Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
   IndicationsFroExaminationa <-
-    sym(IndicationsFroExamination)
+    rlang::sym(IndicationsFroExamination)
   # So you want all those whose last endoscopy was non surveillance but who
   # have
   # a difftime between now and the last of > 3years So get the last endoscopy
@@ -423,7 +421,6 @@ BarrettsSurveil <- function(dataframe,
 #' # cleaning as part of the package.
 #' v<-Mypath
 #' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -437,7 +434,7 @@ BarrettsSurveil <- function(dataframe,
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
+#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' #Finally the unique hospital numbers are obtained according to the follow-up
 #' # rule you are looking for
@@ -545,7 +542,6 @@ BarrettsDocumentQual <- function(dataframe, Findings) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -559,7 +555,7 @@ BarrettsDocumentQual <- function(dataframe, Findings) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
+#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The number of average number of biopsies is then calculated and
 #' # compared to the average Prague C score so that those who are taking
@@ -649,7 +645,7 @@ BarrettsBxQual <- function(dataframe,
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
+#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function simply the the histopathological grades overall for
 #' # your dataset and then creates a frequency plot of them
@@ -692,7 +688,6 @@ BarrettsPathDetectQual <- function(dataframe, titlePlot) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -706,7 +701,7 @@ BarrettsPathDetectQual <- function(dataframe, titlePlot) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
+#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function takes the column with the extracted worst grade of
 #' # histopathology and returns the proportion of each finding (ie
@@ -737,7 +732,6 @@ BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -751,7 +745,7 @@ BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
+#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function extracts only those rows for patients who have undergone
 #' # EMR and then extracts the EMR grade from the extracted worst histopath
@@ -843,7 +837,6 @@ BarrettsEMRGrades <- function(EndoSubsetEMR) {
 #' # cleaning as part of the package.
 #' rm(list=ls(all=TRUE))
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolExtrapolDx(v,'Diagnosis',"")
 #' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 #' v<-HistolBxSize(v,'Macroscopicdescription')
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -858,11 +851,12 @@ BarrettsEMRGrades <- function(EndoSubsetEMR) {
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2)
+#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 #' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function groups the overall number of surveillance cases over time
 #' # The endoscopic episodes should be selected,according to surveillance
 #' # being the indication prior to using this function
+#' b4$EVENT<-EndoscopyEvent(b4,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
 #' jj<-BarrettsBasicNumbers(b4,"Date.x")
 #' rm(v)
 
@@ -873,19 +867,11 @@ BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
     dataframe %>% filter(EVENT != "nothing") %>%
     mutate(year = year(as.Date(!!Endo_ResultPerformeda))) %>%
     group_by(EVENT, year) %>% summarise(n = n())
-  xNumPlot <-
-    ggplot(xNum, aes(
-      x = year,
-      y = n,
-      group = EVENT,
-      colour = EVENT
-    )) + 
-    geom_line() + geom_smooth()+
-    labs(title="Number of procedures by type")
+
     
     
-  functionResults <-
-    list(ProcNumbers = xNum, ProcNumbersPlot = xNumPlot)
-  return(functionResults)
+  #functionResults <-
+    #list(ProcNumbers = xNum, ProcNumbersPlot = xNumPlot)
+  return(xNum)
 }
 

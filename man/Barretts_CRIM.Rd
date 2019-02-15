@@ -27,7 +27,6 @@ some point
 # cleaning as part of the package.
 v<-Mypath
 v<-HistolDx(v,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis',"")
 v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -43,8 +42,8 @@ colnames(b2)[colnames(b2) == 'pHospitalNum'] <- 'HospitalNumber'
 # preceded by radiofrequency ablation (RFA) so that these patients are
 # labelled as having clearance of intestinal metaplasia. The result is a true
 # or false column.
-b2$EVENT<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
-nn<-Barretts_CRIM(b3,'HospitalNumber',"EVENT")
+b2$EVENT<-EndoscopyEvent(b2,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
+nn<-Barretts_CRIM(b2,'HospitalNumber',"EVENT")
 rm(v)
 }
 \keyword{CRIM}

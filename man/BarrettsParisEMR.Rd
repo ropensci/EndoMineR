@@ -35,7 +35,7 @@ b2<-Barretts_PathStage(b1,'Histology')
 # The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-b4<-Barretts_FUType(b2)
+b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function compares the Paris score 
 # from the endoscopy report free text to

@@ -29,7 +29,6 @@ Barretts_Prague function
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
 v<-HistolDx(Mypath,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis',"")
 v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -38,11 +37,11 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 'HospitalNumber')
 #The function relies on the other Barrett's functions being run as well:
 b<-Barretts_PathStage(v,'Histology')
-b2<-Barretts_PragueScore(b2,'Findings')
+b2<-Barretts_PragueScore(b,'Findings')
 #The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-cc<-Barretts_FUType(b2)
+cc<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 rm(v)
 }
 \keyword{Follow-Up}

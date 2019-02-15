@@ -263,9 +263,12 @@ EntityPairs_OneSentence<-function(dataframe,EventColumn){
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   
+  HistolType<-paste0(unlist(tissue,use.names=F),collapse="|")
+  
+  LocationList<-paste0(unlist(All,use.names=F),collapse="|")
   
   text<-textPrep(dataframe,EventColumn)
-  r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(LocationList())), str_extract_all(tolower(x),tolower(HistolType())), MoreArgs = list(sep=":")))
+  r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(LocationList)), str_extract_all(tolower(x),tolower(HistolType)), MoreArgs = list(sep=":")))
   
   r1<-lapply(r1,function(x) unlist(x))
   
@@ -297,6 +300,13 @@ textPrep<-function(dataframe,EventColumn){
   #1. Flatten the text
   dataframe[,EventColumn]<-tolower(dataframe[,EventColumn])
   
+  HistolType<-paste0(unlist(tissue,use.names=F),collapse="|")
+  
+  LocationList<-paste0(unlist(All,use.names=F),collapse="|")
+  
+  EventList<-paste0(unlist(Event,use.names=F),collapse="|")
+
+  
   #1b General cleanup tasks
   dataframe[, EventColumn] <- ColumnCleanUp(dataframe[,EventColumn])
   
@@ -304,22 +314,22 @@ textPrep<-function(dataframe,EventColumn){
   dataframe[,EventColumn]<-gsub("'","",dataframe[,EventColumn],fixed=TRUE)
   
   #2a . Fuzzy find and replace and term mapping using the find and replace function above using the Location list
-  L <- tolower(str_split(LocationList(),"\\|"))
+  L <- tolower(str_split(LocationList,"\\|"))
   dataframe[,EventColumn]<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
   
   #2b . Fuzzy find and replace and term mapping using the find and replace function above using the Path_Type list
-  L <- tolower(str_split(HistolType(),"\\|"))
+  L <- tolower(str_split(HistolType,"\\|"))
   dataframe[,EventColumn]<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
   
   #2c. Fuzzy find and replace and term mapping using the find and replace function above
-  L <- tolower(unique(unlist(EventList(), use.names = FALSE)))
+  L <- tolower(unique(unlist(EventList, use.names = FALSE)))
   dataframe[,EventColumn]<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = dataframe[,EventColumn], names(L))
   
   #3.Remove all the negative phrases from the report:
   dataframe[,EventColumn]<-NegativeRemove(dataframe,EventColumn)
   
   #4. Need to run the TermStandardLocalizer here to make sure everything standardised.
-  dataframe[,EventColumn]<-TermStandardLocation(dataframe[,EventColumn])
+  dataframe[,EventColumn]<-DictionaryLookup(dataframe[,EventColumn])
   
   #5. Split the lines so text is tokenized by sentence
   standardisedTextOutput<-stri_split_boundaries(dataframe[,EventColumn], type="sentence")
@@ -348,58 +358,21 @@ textPrep<-function(dataframe,EventColumn){
 #' MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions
-#' ll<-TermStandardLocation(Mypath$Histology)
+#' ll<-DictionaryLookup(Mypath$Histology)
 #' rm(MypathExtraction)
 
 
 
-TermStandardLocation <- function(inputString) {
-  
-  
-  #ListEndo <- read.csv("//gstt.local/Users/17/SZEKI/Desktop/ListEndo.csv",stringsAsFactors=FALSE)
-  
-  lookup <- list("duodenum|d2|D2|duodenal" = "Duodenum", 
-                 "asce |ascending|(ascend[^a-z])|( colon r )|(r colon)|(asc )|(right colon)" = "Ascending ",
-                 "descending|(descen[^a-z])|(desc[^a-z])|(des[^a-z])|(colon l)|(l colon)|(left colon)" = "Descending ",
-                 "sigmoid|(sigm[^a-z])|sigmo "= "Sigmoid ",
-                 "rectal|rectum|(rectum[a-z])|rect "="Rectum ",
-                 "transverse|(transv[^a-z])|tranv |trans "="Transverse ",
-                 "caecum|caecal"="Caecum ",
-                 "splenic"="Splenic ",
-                 "(ileum )|( ileal )"="Ileum ",
-                 "rectosigmoid"="Rectosigmoid ",
-                 "(ileocaecal\\s*)|icv|(ileo-caecum)"="Ileocaecal", 
-                 "(hep[^a-z])|([Hh]epatic)"="Hepatic ",
-                 "colonic|colon |(col[^a-z])"="Colon ",
-                 "term |terminal"="Terminal",
-                 "TI "="Terminal",
-                 "caec"="Caecum ",
-                 "[Ss]ig "="Sigmoid ",
-                 "ileo\\s*-\\s*anal|ileo\\s*anal "="Ileoanal ",
-                 "(pre\\s*pouch)|(pre-[Pp]ouch)"="PrePouch",
-                 "pouch"="Pouch",
-                 "IleoAnal([a-zA-Z]+)"="Ileoanal \\1 ",
-                 "anastomosis"="Anastomosis",
-                 "term |terminal"="Terminal",
-                 "distal|proximal|prox|sessile|pedunculated|pseudo|hyperplastic|([1-9]\\s*[Xx]|[Xx]\\s*[1-9])"="",
-                 "gastric|stomach"="Stomach",
-                 "antrum|antral"="Antrum",
-                 "goj|gastrooesophageal"="GOJ",
-                 "fundal|fundus"="stomach",
-                 "pyloric"="Pylorus",
-                 "bx"="biopsy",
-                 "gastric cardia"="Cardia"
-  )
-  
-  
-  key<-names(lookup)
-  value<-as.character(t(data.frame(lookup,stringsAsFactors=FALSE))[,1])
-  lookup<-data.frame(key,value,stringsAsFactors = FALSE)
+DictionaryLookup <- function(inputString,list) {
+
+  key<-names(list)
+  value<-as.character(t(data.frame(list,stringsAsFactors=FALSE))[,1])
+  list<-data.frame(key,value,stringsAsFactors = FALSE)
   
   new_string <- inputString
-  vapply(1:nrow(lookup),
+  vapply(1:nrow(list),
          function (k) {
-           new_string <<- gsub(lookup$key[k], lookup$value[k], new_string)
+           new_string <<- gsub(list$key[k], list$value[k], new_string)
            0L
          }, integer(1))
   
@@ -408,7 +381,6 @@ TermStandardLocation <- function(inputString) {
   #Collapse as str_match_all outputs a list so need to collapse it to make into a character vector
   #so<-sapply( so, paste0, collapse=",")
   #dataframe$AllSampleLocator<-so
-  
   return(new_string)
 }
 
@@ -755,12 +727,12 @@ EndoscInstrument <- function(dataframe, InstrumentColumn) {
   # Extraction of the Instrument used:
   
   dataframe[, InstrumentColumn] <- trimws(toupper(str_replace_all(dataframe[, InstrumentColumn],
-                                                                  "X.*[Ll][Oo[Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
-                                                                  Loan Scope \\(specify serial no:|
-                                                                  Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
-                                                                  :|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |^,|
-                                                                  [Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]\\(specify serial no\\)\\s*|
-                                                                  [Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]\\(specify serial no:\\)\\s*", "")))
+"X.*[Ll][Oo][Aa][Nn] [Ss][Cc][Oo][Pp][Ee] \\(|
+Loan Scope \\(specify serial no:|
+Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
+:|FC |[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee] |^,|
+[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]\\(specify serial no\\)\\s*|
+[Ll][Oo][Aa][Nn]\\s+[Ss][Cc][Oo][Pp][Ee]\\(specify serial no:\\)\\s*", "")))
   dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
                                                "FC ", "FC")
   dataframe[, InstrumentColumn] <- str_replace(dataframe[, InstrumentColumn],
@@ -817,8 +789,7 @@ EndoscProcPerformed <- function(dataframe, ProcPerformed) {
 #' @examples # SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 
 EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology){
-  library(stringi)
-  library(stringr)
+
   
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   
@@ -1040,9 +1011,9 @@ HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
   output<-lapply(output, function(x) paste(unlist(unique(unlist(strsplit(x,",")))),collapse=","))
   
   output<-ifelse(grepl("Gastroscopy",dataframe[,Procedure]),
-                 str_remove_all(output, paste0('(',tolower(LocationListLower()),')',':biopsy')),
+                 str_remove_all(output, paste0('(',tolower( paste0(unlist(lower,use.names=F),collapse="|")),')',':biopsy')),
                  ifelse(grepl("Colonoscopy|Flexi",dataframe[,Procedure]),
-                        str_remove_all(output, paste0('(',tolower(LocationListUpper()),')',':biopsy')),output))
+                        str_remove_all(output, paste0('(',tolower(paste0(unlist(upper,use.names=F),collapse="|")),')',':biopsy')),output))
   return(output)
 }
 
@@ -1054,18 +1025,23 @@ HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
 #' @keywords Pathology biopsy index
 #' @export
 #' @param PathSite The column that has the pathology locatio and tissue type from HistolTypeAndSite
+#' @ImportFrom stringr str_extract_all
+#' @Import tidyverse
+#' @Import fuzzyjoin
 #' @examples # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
 #' SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
 #' HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
 
 HistolBiopsyIndex<-function(dataframe,PathSite){
-  library(stringr)
   library(fuzzyjoin)
-  library(tidyverse)
-  ToIndex<-str_extract_all(dataframe$PathSite,paste0("(^|,)[a-z]+:?(",tolower(HistolType()),")(|$)"))
+
+  HistolType<-paste0(unlist(tissue,use.names=F),collapse="|")
+  ToIndex<-str_extract_all(dataframe$PathSite,paste0("(^|,)[a-z]+:?(",tolower(HistolType),")(|$)"))
   
-  paste0("(^|,)[a-z]+:?(",tolower(HistolType()),")(|$)")
-  tolower(HistolType())
+  
+  
+  #paste0("(^|,)[a-z]+:?(",tolower(HistolType),")(|$)")
+  #tolower(HistolType)
   ToIndex<-lapply(ToIndex, function(x) unique(x))
   #Give each an index in the list (taken from the location list)
   
@@ -1120,13 +1096,18 @@ HistolType <- function() {
   
   #First standardise the terms
   
-  tofind <-
-    paste(
-      c(
-        "Resection","Biopsy","EMR","ESD","bx","nodul","polyp"),
-      collapse = "|"
-    )
-  return(tofind)
+  tissue<-list("Resection" = "Duodenum", 
+              "bx|biopsies"="Biopsy",
+              "(endoscopic mucosal resection)|(endoscopic mucosectomy)"="EMR",
+              "endoscopic submucosal (dissection|resection)"="ESD",
+              "nodul"="nodul",
+              "polyp "="polyp")
+  
+  
+  #To get the list as a list of values only in a regex use
+  #paste0(unlist(tissue,use.names=F),collapse="|")
+  
+  return(tissue)
 }
 
 
@@ -1144,10 +1125,13 @@ HistolType <- function() {
 
 LocationList<-function(){
   
-  tofind <-
-    paste0(LocationListLower(),"|",LocationListUpper(),"|",LocationListUniversal(),collapse = "|")
+  All<-append(LocationListLower(), LocationListUpper())
+  All<-append(All,LocationListUniversal())
   
-  return(tofind)
+  #To get the list as a list of values only in a regex use
+  #paste0(unlist(All,use.names=F),collapse="|")
+  
+  return(All)
   
 }
 
@@ -1164,15 +1148,21 @@ LocationList<-function(){
 
 LocationListUpper<-function(){
   
-  tofind <-
-    paste(
-      c(
-        "Stomach","Antrum","Duodenum","Oesophagus","GOJ","OGJ","Cardia"
-      ),
-      collapse = "|"
-    )
   
-  return(tofind)
+  upper<-list("duodenum|d2|D2|duodenal" = "Duodenum", 
+       "gastric|stomach"="Stomach",
+       "antrum|antral"="Antrum",
+       "ogj|goj|gastrooesophageal"="GOJ",
+       "fundal|fundus"="stomach",
+       "pyloric"="Pylorus",
+       "gastric cardia"="Cardia",
+       "oesophagus|oesophageal"="Oesophageal")
+
+  
+  #To get the list as a list of values only in a regex use
+  #paste0(unlist(upper,use.names=F),collapse="|")
+  
+  return(upper)
   
 }
 
@@ -1188,17 +1178,12 @@ LocationListUpper<-function(){
 #' @examples #No example needed
 
 LocationListUniversal<-function(){
+  universal<-list("Anastomosis" = "Ascending ")
+  return(universal)
   
-  tofind <-
-    paste(
-      c(
-        "Anastomosis"
-      ),
-      collapse = "|"
-    )
-  
-  return(tofind)
-  
+  #If need to use then use
+  #paste0(unlist(universal,use.names=F),collapse="|")
+
 }
 
 
@@ -1215,18 +1200,32 @@ LocationListUniversal<-function(){
 
 LocationListLower<-function(){
   
-  tofind <-
-    paste(
-      c(
-        "Ascending","Descending","Sigmoid","Rectum","Transverse",
-        "Caecum","Splenic","Ileum","Rectosigmoid",
-        "Ileocaecal","Hepatic","Colon","Terminal","Terminal Ileum",
-        "Ileoanal","Prepouch","Pouch"
-      ),
-      collapse = "|"
-    )
+  lower<-list("asce |ascending|(ascend[^a-z])|( colon r )|(r colon)|(asc )|(right colon)" = "Ascending ",
+  "descending|(descen[^a-z])|(desc[^a-z])|(des[^a-z])|(colon l)|(l colon)|(left colon)" = "Descending ",
+  "sigmoid|(sigm[^a-z])|sigmo "= "Sigmoid ",
+  "rectal|rectum|(rectum[a-z])|rect "="Rectum ",
+  "transverse|(transv[^a-z])|tranv |trans "="Transverse ",
+  "caecum|caecal"="Caecum ",
+  "splenic"="Splenic ",
+  "(ileum )|( ileal )"="Ileum ",
+  "rectosigmoid"="Rectosigmoid ",
+  "(ileocaecal\\s*)|icv|(ileo-caecum)"="Ileocaecal", 
+  "(hep[^a-z])|([Hh]epatic)"="Hepatic ",
+  "colonic|colon |(col[^a-z])"="Colon ",
+  "term |terminal"="Terminal",
+  "TI "="Terminal",
+  "caec"="Caecum ",
+  "[Ss]ig "="Sigmoid ",
+  "ileo\\s*-\\s*anal|ileo\\s*anal "="Ileoanal ",
+  "(pre\\s*pouch)|(pre-[Pp]ouch)"="PrePouch",
+  "pouch"="Pouch",
+  "term |terminal"="Terminal")
   
-  return(tofind)
+  
+  #To get the list as a list of values only in a regex use
+  #paste0(unlist(lower,use.names=F),collapse="|")
+
+  return(lower)
   
 }
 
@@ -1273,6 +1272,7 @@ EventList<-function(){
                 "dilated"="dilat",
                 "apc"="APC",
                 " emr"="EMR",
+                "(endoscopic mucosal resection)|(endoscopic mucosectomy)"="EMR",
                 "clip"="clip",
                 "grasp"="grasp",
                 "iodine"="iodine", 
@@ -1280,6 +1280,10 @@ EventList<-function(){
                 "NAC"="NAC",
                 "Brushings"="brushings"
   )
+  
+  #To get the list as a list of values only in a regex use
+  #paste0(unlist(Event,use.names=F),collapse="|")
+  
   return(Event)
 }
 

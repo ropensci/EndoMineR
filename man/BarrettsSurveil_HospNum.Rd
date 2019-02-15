@@ -27,7 +27,6 @@ Barretts_PathStage.
 # cleaning as part of the package.
 v<-Mypath
 v<-HistolDx(v,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis',"")
 v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -40,7 +39,7 @@ b2<-Barretts_PathStage(b1,'Histology')
 # The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-b4<-Barretts_FUType(b2)
+b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 #Finally the unique hospital numbers are obtained according to the follow-up
 # rule you are looking for

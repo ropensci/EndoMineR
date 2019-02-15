@@ -70,7 +70,6 @@ This function will return the number of tests by month. The more detailed functi
 
 ```{r exampleHowManyTests}
 how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
-how[1]
 ```
 
 
@@ -180,7 +179,7 @@ Although not strictly a measure of endoscopic quality, the location of polyps (a
 To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings in histology. This also attempts to extract the sample location into a separate column
 
 ```{r exampleTermStandardLocation}
-f<-TermStandardLocation(Mypath$Histology)
+f<-DictionaryLookup(Mypath$Histology,LocationList())
 
 #Just some column selection
 fgg<-data.frame(f[(ncol(f)-1)],f[(ncol(f))])
@@ -236,7 +235,7 @@ One function is provided to produce a table that gives the number of adenomas, a
 
  
  #Use the function
-#GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed','Endoscopist','Diagnosis','Histology')
+GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed','Endoscopist','Diagnosis','Histology')
 
 ```
 

@@ -29,8 +29,7 @@ which is called Dx_Simplified
 # Mypath demo dataset. These functions are all part of Histology data 
 # cleaning
 # as part of the package.
-
-
+v<-HistolDx(Mypath,'Diagnosis')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',

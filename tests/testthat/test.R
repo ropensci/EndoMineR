@@ -207,17 +207,7 @@ test_that("ColumnCleanUp", {
 })
 
 
-# #### HistolHistol test ####
-# 
-# test_that("HistolHistol", {
-# ff<-"There is no evidence of coeliac disease\n"
-#   ff<-data.frame(ff)
-#   names(ff)<-"Histology"
-#   HistolHistolTest<-HistolHistol(ff,'Histology')
-#   expect_true(all(!is.na(HistolHistolTest$Histol_Simplified)))
-#   expect_identical(HistolHistolTest$Histol_Simplified,
-#                    "")
-# })
+
 
 
 #### HistolDx test ####
@@ -232,18 +222,7 @@ test_that("HistolDx", {
             "Barrett's oesophagus,Sigmoid colon, biopsy \nAdenocarcinoma\n")
 })
 
-#### HistolExtrapolDx test ####
 
-test_that("HistolExtrapolDx", {
- 
-  ff<-"Barrett's oesophagus- dysplasia seen"
-  ff<-data.frame(ff)
-  names(ff)<-"Diagnosis"
-  HistolExtrapolDxTest<-HistolExtrapolDx(ff,'Diagnosis',"")
-  expect_true(all(!is.na(HistolExtrapolDxTest$Extracted)))
-  expect_identical(HistolExtrapolDxTest$Extracted,
-                   "dyspla")
-})
 
 
 
@@ -262,7 +241,6 @@ measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm"
 "3 specimens collected the largest
 measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm")
 })
-
 #### HistolNumbOfBx test ####
 
 test_that("HistolNumbOfBx", {
@@ -369,13 +347,7 @@ test_that("PatientFlow_CircosPlots", {
   PatientFlow_CircosPlots(Myendo,"Dateofprocedure","PatientID","EndoEvent")
 })
 
-#### ListLookup test ####
 
-test_that("ListLookup", {
-  myNotableWords<-c('arrett','oeliac')
-  tt<-ListLookup(Myendo,'Findings',myNotableWords)
-  expect_true(nrow(tt)>0)
-})
 
 #### MetricByEndoscopist test ####
 
@@ -419,33 +391,6 @@ expect_identical(TermStandardLocationTest$PolypLocator,"Sigmoid")
 })
 
 
-#### PolypLocator test ####
-
-test_that("PolypLocator", {
-  
-  f<-TermStandardLocation(Mypath,'Histology')
-  f<-PolypLocator(f,'SampleLocation')
-  
-  ff<-"The sigmoid polyp is a pedunculated tubular adenoma with moderate 
-dysplasia\n,inflammation, gastric metaplasia, dysplasia or neoplasia is seen,
-patchy fibrosis and myxoid areas and contains numerous eosinophils, 
-as well as scattered\n,These biopsies of non-specialised gastric-type mucosa 
-showed minimal chronic, focally active\n,Lymphovascular invasion: 
-Not identified\n,into submucosa for less than 1 mm \n\n"
-  ff<-data.frame(ff)
-  names(ff)<-"Histology"
-  f<-TermStandardLocation(ff,'Histology')
-  
-  f$Histology<-as.character(f$Histology)
-  TermStandardLocationTest<-TermStandardLocation(f,'Histology')
-  TermStandardLocationTest<-
-    PolypLocator(TermStandardLocationTest,'SampleLocation')
-  
-  TermStandardLocationTest$PolypLocator<-
-    as.character(TermStandardLocationTest$PolypLocator)
-  expect_true(all(!is.na(TermStandardLocationTest$PolypLocator)))
-  expect_identical(TermStandardLocationTest$PolypLocator,"Sigmoid")
-})
 
 #### GRS_Type_Assess_By_Unit test ####
 

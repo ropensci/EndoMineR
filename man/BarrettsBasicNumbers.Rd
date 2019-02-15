@@ -21,7 +21,6 @@ This should only be run after all the BarrettsDataAccord functions.
 # cleaning as part of the package.
 rm(list=ls(all=TRUE))
 v<-HistolDx(Mypath,'Diagnosis')
-v<-HistolExtrapolDx(v,'Diagnosis',"")
 v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
 v<-HistolBxSize(v,'Macroscopicdescription')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -35,11 +34,12 @@ b2<-Barretts_PathStage(b1,'Histology')
 # The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-b4<-Barretts_FUType(b2)
+b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
 colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function groups the overall number of surveillance cases over time
 # The endoscopic episodes should be selected,according to surveillance
 # being the indication prior to using this function
+b4$EVENT<-EndoscopyEvent(b4,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
 jj<-BarrettsBasicNumbers(b4,"Date.x")
 rm(v)
 }
