@@ -173,110 +173,6 @@ Extractor2 <- function(x, y, stra, strb, t) {
 
 
 
-##########Entity Relation functions ###################
-
-
-
-#' EntityPairs_TwoSentence
-#'
-#' This is used to look for relationships between site and event especially for endoscopy events
-#' @keywords Find and replace
-#' @param EventColumn1 The relevant pathology text column
-#' @param EventColumn2 The alternative pathology text column
-#' @importFrom stringr str_replace_na str_c str_split str_which
-#' @importFrom purrr flatten_chr map_chr map map_if
-#' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_Dunn,"FINDINGS")
-
-EntityPairs_TwoSentence<-function(dataframe,EventColumn){
-  
-  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
-  text<-textPrep(dataframe,EventColumn)
-  text<-lapply(text,function(x) tolower(x))
-  
-  
-  #Some clean up to get rid of white space- all of this prob already covered in the ColumnCleanUp function but for investigation later
-  text<-lapply(text,function(x) gsub("[[:punct:]]+"," ",x))
-  tofind <-tolower(LocationList())
-  EventList<-unique(tolower(unlist(EventList(),use.names = FALSE)))
-  
-  
-  text<-sapply(text,function(x) {
-    
-    #browser()
-    x<-trimws(x)
-    
-    #browser()
-    try(words <-
-          x %>%
-          unlist() %>%
-          str_replace_na()%>%
-          str_c(collapse = ' ') %>%
-          str_split(' ') %>%
-          `[[`(1))
-    
-    
-    
-    words<-words[words != ""] 
-    x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
-    i1 <- which(lengths(x1) > 0)
-    
-    
-    try(if(any(i1)) {
-      EventList %>%
-        map(
-          ~words %>%
-            str_which(paste0('^.*', .x)) %>%
-            map_chr(
-              ~words[1:.x] %>%
-                str_c(collapse = ' ') %>%
-                
-                str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
-                map_if(is_empty, ~ NA_character_) %>%
-                purrr::flatten_chr()%>%
-                `[[`(length(.)) %>%
-                
-                .[length(.)]
-            ) %>%
-            paste0(':', .x)
-        ) %>%
-        unlist() %>%
-        str_subset('.+:')
-      
-    } else "")
-    
-  }
-  )
-  return(text)
-}
-
-
-#' EntityPairs_OneSentence 
-#'
-#' This needs some blurb to be written. Used in the SentenceWordPairs
-#' @keywords PathPairLookup
-#' @param EventColumn1 The relevant pathology text column
-#' @param EventColumn2 The alternative pathology text column
-#' @importFrom purrr flatten_chr map_chr map map_if
-#' @examples # tbb<-EntityPairs_OneSentence(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION")
-
-EntityPairs_OneSentence<-function(dataframe,EventColumn){
-  
-  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
-  
-  HistolType<-paste0(unlist(tissue,use.names=F),collapse="|")
-  
-  LocationList<-paste0(unlist(All,use.names=F),collapse="|")
-  
-  text<-textPrep(dataframe,EventColumn)
-  r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(LocationList)), str_extract_all(tolower(x),tolower(HistolType)), MoreArgs = list(sep=":")))
-  
-  r1<-lapply(r1,function(x) unlist(x))
-  
-  #Unlist into a single row-This should output a character vector
-  out<-lapply(r1,function(x) paste(x,collapse=","))
-  
-  return(out)
-}
 
 
 
@@ -293,6 +189,7 @@ EntityPairs_OneSentence<-function(dataframe,EventColumn){
 #' @keywords Find and replace
 #' @param EventColumn The relevant pathology text column
 #' @importFrom stringi stri_split_boundaries
+#' @export
 #' @examples # textPrep(SelfOGD_Dunn,"FINDINGS")
 #' 
 textPrep<-function(dataframe,EventColumn){
@@ -300,11 +197,11 @@ textPrep<-function(dataframe,EventColumn){
   #1. Flatten the text
   dataframe[,EventColumn]<-tolower(dataframe[,EventColumn])
   
-  HistolType<-paste0(unlist(tissue,use.names=F),collapse="|")
+  HistolType<-paste0(unlist(HistolType(),use.names=F),collapse="|")
   
-  LocationList<-paste0(unlist(All,use.names=F),collapse="|")
-  
-  EventList<-paste0(unlist(Event,use.names=F),collapse="|")
+  LocationList<-paste0(unlist(LocationList(),use.names=F),collapse="|")
+
+  EventList<-paste0(unlist(EventList(),use.names=F),collapse="|")
 
   
   #1b General cleanup tasks
@@ -329,7 +226,7 @@ textPrep<-function(dataframe,EventColumn){
   dataframe[,EventColumn]<-NegativeRemove(dataframe,EventColumn)
   
   #4. Need to run the TermStandardLocalizer here to make sure everything standardised.
-  dataframe[,EventColumn]<-DictionaryLookup(dataframe[,EventColumn])
+  dataframe[,EventColumn]<-DictionaryInPlaceReplace(dataframe[,EventColumn],LocationList())
   
   #5. Split the lines so text is tokenized by sentence
   standardisedTextOutput<-stri_split_boundaries(dataframe[,EventColumn], type="sentence")
@@ -339,31 +236,20 @@ textPrep<-function(dataframe,EventColumn){
 }
 
 
-#' Standardise location of biopsies or tissue samples
+#' Dictionary In Place Replace
 #'
-#' Standardises the location of biopsies by cleaning up the common typos and
-#' abbreviations that are commonly used in free text of pathology reports
+#' Standardises terms according to a user defined list and replaces them in place
 #'
 #' @param dataframe The dataframe
-#' @param SampleLocation Column describing the Macroscopic sample from histology
-#' @keywords Withdrawal
+#' @param inputString the input string
+#' @param list the list to perform replace with
+#' @keywords Replace
 #' @export
-#' @examples #Firstly we extract histology from the raw report
-#' # using the extractor function
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
-#' MypathExtraction<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
-#' names(MypathExtraction)[names(MypathExtraction) == 'Datereceived'] <- 'Dateofprocedure'
-#' MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
-#' # The function then standardises the histology terms through a series of
-#' # regular expressions
-#' ll<-DictionaryLookup(Mypath$Histology)
-#' rm(MypathExtraction)
+#' @examples #Needs an example
 
 
 
-DictionaryLookup <- function(inputString,list) {
+DictionaryInPlaceReplace <- function(inputString,list) {
 
   key<-names(list)
   value<-as.character(t(data.frame(list,stringsAsFactors=FALSE))[,1])
@@ -376,13 +262,11 @@ DictionaryLookup <- function(inputString,list) {
            0L
          }, integer(1))
   
-  #dataframe<-as.data.frame(dataframe,stringsAsFactors=FALSE)
-  #so<-str_match_all(new_string, LocationList())
-  #Collapse as str_match_all outputs a list so need to collapse it to make into a character vector
-  #so<-sapply( so, paste0, collapse=",")
-  #dataframe$AllSampleLocator<-so
   return(new_string)
 }
+
+
+
 
 
 
@@ -625,11 +509,6 @@ ColumnCleanUp <- function(vector) {
 #' @examples #To be set up 
 
 
-##########Extrapolation##########
-ExtrapolateFromLists <- function(Column,mylist) {
-  #Extract all the ablation types from the merged columns
-  ablationPositive<- str_extract_all(Column,mylist)
-}
 
 
 ############## Endoscopy Clean-up functions##############
@@ -852,24 +731,21 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
 
 HistolDx <- function(dataframe, HistolColumn) {
   dataframe<-data.frame(dataframe)
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
-                                           "Dr.*?[A-Za-z]+", "")
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
-                                           "[Rr]eported.*", "")
-  # Column-generic cleanup
   
+  #Column specific cleanup
+  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
+                                           "Dr.*?[A-Za-z]+|[Rr]eported.*", "")
+
+  # Prepare the text
   ListToConvert<-textPrep(dataframe, HistolColumn)
-  
   dataframe[, HistolColumn] <- sapply(ListToConvert, function(x) paste(x,collapse="\n"))
   
   
   dataframe$Dx_Simplified <- dataframe[, HistolColumn]
   
-  # Column-specific cleanup
+  #Column-specific cleanup
   dataframe$Dx_Simplified <-
-    gsub("- ", "\n", dataframe$Dx_Simplified, fixed = TRUE)
-  dataframe$Dx_Simplified <-
-    gsub("-[A-Z]", "\n", dataframe$Dx_Simplified, fixed = TRUE)
+    gsub("(- )|(-[A-Z])", "\n", dataframe$Dx_Simplified, fixed = TRUE)
   return(dataframe)
 }
 
@@ -889,35 +765,16 @@ HistolDx <- function(dataframe, HistolColumn) {
 #' @keywords Macroscopic
 #' @importFrom stringr str_replace
 #' @export
-#' @examples pp<-HistolMacDescrip(Mypath, 'Macroscopicdescription')
+#' @examples pp<-HistolMacDescrip(Mypath$Macroscopicdescription)
 
 
-HistolMacDescrip <- function(dataframe, MacroColumn) {
-  dataframe <- data.frame(dataframe)
-  
+HistolMacDescrip <- function(MacroString) {
   # Column specific cleanup
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Dd]ictated by.*", "")
+  MacroString <- str_replace(MacroString,"[Dd]ictated by.*", "")
+  
   # Conversion of text numbers to allow number of biopsies to be extracted
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Oo]ne", "1")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ss]ingle", "1")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Tt]wo", "2")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Tt]hree", "3")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ff]our", "4")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ff]ive", "5")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ss]ix", "6")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ss]even", "7")
-  dataframe[, MacroColumn] <- str_replace(dataframe[, MacroColumn],
-                                          "[Ee]ight", "8")
-  return(dataframe)
+  MacroString <- DictionaryInPlaceReplace(MacroString,WordsToNumbers())
+  return(MacroString)
 }
 
 #' Extract the number of biopsies taken from histology report
@@ -927,28 +784,26 @@ HistolMacDescrip <- function(dataframe, MacroColumn) {
 #' It collects everything from the regex [0-9]{1,2}.{0,3}
 #' to whatever the string boundary is (z).
 #'
-#' @param dataframe the dataframe
 #' @param MacroColumn Column containing the Macroscopic description text
 #' @param regString The keyword to remove and to stop at in the regex
 #' @importFrom stringr str_match_all str_replace_all
 #' @keywords Biopsy number
 #' @export
 #' @examples
-#' qq<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+#' qq<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
 
 
-HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
-  dataframe <- data.frame(dataframe)
-  dataframe <- HistolMacDescrip(dataframe, MacroColumn)
+HistolNumbOfBx <- function(inputString, regString) {
+  inputString <- HistolMacDescrip(inputString)
   mylist <-
     #I need to collapse the unlist
-    stringr::str_match_all(dataframe[, MacroColumn], 
+    stringr::str_match_all(inputString, 
                            paste(unlist(lapply(strsplit(regString,"\\|",fixed=FALSE),
                                                function(x){paste("[0-9]{1,2}.{0,3}",x, sep = "")})),collapse="|"))
-  dataframe$NumbOfBx <-
+  NumbOfBx <-
     vapply(mylist, function(p)
       sum(as.numeric(stringr::str_replace_all(p,regString,""))),numeric(1))
-  return(dataframe)
+  return(NumbOfBx)
 }
 
 
@@ -960,23 +815,22 @@ HistolNumbOfBx <- function(dataframe, MacroColumn, regString) {
 #' in row duplication.
 #'
 #' This is usually from the Macroscopic description column.
-#' @param dataframe dataframe
 #' @param MacroColumn Macdescrip
 #' @importFrom stringr  str_match str_replace
 #' @keywords biopsy size
 #' @export
-#' @examples rr<-HistolBxSize(Mypath,'Macroscopicdescription')
+#' @examples rr<-HistolBxSize(Mypath$Macroscopicdescription)
 
-HistolBxSize <- function(dataframe, MacroColumn) {
+HistolBxSize <- function(MacroColumn) {
   # What's the average biopsy size this month?
-  dataframe$BxSize <- str_extract(dataframe[, MacroColumn], "the largest.*?mm")
-  dataframe$BxSize <- str_replace(dataframe$BxSize,"the largest measuring |mm|less than", "")
+  BxSize <- str_extract(MacroColumn, "the largest.*?mm")
+  BxSize <- str_replace(BxSize,"the largest measuring |mm|less than", "")
   strBxSize <- "([0-9]+).*?([0-9])+.*?([0-9])"
-  dataframe$BxSize <-
-    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 2]) *
-    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 3]) *
-    as.numeric(str_match(dataframe$BxSize, strBxSize)[, 4])
-  return(dataframe)
+  BxSize <-
+    as.numeric(str_match(BxSize, strBxSize)[, 2]) *
+    as.numeric(str_match(BxSize, strBxSize)[, 3]) *
+    as.numeric(str_match(BxSize, strBxSize)[, 4])
+  return(BxSize)
 }
 
 
@@ -1019,7 +873,7 @@ HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
 
 
 
-#' HistolTissueIndex 
+#' HistolBiopsyIndex 
 #'
 #' This returns a number for all the biopsies taken based on distance from orifice. It is for biopsies only
 #' @keywords Pathology biopsy index
@@ -1033,28 +887,17 @@ HistolTypeAndSite<-function(dataframe,Procedure,EventColumn1,EventColumn2){
 #' HistolBiopsyIndex(SelfOGD_Dunn,"PathSite") 
 
 HistolBiopsyIndex<-function(dataframe,PathSite){
-  library(fuzzyjoin)
 
-  HistolType<-paste0(unlist(tissue,use.names=F),collapse="|")
+  HistolType<-paste0(unlist(HistolType(),use.names=F),collapse="|")
   ToIndex<-str_extract_all(dataframe$PathSite,paste0("(^|,)[a-z]+:?(",tolower(HistolType),")(|$)"))
-  
-  
-  
-  #paste0("(^|,)[a-z]+:?(",tolower(HistolType),")(|$)")
-  #tolower(HistolType)
   ToIndex<-lapply(ToIndex, function(x) unique(x))
   #Give each an index in the list (taken from the location list)
   
-  
   #The results to replace 
-  replace<-c("ileum:biopsy","ileocaecal:biopsy","caecum:biopsy","ascending:biops","hepatic:biopsy","transverse:biopsy", "splenic:biopsy","descending:biopsy",
-             "sigmoid:biopsy","rectosigmoid:biopsy","rectum:biopsy", 
-             "ileoanal:biopsy","prepouch:biopsy","pouch:biopsy", 
-             "duodenum:biopsy","antrum:biopsy","stomach:biopsy","goj:biopsy", "cardia:biopsy",
-             "oesophagus:biopsy","colon:biopsy","oesophagus:emr","goj:emr","stomach:emr","duodenum:emr")
+  replace<-names(BiopsyIndex())
   
   #C stand for colon (and all lower bowel investigations) S stands for surgical O stands for OGD. 
-  replaceValue<-c("C11","C10","C9","C8","C7","C6","C5","C4","C3","C2","C1","S1","S2","S3","O5","O4","O3","O1","O2","O1","colon","O1","O1","O3","O5")
+  replaceValue<-paste0(unlist(BiopsyIndex(),use.names=F))
   
   #Create a tibble to merge with the list
   d1 <- tibble(key = replace, val = replaceValue)
@@ -1077,7 +920,484 @@ HistolBiopsyIndex<-function(dataframe,PathSite){
 
 
 
+##########Extrapolation single term functions##########
+ExtrapolateFromLists <- function(Column,mylist) {
+  #Extract all the ablation types from the merged columns
+  ablationPositive<- str_extract_all(Column,mylist)
+}
 
+
+#' Extrapolate from Dictionary
+#'
+#' Standardises the location of biopsies by cleaning up the common typos and
+#' abbreviations that are commonly used in free text of pathology reports
+#'
+#' @param dataframe The dataframe
+#' @param SampleLocation Column describing the Macroscopic sample from histology
+#' @keywords Withdrawal
+#' @export
+#' @examples #Firstly we extract histology from the raw report
+#' # using the extractor function
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' MypathExtraction<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+#' names(MypathExtraction)[names(MypathExtraction) == 'Datereceived'] <- 'Dateofprocedure'
+#' MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
+#' # The function then standardises the histology terms through a series of
+#' # regular expressions
+#' ll<-ExtrapolatefromDictionary(Mypath$Histology,HistolType())
+#' rm(MypathExtraction)
+
+
+
+
+
+
+ExtrapolatefromDictionary<-function(inputString,list){
+  
+  mylist<-paste0(unlist(list,use.names=F),collapse="|")
+  ToIndex<-str_extract_all(inputString,paste0("(^|,)[a-z]+:?(",tolower(mylist),")(|$)"))
+  ToIndex<-lapply(ToIndex, function(x) unique(x))
+  #Give each an index in the list (taken from the location list)
+  
+  #The results to replace 
+  replace<-names(list)
+  
+  #C stand for colon (and all lower bowel investigations) S stands for surgical O stands for OGD. 
+  replaceValue<-paste0(unlist(list,use.names=F))
+  
+  #Create a tibble to merge with the list
+  d1 <- tibble(key = replace, val = replaceValue)
+  
+  
+  #Select the elements that have characters in them
+  i1 <- lengths(ToIndex) > 0 
+  
+  #Do the merge
+  ToIndex[i1] <- map(ToIndex[i1], ~ 
+                       tibble(key = .x) %>%
+                       regex_left_join(d1) %>%
+                       pull(val))
+  
+  ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
+  ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
+  
+  return(ToIndex)
+}
+
+
+##########Extrapolation Biterm functions ###################
+
+#' EntityPairs_OneSentence 
+#'
+#' This needs some blurb to be written. Used in the SentenceWordPairs
+#' @keywords PathPairLookup
+#' @param EventColumn1 The relevant pathology text column
+#' @param EventColumn2 The alternative pathology text column
+#' @importFrom purrr flatten_chr map_chr map map_if
+#' @examples # tbb<-EntityPairs_OneSentence(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION")
+
+EntityPairs_OneSentence<-function(dataframe,EventColumn){
+  
+  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
+  
+  HistolType<-paste0(unlist(tissue,use.names=F),collapse="|")
+  
+  LocationList<-paste0(unlist(All,use.names=F),collapse="|")
+  
+  text<-textPrep(dataframe,EventColumn)
+  r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(LocationList)), str_extract_all(tolower(x),tolower(HistolType)), MoreArgs = list(sep=":")))
+  
+  r1<-lapply(r1,function(x) unlist(x))
+  
+  #Unlist into a single row-This should output a character vector
+  out<-lapply(r1,function(x) paste(x,collapse=","))
+  
+  return(out)
+}
+
+#' EntityPairs_TwoSentence
+#'
+#' This is used to look for relationships between site and event especially for endoscopy events
+#' @keywords Find and replace
+#' @param EventColumn1 The relevant pathology text column
+#' @param EventColumn2 The alternative pathology text column
+#' @importFrom stringr str_replace_na str_c str_split str_which
+#' @importFrom purrr flatten_chr map_chr map map_if
+#' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_Dunn,"FINDINGS")
+
+EntityPairs_TwoSentence<-function(dataframe,EventColumn){
+  
+  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
+  text<-textPrep(dataframe,EventColumn)
+  text<-lapply(text,function(x) tolower(x))
+  
+  
+  #Some clean up to get rid of white space- all of this prob already covered in the ColumnCleanUp function but for investigation later
+  text<-lapply(text,function(x) gsub("[[:punct:]]+"," ",x))
+  tofind <-tolower(LocationList())
+  EventList<-unique(tolower(unlist(EventList(),use.names = FALSE)))
+  
+  
+  text<-sapply(text,function(x) {
+    
+    #browser()
+    x<-trimws(x)
+    
+    #browser()
+    try(words <-
+          x %>%
+          unlist() %>%
+          str_replace_na()%>%
+          str_c(collapse = ' ') %>%
+          str_split(' ') %>%
+          `[[`(1))
+    
+    
+    
+    words<-words[words != ""] 
+    x1 <- str_extract_all(tolower(x),tolower(paste(unlist(EventList()), collapse="|")))
+    i1 <- which(lengths(x1) > 0)
+    
+    
+    try(if(any(i1)) {
+      EventList %>%
+        map(
+          ~words %>%
+            str_which(paste0('^.*', .x)) %>%
+            map_chr(
+              ~words[1:.x] %>%
+                str_c(collapse = ' ') %>%
+                
+                str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
+                map_if(is_empty, ~ NA_character_) %>%
+                purrr::flatten_chr()%>%
+                `[[`(length(.)) %>%
+                
+                .[length(.)]
+            ) %>%
+            paste0(':', .x)
+        ) %>%
+        unlist() %>%
+        str_subset('.+:')
+      
+    } else "")
+    
+  }
+  )
+  return(text)
+}
+
+
+
+############## Parts of speech tagging ###################
+
+library(udpipe)
+udmodel <- udpipe_download_model(language = "english")
+udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+x <- udpipe_annotate(udmodel_english, x = Myendo$Findings)
+x <- as.data.frame(x)
+
+
+
+
+############################# Extrapolating Codes ################################
+
+
+
+#' OPCS-4 Coding 
+#'
+#' This function extracts the OPCS-4 codes for all Barrett's procedures
+#' It should take the OPCS-4 from the EVENT and perhaps also using extent
+#' depending on how the coding is done. The EVENT column will need to 
+#' extract multiple findings
+#' The hope is that the OPCS-4 column will then map from the EVENT column. This returns a nested list 
+#' column with the procedure, furthest path site and event performed 
+#' 
+#'
+#' @param dataframe the dataframe
+#' @param EVENT the EVENT column
+#' @keywords OPCS-4 codes extraction
+#' @importFrom dplyr mutate case_when
+#' @importFrom rlang sym
+#' @importFrom stringr str_detect
+#' @export
+#' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
+#' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+
+
+#Take the PathSite codes which should have been coded from PathSite using the HistolBiopsyIndex
+
+# #####################################################   Sandbox    ##################################################################################################################
+# SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
+# EndoscTree<-list("Patient Name","Date of Birth","General Practicioner","Hospital Number","Date of Procedure","Endoscopist","Second endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Complications","Co-morbidity","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED","FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP","OPCS4 Code")
+# 
+# SelfOGD_Dunn<-SelfOGD_Dunn%>%select(PatientID,Endo_ResultText,Histo_ResultText)
+# for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
+# PathTree<-c("NATURE OF SPECIMEN","CLINICAL DETAILS","MACROSCOPICAL DESCRIPTION","HISTOLOGY","DIAGNOSIS")
+# for(i in 1:(length(PathTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Histo_ResultText',as.character(PathTree[i]),as.character(PathTree[i+1]),as.character(PathTree[i]))}
+# 
+# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","Histo_ResultText","MACROSCOPICALDESCRIPTION")
+# SelfOGD_Dunn$PathSiteIndex<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite")
+# 
+# SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
+# 
+# 
+# #ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED),grepl("OESOPHAGUS: Barrett's oesophagus C0 M1 ",FINDINGS))
+# #EndoscopyEvent(ForRules,"FINDINGS")
+# 
+# #ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(INDICATIONSFOREXAMINATION,ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent,PathSite,PathSiteIndex)
+# #View(ForRules)
+# SelfOGD_Dunn<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+# write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
+# 
+# 
+# 
+# #Checking against actual coding data
+# ManualOPCS_4<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/TB_ALLPATID_Dunn_2013ToPresent.xls")
+# library(janitor)
+# selectedClean<-ManualOPCS_4%>%select("Prim Proc Code & Description","2nd Proc Code","Trust ID",
+#                                      "Consultant","Admission Date","Prim Diag Code & Description",
+#                                      "2nd Diagnosis Code",
+#                                      "3rd Diagnosis Code",
+#                                      "5th Diagnosis Code",
+#                                      "6th Diagnosis Code",
+#                                      "7th Diagnosis Code",
+#                                      "8th Diagnosis Code",
+#                                      "9th Diagnosis Code",
+#                                      "10th Diagnosis Code")
+# selectedClean<-clean_names(selectedClean,"snake")
+# names(selectedClean) <- gsub('admission_date', 'Endo_ResultEntered', names(selectedClean))
+# names(selectedClean) <- gsub('trust_id', 'PatientID', names(selectedClean))
+# 
+# #convert the date column names so can do a merge
+# SelfOGD_Dunn$Endo_ResultEntered<-as.Date(SelfOGD_Dunn$Endo_ResultEntered)
+# selectedClean$Endo_ResultEntered<-as.Date(selectedClean$Endo_ResultEntered)
+# 
+# mergedData <- merge(selectedClean,SelfOGD_Dunn,by=c("Endo_ResultEntered","PatientID"))
+# 
+# 
+# ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent,prim_proc_code_description,x2nd_proc_code,PathSite,PathSiteIndex)%>%sample_n(100)
+# View(ForRules)
+#ToSee<-ForRules%>%select(FINDINGS,EndoscopyEvent,PathSite)%>% filter(grepl("Error", EndoscopyEvent))
+
+######################################################################################################################################################################################################
+#For each event site:
+
+ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {  
+  dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
+  
+  
+  
+  #For the primary codes:
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):apc","G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):emr","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)  
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):polypectomy","G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) 
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):rfa","G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):esd","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):dilat", "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("APC","G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE) 
+  dataframe$EndoscopyEvent<-gsub("EMR","G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)  
+  dataframe$EndoscopyEvent<-gsub("Polypectomy","G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case= TRUE)
+  dataframe$EndoscopyEvent<-gsub("RFA","G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("ESD","G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("Dilatation","G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  
+  
+  #For the non-event entries:
+  
+  dataframe<-dataframe %>%   
+    mutate(OPCS4Primary = case_when(
+      grepl("OGD", dataframe$PROCEDUREPERFORMED,ignore.case = TRUE) ~  case_when(
+        
+        #No event and no biopsy taken:
+        dataframe$EndoscopyEvent==""&(dataframe$PathSite==""|dataframe$PathSite=="NA:NA") ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
+        
+        #No event and upper GI biopsy taken:
+        dataframe$EndoscopyEvent==""& grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
+        
+        #Event (oesophageal) and upper GI biopsy taken
+        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus"
+        
+      ),
+      TRUE ~ "SomethingElse"
+    ))
+  
+  
+  #For the secondary codes:
+  dataframe$MAXOFPATHSITE<-str_extract_all(dataframe$PathSite,"\\d")
+  dataframe$MAXOFPATHSITE<-lapply(dataframe$MAXOFPATHSITE,function(x) max(as.numeric(x)))
+  
+  dataframe<-dataframe %>%   
+    mutate(OPCS4ZCode = case_when( 
+      dataframe$PathSite==""~ case_when(
+        #1. if no biopsy and no Event (covers oesophageal and non-oesophageal), then give the extent reached
+        tolower(dataframe$ExtentofExam)=="second part of duodenum"~  "Z27.4",
+        tolower(dataframe$ExtentofExam)=="pylorus"~  "Z27.3",
+        tolower(dataframe$ExtentofExam)=="stomach"~  "Z27.2",
+        tolower(dataframe$ExtentofExam)=="oesophagus"~  "Z27.1",
+      ),
+      
+      #2.If event (oesophageal) and biopsy 
+      dataframe$PathSite!="" ~ case_when(
+        dataframe$MAXOFPATHSITE== 5 ~  "Z27.4",
+        dataframe$MAXOFPATHSITE== 4 ~  "Z27.3",
+        dataframe$MAXOFPATHSITE== 3 ~  "Z27.2",
+        dataframe$MAXOFPATHSITE== 1|2 ~  "Z27.1",
+      ),
+      TRUE ~ "No code here"
+    )
+    )
+  return(dataframe)
+}
+
+
+#' Primary Diagnosis from Endoscopy
+#'
+#' This function extracts the primary diagnosis from the endoscopy free text. It will also add
+#' pathology diagnosis to the final primary code
+#' 
+#'
+#' @param dataframe the dataframe
+#' @param EVENT the EVENT column
+#' @keywords OPCS-4 codes extraction
+#' @importFrom dplyr mutate case_when
+#' @importFrom rlang sym
+#' @importFrom stringr str_detect
+#' @export
+#' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
+#' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+
+
+
+#The plan: 
+#1. Look at th ENDOSCOPICDIAGNOSIS column first and implement algorithm to look for keywords that map to diagnostic codes
+#2. Need to establish an order of importance of diagnostic codes.
+#3. Map all the diagnoses from the drop down box to primary diagnosis codes
+ExtrapolateEndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIAGNOSIS,EndoscopyEvent) { 
+  
+  
+  #Just get the uppers for now:
+  SelfOGD_DunnOGD<-SelfOGD_Dunn[grepl("Gastroscopy",SelfOGD_Dunn$PROCEDUREPERFORMED),]
+  
+  #Merge the findings in with the myDx:
+  SelfOGD_DunnOGD$FINDINGSmyDx<-paste(SelfOGD_DunnOGD$FINDINGS,SelfOGD_DunnOGD$ENDOSCOPICDIAGNOSIS)
+  
+  #Split into a string
+  SelfOGD_DunnOGD$FINDINGSmyDx<-stringi::stri_split_lines(SelfOGD_DunnOGD$FINDINGSmyDx,omit_empty = TRUE)
+  
+  #Copy over to a new column to be sampled
+  SelfOGD_DunnOGD$FindingsAfterProcessing<-SelfOGD_DunnOGD$FINDINGSmyDx
+  
+  
+  #Use case when on nested list to generate ICD-10 codes and then remove from the list.
+  
+  #If it matches the grep then add the diagnosis, and then chop into list and remove that string
+  
+  
+  
+  
+  
+  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
+    mutate(
+      PrimaryDiagnosisCode = map(
+        FINDINGSmyDx, ~ case_when(
+          grepl("mitotic|emr|tumour", unlist(tolower(.x)),ignore.case=TRUE) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
+          grepl("dysplasia", unlist(tolower(.x)),ignore.case=TRUE) ~ "K229  -  Disease of oesophagus - unspecified",
+          grepl("stricture", unlist(tolower(.x)),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
+          grepl("barrett", unlist(tolower(.x)),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
+          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
+          grepl("hiatus",tolower(.x), unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
+          grepl("oesophagitis",tolower(.x), unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K20  -  Oesophagitis",
+          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
+          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
+          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
+          TRUE ~ "")
+      )
+    )
+  
+  SelfOGD_DunnOGD$FINDINGSmyDx<-lapply(SelfOGD_DunnOGD$FINDINGSmyDx, function(x) x[!grepl("OESOPH.*","", x,ignore.case=TRUE,perl=TRUE)])
+  
+  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%  FindingsAfterProcessing = map(
+    FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
+  )
+  
+  
+  
+  
+  ######### Go through it again for the second codes:
+  
+  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
+    mutate(
+      OverallDiagnosisCode = map(
+        FindingsAfterProcessing, ~ case_when(
+          grepl("mitotic|emr|tumour", tolower(.x)) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
+          grepl("dysplasia", tolower(.x)) ~ "K229  -  Disease of oesophagus - unspecified",
+          grepl("stricture",tolower(.x),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
+          grepl("barrett",tolower(.x),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
+          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
+          grepl("hiatus",tolower(.x),ignore.case=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
+          grepl("oesophagitis",tolower(.x),ignore.case=TRUE) ~  "K20  -  Oesophagitis",
+          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
+          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
+          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
+          grepl("gastritis",tolower(.x),ignore.case=TRUE) ~  "K297  -  Gastritis - unspecified",
+          grepl("duodenitis",tolower(.x),ignore.case=TRUE) ~  "K298  -  Duodenitis",
+          grepl("(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K317  -  Polyp of stomach and duodenum",
+          grepl("candid",tolower(.x),ignore.case=TRUE) ~  "B387  -  Candidiasis of other sites",
+          TRUE ~ "")
+      ),
+      FindingsAfterProcessing = map(
+        FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
+                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
+                                             (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
+      )
+        )
+  
+  
+  SelfOGD_DunnOGD$OverallDiagnosisCode<-lapply(SelfOGD_DunnOGD$OverallDiagnosisCode,function(x) (unique(x)))
+  SelfOGD_DunnOGD$OverallDiagnosisCode<-lapply(SelfOGD_DunnOGD$OverallDiagnosisCode, function(x) x[x != "" & x != "\n"])
+  
+  
+  #Now go through the OverallCodes and determine the 
+  
+  
+  ######### Go through it again for the third codes: 
+  
+  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
+    mutate(
+      ThirdDiagnosisCode = map(
+        FindingsAfterProcessing, ~ case_when(
+          grepl("mitotic|emr|tumour", tolower(.x)) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
+          grepl("dysplasia", tolower(.x)) ~ "K229  -  Disease of oesophagus - unspecified",
+          grepl("stricture",tolower(.x),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
+          grepl("barrett",tolower(.x),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
+          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
+          grepl("hiatus",tolower(.x),ignore.case=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
+          grepl("oesophagitis",tolower(.x),ignore.case=TRUE) ~  "K20  -  Oesophagitis",
+          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
+          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
+          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
+          grepl("gastritis",tolower(.x),ignore.case=TRUE) ~  "K297  -  Gastritis - unspecified",
+          grepl("duodenitis",tolower(.x),ignore.case=TRUE) ~  "K298  -  Duodenitis",
+          grepl("(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K317  -  Polyp of stomach and duodenum",
+          grepl("candid",tolower(.x),ignore.case=TRUE) ~  "B387  -  Candidiasis of other sites",
+          TRUE ~ "")
+      ),
+      FindingsAfterProcessing = map(
+        FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
+                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
+                                             (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
+      )
+    )
+  
+  #To Do: Also assess the findings column
+  
+  
+  
+  return(primDxVector)
+}
 
 
 ##########Lists##########
@@ -1096,7 +1416,7 @@ HistolType <- function() {
   
   #First standardise the terms
   
-  tissue<-list("Resection" = "Duodenum", 
+  tissue<-list("Resection" = "Resection", 
               "bx|biopsies"="Biopsy",
               "(endoscopic mucosal resection)|(endoscopic mucosectomy)"="EMR",
               "endoscopic submucosal (dissection|resection)"="ESD",
@@ -1288,6 +1608,78 @@ EventList<-function(){
 }
 
 
+#' Biopsy index list
+#'
+#' This function returns all the conversions from common version of events to 
+#' a standardised event list, much like the Location standardidastion function
+#' It is used in the Barretts_EventType. This does not include EMR as this is 
+#' extracted from the pathology so is part of pathology type.
+#' @keywords Event extraction
+#' @examples # unique(unlist(EventList(), use.names = FALSE))
+#' 
+BiopsyIndex<-function(){
+  
+  BiopsyIndexList <- list("ileum:biopsy"="C11",
+                      "ileocaecal:biopsy"="C10",
+                      "caecum:biopsy"="C9",
+                      "ascending:biopsy"="C8",
+                      "hepatic:biopsy"="C7",
+                      "transverse:biopsy"="C6",
+                      "splenic:biopsy"="C5",
+                      "descending:biopsy"="C4",
+                      "sigmoid:biopsy"="C3",
+                      "rectosigmoid:biopsy"="C2",
+                      "rectum:biopsy"="C1",
+                      "ileoanal:biopsy"="S1",
+                      "prepouch:biopsy"="S2",
+                      "pouch:biopsy"="S3",
+                      "duodenum:biopsy"="O5",
+                      "antrum:biopsy"="O4",
+                      "stomach:biopsy"="O3",
+                      "goj:biopsy"="O1",
+                      "cardia:biopsy"="O2",
+                      "oesophagus:biopsy"="O1",
+                      "colon:biopsy"="colon",
+                      "oesophagus:emr"="O1",
+                      "goj:emr"="O1",
+                      "stomach:emr"="O3",
+                      "duodenum:emr"="O5")
+                      
+  #To get the list as a list of values only in a regex use
+  #paste0(unlist(BiopsyIndex,use.names=F),collapse="|")
+  
+  return(BiopsyIndexList)
+}
+
+
+
+#' Words to numbers
+#'
+#' This function returns all the conversions from common version of events to 
+#' a standardised event list, much like the Location standardidastion function
+#' It is used in the Barretts_EventType. This does not include EMR as this is 
+#' extracted from the pathology so is part of pathology type.
+#' @keywords Event extraction
+#' @examples # unique(unlist(EventList(), use.names = FALSE))
+#' 
+WordsToNumbers<-function(){
+  
+  NumberConv <- list("[Oo]ne"="1",
+                          "[Ss]ingle"="1",
+                          "[Tt]wo"="2",
+                          "[Tt]hree"= "3",
+                          "[Ff]our"= "4",
+                          "[Ff]ive"= "5",
+                          "[Ss]ix"="6",
+                          "[Ss]even"= "7",
+                          "[Ee]ight"= "8")
+  
+  #To get the list as a list of values only in a regex use
+  #paste0(unlist(WordsToNumbers,use.names=F),collapse="|")
+  
+  return(NumberConv)
+}
+
 
 
 #' #' Validate columns
@@ -1304,7 +1696,7 @@ EventList<-function(){
 #' #' @importFrom openxlsx write.xlsx
 #' #' @keywords validation
 #' #' @export
-#' #' @examples #ValidationR(HistolBxSize,myHistol,"histology_report")
+#' #' @examples #ValidationR(HistolBxSize,myHistol$histology_report)
 #' 
 #' sensAndSpecificMultip<-function(FUN =funct,dataframe,Column,pHospitalNum){
 #'   dd<-funct(dataframe,Column)
@@ -1338,7 +1730,7 @@ EventList<-function(){
 #' #' @importFrom openxlsx write.xlsx
 #' #' @keywords validation
 #' #' @export
-#' #' @examples #ValidationR(HistolBxSize,myHistol,"histology_report")
+#' #' @examples #ValidationR(HistolBxSize,myHistol$histology_report)
 #' 
 #' ValidationR<-function(FUN =funct,dataframe,Column,pHospitalNum){
 #'   dd<-funct(dataframe,Column)

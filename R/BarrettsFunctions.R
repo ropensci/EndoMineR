@@ -37,7 +37,7 @@ if (getRversion() >= "2.15.1")
       "ind"
     )
   )
-###### Barretts Surveillance and Therapeutic Functions ######
+###### Barrett's specific extrapolation Functions ######
 
 #' Prague score extraction
 #'
@@ -196,8 +196,8 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
+#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
+#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -234,45 +234,6 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
   
   return(df)
 
-}
-
-
-#' Therapeutic subtypes
-#'
-#' This function extracts the Event- usually a therapeutic event, from the text
-#' eg endoscopic mucosal resection, radiofrequency ablation etc.
-#' It does not currently include stricture
-#' dilatation.Specfically it extracts the event
-#'
-#' @param dataframe the dataframe
-#' @param HistolReportColumn The histology main text
-#' @param ProcPerformedColumn The Procedure Performed column
-#' @param EndoReportColumn The endoscopic diagnosis column
-#' @param EndoFindingsColumn The endoscopic findings column if different 
-#' to the Diagnosis column
-#' @keywords Event extraction
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#'
-#' v<-Mypath
-#' v<-HistolDx(v,'Diagnosis')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' # The function then looks within the Histology and the
-#' # Procedure performed, free text endoscopic Findings and the original
-#' # whole endoscopy report columns from the merged data set (v) for
-#' # EMR/APC/RFA/HALO so that the event for the procedure, is recorded.
-#' v$EndoscopyEvent<-EndoscopyEvent(v,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
-#' rm(v)
-#'
-Barretts_EventType <- function(dataframe, HistolReportColumn, 
-                               ProcPerformedColumn, EndoReportColumn, EndoFindingsColumn) {
-  
-  return(dataframe)
 }
 
 
@@ -367,9 +328,7 @@ BarrettsParisEMR <- function(dataframe, Column, Column2) {
 #' 'HospitalNumber',
 #' 'Dateofprocedure','Indications')
 
-BarrettsSurveil <- function(dataframe,
-                                              PatientID,
-                                              Endo_ResultPerformed,
+BarrettsSurveil <- function(dataframe,PatientID,Endo_ResultPerformed,
                                               IndicationsFroExamination) {
   dataframe <- data.frame(dataframe)
   PatientIDa <- rlang::sym(PatientID)
@@ -421,8 +380,8 @@ BarrettsSurveil <- function(dataframe,
 #' # cleaning as part of the package.
 #' v<-Mypath
 #' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
+#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
+#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -449,79 +408,6 @@ BarrettsSurveil_HospNum <- function(dataframe, rule, PatientID) {
   return(dataframe)
 }
 
-######## Endoscopic Performance Quality-#####
-
-
-#' Analysis of Barrett's Documentation Quality
-#'
-#' This function assesses the Barrett's documentation. This notes how many
-#' reports contain the mandatory report fields as specified in the BSG standards
-#'  on Barrett's endoscopic reporting. This should be run after the
-#' Barretts_PragueScore.
-#' @param dataframe dataframe
-#' @param Findings column of interest- usually the main body of the
-#' endoscopic report
-#' @importFrom ggplot2 geom_bar xlab labs coord_flip theme 
-#'element_blank element_line coord_flip
-#' @keywords Documentation
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' b1<-Barretts_PragueScore(Myendo,'Findings')
-#' # The documentation is really from the endoscopic Findings column
-#' gg<-BarrettsDocumentQual(b1,'Findings')
-
-
-
-
-BarrettsDocumentQual <- function(dataframe, Findings) {
-  dataframe <- data.frame(dataframe)
-  # Is Surveillance documentation done properly?
-  PragueSubsetx <- subset(dataframe, !is.na(dataframe$MStage))
-  
-  # Presence of islands
-  IslandSubsetx <- dataframe[grepl("[Ii]sland", dataframe[, Findings]), ]
-  
-  # Hiatus hernia (top of gastric folds)
-  HerniaSubsetx <-
-    dataframe[grep("[Hh]iat|astric fold|[Pp]inch", dataframe[, Findings]), ]
-  
-  
-  # Visible lesions- should also describe the absence of visible lesions
-  #explicitly
-  LesionSubsetx <- dataframe[grep("esion|odule|lcer", dataframe[, Findings]), ]
-  
-  # Classification of lesions On surveillance vs not on surveillance.
-  # This one is done as part of the Therapeutic survey so a different dataset.
-  
-  # Biopsies (location and samples taken) Decided not to do this as no point as
-  # all biopsies are labelled at time of pathology so don't see why they should
-  # be on the form. On surveillance vs not on surveillance
-  
-  Proportion <- c(
-    as.numeric(nrow(PragueSubsetx) / nrow(dataframe)),
-    as.numeric(nrow(IslandSubsetx) / nrow(dataframe)),
-    as.numeric(nrow(HerniaSubsetx) / nrow(dataframe)),
-    as.numeric(nrow(LesionSubsetx)) / nrow(dataframe)
-  )
-  b <- c("Prague",
-         "Island",
-         "Hernia",
-         "Lesion")
-  EndoMinDataSet <- data.frame(b, Proportion)
-  
-  
-  t <-ggplot(EndoMinDataSet, aes(x=b, y=Proportion)) + 
-    geom_bar(stat="identity",fill="blue")+
-    xlab("Documentation")+
-    labs(title="Proportion of Reports Containing Terms")+
-    coord_flip()+ 
-    theme(panel.border = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(), 
-    axis.line = element_line(colour = "black"))
-  return(t)
-}
-
 ############## Pathology Quality #############
 
 
@@ -542,8 +428,8 @@ BarrettsDocumentQual <- function(dataframe, Findings) {
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
+#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
+#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
@@ -590,288 +476,11 @@ BarrettsBxQual <- function(dataframe,
     summarise(MeanDiff = mean(Difference))
   
   BxShortfallPre<-data.frame(BxShortfallPre)
-  
-  # e) Then show shortfall of number of biopsies on a graph
-  t <-
-    ggplot() +
-    geom_point(aes(BxShortfallPre$Endoscopist, BxShortfallPre$MeanDiff),
-               size = 9) + geom_point(cex = 2) +
-    labs(title = "Shortfall number of biopsies on Barrett's Surveillance list",
-         x = "", y = "") +
-    theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) +
-    theme(legend.position = "top") +
-    xlab("Endoscopist") +
-    ylab("Shortfall(Obs-\nexpec number Bx)") +
-    theme(axis.text.x = element_text(angle = -90, size = 10)) +
-    theme(axis.text.y = element_text(angle = -90, size = 10)) +
-    theme(axis.title = element_text(size = 10)) +
-    theme(title = element_text(size = 10)) +
-    theme(legend.position = "top")
-  
-  functionResults <- list(BxShortfallPre = BxShortfallPre, t = t)
-  return(functionResults)
+  return(BxShortfallPre)
   
 }
 
 
-############## Diagnostic yield functions #######
-
-#' Dysplasia detection on surveillance
-#'
-#' This function assesses pathology of specimens taken at surveillance per year.
-#' It outputs a plot which determines the the overall number of pathologies (
-#' low/high grade dysplasia and cancer) for patients on surveillance
-#'
-#' @param dataframe the dataframe
-#' @param titlePlot The plot title
-#' @keywords dysplasia and cancer detection
-#' @importFrom ggplot2 ggplot geom_bar ylab labs theme element_text xlab
-#' @importFrom magrittr '%>%'
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' # The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function simply the the histopathological grades overall for
-#' # your dataset and then creates a frequency plot of them
-#' ii<-BarrettsPathDetectQual(b4,'Myplot')
-#' rm(v)
 
 
-BarrettsPathDetectQual <- function(dataframe, titlePlot) {
-  dataframe <- data.frame(dataframe)
-  
-  LGD <- dataframe[grepl("LGD", dataframe$IMorNoIM), ]
-  HGD <- dataframe[grepl("HGD", dataframe$IMorNoIM), ]
-  OAC <- dataframe[grepl("SM1|SM2|T1b|T1a", dataframe$IMorNoIM), ]
-  
-  n <- c(nrow(LGD), nrow(HGD), nrow(OAC))
-  b <- c("LGD", "HGD", "OAC")
-  EndoMinDataSet <- data.frame(b, n)
-  
-  ggplot(EndoMinDataSet, aes(x = b, y = n)) +
-    geom_bar(stat = "identity") + 
-    xlab("Pathology Grade") +
-    ylab("Total Number") + 
-    theme(axis.text.x = element_text(angle = -90)) +
-    labs(title = titlePlot) +
-    theme(legend.position = "top")
-}
-
-
-
-
-#' Dysplasia detection rate on surveillance
-#'
-#' This function assesses the dysplasia detection rate per endoscopist.
-#' @param dataframe dataframe,
-#' @param EndoscopistReportColumn column with the Endoscopist names
-#' @param IMorNoIM extracted with the function Barretts_PathStage()
-#' @keywords dysplasia detection rate
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' #The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function takes the column with the extracted worst grade of
-#' # histopathology and returns the proportion of each finding (ie
-#' # proportion with low grade dysplasia, high grade etc.) for each
-#' # endoscopist
-#' jj<-BarrettsDDRQual(b4,'Endoscopist','IMorNoIM')
-#' rm(v)
-
-
-
-BarrettsDDRQual <- function(dataframe, EndoscopistReportColumn, IMorNoIM) {
-  dataframe <- data.frame(dataframe)
-  
-  # Need to include indefinite for dysplasia
-  myDDR <- prop.table(table(dataframe[, EndoscopistReportColumn],
-                            dataframe[, IMorNoIM]))
-  return(myDDR)
-}
-
-#' Number of Barrett's EMRs by grade
-#'
-#' Plots all the pathological grades of the EMRs.This should only be
-#' run after all the BarrettsDataAccord functions.
-#' @param EndoSubsetEMR The dataset.
-#' @keywords EMR chart
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' #The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function extracts only those rows for patients who have undergone
-#' # EMR and then extracts the EMR grade from the extracted worst histopath
-#' # column (called IMorNoIM). This is then plotted out.
-#' kk<-BarrettsEMRGrades(b4)
-#' rm(v)
-
-BarrettsEMRGrades <- function(EndoSubsetEMR) {
-  EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
-  AllEMRs <- nrow(EndoSubsetEMR)
-  SM2 <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "SM2", ])
-  SM1 <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "SM1", ])
-  T1b <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "T1b", ])
-  T1a <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "T1a", ])
-  HGD <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "HGD", ])
-  LGD <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "LGD", ])
-  IM <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "IM", ])
-  NoIM <- nrow(EndoSubsetEMR[EndoSubsetEMR$IMorNoIM == "No_IM", ])
-  
-  n <- c(
-    as.numeric(AllEMRs),
-    as.numeric(SM2),
-    as.numeric(SM1),
-    as.numeric(T1b),
-    as.numeric(T1a),
-    as.numeric(HGD),
-    as.numeric(LGD),
-    as.numeric(IM),
-    as.numeric(NoIM)
-  )
-  s <- c("AllEMRs",
-         "SM2",
-         "SM1",
-         "T1b_Unspecified",
-         "T1a",
-         "HGD",
-         "LGD",
-         "IM",
-         "No IM")
-  EMRResult <- data.frame(s, n)
-  # axis(1, at=mids)
-  barplot(
-    EMRResult$n,
-    names.arg = c(
-      "AllEMRs",
-      "SM2",
-      "SM1",
-      "T1b_Unspec",
-      "T1a",
-      "HGD",
-      "LGD",
-      "IM",
-      "No IM"
-    ),
-    xlab = "Tissue grade",
-    ylab = "Number of EMRs",
-    cex.lab = 2.0,
-    cex.axis = 1.5,
-    cex.main = 1.5,
-    cex.names = 1.5,
-    main = "EMR Tissue pathology results"
-  )
-}
-
-
-
-
-
-
-
-
-
-
-#' Barretts Basic Numbers
-#'
-#' This looks at the basic numbers of all the therapeutic endoscopies over time.
-#' This should only be run after all the BarrettsDataAccord functions.
-#' @param dataframe the dataframe
-#' @param Endo_ResultPerformed the date the endoscopy was performed
-#' @keywords Number of therapies
-#' @importFrom dplyr filter group_by mutate summarise
-#' @importFrom magrittr '%>%'
-#' @importFrom rlang sym
-#' @importFrom lubridate year
-#' @importFrom ggplot2 ggplot aes geom_line labs
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' rm(list=ls(all=TRUE))
-#' v<-HistolDx(Mypath,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",v,
-#' "Dateofprocedure","HospitalNumber")
-#' # The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-
-#'  
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function groups the overall number of surveillance cases over time
-#' # The endoscopic episodes should be selected,according to surveillance
-#' # being the indication prior to using this function
-#' b4$EVENT<-EndoscopyEvent(b4,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
-#' jj<-BarrettsBasicNumbers(b4,"Date.x")
-#' rm(v)
-
-BarrettsBasicNumbers <- function(dataframe, Endo_ResultPerformed) {
-  dataframe <- data.frame(dataframe)
-  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
-  xNum <-
-    dataframe %>% filter(EVENT != "nothing") %>%
-    mutate(year = year(as.Date(!!Endo_ResultPerformeda))) %>%
-    group_by(EVENT, year) %>% summarise(n = n())
-
-    
-    
-  #functionResults <-
-    #list(ProcNumbers = xNum, ProcNumbersPlot = xNumPlot)
-  return(xNum)
-}
 

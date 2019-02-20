@@ -121,7 +121,7 @@ SurveilLastTest <-
 
 SurveilFirstTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
-    HospNum_Ida <- sym(HospNum_Id)
+    HospNum_Ida <- rlang::sym(HospNum_Id)
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
     ret<-dataframe %>% group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
@@ -131,7 +131,59 @@ SurveilFirstTest <-
   }
 
 
+#' Last status
+#'
+#' This looks at the last EVENT a patient had to get time to outcomes.
+#' For example if a patient underwent ablation for Barrett's oesophagus we
+#' could get the CRIM score by assessing the first time-point where the event
+#' is nothing after RFA has been done.
+#' @param dataframe The dataframe
+#' @param HospNum The Hospital Number column
+#' @param EVENT The column  called EVENT that determines what procedure the
+#' patient had at that endoscopy
+#' @param indicatorEvent The name of the Event that references the outcome
+#' @param endEvent The event that indicates the outcome has been reached
+#' @keywords CRIM
+#' @importFrom dplyr group_by slice mutate lead
+#' @importFrom rlang sym
+#' @export
+#' @examples # Firstly relevant columns are extrapolated from the
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#' v<-Mypath
+#' v<-HistolDx(v,'Diagnosis')
+#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
+#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' 'HospitalNumber')
+#' # The function relies on the other Barrett's functions being run as well:
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+#' colnames(b2)[colnames(b2) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function groups the procedures by patient and then looks at those which
+#' # have 'nothing' in the event column (which means biopsies only) which was
+#' # preceded by radiofrequency ablation (RFA) so that these patients are
+#' # labelled as having clearance of intestinal metaplasia. The result is a true
+#'# or false column.
+#' b2$EVENT<-EndoscopyEvent(b2,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
+#' nn<-Barretts_CRIM(b2,'HospitalNumber',"EVENT")
+#' rm(v)
 
+LastStatus <- function(dataframe, HospNum, EVENT,indicatorEvent,endEvent) {
+  dataframe <- data.frame(dataframe)
+  HospNuma <- rlang::sym(HospNum)
+  EVENTa <- rlang::sym(EVENT)
+  
+  CRIM <-
+    dataframe %>% group_by(!!HospNuma) %>%
+    mutate(ind = (!!EVENTa) == indicatorEvent &
+             lead(!!EVENTa) == endEvent) %>%
+    slice(sort(c(which(ind), which(ind) + 1)))
+  CRIM<-data.frame(CRIM)
+  return(CRIM)
+}
 
 #' Number of tests done per month
 #'
@@ -221,58 +273,7 @@ HowManyTests <-
   }
 
 
-#' CRIM status Barrett's
-#'
-#' This collects the patients in whom it is assumed that complete clearance of
-#' intestinal metasplasia has occurred (CRIM) after ablation therapy.
-#' This is done by collecting those endoscopies where the last EVENT was
-#' equal to 'nothing' when the patient had undergone radiofrequency ablation at
-#' some point
-#' @param dataframe The dataframe
-#' @param HospNum The Hospital Number column
-#' @param EVENT The column  called EVENT that determines what procedure the
-#' patient had at that endoscopy
-#' @keywords CRIM
-#' @importFrom dplyr group_by slice mutate lead
-#' @importFrom rlang sym
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-Mypath
-#' v<-HistolDx(v,'Diagnosis')
-#' v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-#' v<-HistolBxSize(v,'Macroscopicdescription')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' # The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-#' colnames(b2)[colnames(b2) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function groups the procedures by patient and then looks at those which
-#' # have 'nothing' in the event column (which means biopsies only) which was
-#' # preceded by radiofrequency ablation (RFA) so that these patients are
-#' # labelled as having clearance of intestinal metaplasia. The result is a true
-#'# or false column.
-#' b2$EVENT<-EndoscopyEvent(b2,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
-#' nn<-Barretts_CRIM(b2,'HospitalNumber',"EVENT")
-#' rm(v)
 
-Barretts_CRIM <- function(dataframe, HospNum, EVENT) {
-  dataframe <- data.frame(dataframe)
-  HospNuma <- rlang::sym(HospNum)
-  EVENTa <- rlang::sym(EVENT)
-  
-  CRIM <-
-    dataframe %>% group_by(!!HospNuma) %>%
-    mutate(ind = (!!EVENTa) == "RFA" &
-             lead(!!EVENTa) == "nothing") %>%
-    slice(sort(c(which(ind), which(ind) + 1)))
-  CRIM<-data.frame(CRIM)
-  return(CRIM)
-}
 
 
 
@@ -320,7 +321,7 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 }
 
 
-############## Pathology Quality #####
+############## Group by endoscopist #####
 
 # Groups anything by Endoscopist and returns the table and a ggplot
 
@@ -354,15 +355,63 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
   NumBxPlot <-
     dataframe %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>%
     summarise(avg = mean(!!variable))
-  
-  
-
 }
 
 
+############## Group by endoscopist #####
+
+# Groups anything by Endoscopist and returns the table and a ggplot
+
+
+#' Plot a frequency table for categorical variables by endoscopist
+#'
+#' This takes any of the numerical metrics in the dataset and plots it by
+#' endoscopist.
+#' It of course relies on a Endoscopist column being present
+#' @param ProportionColumn The column (categorical data) of interest
+#' @param EndoscopistColumn The endoscopist column
+#' @importFrom ggplot2 ggplot
+#' @importFrom tidyr drop_na
+#' @importFrom dplyr group_by summarise
+#' @importFrom rlang sym
+#' @keywords Endoscopist
+#' @export
+#' @examples #The function plots any numeric metric by endoscopist
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#' v<-HistolDx(Mypath,'Diagnosis')
+#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
+#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
+#' # The histology is then merged with the Endoscopy dataset. The merge occurs
+#' # according to date and Hospital number
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' 'HospitalNumber')
+#' #The function relies on the other Barrett's functions being run as well:
+#' b1<-Barretts_PragueScore(v,'Findings')
+#' b2<-Barretts_PathStage(b1,'Histology')
+
+#' # The follow-up group depends on the histology and the Prague score for a
+#' # patient so it takes the processed Barrett's data and then looks in the
+#' # Findings column for permutations of the Prague score.
+#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
+#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function takes the column with the extracted worst grade of
+#' # histopathology and returns the proportion of each finding (ie
+#' # proportion with low grade dysplasia, high grade etc.) for each
+#' # endoscopist
+#' kk<-CategoricalByEndoscopist(b4$IMorNoIM,b4$Endoscopist)
+#' rm(Myendo)
 
 
 
+CategoricalByEndoscopist <- function(ProportionColumn, EndoscopistReportColumn) {
+ 
+  
+  # Need to include indefinite for dysplasia
+  PropByEndo <- prop.table(table(EndoscopistReportColumn,
+                            ProportionColumn))
+  return(PropByEndo)
+}
 
 
 
@@ -413,6 +462,7 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 #' rm(MypathColon)
 #' rm(MyendoColon)
 
+################### GRS IS JUST A JOINED PROPORTIONS PROBLEM #########################
 GRS_Type_Assess_By_Unit <-
   function(dataframe,
            ProcPerformed,
@@ -425,20 +475,14 @@ GRS_Type_Assess_By_Unit <-
     dataframe <- dataframe[grepl("Colonoscopy", dataframe[, ProcPerformed]),]
     
     #Function should get proportions of a procedure that result in a finding:
-    Adenoma<-"[Aa]denoma"
-    Adenocarcinoma<-".*denoca.*"
-    HGD<-".*[Hh]igh [Gg]rade.*"
-    LGD<-".*[Ll]ow [Gg]rade.*"
-    Serrated<-".*[Ss]errated.*"
-    Hyperplastic<-".*yperplastic.*"
     
-    
-    Adenoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma=(sum(grepl(Adenoma, Original.y))/n())*100)
-    Adenocarcinoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma=(sum(grepl(Adenocarcinoma, Original.y))/n())*100)
-    HGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD=(sum(grepl(HGD, Original.y))/n())*100)
-    LGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD=(sum(grepl(LGD, Original.y))/n())*100)
-    Serrated<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated=(sum(grepl(Serrated, Original.y))/n())*100)
-    Hyperplastic<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic=(sum(grepl(Hyperplastic, Original.y))/n())*100)
+    Adenoma2<-CategoricalByEndoscopist(Endo_Endoscopist,Histol)
+    Adenoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma=(sum(grepl("[Aa]denoma", Original.y))/n())*100)
+    Adenocarcinoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma=(sum(grepl(".*denoca.*", Original.y))/n())*100)
+    HGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD=(sum(grepl(".*[Hh]igh [Gg]rade.*", Original.y))/n())*100)
+    LGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD=(sum(grepl(".*[Ll]ow [Gg]rade.*", Original.y))/n())*100)
+    Serrated<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated=(sum(grepl(".*[Ss]errated.*", Original.y))/n())*100)
+    Hyperplastic<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic=(sum(grepl(".*yperplastic.*", Original.y))/n())*100)
     
     
     
@@ -458,328 +502,8 @@ GRS_Type_Assess_By_Unit <-
     return(FinalTable)
   }
 
-############# Endoscopist Quality ######
-
-#' Determine overall number of procedures performed
-#'
-#' Determines the number of endoscopies done by an endoscopist
-#' by type of endosopy and indication for a given timeframe
-#' As per BSG recommendations for Upper GI minimum number of
-#' gastroscopies in a year (although here the time frame is user
-#' defined)
-#' @param dataframe The dataframe
-#' @param EndoscopistColumn The column containing the Endoscopists names
-#' @param IndicationColumn The column containing the Indication for the examination
-#' @keywords Withdrawal
-#' @export
-#' @examples Myendo<-Myendo[grepl('Gastroscopy',Myendo$ProcedurePerformed),]
-#'  oo<-NumberPerformed(Myendo,'Endoscopist','Indications')
-#'  rm(Myendo)
-
-NumberPerformed <- function(dataframe, EndoscopistColumn, IndicationColumn) {
-  dataframe<-data.frame(dataframe)
-  NumByEndoscopist <- data.frame(table(dataframe[, EndoscopistColumn],
-                                       dataframe[, IndicationColumn]))
-  return(NumByEndoscopist)
-}
 
 
-############################# Coding ################################
-
-
-
-#' OPCS-4 Coding 
-#'
-#' This function extracts the OPCS-4 codes for all Barrett's procedures
-#' It should take the OPCS-4 from the EVENT and perhaps also using extent
-#' depending on how the coding is done. The EVENT column will need to 
-#' extract multiple findings
-#' The hope is that the OPCS-4 column will then map from the EVENT column. This returns a nested list 
-#' column with the procedure, furthest path site and event performed 
-#' 
-#'
-#' @param dataframe the dataframe
-#' @param EVENT the EVENT column
-#' @keywords OPCS-4 codes extraction
-#' @importFrom dplyr mutate case_when
-#' @importFrom rlang sym
-#' @importFrom stringr str_detect
-#' @export
-#' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
-#' SelfOGD_Dunn$OPCS4w<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
-
-
-#Take the PathSite codes which should have been coded from PathSite using the HistolBiopsyIndex
-
-# #####################################################   Sandbox    ##################################################################################################################
-# SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
-# EndoscTree<-list("Patient Name","Date of Birth","General Practicioner","Hospital Number","Date of Procedure","Endoscopist","Second endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Complications","Co-morbidity","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED","FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP","OPCS4 Code")
-# 
-# SelfOGD_Dunn<-SelfOGD_Dunn%>%select(PatientID,Endo_ResultText,Histo_ResultText)
-# for(i in 1:(length(EndoscTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Endo_ResultText',as.character(EndoscTree[i]),as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))}
-# PathTree<-c("NATURE OF SPECIMEN","CLINICAL DETAILS","MACROSCOPICAL DESCRIPTION","HISTOLOGY","DIAGNOSIS")
-# for(i in 1:(length(PathTree)-1)) {SelfOGD_Dunn<-Extractor2(SelfOGD_Dunn,'Histo_ResultText',as.character(PathTree[i]),as.character(PathTree[i+1]),as.character(PathTree[i]))}
-# 
-# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","Histo_ResultText","MACROSCOPICALDESCRIPTION")
-# SelfOGD_Dunn$PathSiteIndex<-HistolBiopsyIndex(SelfOGD_Dunn,"PathSite")
-# 
-# SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS")
-# 
-# 
-# #ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED),grepl("OESOPHAGUS: Barrett's oesophagus C0 M1 ",FINDINGS))
-# #EndoscopyEvent(ForRules,"FINDINGS")
-# 
-# #ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(INDICATIONSFOREXAMINATION,ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent,PathSite,PathSiteIndex)
-# #View(ForRules)
-# SelfOGD_Dunn<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
-# write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
-# 
-# 
-# 
-# #Checking against actual coding data
-# ManualOPCS_4<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/TB_ALLPATID_Dunn_2013ToPresent.xls")
-# library(janitor)
-# selectedClean<-ManualOPCS_4%>%select("Prim Proc Code & Description","2nd Proc Code","Trust ID",
-#                                      "Consultant","Admission Date","Prim Diag Code & Description",
-#                                      "2nd Diagnosis Code",
-#                                      "3rd Diagnosis Code",
-#                                      "5th Diagnosis Code",
-#                                      "6th Diagnosis Code",
-#                                      "7th Diagnosis Code",
-#                                      "8th Diagnosis Code",
-#                                      "9th Diagnosis Code",
-#                                      "10th Diagnosis Code")
-# selectedClean<-clean_names(selectedClean,"snake")
-# names(selectedClean) <- gsub('admission_date', 'Endo_ResultEntered', names(selectedClean))
-# names(selectedClean) <- gsub('trust_id', 'PatientID', names(selectedClean))
-# 
-# #convert the date column names so can do a merge
-# SelfOGD_Dunn$Endo_ResultEntered<-as.Date(SelfOGD_Dunn$Endo_ResultEntered)
-# selectedClean$Endo_ResultEntered<-as.Date(selectedClean$Endo_ResultEntered)
-# 
-# mergedData <- merge(selectedClean,SelfOGD_Dunn,by=c("Endo_ResultEntered","PatientID"))
-# 
-# 
-# ForRules<-SelfOGD_Dunn%>%filter(grepl("Gastroscopy",PROCEDUREPERFORMED))%>%select(ExtentofExam,Histo_ResultText,FINDINGS,EndoscopyEvent,prim_proc_code_description,x2nd_proc_code,PathSite,PathSiteIndex)%>%sample_n(100)
-# View(ForRules)
-#ToSee<-ForRules%>%select(FINDINGS,EndoscopyEvent,PathSite)%>% filter(grepl("Error", EndoscopyEvent))
-
-######################################################################################################################################################################################################
-#For each event site:
-
-OPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {  
-  dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
-  
-  
-  
-  #For the primary codes:
-  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):apc","G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
-  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):emr","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)  
-  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):polypectomy","G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) 
-  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):rfa","G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
-  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):esd","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
-  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):dilat", "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
-  dataframe$EndoscopyEvent<-gsub("APC","G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE) 
-  dataframe$EndoscopyEvent<-gsub("EMR","G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)  
-  dataframe$EndoscopyEvent<-gsub("Polypectomy","G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case= TRUE)
-  dataframe$EndoscopyEvent<-gsub("RFA","G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
-  dataframe$EndoscopyEvent<-gsub("ESD","G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)
-  dataframe$EndoscopyEvent<-gsub("Dilatation","G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
-  
-  
-  #For the non-event entries:
-  
-  dataframe<-dataframe %>%   
-    mutate(OPCS4Primary = case_when(
-      grepl("OGD", dataframe$PROCEDUREPERFORMED,ignore.case = TRUE) ~  case_when(
-        
-        #No event and no biopsy taken:
-        dataframe$EndoscopyEvent==""&(dataframe$PathSite==""|dataframe$PathSite=="NA:NA") ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
-        
-        #No event and upper GI biopsy taken:
-        dataframe$EndoscopyEvent==""& grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
-        
-        #Event (oesophageal) and upper GI biopsy taken
-        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSite,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus"
-        
-      ),
-      TRUE ~ "SomethingElse"
-    ))
-  
-  
-  #For the secondary codes:
-  dataframe$MAXOFPATHSITE<-str_extract_all(dataframe$PathSite,"\\d")
-  dataframe$MAXOFPATHSITE<-lapply(dataframe$MAXOFPATHSITE,function(x) max(as.numeric(x)))
-  
-  dataframe<-dataframe %>%   
-    mutate(OPCS4ZCode = case_when( 
-      dataframe$PathSite==""~ case_when(
-        #1. if no biopsy and no Event (covers oesophageal and non-oesophageal), then give the extent reached
-        tolower(dataframe$ExtentofExam)=="second part of duodenum"~  "Z27.4",
-        tolower(dataframe$ExtentofExam)=="pylorus"~  "Z27.3",
-        tolower(dataframe$ExtentofExam)=="stomach"~  "Z27.2",
-        tolower(dataframe$ExtentofExam)=="oesophagus"~  "Z27.1",
-      ),
-      
-      #2.If event (oesophageal) and biopsy 
-      dataframe$PathSite!="" ~ case_when(
-        dataframe$MAXOFPATHSITE== 5 ~  "Z27.4",
-        dataframe$MAXOFPATHSITE== 4 ~  "Z27.3",
-        dataframe$MAXOFPATHSITE== 3 ~  "Z27.2",
-        dataframe$MAXOFPATHSITE== 1|2 ~  "Z27.1",
-      ),
-      TRUE ~ "No code here"
-    )
-    )
-  return(dataframe)
-}
-
-
-#' Primary Diagnosis from Endoscopy
-#'
-#' This function extracts the primary diagnosis from the endoscopy free text. It will also add
-#' pathology diagnosis to the final primary code
-#' 
-#'
-#' @param dataframe the dataframe
-#' @param EVENT the EVENT column
-#' @keywords OPCS-4 codes extraction
-#' @importFrom dplyr mutate case_when
-#' @importFrom rlang sym
-#' @importFrom stringr str_detect
-#' @export
-#' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
-#' SelfOGD_Dunn$OPCS4w<-OPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
-
-
-
-#The plan: 
-#1. Look at th ENDOSCOPICDIAGNOSIS column first and implement algorithm to look for keywords that map to diagnostic codes
-#2. Need to establish an order of importance of diagnostic codes.
-#3. Map all the diagnoses from the drop down box to primary diagnosis codes
-EndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIAGNOSIS,EndoscopyEvent) { 
-  
-  
-  #Just get the uppers for now:
-  SelfOGD_DunnOGD<-SelfOGD_Dunn[grepl("Gastroscopy",SelfOGD_Dunn$PROCEDUREPERFORMED),]
-  
-  #Merge the findings in with the myDx:
-  SelfOGD_DunnOGD$FINDINGSmyDx<-paste(SelfOGD_DunnOGD$FINDINGS,SelfOGD_DunnOGD$ENDOSCOPICDIAGNOSIS)
-  
-  #Split into a string
-  SelfOGD_DunnOGD$FINDINGSmyDx<-stringi::stri_split_lines(SelfOGD_DunnOGD$FINDINGSmyDx,omit_empty = TRUE)
-  
-  #Copy over to a new column to be sampled
-  SelfOGD_DunnOGD$FindingsAfterProcessing<-SelfOGD_DunnOGD$FINDINGSmyDx
-  
-  
-  #Use case when on nested list to generate ICD-10 codes and then remove from the list.
-  
-  #If it matches the grep then add the diagnosis, and then chop into list and remove that string
-  
-  
-  
-  
-  
-  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
-    mutate(
-      PrimaryDiagnosisCode = map(
-        FINDINGSmyDx, ~ case_when(
-          grepl("mitotic|emr|tumour", unlist(tolower(.x)),ignore.case=TRUE) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
-          grepl("dysplasia", unlist(tolower(.x)),ignore.case=TRUE) ~ "K229  -  Disease of oesophagus - unspecified",
-          grepl("stricture", unlist(tolower(.x)),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
-          grepl("barrett", unlist(tolower(.x)),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
-          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
-          grepl("hiatus",tolower(.x), unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
-          grepl("oesophagitis",tolower(.x), unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K20  -  Oesophagitis",
-          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
-          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
-          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)", unlist(tolower(.x)),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
-          TRUE ~ "")
-      )
-    )
-  
-  SelfOGD_DunnOGD$FINDINGSmyDx<-lapply(SelfOGD_DunnOGD$FINDINGSmyDx, function(x) x[!grepl("OESOPH.*","", x,ignore.case=TRUE,perl=TRUE)])
-  
-  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%  FindingsAfterProcessing = map(
-    FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
-  )
-  
-  
-  
-  
-  ######### Go through it again for the second codes:
-  
-  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
-    mutate(
-      OverallDiagnosisCode = map(
-        FindingsAfterProcessing, ~ case_when(
-          grepl("mitotic|emr|tumour", tolower(.x)) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
-          grepl("dysplasia", tolower(.x)) ~ "K229  -  Disease of oesophagus - unspecified",
-          grepl("stricture",tolower(.x),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
-          grepl("barrett",tolower(.x),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
-          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
-          grepl("hiatus",tolower(.x),ignore.case=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
-          grepl("oesophagitis",tolower(.x),ignore.case=TRUE) ~  "K20  -  Oesophagitis",
-          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
-          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
-          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
-          grepl("gastritis",tolower(.x),ignore.case=TRUE) ~  "K297  -  Gastritis - unspecified",
-          grepl("duodenitis",tolower(.x),ignore.case=TRUE) ~  "K298  -  Duodenitis",
-          grepl("(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K317  -  Polyp of stomach and duodenum",
-          grepl("candid",tolower(.x),ignore.case=TRUE) ~  "B387  -  Candidiasis of other sites",
-          TRUE ~ "")
-      ),
-      FindingsAfterProcessing = map(
-        FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
-                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
-                                             (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
-      )
-        )
-  
-  
-  SelfOGD_DunnOGD$OverallDiagnosisCode<-lapply(SelfOGD_DunnOGD$OverallDiagnosisCode,function(x) (unique(x)))
-  SelfOGD_DunnOGD$OverallDiagnosisCode<-lapply(SelfOGD_DunnOGD$OverallDiagnosisCode, function(x) x[x != "" & x != "\n"])
-  
-  
-  #Now go through the OverallCodes and determine the 
-  
-  
-  ######### Go through it again for the third codes: 
-  
-  SelfOGD_DunnOGD<-SelfOGD_DunnOGD %>%
-    mutate(
-      ThirdDiagnosisCode = map(
-        FindingsAfterProcessing, ~ case_when(
-          grepl("mitotic|emr|tumour", tolower(.x)) ~ "C159  -  Malignant neoplasm oesophagus, unspecified - Oesophagus - unspecified",
-          grepl("dysplasia", tolower(.x)) ~ "K229  -  Disease of oesophagus - unspecified",
-          grepl("stricture",tolower(.x),ignore.case=TRUE) ~  "K222  -  Oesophageal obstruction",
-          grepl("barrett",tolower(.x),ignore.case=TRUE) ~  "K227  -  Barrett's oesophagus",
-          grepl("(\\.|^)(?=[^\\.]*inlet)(?=[^\\.]*patch)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K228  -  Other specified diseases of oesophagus",
-          grepl("hiatus",tolower(.x),ignore.case=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
-          grepl("oesophagitis",tolower(.x),ignore.case=TRUE) ~  "K20  -  Oesophagitis",
-          grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
-          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
-          grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
-          grepl("gastritis",tolower(.x),ignore.case=TRUE) ~  "K297  -  Gastritis - unspecified",
-          grepl("duodenitis",tolower(.x),ignore.case=TRUE) ~  "K298  -  Duodenitis",
-          grepl("(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K317  -  Polyp of stomach and duodenum",
-          grepl("candid",tolower(.x),ignore.case=TRUE) ~  "B387  -  Candidiasis of other sites",
-          TRUE ~ "")
-      ),
-      FindingsAfterProcessing = map(
-        FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
-                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
-                                             (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
-      )
-        )
-  
-  #To Do: Also assess the findings column
-  
-  
-  
-  return(primDxVector)
-}
 
 
 ###### Graphics ########################################## 
@@ -1097,6 +821,10 @@ PatientFlow_CircosPlots <-
     )
   }
 ##################### How many tests #########################
+#Use ggthemes
+#Make sure the data is inputted in the correct format
+#Make sure the user just has to input the data structure with what gets plotted
+#from the original function.
 
 # # Then just plot it:
 # Myplot <-
@@ -1106,8 +834,7 @@ PatientFlow_CircosPlots <-
 #   geom_smooth(method = "loess") +
 #   theme_bw() +
 #   labs(title="Number of procedures per year")
-# functionResults <-
-#   list(Myplot = Myplot, TestNumbers = TestNumbers)
+
 # 
 # #################Metrics ByEndoscopist############
 # 
@@ -1131,3 +858,55 @@ PatientFlow_CircosPlots <-
 #   )) + 
 #   geom_line() + geom_smooth()+
 #   labs(title="Number of procedures by type")
+
+
+##################BarrettsBxQual#########################
+# e) Then show shortfall of number of biopsies on a graph
+t <-
+  ggplot() +
+  geom_point(aes(BxShortfallPre$Endoscopist, BxShortfallPre$MeanDiff),
+             size = 9) + geom_point(cex = 2) +
+  labs(title = "Shortfall number of biopsies on Barrett's Surveillance list",
+       x = "", y = "") +
+  theme(plot.margin = unit(c(0, 0, 0, 0), "lines")) +
+  theme(legend.position = "top") +
+  xlab("Endoscopist") +
+  ylab("Shortfall(Obs-\nexpec number Bx)") +
+  theme(axis.text.x = element_text(angle = -90, size = 10)) +
+  theme(axis.text.y = element_text(angle = -90, size = 10)) +
+  theme(axis.title = element_text(size = 10)) +
+  theme(title = element_text(size = 10)) +
+  theme(legend.position = "top")
+
+##################BarrettsDocumentQuality###############
+t <-ggplot(EndoMinDataSet, aes(x=b, y=Proportion)) + 
+  geom_bar(stat="identity",fill="blue")+
+  xlab("Documentation")+
+  labs(title="Proportion of Reports Containing Terms")+
+  coord_flip()+ 
+  theme(panel.border = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        axis.line = element_line(colour = "black"))
+##################EMRResults###############
+barplot(
+  EMRResult$n,
+  names.arg = c(
+    "AllEMRs",
+    "SM2",
+    "SM1",
+    "T1b_Unspec",
+    "T1a",
+    "HGD",
+    "LGD",
+    "IM",
+    "No IM"
+  ),
+  xlab = "Tissue grade",
+  ylab = "Number of EMRs",
+  cex.lab = 2.0,
+  cex.axis = 1.5,
+  cex.main = 1.5,
+  cex.names = 1.5,
+  main = "EMR Tissue pathology results"
+)
