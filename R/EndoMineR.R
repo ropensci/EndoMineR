@@ -247,6 +247,7 @@ HowManyTests <-
            Indication,
            Endo_ResultPerformed,
            StringToSearch) {
+    
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
     TestNumbers <-
       dataframe %>% filter(
@@ -258,18 +259,16 @@ HowManyTests <-
         year = year(as.Date(!!Endo_ResultPerformeda))
       ) %>%
       summarise(Number = n())
+    
     names(TestNumbers) <- c("day", "week", "month", "year", "freq")
     TestNumbers$MonthYear <-
       paste("01_", TestNumbers$month, "_", TestNumbers$year, sep = "")
-    TestNumbers$MonthYear <- dmy(TestNumbers$MonthYear)
     
+    TestNumbers$MonthYear <- dmy(TestNumbers$MonthYear)
     TestNumbers<-data.frame(TestNumbers)%>% arrange(year,month,week,day)
-    TestNumbers2<-TestNumbers%>%select(year,freq) %>%
-      group_by(year) %>%
-      summarise(FreqYear=n())
-    TestNumbers2<-data.frame(TestNumbers2)
 
-    return(TestNumbers2)
+
+    return(TestNumbers)
   }
 
 
@@ -463,7 +462,7 @@ CategoricalByEndoscopist <- function(ProportionColumn, EndoscopistReportColumn) 
 #' rm(MypathColon)
 #' rm(MyendoColon)
 
-################### GRS IS JUST A JOINED PROPORTIONS PROBLEM #########################
+
 GRS_Type_Assess_By_Unit <-
   function(dataframe,
            ProcPerformed,
@@ -471,13 +470,10 @@ GRS_Type_Assess_By_Unit <-
            Dx,
            Histol) {
     dataframe <- data.frame(dataframe)
-    
-    
     dataframe <- dataframe[grepl("Colonoscopy", dataframe[, ProcPerformed]),]
     
     #Function should get proportions of a procedure that result in a finding:
     
-    Adenoma2<-CategoricalByEndoscopist(Endo_Endoscopist,Histol)
     Adenoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma=(sum(grepl("[Aa]denoma", Original.y))/n())*100)
     Adenocarcinoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma=(sum(grepl(".*denoca.*", Original.y))/n())*100)
     HGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD=(sum(grepl(".*[Hh]igh [Gg]rade.*", Original.y))/n())*100)

@@ -426,6 +426,9 @@ Myplot <-
 ##################### Grouped numeric vs numeric ####################
 #This function will produce all permutations so you can choose between them
 
+##################### Time Series ####################
+#This function will produce all permutations so you can choose between them
+
 ##########Tables###########
 library(stargazer)
-stargazer(iris,type = "html",out="star_descriptive.doc")
+stargazer(iris,type = "html",style = "qje",out="star_descriptive.doc")
