@@ -239,16 +239,17 @@ SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
 #' # endoscopies done
 #' # where the indication is surveillance (so searching on 'Surv' will do fine) .
 #' rm(list=ls(all=TRUE))
-#' ff<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+#' ff<-HowManyOverTime(Myendo,'Indications','Dateofprocedure','Surv')
 
 
-HowManyTests <-
+HowManyOverTime <-
   function(dataframe,
            Indication,
            Endo_ResultPerformed,
            StringToSearch) {
     
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
+    
     TestNumbers <-
       dataframe %>% filter(
         str_detect(dataframe[, Indication], StringToSearch)) %>%
@@ -354,7 +355,9 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
   NumBxPlot <-
     dataframe %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>%
     summarise(avg = mean(!!variable))
+  
   NumBxPlot<-data.frame(NumBxPlot,stringsAsFactors = FALSE)
+  return(NumBxPlot)
 }
 
 

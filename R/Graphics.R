@@ -395,6 +395,23 @@ Myplot <-
   scale_fill_Publication()+
   theme_Publication()
 
+##################### Time x Numeric y points #########################
+
+Myplot <-
+  ggplot(data = df, aes(x = DateFormattedTime, y = number)) +
+  geom_point() +
+  geom_line() +
+  geom_smooth(method = "loess") +
+  labs(title="Number per year")+
+  scale_colour_Publication()+
+  scale_fill_Publication()+
+  theme_Publication()
+
+
+##################### Time series plots  #########################
+
+
+
 
 
 ##################### Non-numeric x Numeric y bar #########################
@@ -407,7 +424,7 @@ t <-ggplot(EndoMinDataSet, aes(x=b, y=Proportion)) +
   scale_colour_Publication()+
   theme_Publication()
 
-#################### Grouped disctributions #######################
+#################### Grouped distributions #######################
 #Use violin/boxplot/ridgeplot
 #This function will produce all of them so any can be used
 
