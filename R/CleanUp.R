@@ -191,7 +191,7 @@ Extractor2 <- function(x, y, stra, strb, t) {
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a nested list
-#' @examples # textPrep(SelfOGD_Dunn,"FINDINGS")
+#' @examples CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
 #' 
 textPrep<-function(inputText){
   
@@ -486,6 +486,7 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("Dr.*?[A-Za-z]+|[Rr]eported.*","",x))
   
   
   #Get rid of strange things
@@ -707,43 +708,6 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
 ##########Histology clean up functions##########
 
 
-#' Extracts histological diagnosis
-#'
-#' This extracts Diagnosis data from the report. The Diagnosis is the overall
-#' impression of the pathologist for that specimen. At the moment, Only Capital
-#' D included (not lower case d) to make sure picks up subtitle header as
-#' opposed to mentioning 'diagnosis' as part of a sentence.  Column specific
-#' cleanup and negative remover have also been implemented here.
-#'
-#' @param dataframe dataframe
-#' @param HistolColumn column containing the Histopathology report
-#' @importFrom stringr str_extract str_replace
-#' @keywords Histology Diagnosis
-#' @export
-#' @examples nn<-HistolDx(Mypath,'Diagnosis')
-
-
-HistolDx <- function(dataframe, HistolColumn) {
-  dataframe<-data.frame(dataframe)
-  
-  #Column specific cleanup
-  dataframe[, HistolColumn] <- str_replace(dataframe[, HistolColumn],
-                                           "Dr.*?[A-Za-z]+|[Rr]eported.*", "")
-
-  # Prepare the text
-  ListToConvert<-textPrep(dataframe, HistolColumn)
-  dataframe[, HistolColumn] <- sapply(ListToConvert, function(x) paste(x,collapse="\n"))
-  
-  
-  dataframe$Dx_Simplified <- dataframe[, HistolColumn]
-  
-  #Column-specific cleanup
-  dataframe$Dx_Simplified <-
-    gsub("(- )|(-[A-Z])", "\n", dataframe$Dx_Simplified, fixed = TRUE)
-  return(dataframe)
-}
-
-
 
 #' Cleans spelt numbers in histology report
 #'
@@ -775,46 +739,53 @@ HistolMacDescrip <- function(MacroString) {
 ############## Parts of speech tagging ###################
 
 library(udpipe)
-udmodel <- udpipe_download_model(language = "english")
+udmodel <- udpipe_download_model(language = "english-ewt")
 udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+#Get into a tokenised form first
+#Myendo$Findings<-textPrep(Myendo$Findings)
 x <- udpipe_annotate(udmodel_english, x = Myendo$Findings)
-x <- as.data.frame(x)
-x <- cbind_morphological(x)
+x2 <- as.data.frame(x)
+x3 <- cbind_morphological(x2)
+Newx<-x3 %>% group_by(sentence) %>% summarise(upos = paste(upos, collapse="\n "),
+                                             xpos = paste(xpos, collapse="\n "),
+                                             dep_rel = paste(dep_rel, collapse="\n"),
+                                             misc = paste(misc, collapse="\n"),
+                                             has_morph = paste(has_morph, collapse="\n"),
+                                             morph_abbr = paste(morph_abbr, collapse="\n"),
+                                             morph_case = paste(morph_case, collapse=", "),
+                                             morph_definite = paste(morph_definite, collapse="\n"),
+                                             morph_degree = paste(morph_degree, collapse="\n"),
+                                             morph_foreign = paste(morph_foreign, collapse="\n"),
+                                             morph_gender = paste(morph_gender, collapse="\n"),
+                                             morph_mood = paste(morph_mood, collapse="\n"),
+                                             morph_number = paste(morph_number, collapse="\n"),
+                                             morph_numtype = paste(morph_numtype, collapse="\n"),
+                                             morph_person = paste(morph_person, collapse="\n"),
+                                             morph_poss = paste(morph_poss, collapse="\n"),
+                                             morph_prontype = paste(morph_prontype, collapse="\n"),
+                                             morph_reflex = paste(morph_reflex, collapse="\n"),
+                                             morph_tense = paste(morph_tense, collapse="\n"),
+                                             morph_verbform = paste(morph_verbform, collapse="\n"))
 
+Newx<-data.frame(Newx)
+Newx$EventList<-ExtrapolateFromLists(Newx$sentence,EventList())
+Newx$Symptoms<-ExtrapolateFromLists(Newx$sentence,GISymptomsList())
+Newx$Location<-ExtrapolateFromLists(Newx$sentence,LocationList())
 
-#' Extrapolate from lists
-#'
-#' This extracts words from lists of words into their own column.
-#' This is used when you want to find for example, all the therapeutic 
-#' events carried out for all endoscopies- You just ask for the therapy event list
-#' and it will pull out all the therapies
-#'
-#' @param Column The input column as a character vector
-#' @param mylist the list of words you want to find
-#' @keywords Macroscopic
-#' @importFrom stringr str_replace
-#' @export
-#' @examples pp<-ExtrapolateFromLists(Myendo$Findings,EventList())
-#' 
-#' 
-##########Extrapolation single term functions##########
-ExtrapolateFromLists <- function(Column,mylist) {
-  
-  #Get the list as a regular expression
-  mylist2<-paste0(unlist(mylist,use.names=F),collapse="|")
-  #Extract all the ablation types from the merged columns
-  ablationPositive<- str_extract_all(Column,mylist2)
-}
 
 
 #' Extrapolate from Dictionary
 #'
-#' Standardises the location of biopsies by cleaning up the common typos and
-#' abbreviations that are commonly used in free text of pathology reports
+#' Provides term mapping and extraction in one
+#' Standardises any term according to a mapping lexicon provided and then
+#' extracts the term. Thus is
+#' different to the DictionaryInPlaceReplace in that it provides a new column
+#' with the extracted terms as opposed to changing it in place
 #'
 #' @param dataframe The dataframe
 #' @param SampleLocation Column describing the Macroscopic sample from histology
 #' @keywords Withdrawal
+#' @importFrom fuzzyjoin regex_left_join
 #' @export
 #' @examples #Firstly we extract histology from the raw report
 #' # using the extractor function
@@ -835,10 +806,10 @@ ExtrapolateFromLists <- function(Column,mylist) {
 
 
 ExtrapolatefromDictionary<-function(inputString,list){
-  
+  inputString<-tolower(inputString)
   mylist<-paste0(unlist(list,use.names=F),collapse="|")
-  ToIndex<-str_extract_all(inputString,paste0("(^|,)[a-z]+:?(",tolower(mylist),")(|$)"))
-  ToIndex<-lapply(ToIndex, function(x) unique(x))
+  #Cant remember reason for this line: ToIndex<-str_extract_all(inputString,paste0("(^|,)[a-z]+:?(",tolower(mylist),")(|$)"))
+  ToIndex<-lapply(inputString, function(x) unique(x))
   #Give each an index in the list (taken from the location list)
   
   #The results to replace 
@@ -866,6 +837,7 @@ ExtrapolatefromDictionary<-function(inputString,list){
   return(ToIndex)
 }
 
+############## Colocate ###################
 
 #' EntityPairs_OneSentence 
 #'
@@ -1038,8 +1010,11 @@ HistolBxSize <- function(MacroColumn) {
 #' @param EventColumn2 The alternative pathology text column
 #' @importFrom stringr str_remove_all str_replace_all
 #' @export
+#' @return a list with two columns, one is the type and site and the other
+#' is the index to be used for OPCS4 coding later if needed.
 #' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn$PROCEDUREPERFORMED,SelfOGD_Dunn$MACROSCOPICALDESCRIPTION,SelfOGD_Dunn$HISTOLOGY)
-
+#####To do: Perhaps create a BiopsySiteIndex as part of this function as it is an inevitable
+#result of the function prior to OPCS4 coding.
 HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 
   output<-ifelse(EntityPairs_OneSentence(inputString1,HistolType(),LocationList())=="NA:NA", 
@@ -1056,7 +1031,11 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
                  str_remove_all(output, paste0('(',tolower( paste0(unlist(lower,use.names=F),collapse="|")),')',':biopsy')),
                  ifelse(grepl("Colonoscopy|Flexi",procedureString),
                         str_remove_all(output, paste0('(',tolower(paste0(unlist(upper,use.names=F),collapse="|")),')',':biopsy')),output))
-  return(output)
+  
+  biopsyIndexresults<-ExtrapolatefromDictionary(pathSiteString,BiopsyIndex())
+  
+  output<-list(output,biopsyIndexresults)
+  return(outputFinal)
 }
 
 
@@ -1064,6 +1043,8 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 #' HistolBiopsyIndex 
 #'
 #' This returns a number for all the biopsies taken based on distance from orifice. It is for biopsies only
+#' YOU COULD DITCH THIS ONE AS IT IS JUCT A FUNCTION TO EXTRPOLATE FROM A DICTIONARY 
+#' AS PER THE FUNCTION INSIDE THIS FUNCTION
 #' @keywords Pathology biopsy index
 #' @export
 #' @param PathSite The column that has the pathology locatio and tissue type from HistolTypeAndSite
@@ -1073,37 +1054,13 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 #' @examples # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
 #' SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
 #' HistolBiopsyIndex(SelfOGD_Dunn$PathSite) 
+#Consider getting rid of this and integrating (as I've done but not tested) into the HistolType
+#and Site function.
 
 HistolBiopsyIndex<-function(pathSiteString){
   
-  HistolType<-paste0(unlist(HistolType(),use.names=F),collapse="|")
-  ToIndex<-str_extract_all(dpathSiteString,paste0("(^|,)[a-z]+:?(",tolower(HistolType),")(|$)"))
-  ToIndex<-lapply(ToIndex, function(x) unique(x))
-  #Give each an index in the list (taken from the location list)
-  
-  #The results to replace 
-  replace<-names(BiopsyIndex())
-  
-  #C stand for colon (and all lower bowel investigations) S stands for surgical O stands for OGD. 
-  replaceValue<-paste0(unlist(BiopsyIndex(),use.names=F))
-  
-  #Create a tibble to merge with the list
-  d1 <- tibble(key = replace, val = replaceValue)
-  
-  
-  #Select the elements that have characters in them
-  i1 <- lengths(ToIndex) > 0 
-  
-  #Do the merge
-  ToIndex[i1] <- map(ToIndex[i1], ~ 
-                       tibble(key = .x) %>%
-                       regex_left_join(d1) %>%
-                       pull(val))
-  
-  ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
-  ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
-  
-  return(ToIndex)
+ myresults<-ExtrapolatefromDictionary(pathSiteString,BiopsyIndex())
+ return(myresults)
 }
 
 

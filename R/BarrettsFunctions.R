@@ -324,9 +324,7 @@ BarrettsParisEMR <- function(dataframe, Column, Column2) {
 #' # and then groups the Barrett's endoscopies by patient (as defined by their
 #' # unique hospital identifier and then orders by the date of procedure. It
 #' # should look in the Indications column for Barrett's related indication
-#' ee<-BarrettsSurveil(Myendo,
-#' 'HospitalNumber',
-#' 'Dateofprocedure','Indications')
+#' ee<-BarrettsSurveil(Myendo,'HospitalNumber','Dateofprocedure','Indications')
 
 BarrettsSurveil <- function(dataframe,PatientID,Endo_ResultPerformed,
                                               IndicationsFroExamination) {
