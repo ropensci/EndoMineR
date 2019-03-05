@@ -4,10 +4,13 @@
 \alias{textPrep}
 \title{textPrep function}
 \usage{
-textPrep(dataframe, EventColumn)
+textPrep(inputText)
 }
 \arguments{
-\item{EventColumn}{The relevant pathology text column}
+\item{inputText}{The relevant pathology text column}
+}
+\value{
+This returns a nested list
 }
 \description{
 This is a helper function to prepare the data for the extraction of event, tissue type and site
@@ -16,7 +19,7 @@ BarrettsPathSite and BarrettsEventType function and is also used to generate OPC
 it needs a dataframe not a tibble so this needs to be converted prior to usage.
 }
 \examples{
-# textPrep(SelfOGD_Dunn,"FINDINGS")
+CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
 
 }
 \keyword{Find}

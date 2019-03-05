@@ -368,37 +368,88 @@ PatientFlow_CircosPlots <-
 #Make sure the data is inputted in the correct format ie one column is the endoscopist
 #And the other column is the metric. This can also be used for Time vs numeric eg how many tests
 #have been done etc.
+#' Create a Circos plot for patient flow
+#'
+#' This allows us to look at the overall flow from one
+#' type of procedure to another using circos plots.
+#' @param dataframe dataframe
+#' @param Title The plot title
+#' @param HospNum_Id Column with the patient's unique hospital number
+#' @importFrom GGally ggpairs
+#' @return Myplot the EDA final plot
+#' @keywords Circos
+#' @export
+#' @examples # This function does EDA
 
 
-# # Then just plot it:
-library(GGally) 
 
-Myplot <-
-  ggpairs(data=sample, # data.frame with variables
-          title="Pollutant correlations") # title of the plot
+EndoDataVizEDA <-
+  function(dataframe,Title) {
+Myplot <-ggpairs(data=sample, # data.frame with variables
+          title=Title) # title of the plot
+return(Myplot)
+}
 
 
 
 ##################### Non-numeric x Numeric y points #########################
 
 #Make sure the data is inputted in the correct format ie one column is the endoscopist
-#And the other column is the metric. This can also be used for Time vs numeric eg how many tests
-#have been done etc.
+
+#' Create non Numeric x versus y
+#'
+#' This allows us to look at the overall flow from one
+#' type of procedure to another using circos plots.
+#' @param dataframe dataframe
+#' @param Prop The proportion column
+#' @import ggplot2
+#' @return Myplot the EDA final plot
+#' @keywords Circos
+#' @export
+#' @return Myplot
+#' @examples # This function plot numeric y vs non-numeric x
 
 
 # # Then just plot it:
+
+EndoDataVizNum_y <-
+  function(dataframe,xdata,Prop) {
 Myplot <-
-  ggplot(data = kk, aes(x = X2, y = Prop ,group=1)) +
+  ggplot(data = dataframe, aes(x = xdata, y = Prop ,group=1)) +
   geom_point() +
   labs(title="Number of procedures per year")+
   scale_colour_Publication()+
   scale_fill_Publication()+
   theme_Publication()
 
+return(Myplot)
+}
+
 ##################### Time x Numeric y points #########################
 
+
+#Make sure the data is inputted in the correct format ie one column is the endoscopist
+
+#' Create non Numeric x versus y
+#'
+#' This allows us to look at the overall flow from one
+#' type of procedure to another using circos plots.
+#' @param dataframe dataframe
+#' @param number The numeric column
+#' @param xdata The Time column
+#' @param HospNum_Id Column with the patient's unique hospital number
+#' @import ggplot2
+#' @return Myplot the EDA final plot
+#' @keywords Circos
+#' @export
+#' @return Myplot
+#' @examples # This function plot numeric y vs non-numeric x
+#' 
+#' 
+EndoDataVizTime_xNum_y <-
+  function(dataframe,xdata,number) {
 Myplot <-
-  ggplot(data = df, aes(x = DateFormattedTime, y = number)) +
+  ggplot(data = dataframe, aes(x = xdata, y = number)) +
   geom_point() +
   geom_line() +
   geom_smooth(method = "loess") +
@@ -406,7 +457,7 @@ Myplot <-
   scale_colour_Publication()+
   scale_fill_Publication()+
   theme_Publication()
-
+}
 
 ##################### Time series plots  #########################
 
@@ -416,22 +467,59 @@ Myplot <-
 
 ##################### Non-numeric x Numeric y bar #########################
 
+#Make sure the data is inputted in the correct format ie one column is the endoscopist
+
+#' Create non Numeric x versus y
+#'
+#' This allows us to look at the overall flow from one
+#' type of procedure to another using circos plots.
+#' @param dataframe dataframe
+#' @param b The numeric column
+#' @param Proportion The Proportion column
+#' @import ggplot2
+#' @keywords
+#' @export
+#' @return Myplot
+#' @examples # This function plot numeric y vs non-numeric x
+#' 
+#' 
+EndoDataVizNum_xProp_y <-
+  function(dataframe,b,Proportion) {
 ##Input needs to be two columns. x is the term and y is the proportion that have it.
-t <-ggplot(EndoMinDataSet, aes(x=b, y=Proportion)) + 
+t <-ggplot(dataframe, aes(x=b, y=Proportion)) + 
   geom_bar(stat="identity")+
   xlab("Documentation")+
   labs(title="Proportion of Reports Containing Terms")+
   scale_colour_Publication()+
   theme_Publication()
 
+return(t)
+}
 #################### Grouped distributions #######################
 #Use violin/boxplot/ridgeplot
 #This function will produce all of them so any can be used
 
 
 ##################### Numeric x Numeric y  #########################
-Myplot <-
-  ggplot(data = Myendo, aes(x = Midaz, y = Fent)) +
+#Make sure the data is inputted in the correct format ie one column is the endoscopist
+
+#' Create  Numeric x versus y
+#'
+#' @param dataframe dataframe
+#' @param Numx The numeric x column
+#' @param Numy The numeric y column
+#' @import ggplot2
+#' @keywords
+#' @export
+#' @return Myplot
+#' @examples # This function plot numeric y vs non-numeric x
+#' 
+#' 
+EndoDataVizNum_xNum_y <-
+  function(dataframe,Numx,Numy) {
+    
+    Myplot <-
+  ggplot(data = dataframe, aes(x = Numx, y = Numy)) +
   geom_point() +
   geom_jitter()+
   geom_smooth(method=lm)+
@@ -439,7 +527,9 @@ Myplot <-
   scale_colour_Publication()+
   scale_fill_Publication()+
   theme_Publication()
-
+    
+    return(Myplot)
+}
 ##################### Grouped numeric vs numeric ####################
 #This function will produce all permutations so you can choose between them
 
@@ -447,5 +537,5 @@ Myplot <-
 #This function will produce all permutations so you can choose between them
 
 ##########Tables###########
-library(stargazer)
-stargazer(iris,type = "html",style = "qje",out="star_descriptive.doc")
+#library(stargazer)
+#stargazer(iris,type = "html",style = "qje",out="star_descriptive.doc")

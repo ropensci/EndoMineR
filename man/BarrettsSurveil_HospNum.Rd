@@ -27,8 +27,8 @@ Barretts_PathStage.
 # cleaning as part of the package.
 v<-Mypath
 v<-HistolDx(v,'Diagnosis')
-v<-HistolNumbOfBx(v,'Macroscopicdescription','specimen')
-v<-HistolBxSize(v,'Macroscopicdescription')
+v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
+v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',

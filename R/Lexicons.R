@@ -684,15 +684,24 @@ GISymptomsList<-function(){
 #' 
 WordsToNumbers<-function(){
   
-  NumberConv <- list("[Oo]ne"="1",
-                     "[Ss]ingle"="1",
-                     "[Tt]wo"="2",
-                     "[Tt]hree"= "3",
-                     "[Ff]our"= "4",
-                     "[Ff]ive"= "5",
-                     "[Ss]ix"="6",
-                     "[Ss]even"= "7",
-                     "[Ee]ight"= "8")
+  NumberConv <- list("[Oo]ne "="1",
+                     "[Ss]ingle "="1",
+                     "[Tt]wo "="2",
+                     "[Tt]hree "= "3",
+                     "[Ff]our "= "4",
+                     "[Ff]ive "= "5",
+                     "[Ss]ix "="6",
+                     "[Ss]even "= "7",
+                     "[Ee]ight "= "8",
+                     "[Nn]ine "= "9",
+                     "[Tt]en "= "10",
+                     "[Ee]leven "= "11",
+                     "[Tt]welve "= "12",
+                     "[Tt]hirteen "= "13",
+                     "[Ff]ourteen "= "14",
+                     "[Ff]ifteen "= "15",
+                     "[Ss]ixteen "= "16"
+                     )
   
   #To get the list as a list of values only in a regex use
   #paste0(unlist(WordsToNumbers,use.names=F),collapse="|")

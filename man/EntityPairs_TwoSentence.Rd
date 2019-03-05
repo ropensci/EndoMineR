@@ -4,7 +4,7 @@
 \alias{EntityPairs_TwoSentence}
 \title{EntityPairs_TwoSentence}
 \usage{
-EntityPairs_TwoSentence(dataframe, EventColumn)
+EntityPairs_TwoSentence(inputString, list1, list2)
 }
 \arguments{
 \item{EventColumn1}{The relevant pathology text column}

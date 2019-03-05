@@ -2,21 +2,7 @@
 % Please edit documentation in R/CleanUp.R
 \name{SensAndSpecif}
 \alias{SensAndSpecif}
-\title{#' Validate columns
-#'
-#' This is an attempt to determine whether functions are accurate in their extraction
-#' It is part of a validation pipeline to make sure the data outputted from a function
-#' is accurate
-#' It essentially is a comparison of actual vs expected output. The intention is to 
-#' then quantify the output of a function for a specific dataset.
-#'
-#' @param dataframe dataframe
-#' @param testcolumn The dataframe column to run the function on
-#' @param pHospitalNum the hospital number of the patient so can be identified
-#' @importFrom openxlsx write.xlsx
-#' @keywords validation
-#' @export
-#' @examples #ValidationR(HistolBxSize,myHistol,"histology_report")}
+\title{Sensitivity and Specificity of text mining functions}
 \usage{
 SensAndSpecif(dataframe, ref, actual)
 }
@@ -28,57 +14,6 @@ SensAndSpecif(dataframe, ref, actual)
 \item{actual}{The column with the actual values}
 }
 \description{
-sensAndSpecificMultip<-function(FUN =funct,dataframe,Column,pHospitalNum){
-  dd<-funct(dataframe,Column)
-  #Now just want the columns that have changed or have been added from the original as well
-  #as well as the columns that sound very similar to the original
-  #ie need to get the original column called Column as well as the new column created (can
-  # I get this from the diff between two data frames? dd-dataframe??)
-  #This gets the new column name from the dataframe that the function has run
-  MyNegsFiltered$FindingsAlgoNegs<-as.list(strsplit(MyNegsFiltered$FindingsAlgoNegs, ";"))
-  MyNegsFiltered$negativeresults<-as.list(strsplit(MyNegsFiltered$negativeresults, ";"))
-  #pHospitalNum
-  ff<-setdiff(union(names(dataframe), names(dd)), names(dataframe))
-  ff<-data.frame(dd[,Column],dd[,ff],dd[,pHospitalNum])
-  write.xlsx(ff, paste0(getwd(),"/MyValidation.xlsx"))
-}
-#dataframe[,pHospitalNum],
-#' Validate columns
-#'
-#' This is an attempt to determine whether functions are accurate in their extraction
-#' It is part of a validation pipeline to make sure the data outputted from a function
-#' is accurate
-#' It essentially is a comparison of actual vs expected output where there are multiple 
-#' outputs in the column
-#' The intention is to then quantify the output of a function for a specific dataset.
-#'
-#' @param dataframe dataframe
-#' @param testcolumn The dataframe column to run the function on
-#' @param pHospitalNum the hospital number of the patient so can be identified
-#' @importFrom openxlsx write.xlsx
-#' @keywords validation
-#' @export
-#' @examples #ValidationR(HistolBxSize,myHistol,"histology_report")
-}
-\details{
-ValidationR<-function(FUN =funct,dataframe,Column,pHospitalNum){
-  dd<-funct(dataframe,Column)
-  #Now just want the columns that have changed or have been added from the original as well
-  #as well as the columns that sound very similar to the original
-  #ie need to get the original column called Column as well as the new column created (can
-  # I get this from the diff between two data frames? dd-dataframe??)
-  #This gets the new column name from the dataframe that the function has run
-  MyNegsFiltered$FindingsAlgoNegs<-as.list(strsplit(MyNegsFiltered$FindingsAlgoNegs, ";"))
-  MyNegsFiltered$negativeresults<-as.list(strsplit(MyNegsFiltered$negativeresults, ";"))
-  #pHospitalNum
-  ff<-setdiff(union(names(dataframe), names(dd)), names(dataframe))
-  ff<-data.frame(dd[,Column],dd[,ff],dd[,pHospitalNum])
-  write.xlsx(ff, paste0(getwd(),"/MyValidation.xlsx"))
-}
-#dataframe[,pHospitalNum],
-
-Sensitivity and Specificity of text mining functions
-
 This is part of the validation workflow. The idea is that 
 There is a dataframe which contains a column with the reference value
 and another column with the actual value. If the test or reference has not

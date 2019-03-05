@@ -39,131 +39,6 @@ if (getRversion() >= "2.15.1")
   )
 
 
-#############Main extraction################
-
-
-#' Extracts the columns from the raw report
-#'
-#' This is the main extractor for the Endoscopy and Histology report.
-#' This depends on the user creating a list of words or characters that
-#' act as the words that should be split against. The list is then fed to the
-#' Extractor in a loop so that it acts as the beginning and the end of the
-#' regex used to split the text. Whatever has been specified in the list
-#' is used as a column header. Column headers don't tolerate special characters
-#' like : or ? and / and don't allow numbers as the start character so these
-#' have to be dealt with in the text before processing
-#'
-#' @param dataframeIn the dataframe
-#' @param Column the column to extract from
-#' @param delim the vector of words that will be used as the boundaries to
-#' extract against
-#' @importFrom stringr str_extract
-#' @importFrom tidyr separate
-#' @importFrom rlang sym
-#' @keywords Extraction
-#' @export
-#' @examples
-#' # As column names cant start with a number, one of the dividing
-#' # words has to be converted
-#' # A list of dividing words (which will also act as column names)
-#' # is then constructed
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
-#' Mypath2<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
-#'
-
-Extractor <- function(dataframeIn, Column, delim) {
-  dataframeInForLater<-dataframeIn
-  ColumnForLater<-Column
-  Column <- rlang::sym(Column)
-  dataframeIn <- data.frame(dataframeIn,stringsAsFactors = FALSE)
-  dataframeIn<-dataframeIn %>%
-    tidyr::separate(!!Column, into = c("added_name",delim),
-                    sep = paste(delim, collapse = "|"),
-                    extra = "drop", fill = "right")
-  names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
-  dataframeIn <- apply(dataframeIn, 2, function(x) gsub("\\\\.*", "", x))
-  dataframeIn <- apply(dataframeIn, 2, function(x) gsub("       ", "", x))
-  
-  #Convert back to a dataframe as has been converted to a matrix
-  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
-  dataframeIn<-dataframeIn[,-1]
-  
-  dataframeIn<- lapply(dataframeIn, function(x) ColumnCleanUp(x))
-  
-  names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=TRUE)
-  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
-  #Add the original column back in so have the original reference
-  dataframeIn$Original<-dataframeInForLater[,ColumnForLater]
-  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
-  return(dataframeIn)
-}
-
-
-
-
-#' Extractor2
-#'
-#' This is the alternative extractor for the Endoscopy and Histology report.
-#' THis performs the same essentially as the main extractor but is useful when the
-#' semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
-#' As per the main Extractor, This function on the user creating a list of words or characters that
-#' act as the words that should be split against. The list is then fed to the
-#' Extractor in a loop so that it acts as the beginning and the end of the
-#' regex used to split the text. Whatever has been specified in the list
-#' is used as a column header. Column headers don't tolerate special characters
-#' like : or ? and / and don't allow numbers as the start character so these
-#' have to be dealt with in the text before processing
-#'
-#' @param x the dataframe
-#' @param y the column to extract from
-#' @param stra the start of the boundary to extract
-#' @param strb the end of the boundary to extract
-#' @param t the column name to create
-#' @importFrom stringr str_extract
-#' @keywords Extraction
-#' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
-#' Myendo$OGDReportWhole)
-#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
-#' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
-#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
-#' 'Findings:','Endoscopic Diagnosis:')
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor2(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' res<-Myendo
-
-
-Extractor2 <- function(x, y, stra, strb, t) {
-  x <- data.frame(x)
-  t <- gsub("[^[:alnum:],]", " ", t)
-  
-  t <- gsub(" ", "", t, fixed = TRUE)
-  
-  
-  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
-                                                              "(.*)", strb, sep = ""), dotall = TRUE))
-  
-  
-  x[, t] <- gsub("\\\\.*", "", x[, t])
-  
-  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
-  x[, t] <- gsub("       ", "", x[, t])
-  x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
-  if (strb != "") {
-    x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
-  }
-  x[, t] <- gsub("       ", "", x[, t])
-  x[, t]<- ColumnCleanUp(x[, t])
-  
-  
-  return(x)
-}
 
 
 
@@ -173,10 +48,7 @@ Extractor2 <- function(x, y, stra, strb, t) {
 
 
 
-
-
-
-##########Single column clean up functions##########
+##########Text preparation##########
 
 
 
@@ -228,10 +100,10 @@ textPrep<-function(inputText){
   inputText<-DictionaryInPlaceReplace(inputText,HistolType())
   
   #5. Split the lines so text is tokenized by sentence
-  standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
+  #standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
   
-  #returns a nested list
-  return(standardisedTextOutput)
+  #returns a 
+  return(inputText)
 }
 
 
@@ -486,7 +358,7 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("Dr.*?[A-Za-z]+|[Rr]eported.*","",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)","",x))
   
   
   #Get rid of strange things
@@ -511,6 +383,136 @@ ColumnCleanUp <- function(vector) {
 #' @keywords sensitivity and specificity
 #' @export
 #' @examples #To be set up 
+
+
+
+############# Main extraction ################
+
+
+#' Extracts the columns from the raw report
+#'
+#' This is the main extractor for the Endoscopy and Histology report.
+#' This depends on the user creating a list of words or characters that
+#' act as the words that should be split against. The list is then fed to the
+#' Extractor in a loop so that it acts as the beginning and the end of the
+#' regex used to split the text. Whatever has been specified in the list
+#' is used as a column header. Column headers don't tolerate special characters
+#' like : or ? and / and don't allow numbers as the start character so these
+#' have to be dealt with in the text before processing
+#'
+#' @param dataframeIn the dataframe
+#' @param Column the column to extract from
+#' @param delim the vector of words that will be used as the boundaries to
+#' extract against
+#' @importFrom stringr str_extract
+#' @importFrom tidyr separate
+#' @importFrom rlang sym
+#' @keywords Extraction
+#' @export
+#' @examples
+#' # As column names cant start with a number, one of the dividing
+#' # words has to be converted
+#' # A list of dividing words (which will also act as column names)
+#' # is then constructed
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' Mypath2<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+#'
+
+Extractor <- function(dataframeIn, Column, delim) {
+  dataframeInForLater<-dataframeIn
+  ColumnForLater<-Column
+  Column <- rlang::sym(Column)
+  dataframeIn <- data.frame(dataframeIn,stringsAsFactors = FALSE)
+  dataframeIn<-dataframeIn %>%
+    tidyr::separate(!!Column, into = c("added_name",delim),
+                    sep = paste(delim, collapse = "|"),
+                    extra = "drop", fill = "right")
+  names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
+  dataframeIn <- apply(dataframeIn, 2, function(x) gsub("\\\\.*", "", x))
+  dataframeIn <- apply(dataframeIn, 2, function(x) gsub("       ", "", x))
+  
+  #Convert back to a dataframe as has been converted to a matrix
+  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
+  dataframeIn<-dataframeIn[,-1]
+  
+  dataframeIn<- lapply(dataframeIn, function(x) ColumnCleanUp(x))
+  
+  names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=TRUE)
+  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
+  #Add the original column back in so have the original reference
+  dataframeIn$Original<-dataframeInForLater[,ColumnForLater]
+  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
+  return(dataframeIn)
+}
+
+
+
+
+#' Extractor2
+#'
+#' This is the alternative extractor for the Endoscopy and Histology report.
+#' THis performs the same essentially as the main extractor but is useful when the
+#' semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
+#' As per the main Extractor, This function on the user creating a list of words or characters that
+#' act as the words that should be split against. The list is then fed to the
+#' Extractor in a loop so that it acts as the beginning and the end of the
+#' regex used to split the text. Whatever has been specified in the list
+#' is used as a column header. Column headers don't tolerate special characters
+#' like : or ? and / and don't allow numbers as the start character so these
+#' have to be dealt with in the text before processing
+#'
+#' @param x the dataframe
+#' @param y the column to extract from
+#' @param stra the start of the boundary to extract
+#' @param strb the end of the boundary to extract
+#' @param t the column name to create
+#' @importFrom stringr str_extract
+#' @keywords Extraction
+#' @export
+#' @examples v<-TheOGDReportFinal
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
+#' Myendo$OGDReportWhole)
+#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+#' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
+#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
+#' 'Findings:','Endoscopic Diagnosis:')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'  Myendo<-Extractor2(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
+#' }
+#' res<-Myendo
+
+
+Extractor2 <- function(x, y, stra, strb, t) {
+  x <- data.frame(x)
+  t <- gsub("[^[:alnum:],]", " ", t)
+  
+  t <- gsub(" ", "", t, fixed = TRUE)
+  
+  
+  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
+                                                              "(.*)", strb, sep = ""), dotall = TRUE))
+  
+  
+  x[, t] <- gsub("\\\\.*", "", x[, t])
+  
+  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
+  x[, t] <- gsub("       ", "", x[, t])
+  x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
+  if (strb != "") {
+    x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
+  }
+  x[, t] <- gsub("       ", "", x[, t])
+  x[, t]<- ColumnCleanUp(x[, t])
+  
+  
+  return(x)
+}
+
+
 
 
 
@@ -653,52 +655,6 @@ EndoscProcPerformed <- function(EndoProcPerformed) {
 
 
 
-#' EndoscopyEvent 
-#'
-#' This extracts the endoscopic event. It looks for the event term and then looks in the event sentence as well as the one above to see if
-#' the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
-#' added to the event. Used in the OPCS4 coding
-#' @keywords Find and replace
-#' @param EventColumn1 The relevant endoscopt free text column describing the findings
-#' @param Procedure Column saying which procedure was performed
-#' @param Macroscopic Column describing all the macroscopic specimens
-#' @param Histology Column with free text histology (usually microscopic histology)
-#' @return This returns a character vector
-#' @export
-#' @examples # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings","ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
-
-EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology){
-
-  
-  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
-  
-  # Extract the events from the 
-  output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
-  
-  MyHistolEvents<-HistolTypeAndSite(dataframe,Procedure,Histology,Macroscopic)
-  output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
-  
-  #Add emr only if this is seen in the histopath
-  #Remove EMR from events if not seen in histopath
-  
-  #If emr is in the histology and in the event then leave it
-  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("(oesophagus|goj):emr",output,ignore.case = TRUE),output,
-                 #If emr is in the histology but not in the event then dont add it (sometimes EMR written in the request as past therapy
-                 #but  it hasn't actually been done)
-                 ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),
-                        #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
-                        ifelse(!grepl("emr|nodul",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
-  
-  
-  
-  d<-lapply(output, function(x) strsplit(x,";"))
-  t<-lapply(d,function(x) unlist(x))
-  out<-lapply(t,function(x) unique(x))
-  output<-unlist(lapply(out, function(x) paste(x,collapse=";")))
-  #output<-unlist(output)
-  #Need to know if emr done here so can add it
-  return(output)
-}
 
 
 
@@ -727,17 +683,29 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
 
 
 HistolMacDescrip <- function(MacroString) {
-  # Column specific cleanup
-  MacroString <- str_replace(MacroString,"[Dd]ictated by.*", "")
-  
   # Conversion of text numbers to allow number of biopsies to be extracted
   MacroString <- DictionaryInPlaceReplace(MacroString,WordsToNumbers())
   return(MacroString)
 }
 
 
-############## Parts of speech tagging ###################
+############## Extraction Tools ###################
 
+#' Parts of speech tagging for reports
+#'
+#' This uses udpipe to tag the text. It then compresses all of the text 
+#' so you have continuous POS tagging or the whole text
+#' 
+#'
+#' @param dataframe dataframe
+#' @param MacroColumn column to extract the numbers from. Usually the column
+#' with the Nature of the specimen or the Macroscopic description in it
+#' @keywords Macroscopic
+#' @importFrom stringr str_replace
+#' @export
+#' @examples pp<-HistolMacDescrip(Mypath$Macroscopicdescription)
+
+EndoPOS<-function(dataframe){
 library(udpipe)
 udmodel <- udpipe_download_model(language = "english-ewt")
 udmodel_english <- udpipe_load_model(file = udmodel$file_model)
@@ -768,11 +736,12 @@ Newx<-x3 %>% group_by(sentence) %>% summarise(upos = paste(upos, collapse="\n ")
                                              morph_verbform = paste(morph_verbform, collapse="\n"))
 
 Newx<-data.frame(Newx)
-Newx$EventList<-ExtrapolateFromLists(Newx$sentence,EventList())
-Newx$Symptoms<-ExtrapolateFromLists(Newx$sentence,GISymptomsList())
-Newx$Location<-ExtrapolateFromLists(Newx$sentence,LocationList())
+Newx$EventList<-ExtrapolatefromDictionary(Newx$sentence,EventList())
+Newx$Symptoms<-ExtrapolatefromDictionary(Newx$sentence,GISymptomsList())
+Newx$Location<-ExtrapolatefromDictionary(Newx$sentence,LocationList())
 
-
+return(Newx)
+}
 
 #' Extrapolate from Dictionary
 #'
@@ -806,16 +775,20 @@ Newx$Location<-ExtrapolateFromLists(Newx$sentence,LocationList())
 
 
 ExtrapolatefromDictionary<-function(inputString,list){
+  #lower case the input string
   inputString<-tolower(inputString)
+  
+  #Get the names from the named list
   mylist<-paste0(unlist(list,use.names=F),collapse="|")
-  #Cant remember reason for this line: ToIndex<-str_extract_all(inputString,paste0("(^|,)[a-z]+:?(",tolower(mylist),")(|$)"))
+  
+  #Make the inputstrings unique
   ToIndex<-lapply(inputString, function(x) unique(x))
   #Give each an index in the list (taken from the location list)
   
-  #The results to replace 
+  #The results to replace in the string
   replace<-names(list)
   
-  #C stand for colon (and all lower bowel investigations) S stands for surgical O stands for OGD. 
+  #The result of the replacement 
   replaceValue<-paste0(unlist(list,use.names=F))
   
   #Create a tibble to merge with the list
@@ -825,7 +798,7 @@ ExtrapolatefromDictionary<-function(inputString,list){
   #Select the elements that have characters in them
   i1 <- lengths(ToIndex) > 0 
   
-  #Do the merge
+  #Do the merge with the 
   ToIndex[i1] <- map(ToIndex[i1], ~ 
                        tibble(key = .x) %>%
                        regex_left_join(d1) %>%
@@ -846,7 +819,7 @@ ExtrapolatefromDictionary<-function(inputString,list){
 #' @param EventColumn1 The relevant pathology text column
 #' @param EventColumn2 The alternative pathology text column
 #' @importFrom purrr flatten_chr map_chr map map_if
-#' @examples # tbb<-EntityPairs_OneSentence(SelfOGD_Dunn$MACROSCOPICALDESCRIPTION,HistolType(),LocationList())
+#' @examples # tbb<-EntityPairs_OneSentence(Mypath$Histology,HistolType(),LocationList())
 
 EntityPairs_OneSentence<-function(inputText,list1,list2){
   
@@ -855,6 +828,7 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
   list2<-paste0(unlist(list2,use.names=F),collapse="|")
   
   text<-textPrep(inputText)
+  text<-standardisedTextOutput<-stri_split_boundaries(text, type="sentence")
   r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(list2)), str_extract_all(tolower(x),tolower(list1)), MoreArgs = list(sep=":")))
   
   r1<-lapply(r1,function(x) unlist(x))
@@ -875,8 +849,9 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 #' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_Dunn,"FINDINGS")
 
 EntityPairs_TwoSentence<-function(inputString,list1,list2){
-  
-  text<-textPrep(inputString)
+    
+  text<-textPrep(inputText)
+  text<-standardisedTextOutput<-stri_split_boundaries(text, type="sentence")
   text<-lapply(text,function(x) tolower(x))
   
   
@@ -935,7 +910,54 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
   return(text)
 }
 
+############################# Extrapolating Endoscopy ################################
 
+#' EndoscopyEvent 
+#'
+#' This extracts the endoscopic event. It looks for the event term and then looks in the event sentence as well as the one above to see if
+#' the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
+#' added to the event. Used in the OPCS4 coding
+#' @keywords Find and replace
+#' @param EventColumn1 The relevant endoscopt free text column describing the findings
+#' @param Procedure Column saying which procedure was performed
+#' @param Macroscopic Column describing all the macroscopic specimens
+#' @param Histology Column with free text histology (usually microscopic histology)
+#' @return This returns a character vector
+#' @export
+#' @examples # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings","ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+
+EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology){
+  
+  
+  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
+  
+  # Extract the events from the 
+  output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
+  
+  MyHistolEvents<-HistolTypeAndSite(dataframe,Procedure,Histology,Macroscopic)
+  output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
+  
+  #Add emr only if this is seen in the histopath
+  #Remove EMR from events if not seen in histopath
+  
+  #If emr is in the histology and in the event then leave it
+  output<-ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&grepl("(oesophagus|goj):emr",output,ignore.case = TRUE),output,
+                 #If emr is in the histology but not in the event then dont add it (sometimes EMR written in the request as past therapy
+                 #but  it hasn't actually been done)
+                 ifelse(grepl("emr",MyHistolEvents,ignore.case = TRUE)&!grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),
+                        #If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
+                        ifelse(!grepl("emr|nodul",MyHistolEvents,ignore.case = TRUE)&grepl("emr",output,ignore.case = TRUE),gsub("[A-Za-z]+:emr","",output),output)))
+  
+  
+  
+  d<-lapply(output, function(x) strsplit(x,";"))
+  t<-lapply(d,function(x) unlist(x))
+  out<-lapply(t,function(x) unique(x))
+  output<-unlist(lapply(out, function(x) paste(x,collapse=";")))
+  #output<-unlist(output)
+  #Need to know if emr done here so can add it
+  return(output)
+}
 
 
 

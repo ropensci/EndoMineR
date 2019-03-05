@@ -6,6 +6,9 @@
 \usage{
 spellCheck(pattern, replacement, x, fixed = FALSE, ...)
 }
+\value{
+This returns a character vector
+}
 \description{
 This is a helper function for finding and replacing from dictionaries like the event list
 It uses fuzzy find and replace to account for spelling errors

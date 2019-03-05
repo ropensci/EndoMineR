@@ -15,13 +15,16 @@ EndoscopyEvent(dataframe, EventColumn1, Procedure, Macroscopic, Histology)
 
 \item{Histology}{Column with free text histology (usually microscopic histology)}
 }
+\value{
+This returns a character vector
+}
 \description{
 This extracts the endoscopic event. It looks for the event term and then looks in the event sentence as well as the one above to see if
 the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
 added to the event. Used in the OPCS4 coding
 }
 \examples{
-# SelfOGD_Dunn$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn,"FINDINGS","PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+# Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings","ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 }
 \keyword{Find}
 \keyword{and}

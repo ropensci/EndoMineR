@@ -4,14 +4,12 @@
 \alias{HistolNumbOfBx}
 \title{Extract the number of biopsies taken from histology report}
 \usage{
-HistolNumbOfBx(dataframe, MacroColumn, regString)
+HistolNumbOfBx(inputString, regString)
 }
 \arguments{
-\item{dataframe}{the dataframe}
+\item{regString}{The keyword to remove and to stop at in the regex}
 
 \item{MacroColumn}{Column containing the Macroscopic description text}
-
-\item{regString}{The keyword to remove and to stop at in the regex}
 }
 \description{
 This extracts the number of biopsies taken from the pathology report.
@@ -20,7 +18,7 @@ It collects everything from the regex [0-9]{1,2}.{0,3}
 to whatever the string boundary is (z).
 }
 \examples{
-qq<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+qq<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
 }
 \keyword{Biopsy}
 \keyword{number}

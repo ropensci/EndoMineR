@@ -4,7 +4,7 @@
 \alias{HistolTypeAndSite}
 \title{HistolTypeAndSite}
 \usage{
-HistolTypeAndSite(dataframe, Procedure, EventColumn1, EventColumn2)
+HistolTypeAndSite(inputString1, inputString2, procedureString)
 }
 \arguments{
 \item{Procedure}{The procedure performed}
@@ -13,11 +13,15 @@ HistolTypeAndSite(dataframe, Procedure, EventColumn1, EventColumn2)
 
 \item{EventColumn2}{The alternative pathology text column}
 }
+\value{
+a list with two columns, one is the type and site and the other
+is the index to be used for OPCS4 coding later if needed.
+}
 \description{
 This needs some blurb to be written. Used in the OPCS4 coding
 }
 \examples{
-# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"PROCEDUREPERFORMED","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn$PROCEDUREPERFORMED,SelfOGD_Dunn$MACROSCOPICALDESCRIPTION,SelfOGD_Dunn$HISTOLOGY)
 }
 \keyword{Find}
 \keyword{and}

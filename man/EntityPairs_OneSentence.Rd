@@ -4,7 +4,7 @@
 \alias{EntityPairs_OneSentence}
 \title{EntityPairs_OneSentence}
 \usage{
-EntityPairs_OneSentence(dataframe, EventColumn)
+EntityPairs_OneSentence(inputText, list1, list2)
 }
 \arguments{
 \item{EventColumn1}{The relevant pathology text column}
@@ -12,9 +12,9 @@ EntityPairs_OneSentence(dataframe, EventColumn)
 \item{EventColumn2}{The alternative pathology text column}
 }
 \description{
-This needs some blurb to be written. Used in the SentenceWordPairs
+Use to see if words from two lists co-exist within a sentence. Eg site and tissue type.
 }
 \examples{
-# tbb<-EntityPairs_OneSentence(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION")
+# tbb<-EntityPairs_OneSentence(Mypath$Histology,HistolType(),LocationList())
 }
 \keyword{PathPairLookup}

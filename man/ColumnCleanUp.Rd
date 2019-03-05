@@ -11,6 +11,9 @@ ColumnCleanUp(vector)
 
 \item{Column}{column of interest}
 }
+\value{
+This returns a character vector
+}
 \description{
 This does a general clean up of whitespace,
 semi-colons,full stops at the start

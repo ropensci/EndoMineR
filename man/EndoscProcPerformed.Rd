@@ -4,12 +4,15 @@
 \alias{EndoscProcPerformed}
 \title{Cleans Procedure performed column if present}
 \usage{
-EndoscProcPerformed(dataframe, ProcPerformed)
+EndoscProcPerformed(EndoProcPerformed)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}
 
 \item{ProcPerformed}{column of interest}
+}
+\value{
+This returns a character vector
 }
 \description{
 This cleans the Procedure Performed column from the report assuming
@@ -20,6 +23,6 @@ It should be used after the Extractor and the optional NewLines
 has been used.
 }
 \examples{
-ff<-EndoscProcPerformed(Myendo,'ProcedurePerformed')
+Myendo$ProcedurePerformed<-EndoscProcPerformed(Myendo$ProcedurePerformed)
 }
 \keyword{Procedure}

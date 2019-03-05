@@ -4,7 +4,7 @@
 \alias{HistolMacDescrip}
 \title{Cleans spelt numbers in histology report}
 \usage{
-HistolMacDescrip(dataframe, MacroColumn)
+HistolMacDescrip(MacroString)
 }
 \arguments{
 \item{dataframe}{dataframe}
@@ -20,6 +20,6 @@ HistolNumOfBx function below and normally not used as a stand alone
 function.
 }
 \examples{
-pp<-HistolMacDescrip(Mypath, 'Macroscopicdescription')
+pp<-HistolMacDescrip(Mypath$Macroscopicdescription)
 }
 \keyword{Macroscopic}

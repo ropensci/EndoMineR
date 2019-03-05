@@ -4,11 +4,9 @@
 \alias{HistolBxSize}
 \title{Determine the largest biopsy size from the histology report}
 \usage{
-HistolBxSize(dataframe, MacroColumn)
+HistolBxSize(MacroColumn)
 }
 \arguments{
-\item{dataframe}{dataframe}
-
 \item{MacroColumn}{Macdescrip}
 }
 \description{
@@ -21,7 +19,7 @@ in row duplication.
 This is usually from the Macroscopic description column.
 }
 \examples{
-rr<-HistolBxSize(Mypath,'Macroscopicdescription')
+rr<-HistolBxSize(Mypath$Macroscopicdescription)
 }
 \keyword{biopsy}
 \keyword{size}

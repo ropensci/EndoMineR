@@ -11,6 +11,9 @@ EndoscMeds(dataframe, MedColumn)
 
 \item{MedColumn}{column of interest}
 }
+\value{
+This returns a dataframe as it creates three character vectors
+}
 \description{
 This cleans medication column from the report assuming such a column exists.
 It gets rid of common entries that are not needed. It also splits the

@@ -4,12 +4,16 @@
 \alias{NegativeRemove}
 \title{Removes negative and normal sentences}
 \usage{
-NegativeRemove(dataframe, Column)
+NegativeRemove(inputText)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}
 
 \item{Column}{column of interest}
+}
+\value{
+This returns a column within a dataframe. THis should be changed to a 
+character vector eventually
 }
 \description{
 Extraction of the Negative sentences so that normal findings can be
@@ -33,7 +37,7 @@ anexample<-data.frame(anexample)
 names(anexample)<-"Thecol"
 # Run the function on the dataframe and it should get rid of sentences (and
 # parts of sentences) with negative parts in them.
-hh<-NegativeRemove(anexample,"Thecol")
+hh<-NegativeRemove(anexample$Thecol)
 }
 \keyword{Negative}
 \keyword{Sentences}

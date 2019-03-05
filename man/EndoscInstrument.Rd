@@ -4,12 +4,15 @@
 \alias{EndoscInstrument}
 \title{Cleans instrument column if present}
 \usage{
-EndoscInstrument(dataframe, InstrumentColumn)
+EndoscInstrument(EndoInstrument)
 }
 \arguments{
 \item{dataframe}{dataframe with column of interest}
 
 \item{InstrumentColumn}{column of interest}
+}
+\value{
+This returns a character vector
 }
 \description{
 This cleans Instument column from the report assuming such a column exists
@@ -19,6 +22,6 @@ It should be used after the Extractor and the optional
 NewLines has been used.
 }
 \examples{
-dd<-EndoscInstrument(Myendo,'Instrument')
+Myendo$Instrument<-EndoscInstrument(Myendo$Instrument)
 }
 \keyword{Instrument}

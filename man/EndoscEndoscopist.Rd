@@ -4,12 +4,15 @@
 \alias{EndoscEndoscopist}
 \title{Cleans endoscopist column if present}
 \usage{
-EndoscEndoscopist(dataframe, EndoReportColumn)
+EndoscEndoscopist(EndoscopistColumn)
 }
 \arguments{
 \item{dataframe}{dataframe}
 
 \item{EndoReportColumn}{The endoscopy text column}
+}
+\value{
+This returns a character vector
 }
 \description{
 If an endoscopist column is part of the dataset once the extractor
@@ -20,7 +23,7 @@ It should be used after the Extractor and the optional NewLines
 has been used.
 }
 \examples{
-de<-EndoscEndoscopist(Myendo,'Endoscopist')
+Myendo$Endoscopist<-EndoscEndoscopist(Myendo$Endoscopist)
 }
 \keyword{Endoscopist}
 \keyword{extraction}
