@@ -29,4 +29,5 @@ type of procedure to another using circos plots.
 
 
 }
-\keyword{Circos}
+\keyword{Time}
+\keyword{plots}

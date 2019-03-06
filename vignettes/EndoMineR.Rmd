@@ -74,9 +74,9 @@ The Extractor is a very useful function. Different hospitals will use different 
 A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe. Here we use an example dataset (which has not had separate columns selected already) as the input:
 
 ```{r exampleExtractor,echo=FALSE}
-PathDataFrameFinalColon2<-PathDataFrameFinalColon
-names(PathDataFrameFinalColon2)<-"PathReportWhole"
-pander(head(PathDataFrameFinalColon2,1))
+#PathDataFrameFinalColon2<-PathDataFrameFinalColon
+#names(PathDataFrameFinalColon2)<-"PathReportWhole"
+#pander(head(PathDataFrameFinalColon2,1))
 ```
 
 
@@ -88,17 +88,17 @@ We can then define the list of delimiters that will split this text into separat
 
 
 ```{r exampleExtractor2,echo=TRUE}
-mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-"Date received:","Clinical Details:","Macroscopic description:",
-"Histology:","Diagnosis:")
-PathDataFrameFinalColon2<-Extractor(PathDataFrameFinalColon2,"PathReportWhole",mywords)
+#mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#"Date received:","Clinical Details:","Macroscopic description:",
+#"Histology:","Diagnosis:")
+#PathDataFrameFinalColon2<-Extractor(PathDataFrameFinalColon2,"PathReportWhole",mywords)
 
 ```
 
 ```{r exampleExtractor3,echo=FALSE}
-PathDataFrameFinalColon2<-head(PathDataFrameFinalColon2[2:10],1)
-pander::panderOptions('table.split.table', Inf)
-pander(head(PathDataFrameFinalColon2,1))
+#PathDataFrameFinalColon2<-head(PathDataFrameFinalColon2[2:10],1)
+#pander::panderOptions('table.split.table', Inf)
+#pander(head(PathDataFrameFinalColon2,1))
 ```
 
 
@@ -127,13 +127,13 @@ The endoscopist column might initially look like this (as the last column in thi
 <br>
 
 ```{r exampleEndoscEndoscopist, echo = FALSE}
-pander(head(Myendo[2:6],10))
+#pander(head(Myendo[2:6],10))
 ```
 
 
 
 ```{r exampleEndoscEndoscopist2,echo = TRUE}
-Myendo2<-EndoscEndoscopist(Myendo,'Endoscopist')
+#Myendo2<-EndoscEndoscopist(Myendo,'Endoscopist')
 ```
 
 This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist's name, getting rid of whitespace etc. This is important to prevent double outputs for the same Endoscopist because of, for example, the lack and presence of a '.' after Dr amongst other variations. The result is as follows:
@@ -141,7 +141,7 @@ This function performs the cleaning of common things found in the text that may 
 <br>
 
 ```{r exampleEndoscEndoscopist3, echo = FALSE}
-pander(head(Myendo2[2:6],10))
+#pander(head(Myendo2[2:6],10))
 ```
 
 <br>
@@ -154,25 +154,25 @@ The EndoscMeds currently extracts Fentanyl, Pethidine, Midazolam and Propofol do
 Several other similar clean up functions are available for Endoscopy as follows. We will extract from the Raw endoscopy data first:
 
 ```{r exampleRawEndoExtract, echo = TRUE}
-mywords<-c("Hospital:","Hospital Number:","Patient Name:","General Practitioner:","Date of procedure:","Endoscopist:","Second Endoscopist",
-           "Medications:","Instrument:","Extent of Exam:","Indications:","Procedure Performed:",
-"Findings:","Diagnosis:")
-TheOGDReportFinal2<-Extractor(TheOGDReportFinal,"OGDReportWhole",mywords)
+#mywords<-c("Hospital:","Hospital Number:","Patient Name:","General Practitioner:","Date of #procedure:","Endoscopist:","Second Endoscopist",
+#           "Medications:","Instrument:","Extent of Exam:","Indications:","Procedure Performed:",
+#"Findings:","Diagnosis:")
+#TheOGDReportFinal2<-Extractor(TheOGDReportFinal,"OGDReportWhole",mywords)
 
 ```
 
 
 
 ```{r exampleEndoCleaningFuncMed, echo = TRUE}
-TheOGDReportFinal2df<-data.frame(TheOGDReportFinal2["HospitalNumber"],TheOGDReportFinal2["Instrument"],TheOGDReportFinal2["Indications"],TheOGDReportFinal2["Medications"],TheOGDReportFinal2["ProcedurePerformed"])
-pander(head(TheOGDReportFinal2df,10))
-v<-EndoscMeds(TheOGDReportFinal2df,'Medications')
+#TheOGDReportFinal2df<-data.frame(TheOGDReportFinal2["HospitalNumber"],TheOGDReportFinal2["Instrument"],The#OGDReportFinal2["Indications"],TheOGDReportFinal2["Medications"],TheOGDReportFinal2["ProcedurePerformed"])
+#pander(head(TheOGDReportFinal2df,10))
+#v<-EndoscMeds(TheOGDReportFinal2df,'Medications')
 
 ```
 
 
 ```{r exampleEndoCleaningFuncMed2, echo = FALSE}
-pander(head(v,10))
+#pander(head(v,10))
 ```
 
 ### Instrument,Indications and Procedure type cleaning
@@ -202,17 +202,17 @@ The original input example can be seen here:
 
 
 ```{r exampleEHistolDx, echo = FALSE}
-head(Mypath$Histology,2)
+#head(Mypath$Histology,2)
 ```
 
 And once the function is run the result is here:
 
 ```{r exampleEHistolDx2, echo = TRUE}
-t<-HistolDx(Mypath,'Histology')
+#t<-HistolDx(Mypath,'Histology')
 ```
 
 ```{r exampleEHistolDx3, echo = FALSE}
-head(t$Histol_Simplified,2)
+#head(t$Histol_Simplified,2)
 ```
 
 
@@ -228,7 +228,7 @@ features and a function is provided to both clean up the Diagnosis column as wel
 
 
 ```{r exampleHistolDx1, echo = FALSE}
-head(Mypath$Diagnosis,2)
+#head(Mypath$Diagnosis,2)
 
 ```
 
@@ -239,11 +239,11 @@ with the following result:
 <br>
 
 ```{r exampleHistolDx2, echo = TRUE}
-t<-HistolDx(Mypath,'Diagnosis')
+#t<-HistolDx(Mypath,'Diagnosis')
 ```
 
 ```{r exampleHistolDx3, echo = FALSE}
-head(t$Dx_Simplified,2)
+#head(t$Dx_Simplified,2)
 ```
 
 ### Extraction of elements from the Macroscopic Description
@@ -258,8 +258,8 @@ For example, if the report usually says:
 <br>
 
 ```{r exampleHistolNumbOfBx1, echo = FALSE}
-sg<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$Macroscopicdescription)
-pander(head(sg,5))
+#sg<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$Macroscopicdescription)
+#pander(head(sg,5))
 ```
 
 <br>
@@ -269,12 +269,12 @@ Based on this, the word that limits the number you are interested in is 'specime
 <br>
 
 ```{r exampleHistolNumbOfBx2, echo = TRUE}
-v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+#v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
 ```
 
 ```{r exampleHistolNumbOfBx3, echo = FALSE}
-sh<-data.frame(v$HospitalNumber,v$PatientName,v$NumbOfBx)
-pander(head(sh,5))
+#sh<-data.frame(v$HospitalNumber,v$PatientName,v$NumbOfBx)
+#pander(head(sh,5))
 ```
 
 ### Extraction of Specific Disease Entities
@@ -283,12 +283,12 @@ The user may want to extract specific diseases from a histology dataset. This ca
 <br>
 
 ```{r exampleHistolExtrapolDx, echo = TRUE}
-Mypath3<-data.frame(Mypath["HospitalNumber"],Mypath["Diagnosis"])
+#Mypath3<-data.frame(Mypath["HospitalNumber"],Mypath["Diagnosis"])
 
 ```
 
 ```{r exampleHistolExtrapolDx2, echo = FALSE}
-pander(head(Mypath3,10))
+#pander(head(Mypath3,10))
 ```
 
 
@@ -303,17 +303,17 @@ In addition, if there is a need to remove all sentences that give negative diagn
 The original input example can be seen here
 
 ```{r exampleNeg, echo = FALSE}
-Mypath[7,10]
+#Mypath[7,10]
 ```
 
 If we apply the function NegativeRemove we see this changes to:
 
 ```{r exampleNeg2, echo = TRUE}
-MypathNegRem<-NegativeRemove(Mypath,"Diagnosis")
+#MypathNegRem<-NegativeRemove(Mypath,"Diagnosis")
 ```
 
 ```{r exampleNeg3, echo = FALSE}
-MypathNegRem[7:10]
+#MypathNegRem[7:10]
 ```
 
 

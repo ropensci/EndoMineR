@@ -24,3 +24,7 @@ Create  Numeric x versus y
 
 
 }
+\keyword{basic}
+\keyword{numeric}
+\keyword{plot}
+\keyword{vs}

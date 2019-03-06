@@ -44,24 +44,24 @@ The basic surveillance functions are simple but are the most often used. Surveil
 SurveilLastTest simply extracts the last and first test respectively for each patient. 
 
 ```{r exampleSurveillanceTimeByRow, eval = TRUE}
-em1<-SurveilTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
-pander(head(data.frame(em1[2],em1[ncol(em1)]),5))
-em3<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
-pander(head(data.frame(em3[2],em3[5]),5))
-em4<-SurveilFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
-pander(head(data.frame(em4[2],em4[5]),5))
+#em1<-SurveilTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
+#pander(head(data.frame(em1[2],em1[ncol(em1)]),5))
+#em3<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+#pander(head(data.frame(em3[2],em3[5]),5))
+#em4<-SurveilFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
+#pander(head(data.frame(em4[2],em4[5]),5))
 ```
 
 Of course we also want to know how many tests have been done over a time period and this is provided by two functions
 
 ```{r exampleSurveillanceCapacity}
-em5<-SurveilCapacity(Myendo,"Dateofprocedure")
+#em5<-SurveilCapacity(Myendo,"Dateofprocedure")
 
 ```
 
 ```{r exampleSurveillanceCapacity2,echo=FALSE}
-pander::panderOptions('table.split.table', Inf)
-pander(head(em5))
+#pander::panderOptions('table.split.table', Inf)
+#pander(head(em5))
 ```
 
 
@@ -69,7 +69,7 @@ pander(head(em5))
 This function will return the number of tests by month. The more detailed function is:
 
 ```{r exampleHowManyTests}
-how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+#how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
 ```
 
 
@@ -83,7 +83,7 @@ For example, if we have a dataset with events such as 'radiofrequency ablation' 
 
 
 ```{r exampleSurveySankey, eval = FALSE}
-how<-SurveySankey(Myendo,"ProcedurePerformed")
+#how<-SurveySankey(Myendo,"ProcedurePerformed")
 ```
 
 <br>
@@ -102,7 +102,7 @@ knitr::include_graphics("img/EndoMineR_Sankey.svg")
 We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
 
 ```{r examplePatientFlow_CircosPlots, eval = FALSE}
-flow<-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")
+#flow<-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")
 ```
 
 <br>
@@ -125,8 +125,8 @@ As regards adherence to documentation for example, a generic function is provide
 **_Input_**
                       
 ```{r exampleListLookup, eval = TRUE,echo=FALSE}
-pander::panderOptions('table.split.table', Inf)
-pander(head(data.frame(Myendo[2:3],Myendo[13])))
+#pander::panderOptions('table.split.table', Inf)
+#pander(head(data.frame(Myendo[2:3],Myendo[13])))
 ```
 
 <br>
@@ -134,13 +134,13 @@ pander(head(data.frame(Myendo[2:3],Myendo[13])))
 In this example we are looking for the words Barrett's and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscope report
 
 ```{r exampleListLookup2, eval = TRUE}
-myNotableWords <- c("arrett", "oeliac")
-tt<-ListLookup(Myendo,'Findings',myNotableWords)
+#myNotableWords <- c("arrett", "oeliac")
+#tt<-ListLookup(Myendo,'Findings',myNotableWords)
 ```
 
 ```{r exampleListLookup3, echo=FALSE}
-pander::panderOptions('table.split.table', Inf)
-pander(head(tt))
+#pander::panderOptions('table.split.table', Inf)
+#pander(head(tt))
 ```
 
 <br>
@@ -155,9 +155,9 @@ So we can see that the terms are present in the minority of reports across endos
 Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:
 
 ```{r exampleEndoscChopperMeds}
-Myendo<-EndoscMeds(Myendo,'Medications')
-pander(head(data.frame(Myendo$HospitalNumber,Myendo$Fent,Myendo$Midaz),10))
-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+#Myendo<-EndoscMeds(Myendo,'Medications')
+#pander(head(data.frame(Myendo$HospitalNumber,Myendo$Fent,Myendo$Midaz),10))
+#MetricByEndoscopist(Myendo,'Endoscopist','Fent')
 ```
 
 
@@ -179,11 +179,11 @@ Although not strictly a measure of endoscopic quality, the location of polyps (a
 To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings in histology. This also attempts to extract the sample location into a separate column
 
 ```{r exampleTermStandardLocation}
-f<-DictionaryLookup(Mypath$Histology,LocationList())
+#f<-DictionaryLookup(Mypath$Histology,LocationList())
 
 #Just some column selection
-fgg<-data.frame(f[(ncol(f)-1)],f[(ncol(f))])
-pander(head(fgg,10))
+#fgg<-data.frame(f[(ncol(f)-1)],f[(ncol(f))])
+#pander(head(fgg,10))
 ```
 
 Once this is done, a column called SampleLocation is appended to the existing dataset. This will attempt to state the location of all samples whether they are resections/ biopsies or polyps. If polyps specifically need to be located then the PolypLocator function can be used (after the TermStandardLocation function).
@@ -209,38 +209,38 @@ One function is provided to produce a table that gives the number of adenomas, a
 
 ```{r exampleGRS_Type_Assess_By_Unit, echo = TRUE,message=FALSE}
 #Import the endoscopy and pathology datasets for colonoscopy
- MypathColon<-PathDataFrameFinalColon
- MyendoColon <- ColonFinal
+# MypathColon<-PathDataFrameFinalColon
+# MyendoColon <- ColonFinal
  #Rename the columns so that numbers do not lead the column titles
- MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
- MyendoColon$OGDReportWhole)
+# MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
+# MyendoColon$OGDReportWhole)
  #Extract the columns needed from endoscopy
- EndoscTree <-c("Hospital Number:","Patient Name:","General Practitioner:",
-        "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-        "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
-        "Findings:","Endoscopic Diagnosis:")
- MyendoColon<-Extractor(MyendoColon,"OGDReportWhole",EndoscTree)
+# EndoscTree <-c("Hospital Number:","Patient Name:","General Practitioner:",
+#        "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
+#        "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
+#        "Findings:","Endoscopic Diagnosis:")
+# MyendoColon<-Extractor(MyendoColon,"OGDReportWhole",EndoscTree)
  #Extract the columns needed from Histology
- Histoltree <-c(
-     "Hospital Number:","Patient Name:","DOB:","General Practitioner:",
-     "Date received:","Clinical Details","Nature of specimen","Macroscopic description:","Histology",
-     "Diagnosis")
+# Histoltree <-c(
+#     "Hospital Number:","Patient Name:","DOB:","General Practitioner:",
+#     "Date received:","Clinical Details","Nature of specimen","Macroscopic description:","Histology",
+#     "Diagnosis")
 #Tidy up to allow merge
- MypathColon <-Extractor(MypathColon,"PathReportWhole",Histoltree)
- names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
- MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
+# MypathColon <-Extractor(MypathColon,"PathReportWhole",Histoltree)
+# names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
+# MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
  #Do the merge
- vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
-                     MyendoColon, "Dateofprocedure","HospitalNumber")
+# vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
+#                     MyendoColon, "Dateofprocedure","HospitalNumber")
 
  
  #Use the function
-GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed','Endoscopist','Diagnosis','Histology')
+#GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed','Endoscopist','Diagnosis','Histology')
 
 ```
 
 ```{r exampleGRS_Type_Assess_By_Unit1, echo = FALSE,message=FALSE}
-pander::panderOptions('table.split.table', Inf)
-pander(GRSTable)
+#pander::panderOptions('table.split.table', Inf)
+#pander(GRSTable)
 ```
 

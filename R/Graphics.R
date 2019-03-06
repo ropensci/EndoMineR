@@ -1,4 +1,42 @@
-###### Graphics ########################################## 
+if (getRversion() >= "2.15.1")
+  utils::globalVariables(
+    c(
+      "PatientID",
+      ".SD",
+      "CStage",
+      "NumbOfBx",
+      "Years",
+      "Difference",
+      "barplot",
+      "head",
+      "read.table",
+      "eHospitalNum",
+      "pHospitalNum",
+      ".",
+      "EVENT",
+      "MonthYear",
+      "freq",
+      "Endoscopist",
+      "avg",
+      "v",
+      "destination",
+      "dcast",
+      "complete.cases",
+      "g",
+      "gvisSankey",
+      "head",
+      "pHospitalNum",
+      "par",
+      "plot",
+      "r",
+      "read.table",
+      "region",
+      "rgb",
+      "setDT",
+      "Myendo",
+      "Mypath"
+    )
+  )
 
 ########### General graph tidy up functions ##############
 
@@ -440,7 +478,7 @@ return(Myplot)
 #' @param HospNum_Id Column with the patient's unique hospital number
 #' @import ggplot2
 #' @return Myplot the EDA final plot
-#' @keywords Circos
+#' @keywords Time plots
 #' @export
 #' @return Myplot
 #' @examples # This function plot numeric y vs non-numeric x
@@ -477,7 +515,7 @@ Myplot <-
 #' @param b The numeric column
 #' @param Proportion The Proportion column
 #' @import ggplot2
-#' @keywords
+#' @keywords proportions plot
 #' @export
 #' @return Myplot
 #' @examples # This function plot numeric y vs non-numeric x
@@ -509,7 +547,7 @@ return(t)
 #' @param Numx The numeric x column
 #' @param Numy The numeric y column
 #' @import ggplot2
-#' @keywords
+#' @keywords basic numeric vs numeric plot
 #' @export
 #' @return Myplot
 #' @examples # This function plot numeric y vs non-numeric x

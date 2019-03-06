@@ -707,36 +707,64 @@ HistolMacDescrip <- function(MacroString) {
 
 EndoPOS<-function(dataframe){
 library(udpipe)
-udmodel <- udpipe_download_model(language = "english-ewt")
+udmodel <- udpipe_download_model(language = "english")
 udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 #Get into a tokenised form first
 #Myendo$Findings<-textPrep(Myendo$Findings)
 x <- udpipe_annotate(udmodel_english, x = Myendo$Findings)
 x2 <- as.data.frame(x)
 x3 <- cbind_morphological(x2)
-Newx<-x3 %>% group_by(sentence) %>% summarise(upos = paste(upos, collapse="\n "),
-                                             xpos = paste(xpos, collapse="\n "),
-                                             dep_rel = paste(dep_rel, collapse="\n"),
-                                             misc = paste(misc, collapse="\n"),
-                                             has_morph = paste(has_morph, collapse="\n"),
-                                             morph_abbr = paste(morph_abbr, collapse="\n"),
-                                             morph_case = paste(morph_case, collapse=", "),
-                                             morph_definite = paste(morph_definite, collapse="\n"),
-                                             morph_degree = paste(morph_degree, collapse="\n"),
-                                             morph_foreign = paste(morph_foreign, collapse="\n"),
-                                             morph_gender = paste(morph_gender, collapse="\n"),
-                                             morph_mood = paste(morph_mood, collapse="\n"),
-                                             morph_number = paste(morph_number, collapse="\n"),
-                                             morph_numtype = paste(morph_numtype, collapse="\n"),
-                                             morph_person = paste(morph_person, collapse="\n"),
-                                             morph_poss = paste(morph_poss, collapse="\n"),
-                                             morph_prontype = paste(morph_prontype, collapse="\n"),
-                                             morph_reflex = paste(morph_reflex, collapse="\n"),
-                                             morph_tense = paste(morph_tense, collapse="\n"),
-                                             morph_verbform = paste(morph_verbform, collapse="\n"))
-
+Newx<-x3 %>% group_by(doc_id,sentence) %>% summarise(upos = paste(upos, collapse=";"),
+                                             xpos = paste(xpos, collapse=";"),
+                                             dep_rel = paste(dep_rel, collapse=";"),
+                                             misc = paste(misc, collapse=";"),
+                                             has_morph = paste(has_morph, collapse=";"),
+                                             morph_abbr = paste(morph_abbr, collapse=";"),
+                                             morph_case = paste(morph_case, collapse=";"),
+                                             morph_definite = paste(morph_definite, collapse=";"),
+                                             morph_degree = paste(morph_degree, collapse=";"),
+                                             morph_foreign = paste(morph_foreign, collapse=";"),
+                                             morph_gender = paste(morph_gender, collapse=";"),
+                                             morph_mood = paste(morph_mood, collapse=";"),
+                                             morph_number = paste(morph_number, collapse=";"),
+                                             morph_numtype = paste(morph_numtype, collapse=";"),
+                                             morph_person = paste(morph_person, collapse=";"),
+                                             morph_poss = paste(morph_poss, collapse=";"),
+                                             morph_prontype = paste(morph_prontype, collapse=";"),
+                                             morph_reflex = paste(morph_reflex, collapse=";"),
+                                             morph_tense = paste(morph_tense, collapse=";"),
+                                             morph_verbform = paste(morph_verbform, collapse=";"))%>%group_by(doc_id)
 Newx<-data.frame(Newx)
-Newx$EventList<-ExtrapolatefromDictionary(Newx$sentence,EventList())
+
+
+Newxdoc<-Newx %>% 
+  group_by(doc_id) %>% summarise(
+                                 sentence = paste(sentence, collapse="\n"),
+                                 upos = paste(upos, collapse="\n"),
+                                 xpos = paste(xpos, collapse=";"),
+                                 dep_rel = paste(dep_rel, collapse=";"),
+                                 misc = paste(misc, collapse=";"),
+                                 has_morph = paste(has_morph, collapse=";"),
+                                 morph_abbr = paste(morph_abbr, collapse=";"),
+                                 morph_case = paste(morph_case, collapse=";"),
+                                 morph_definite = paste(morph_definite, collapse=";"),
+                                 morph_degree = paste(morph_degree, collapse=";"),
+                                 morph_foreign = paste(morph_foreign, collapse=";"),
+                                 morph_gender = paste(morph_gender, collapse=";"),
+                                 morph_mood = paste(morph_mood, collapse=";"),
+                                 morph_number = paste(morph_number, collapse=";"),
+                                 morph_numtype = paste(morph_numtype, collapse=";"),
+                                 morph_person = paste(morph_person, collapse=";"),
+                                 morph_poss = paste(morph_poss, collapse=";"),
+                                 morph_prontype = paste(morph_prontype, collapse=";"),
+                                 morph_reflex = paste(morph_reflex, collapse=";"),
+                                 morph_tense = paste(morph_tense, collapse=";"),
+                                 morph_verbform = paste(morph_verbform, collapse=";"))
+
+
+
+
+Newxdoc$EventList<-ExtrapolatefromDictionary(Newxdoc$sentence,EventList())
 Newx$Symptoms<-ExtrapolatefromDictionary(Newx$sentence,GISymptomsList())
 Newx$Location<-ExtrapolatefromDictionary(Newx$sentence,LocationList())
 
@@ -798,13 +826,19 @@ ExtrapolatefromDictionary<-function(inputString,list){
   #Select the elements that have characters in them
   i1 <- lengths(ToIndex) > 0 
   
-  #Do the merge with the 
+  #Do the merge. This takes the key to lookup and then if found, replaces
+  #the value with value associated with it in the table. I think the pull
+  #function also creates a new column with the value in it. This is an important
+  #function as uses a table lookup
   ToIndex[i1] <- map(ToIndex[i1], ~ 
                        tibble(key = .x) %>%
                        regex_left_join(d1) %>%
                        pull(val))
   
+  #This unlists the nested list
   ToIndex<-lapply(ToIndex, function(x) unlist(x,recursive=F))
+  
+  #This collapses the list so that the output is a single string
   ToIndex<-unlist(lapply(ToIndex, function(x) paste(x,collapse=";")))
   
   return(ToIndex)
@@ -850,23 +884,28 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 
 EntityPairs_TwoSentence<-function(inputString,list1,list2){
     
-  text<-textPrep(inputText)
+  #Prepare the text to be back into a tokenised version.
+  #text<-textPrep(inputText)
   text<-standardisedTextOutput<-stri_split_boundaries(text, type="sentence")
   text<-lapply(text,function(x) tolower(x))
   
   
   #Some clean up to get rid of white space- all of this prob already covered in the ColumnCleanUp function but for investigation later
   text<-lapply(text,function(x) gsub("[[:punct:]]+"," ",x))
+  #Prepare the list to use as a lookup:
   tofind <-tolower(list2)
+  
+  #Prepare the second list to use as a lookup
   EventList<-unique(tolower(unlist(list1,use.names = FALSE)))
   
   
   text<-sapply(text,function(x) {
     
-    #browser()
+    #Cleaning
     x<-trimws(x)
     
-    #browser()
+    #Prepare the text so that all empty text is replaced with NA and 
+    #ready for processing
     try(words <-
           x %>%
           unlist() %>%
@@ -1070,9 +1109,9 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 #' @keywords Pathology biopsy index
 #' @export
 #' @param PathSite The column that has the pathology locatio and tissue type from HistolTypeAndSite
-#' @ImportFrom stringr str_extract_all
-#' @Import tidyverse
-#' @Import fuzzyjoin
+#' @importFrom stringr str_extract_all
+#' @import tidyverse
+#' @import fuzzyjoin
 #' @examples # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
 #' SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
 #' HistolBiopsyIndex(SelfOGD_Dunn$PathSite) 

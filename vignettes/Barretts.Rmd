@@ -17,10 +17,10 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,message=FALSE, warning=FALSE)
-library(knitr)
-library(EndoMineR)
-library(pander)
-library(prettydoc)
+#library(knitr)
+#library(EndoMineR)
+#library(pander)
+#library(prettydoc)
 ```
 
 ```{r global_options, include=FALSE}
@@ -58,13 +58,13 @@ Firstly we need to extract the length of the Barrett’s segment. This is known 
 After filtering for endoscopic indication (eg “Surveillance-Barrett’s”- this is stored in the 'Indication' column in our data set) the aim of the following function is to extract a C and M stage (Prague score) for Barrett’s samples. This is done using a regular expression where C and M stages are explicitly mentioned in the free text. Specifically it extracts the Prague score. This is usually mentoned in the 'Findings' column in our dataset but obviously the user can define which column should be searched.
 
 ```{r exampleBarretts_PragueScore,echo = TRUE,message=FALSE, warning=FALSE}
-v<-Barretts_PragueScore(Myendo,'Findings')
+#v<-Barretts_PragueScore(Myendo,'Findings')
 
 ```
 ```{r exampleBarretts_PragueScore2,echo = FALSE,message=FALSE, warning=FALSE}
 
-panderOptions('table.split.table', Inf)
-pander(v[23:27,(ncol(v)-4):ncol(v)])
+#panderOptions('table.split.table', Inf)
+#pander(v[23:27,(ncol(v)-4):ncol(v)])
 ```
 
 ###Worst pathological stage
@@ -76,22 +76,22 @@ We also need to extract the worst pathological stage for a sample, and if non-dy
 
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
-b<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
-'HospitalNumber')
+#b<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
+#'HospitalNumber')
 
 #Picking out only the Barrett's related endoscopies
-b<-b[grepl("Surv",b$Indications),]
+#b<-b[grepl("Surv",b$Indications),]
 
 
-b<-HistolDx(b,'Histology')
-b<-Barretts_PathStage(b,'Dx_Simplified')
+#b<-HistolDx(b,'Histology')
+#b<-Barretts_PathStage(b,'Dx_Simplified')
 
 ```
 
 ```{r exampleBarretts_PathStage2, echo = TRUE,message=FALSE, warning=FALSE,echo=FALSE}
 
-panderOptions('table.split.table', Inf)
-pander(b[20:23,(ncol(b)-4):ncol(b)])
+#panderOptions('table.split.table', Inf)
+#pander(b[20:23,(ncol(b)-4):ncol(b)])
 ```
 
 ###Therapeutic events
@@ -114,19 +114,19 @@ Having done these pre-processing steps, the follow-up group to which the last en
 <br>
 
 ```{r exampleBarretts_FUType, echo = TRUE,message=FALSE, warning=FALSE}
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
-b<-Barretts_PathStage(v,'Histology')
-b1<-Barretts_PragueScore(b,'Findings','Findings')
-b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
-b3<-Barretts_FUType(b1,"CStage","MStage","IMorNoIM")
+#v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
+#b<-Barretts_PathStage(v,'Histology')
+#b1<-Barretts_PragueScore(b,'Findings','Findings')
+#b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
+#b3<-Barretts_FUType(b1,"CStage","MStage","IMorNoIM")
 
 ```
 
 
 ```{r exampleBarretts_FUType2, echo = FALSE,message=FALSE, warning=FALSE,echo=FALSE}
 
-panderOptions('table.split.table', Inf)
-pander(b3[23:27,(ncol(b3)-4):ncol(b3)])
+#panderOptions('table.split.table', Inf)
+#pander(b3[23:27,(ncol(b3)-4):ncol(b3)])
 ```
 
 
@@ -162,7 +162,7 @@ The therapeutic functions are fairly self-explanatory. The function to determine
 We can also assess the documentation used in Barrett's endoscopies. Documentation quality is a cornerstone of endoscopic quality as listed in the EndoMineR principles and also in the [Analysis](https://sebastiz.github.io/EndoMineR/articles/Analysis.html) tutorial There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett's documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on  Barrett's endoscopic reporting. This should be run after the Barretts_Prague as assessment of the Prague score is a part of this assessment:
 
 ```{r exampleBarrettsQuality_AnalysisDocumentation, echo = TRUE,message=FALSE, warning=FALSE}
-BarrettsDocumentQual(b3,"Findings")
+#BarrettsDocumentQual(b3,"Findings")
 ```
 
 
@@ -177,10 +177,10 @@ One of the essential requirements to demonstrate adequate sampling of Barrett's 
  # The number of average number of biopsies is then calculated and
  # compared to the average Prague C score so that those who are taking
  # too few biopsies can be determined
-b4<-HistolNumbOfBx(b3,'Macroscopicdescription','specimen')
-b4<-HistolBxSize(b4,'Macroscopicdescription')
-BarrettsBxQual(b4,'Date.x','HospitalNumber',
-                                      'Endoscopist')
+#b4<-HistolNumbOfBx(b3,'Macroscopicdescription','specimen')
+#b4<-HistolBxSize(b4,'Macroscopicdescription')
+#BarrettsBxQual(b4,'Date.x','HospitalNumber',
+#                                      'Endoscopist')
 ```
  
  <br>
@@ -192,7 +192,7 @@ BarrettsBxQual(b4,'Date.x','HospitalNumber',
 As we discovered with some of the generic functions above, one way to determine quality of endoscopy is to assess the pathology of specimens taken at surveillance per year. This function outputs a plot which determines the the overall number of pathologies (low/high grade dysplasia and cancer) for patients on surveillance.
 
 ```{r exampleBarrettsSurveillance_PathDetection,echo = TRUE,fig.width=7,fig.height=5,message=FALSE, warning=FALSE}
-BarrettsPathDetectQual(b3,'Myplot')
+#BarrettsPathDetectQual(b3,'Myplot')
 ```
  
 
@@ -201,12 +201,12 @@ BarrettsPathDetectQual(b3,'Myplot')
  This function provides a plot with absolute numbers of pathology detected. This of course doesn't tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist. The output is provided as a table of proportions per endoscopist. This is called the dysplasia detection rate and gives you a good idea of how robustly an endoscopist is examining a segment of Barrett's mucosa.
 
 ```{r exampleBarrettsSurveillanceDDR,echo = TRUE,fig.width=7,fig.height=5,message=FALSE, warning=FALSE}
-bDDR<-BarrettsDDRQual(b3,'Endoscopist','IMorNoIM')
+#bDDR<-BarrettsDDRQual(b3,'Endoscopist','IMorNoIM')
 ``` 
 
 ```{r exampleBarrettsSurveillanceDDR2,echo = TRUE,echo=FALSE,message=FALSE, warning=FALSE}
-panderOptions('table.split.table', Inf)
-pander(head(bDDR,10))
+#panderOptions('table.split.table', Inf)
+#pander(head(bDDR,10))
 
 ``` 
 
@@ -223,13 +223,13 @@ We can determine how many patients who underwent endoscopy for reasons that was 
 This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy. This should be run after the Barretts_Prague and Barretts_PathStage.
 
 ```{r exampleBarrettsPatientTracking_Enrollment_Surveillance, echo = TRUE}
-Enroll<-BarrettsSurveil(Myendo,'HospitalNumber','Dateofprocedure','Indications')
-MyEnroll<-data.frame(Enroll["HospitalNumber"],Enroll["Years"])
+#Enroll<-BarrettsSurveil(Myendo,'HospitalNumber','Dateofprocedure','Indications')
+#MyEnroll<-data.frame(Enroll["HospitalNumber"],Enroll["Years"])
 ```
 
 
 ```{r exampleBarrettsPatientTracking_Enrollment_Surveillance1, echo = FALSE}
-pander(MyEnroll)
+#pander(MyEnroll)
 
 ```
 
@@ -239,17 +239,17 @@ pander(MyEnroll)
 Perhaps we are also interested in how many patients fall under each follow-up category so we can plan how many Barrett's surveillance endoscopies we are going to have to do over a certain time period The function to do this gets the unique patient ID's for each patient, for each rule. It lists the unique PatientIDs associated with a rule ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many patients will need follow up at specific time intervals. This should be run after the Barretts_Prague, Barretts_PathStage and Barretts_FUType. The following example shows the inidividual patients who are currently under a Rule1 follow up.
 
 ```{r exampleBarrettsPatientTracking_UniqueHospNum, echo = TRUE}
-v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
-Barr<- Barretts_PathStage(v,'Histology')
-Barr<- Barretts_PragueScore(Barr,'ClinicalDetails','PathReportWhole')
-b4<-Barretts_FUType(Barr,"CStage","MStage","IMorNoIM")
-colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-Rule<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
+# v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
+# Barr<- Barretts_PathStage(v,'Histology')
+# Barr<- Barretts_PragueScore(Barr,'ClinicalDetails','PathReportWhole')
+# b4<-Barretts_FUType(Barr,"CStage","MStage","IMorNoIM")
+# colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+# Rule<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
 ```
 
 
 ```{r exampleBarrettsPatientTracking_UniqueHospNum1, echo = FALSE}
-pander(head(Rule,10))
+#pander(head(Rule,10))
 
 
 ```
