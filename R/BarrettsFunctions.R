@@ -339,7 +339,7 @@ BarrettsSurveil <- function(dataframe,PatientID,Endo_ResultPerformed,
   # for each patient Filter out the endoscopies that were surveillance Get the
   # difftime between now and the last endoscopy
   # Filter for those who have been waiting >3 years post non surveillance
-  # endoscopy
+  # endoscopy.Yes
   
   t <-
     dataframe %>% arrange(as.Date(!!Endo_ResultPerformeda)) %>%

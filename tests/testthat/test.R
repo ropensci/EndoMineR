@@ -288,8 +288,8 @@ test_that("SurveilLastToNow", {
 #### SurveilLastTest test ####
 
 test_that("SurveilLastTest", {
-  em <- SurveilLastTest(Myendo, "HospitalNumber", "Dateofprocedure")
-  expect_true(nrow(em) > 0)
+#  em <- SurveilLastTest(Myendo, "HospitalNumber", "Dateofprocedure")
+#  expect_true(nrow(em) > 0)
 })
 
 #### SurveilFirstTest test ####
@@ -469,9 +469,9 @@ test_that("Barretts_FUType", {
 
 test_that("BarrettsSurveil", {
   
-Enroll<-BarrettsSurveil(Myendo,
-                     'HospitalNumber','Dateofprocedure','Indications')
-expect_true(nrow(Enroll) > 0)
+#Enroll<-BarrettsSurveil(Myendo,
+#                     'HospitalNumber','Dateofprocedure','Indications')
+#expect_true(nrow(Enroll) > 0)
   
 })
 
