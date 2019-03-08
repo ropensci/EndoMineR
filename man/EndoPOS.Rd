@@ -8,9 +8,6 @@ EndoPOS(dataframe)
 }
 \arguments{
 \item{dataframe}{dataframe}
-
-\item{MacroColumn}{column to extract the numbers from. Usually the column
-with the Nature of the specimen or the Macroscopic description in it}
 }
 \description{
 This uses udpipe to tag the text. It then compresses all of the text 

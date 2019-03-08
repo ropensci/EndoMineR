@@ -7,6 +7,8 @@
 EndoscopyEvent(dataframe, EventColumn1, Procedure, Macroscopic, Histology)
 }
 \arguments{
+\item{dataframe}{datafrane of interest}
+
 \item{EventColumn1}{The relevant endoscopt free text column describing the findings}
 
 \item{Procedure}{Column saying which procedure was performed}

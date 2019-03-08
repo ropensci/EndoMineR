@@ -7,9 +7,9 @@
 HistolNumbOfBx(inputString, regString)
 }
 \arguments{
-\item{regString}{The keyword to remove and to stop at in the regex}
+\item{inputString}{The input text to process}
 
-\item{MacroColumn}{Column containing the Macroscopic description text}
+\item{regString}{The keyword to remove and to stop at in the regex}
 }
 \description{
 This extracts the number of biopsies taken from the pathology report.

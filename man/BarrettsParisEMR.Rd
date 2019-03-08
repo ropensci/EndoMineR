@@ -4,14 +4,15 @@
 \alias{BarrettsParisEMR}
 \title{Paris vs histopath Barrett's}
 \usage{
-BarrettsParisEMR(dataframe, Column, Column2)
+BarrettsParisEMR(Column, Column2)
 }
 \arguments{
-\item{Column}{Endoscopy report field of interest}
+\item{Column}{Endoscopy report field of interest as a string vector}
 
-\item{Column2}{Another endoscopy report field of interest}
-
-\item{EndoSubsetEMR}{The dataframe}
+\item{Column2}{Another endoscopy report field of interest as a string vector}
+}
+\value{
+a string vector
 }
 \description{
 This looks at the Paris grades of each EMR and then creates a heatmap

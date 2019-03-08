@@ -6,6 +6,13 @@
 \usage{
 spellCheck(pattern, replacement, x, fixed = FALSE, ...)
 }
+\arguments{
+\item{pattern}{the pattern to look for}
+
+\item{replacement}{the pattern replaceme with}
+
+\item{x}{the target string}
+}
 \value{
 This returns a character vector
 }

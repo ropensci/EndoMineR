@@ -17,7 +17,12 @@ Imports:
         lubridate,
         stringr,
         rlang,
-        dplyr
+        dplyr,
+        GGally,
+        udpipe,
+        stringi,
+        fuzzyjoin,
+        purrr
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -33,7 +38,6 @@ Suggests:
     covr,
     circlize,
     googleVis,
-    fuzzyjoin,
     reshape2,
     gplots
 VignetteBuilder: knitr

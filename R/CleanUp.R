@@ -34,7 +34,36 @@ if (getRversion() >= "2.15.1")
       "rgb",
       "setDT",
       "Myendo",
-      "Mypath"
+      "Mypath",
+      "doc_id",
+      "sentence",
+      "upos",
+      "xpos",
+      "dep_rel",
+      "misc",
+      "has_morph",
+      "morph_abbr",
+      "morph_case",
+      "morph_definite",
+      "morph_degree",
+      "morph_foreign",
+      "morph_gender",
+      "morph_mood",
+      "morph_number",
+      "morph_numtype",
+      "morph_person",
+      "morph_poss",
+      "morph_prontype",
+      "morph_reflex",
+      "morph_tense",
+      "morph_verbform",
+      "str_subset",
+      "tibble",
+      "lower",
+      "upper",
+      "pathSiteString",
+      "outputFinal",
+      "theme_foundation"
     )
   )
 
@@ -111,9 +140,8 @@ textPrep<-function(inputText){
 #'
 #' Standardises terms according to a user defined list and replaces them in place
 #'
-#' @param dataframe The dataframe
 #' @param inputString the input string
-#' @param list the list to perform replace with
+#' @param list The replacing list
 #' @keywords Replace
 #' @export
 #' @return This returns a character vector
@@ -157,8 +185,7 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 #' NewLines has been used. It can be used as part of the other functions
 #' or as a way of providing a 'positive diagnosis only' type output (see
 #' HistolDx)
-#' @param dataframe dataframe with column of interest
-#' @param Column column of interest
+#' @param inputText column of interest
 #' @keywords Negative Sentences
 #' @importFrom stringr str_replace
 #' @export
@@ -304,6 +331,10 @@ NegativeRemove <- function(inputText) {
 #' This is a helper function for finding and replacing from dictionaries like the event list
 #' It uses fuzzy find and replace to account for spelling errors
 #' @keywords Find and replace
+#' @importFrom utils aregexec
+#' @param pattern the pattern to look for
+#' @param replacement the pattern replaceme with
+#' @param x the target string
 #' @return This returns a character vector
 #' @examples # Pending
 #' 
@@ -325,8 +356,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
 #' It should be used after the Extractor.
 #' It is used for columns where there is a lot of free text to extract. It
 #' really extracts and standardises the sentences.
-#' @param dataframe dataframe with column of interest
-#' @param Column column of interest
+#' @param vector column of interest
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace 
@@ -369,20 +399,7 @@ ColumnCleanUp <- function(vector) {
 }
 
 
-#' Extrapolation from lists
-#'
-#'This takes a list of terms that you want to look for and
-#'then extracts these into a new column
-#'
 
-#'
-#' @param dataframe dataframe
-#' @param Column The column you want to extract from 
-#' @param mylist The list of values
-#' @importFrom stringr str_extract_all
-#' @keywords sensitivity and specificity
-#' @export
-#' @examples #To be set up 
 
 
 
@@ -423,10 +440,10 @@ ColumnCleanUp <- function(vector) {
 Extractor <- function(dataframeIn, Column, delim) {
   dataframeInForLater<-dataframeIn
   ColumnForLater<-Column
-  Column <- rlang::sym(Column)
+  Columna <- rlang::sym(Column)
   dataframeIn <- data.frame(dataframeIn,stringsAsFactors = FALSE)
   dataframeIn<-dataframeIn %>%
-    tidyr::separate(!!Column, into = c("added_name",delim),
+    tidyr::separate(!!Columna, into = c("added_name",delim),
                     sep = paste(delim, collapse = "|"),
                     extra = "drop", fill = "right")
   names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
@@ -529,8 +546,7 @@ Extractor2 <- function(x, y, stra, strb, t) {
 #' It should be used after the Extractor and the optional NewLines
 #' has been used.
 #'
-#' @param dataframe dataframe
-#' @param EndoReportColumn The endoscopy text column
+#' @param EndoscopistColumn The endoscopy text column
 #' @keywords Endoscopist extraction
 #' @export
 #' @return This returns a character vector
@@ -566,22 +582,24 @@ EndoscEndoscopist <- function(EndoscopistColumn) {
 EndoscMeds <- function(dataframe, MedColumn) {
   # Extraction of the Medications: Extract the fentanyl if present
   
+  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
+  dataframe[,MedColumn]<-as.character(dataframe[,MedColumn])
   
   dataframe$Fent <-
     str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Fent <- as.numeric(str_replace_all(dataframe$Fent,"Fentanyl|mcg ", ""))
+  dataframe$Fent <- as.numeric(str_replace_all(dataframe$Fent,"Fentanyl|mcg", ""))
   
   # Extract the midazolam if present
   
   dataframe$Midaz <-
     str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
-  dataframe$Midaz <- as.numeric(str_replace_all(dataframe$Midaz,"Midazolam|mg ", ""))
+  dataframe$Midaz <- as.numeric(str_replace_all(dataframe$Midaz,"Midazolam|mg", ""))
   
   
   # Extract the pethidine if present
   dataframe$Peth <-
     str_extract(dataframe[, MedColumn], "Pethidine\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Peth <- as.numeric(str_replace_all(dataframe$Peth,"Pethidine|mcg ", ""))
+  dataframe$Peth <- as.numeric(str_replace_all(dataframe$Peth,"Pethidine|mcg", ""))
   
   
   # Extract the propofol if present
@@ -600,8 +618,7 @@ EndoscMeds <- function(dataframe, MedColumn) {
 #' It gets rid of common entries that are not needed.
 #' It should be used after the Extractor and the optional
 #' NewLines has been used.
-#' @param dataframe dataframe with column of interest
-#' @param InstrumentColumn column of interest
+#' @param EndoInstrument column of interest
 #' @keywords Instrument
 #' @return This returns a character vector
 #' @importFrom stringr str_replace
@@ -622,8 +639,8 @@ Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
   return(EndoInstrument)
 }
 
-
-
+EndoscMeds
+EndoscInstrument
 #'  Cleans Procedure performed column if present
 #'
 #' This cleans the Procedure Performed column from the report assuming
@@ -632,8 +649,7 @@ Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
 #' It gets rid of common entries that are not needed.
 #' It should be used after the Extractor and the optional NewLines
 #' has been used.
-#' @param dataframe dataframe with column of interest
-#' @param ProcPerformed column of interest
+#' @param EndoProcPerformed column of interest
 #' @keywords Procedure
 #' @return This returns a character vector
 #' @importFrom stringr str_replace
@@ -660,7 +676,6 @@ EndoscProcPerformed <- function(EndoProcPerformed) {
 
 
 
-
 ##########Histology clean up functions##########
 
 
@@ -673,8 +688,7 @@ EndoscProcPerformed <- function(EndoProcPerformed) {
 #' HistolNumOfBx function below and normally not used as a stand alone
 #' function.
 #'
-#' @param dataframe dataframe
-#' @param MacroColumn column to extract the numbers from. Usually the column
+#' @param MacroString column to extract the numbers from. Usually the column
 #' with the Nature of the specimen or the Macroscopic description in it
 #' @keywords Macroscopic
 #' @importFrom stringr str_replace
@@ -698,15 +712,13 @@ HistolMacDescrip <- function(MacroString) {
 #' 
 #'
 #' @param dataframe dataframe
-#' @param MacroColumn column to extract the numbers from. Usually the column
-#' with the Nature of the specimen or the Macroscopic description in it
 #' @keywords Macroscopic
 #' @importFrom stringr str_replace
+#' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
 #' @export
 #' @examples pp<-HistolMacDescrip(Mypath$Macroscopicdescription)
 
 EndoPOS<-function(dataframe){
-library(udpipe)
 udmodel <- udpipe_download_model(language = "english")
 udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 #Get into a tokenised form first
@@ -714,6 +726,7 @@ udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 x <- udpipe_annotate(udmodel_english, x = Myendo$Findings)
 x2 <- as.data.frame(x)
 x3 <- cbind_morphological(x2)
+x4<-cbind_dependencies(x3)
 Newx<-x3 %>% group_by(doc_id,sentence) %>% summarise(upos = paste(upos, collapse=";"),
                                              xpos = paste(xpos, collapse=";"),
                                              dep_rel = paste(dep_rel, collapse=";"),
@@ -773,14 +786,14 @@ return(Newx)
 
 #' Extrapolate from Dictionary
 #'
-#' Provides term mapping and extraction in one
+#' Provides term mapping and extraction in one.
 #' Standardises any term according to a mapping lexicon provided and then
 #' extracts the term. Thus is
 #' different to the DictionaryInPlaceReplace in that it provides a new column
 #' with the extracted terms as opposed to changing it in place
 #'
-#' @param dataframe The dataframe
-#' @param SampleLocation Column describing the Macroscopic sample from histology
+#' @param inputString The text string to process
+#' @param list of words to iterate through
 #' @keywords Withdrawal
 #' @importFrom fuzzyjoin regex_left_join
 #' @export
@@ -850,9 +863,11 @@ ExtrapolatefromDictionary<-function(inputString,list){
 #'
 #' Use to see if words from two lists co-exist within a sentence. Eg site and tissue type.
 #' @keywords PathPairLookup
-#' @param EventColumn1 The relevant pathology text column
-#' @param EventColumn2 The alternative pathology text column
+#' @param inputText The relevant pathology text column
+#' @param list1 First list to refer to
+#' @param list2 The second list to look for
 #' @importFrom purrr flatten_chr map_chr map map_if
+#' @export
 #' @examples # tbb<-EntityPairs_OneSentence(Mypath$Histology,HistolType(),LocationList())
 
 EntityPairs_OneSentence<-function(inputText,list1,list2){
@@ -876,17 +891,19 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 #'
 #' This is used to look for relationships between site and event especially for endoscopy events
 #' @keywords Find and replace
-#' @param EventColumn1 The relevant pathology text column
-#' @param EventColumn2 The alternative pathology text column
+#' @param inputString The relevant pathology text column
+#' @param list1 The intial list to assess
+#' @param list2 The other list to look for
 #' @importFrom stringr str_replace_na str_c str_split str_which
 #' @importFrom purrr flatten_chr map_chr map map_if
-#' @examples # tbb<-EntityPairs_TwoSentence(SelfOGD_Dunn,"FINDINGS")
+#' @export
+#' @examples # tbb<-EntityPairs_TwoSentence(Myendo,"Findings")
 
 EntityPairs_TwoSentence<-function(inputString,list1,list2){
     
   #Prepare the text to be back into a tokenised version.
   #text<-textPrep(inputText)
-  text<-standardisedTextOutput<-stri_split_boundaries(text, type="sentence")
+  text<-standardisedTextOutput<-stri_split_boundaries(inputString, type="sentence")
   text<-lapply(text,function(x) tolower(x))
   
   
@@ -932,7 +949,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
                 
                 str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
                 map_if(is_empty, ~ NA_character_) %>%
-                purrr::flatten_chr()%>%
+                flatten_chr()%>%
                 `[[`(length(.)) %>%
                 
                 .[length(.)]
@@ -957,6 +974,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
 #' added to the event. Used in the OPCS4 coding
 #' @keywords Find and replace
+#' @param dataframe datafrane of interest
 #' @param EventColumn1 The relevant endoscopt free text column describing the findings
 #' @param Procedure Column saying which procedure was performed
 #' @param Macroscopic Column describing all the macroscopic specimens
@@ -1010,7 +1028,7 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
 #' It collects everything from the regex [0-9]{1,2}.{0,3}
 #' to whatever the string boundary is (z).
 #'
-#' @param MacroColumn Column containing the Macroscopic description text
+#' @param inputString The input text to process
 #' @param regString The keyword to remove and to stop at in the regex
 #' @importFrom stringr str_match_all str_replace_all
 #' @keywords Biopsy number
@@ -1066,9 +1084,9 @@ HistolBxSize <- function(MacroColumn) {
 #'
 #' This needs some blurb to be written. Used in the OPCS4 coding
 #' @keywords Find and replace
-#' @param Procedure The procedure performed
-#' @param EventColumn1 The relevant pathology text column
-#' @param EventColumn2 The alternative pathology text column
+#' @param inputString1 The first column to look in 
+#' @param inputString2 The second column to look in 
+#' @param procedureString The column with the procedure in it
 #' @importFrom stringr str_remove_all str_replace_all
 #' @export
 #' @return a list with two columns, one is the type and site and the other
@@ -1093,10 +1111,10 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
                  ifelse(grepl("Colonoscopy|Flexi",procedureString),
                         str_remove_all(output, paste0('(',tolower(paste0(unlist(upper,use.names=F),collapse="|")),')',':biopsy')),output))
   
-  biopsyIndexresults<-ExtrapolatefromDictionary(pathSiteString,BiopsyIndex())
+  biopsyIndexresults<-ExtrapolatefromDictionary(output,BiopsyIndex())
   
   output<-list(output,biopsyIndexresults)
-  return(outputFinal)
+  return(output)
 }
 
 
@@ -1108,10 +1126,8 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 #' AS PER THE FUNCTION INSIDE THIS FUNCTION
 #' @keywords Pathology biopsy index
 #' @export
-#' @param PathSite The column that has the pathology locatio and tissue type from HistolTypeAndSite
+#' @param pathSiteString The column that has the pathology locatio and tissue type from HistolTypeAndSite
 #' @importFrom stringr str_extract_all
-#' @import tidyverse
-#' @import fuzzyjoin
 #' @examples # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
 #' SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
 #' HistolBiopsyIndex(SelfOGD_Dunn$PathSite) 
@@ -1142,7 +1158,9 @@ HistolBiopsyIndex<-function(pathSiteString){
 #' 
 #'
 #' @param dataframe the dataframe
-#' @param EVENT the EVENT column
+#' @param Event the EVENT column
+#' @param Procedure The Procedure column
+#' @param PathSite The column containing the Pathology site
 #' @keywords OPCS-4 codes extraction
 #' @importFrom dplyr mutate case_when
 #' @importFrom rlang sym
@@ -1285,11 +1303,16 @@ ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
 #' 
 #'
 #' @param dataframe the dataframe
-#' @param EVENT the EVENT column
+#' @param Procedure the Procedure column
+#' @param PathSite the PathSite column
+#' @param FINDINGS the FINDINGS column
+#' @param ENDOSCOPICDIAGNOSIS the ENDOSCOPICDIAGNOSIS column
+#' @param EndoscopyEvent the EndoscopyEvent column
 #' @keywords OPCS-4 codes extraction
 #' @importFrom dplyr mutate case_when
 #' @importFrom rlang sym
 #' @importFrom stringr str_detect
+#' @importFrom stringi stri_split_lines
 #' @export
 #' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
 #' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
@@ -1310,7 +1333,7 @@ ExtrapolateEndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,EN
   dataframe$FINDINGSmyDx<-paste(dataframe$FINDINGS,dataframe$ENDOSCOPICDIAGNOSIS)
   
   #Split into a string
-  dataframe$FINDINGSmyDx<-stringi::stri_split_lines(dataframe$FINDINGSmyDx,omit_empty = TRUE)
+  dataframe$FINDINGSmyDx<-stri_split_lines(dataframe$FINDINGSmyDx,omit_empty = TRUE)
   
   #Copy over to a new column to be sampled
   dataframe$FindingsAfterProcessing<-dataframe$FINDINGSmyDx

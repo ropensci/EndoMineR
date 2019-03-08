@@ -6,9 +6,6 @@
 \usage{
 HistolType()
 }
-\arguments{
-\item{dataframe}{dataframe with column of interest}
-}
 \description{
 This standardizes terms to describe the pathology tissue type being exmained
 }

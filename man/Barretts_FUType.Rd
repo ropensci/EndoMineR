@@ -10,6 +10,12 @@ Barretts_FUType(dataframe, CStage, MStage, IMorNoIM)
 \item{dataframe}{the dataframe(which has to have been processed by the
 Barretts_PathStage function first to get IMorNoIM and the Barretts_PragueScore
 to get the C and M stage if available),}
+
+\item{CStage}{CStage column}
+
+\item{MStage}{MStage column}
+
+\item{IMorNoIM}{IMorNoIM column}
 }
 \description{
 This determines the follow up rule a patient should fit in to (according to

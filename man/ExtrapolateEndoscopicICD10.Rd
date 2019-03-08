@@ -10,7 +10,15 @@ ExtrapolateEndoscopicICD10(dataframe, Procedure, PathSite, FINDINGS,
 \arguments{
 \item{dataframe}{the dataframe}
 
-\item{EVENT}{the EVENT column}
+\item{Procedure}{the Procedure column}
+
+\item{PathSite}{the PathSite column}
+
+\item{FINDINGS}{the FINDINGS column}
+
+\item{ENDOSCOPICDIAGNOSIS}{the ENDOSCOPICDIAGNOSIS column}
+
+\item{EndoscopyEvent}{the EndoscopyEvent column}
 }
 \description{
 This function extracts the primary diagnosis from the endoscopy free text. It will also add

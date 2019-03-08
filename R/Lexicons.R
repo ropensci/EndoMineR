@@ -3,7 +3,6 @@
 #' Extract pathology type
 #'
 #' This standardizes terms to describe the pathology tissue type being exmained
-#' @param dataframe dataframe with column of interest
 #' @keywords Pathology type
 #' @export
 #' @examples #No examples as just returns a list
@@ -179,6 +178,7 @@ RFACath<-function(){
 #' extracted from the pathology so is part of pathology type.
 #' @keywords Event extraction
 #' @examples # unique(unlist(EventList(), use.names = FALSE))
+#' @export
 #' 
 EventList<-function(){
   
@@ -210,6 +210,7 @@ EventList<-function(){
 #' It is used in the Barretts_EventType. This does not include EMR as this is 
 #' extracted from the pathology so is part of pathology type.
 #' @keywords Event extraction
+#' @export
 #' @examples # unique(unlist(EventList(), use.names = FALSE))
 #' 
 BiopsyIndex<-function(){
@@ -254,6 +255,7 @@ BiopsyIndex<-function(){
 #' or mapping. They have been derived from a manual list with synonyms derived from the UMLS Methatharus
 #' using the browser.
 #' @keywords Event extraction
+#' @export
 #' @examples # unique(unlist(EventList(), use.names = FALSE))
 #' 
 GISymptomsList<-function(){
@@ -680,6 +682,7 @@ GISymptomsList<-function(){
 #' It is used in the Barretts_EventType. This does not include EMR as this is 
 #' extracted from the pathology so is part of pathology type.
 #' @keywords Event extraction
+#' @export
 #' @examples # unique(unlist(EventList(), use.names = FALSE))
 #' 
 WordsToNumbers<-function(){

@@ -7,9 +7,7 @@
 NegativeRemove(inputText)
 }
 \arguments{
-\item{dataframe}{dataframe with column of interest}
-
-\item{Column}{column of interest}
+\item{inputText}{column of interest}
 }
 \value{
 This returns a column within a dataframe. THis should be changed to a 

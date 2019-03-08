@@ -7,9 +7,7 @@
 ColumnCleanUp(vector)
 }
 \arguments{
-\item{dataframe}{dataframe with column of interest}
-
-\item{Column}{column of interest}
+\item{vector}{column of interest}
 }
 \value{
 This returns a character vector

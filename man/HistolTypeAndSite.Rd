@@ -7,11 +7,11 @@
 HistolTypeAndSite(inputString1, inputString2, procedureString)
 }
 \arguments{
-\item{Procedure}{The procedure performed}
+\item{inputString1}{The first column to look in}
 
-\item{EventColumn1}{The relevant pathology text column}
+\item{inputString2}{The second column to look in}
 
-\item{EventColumn2}{The alternative pathology text column}
+\item{procedureString}{The column with the procedure in it}
 }
 \value{
 a list with two columns, one is the type and site and the other

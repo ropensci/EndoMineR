@@ -9,7 +9,11 @@ ExtrapolateOPCS4Prep(dataframe, Procedure, PathSite, Event)
 \arguments{
 \item{dataframe}{the dataframe}
 
-\item{EVENT}{the EVENT column}
+\item{Procedure}{The Procedure column}
+
+\item{PathSite}{The column containing the Pathology site}
+
+\item{Event}{the EVENT column}
 }
 \description{
 This function extracts the OPCS-4 codes for all Barrett's procedures
