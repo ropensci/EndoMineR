@@ -938,7 +938,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
     x1 <- str_extract_all(tolower(x),tolower(paste(unlist(list1), collapse="|")))
     i1 <- which(lengths(x1) > 0)
     
-    
+
     try(if(any(i1)) {
       EventList %>%
         map(
