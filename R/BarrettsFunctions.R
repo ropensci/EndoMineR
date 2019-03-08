@@ -352,10 +352,10 @@ BarrettsBxQual <- function(dataframe,
   Endoscopista <- rlang::sym(Endoscopist)
   
   GroupedByEndoscopy <-
-    suppressWarnings(dataframe %>% filter(!is.na(CStage), !is.na(NumbOfBx)) %>%
+    suppressWarnings(dataframe %>% filter(!is.na(CStage), !is.na(NumBx)) %>%
     group_by(as.Date(!!Endo_ResultPerformeda),!!PatientID,
              !!Endoscopista) %>%
-    summarise(Sum = sum(NumbOfBx), AvgC = mean(CStage)))
+    summarise(Sum = sum(NumBx), AvgC = mean(CStage)))
   
   GroupedByEndoscopy$ExpectedNumber <-
     (GroupedByEndoscopy$AvgC + 1) * 2
