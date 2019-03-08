@@ -35,9 +35,10 @@ by month and year).
 # POSIX format) is also necessary.  Finally the string which indicates the text
 # indication needs to be inpoutted. In this case we are looking for all
 # endoscopies done
-# where the indication is surveillance (so searching on 'Surv' will do fine) .
+# where the indication is surveillance (so searching on 'Surv' will do fine).
+#If you want all the tests then put '.*' instead of Surv
 rm(list=ls(all=TRUE))
-ff<-HowManyOverTime(Myendo,'Indications','Dateofprocedure','Surv')
+ff<-HowManyOverTime(Myendo,'Indications','Dateofprocedure','.*')
 }
 \keyword{Tests}
 \keyword{number}

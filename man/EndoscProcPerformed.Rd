@@ -7,9 +7,7 @@
 EndoscProcPerformed(EndoProcPerformed)
 }
 \arguments{
-\item{dataframe}{dataframe with column of interest}
-
-\item{ProcPerformed}{column of interest}
+\item{EndoProcPerformed}{column of interest}
 }
 \value{
 This returns a character vector

@@ -15,6 +15,8 @@
 #' @param PathHospNumber The unique hospital number in the endoscopy dataset
 #' @importFrom magrittr '%>%'
 #' @importFrom dplyr filter
+#' @importFrom fuzzyjoin difference_full_join
+#' @importFrom rlang sym
 #' @keywords merge endoscopy and histology
 #' @export
 #' @examples v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',
@@ -42,11 +44,15 @@ Endomerge2 <-
     y$Date <- as.Date(y$Date)
     
     EndoHistoMerge <-
-      fuzzyjoin::difference_full_join(y,
+      difference_full_join(y,
                                       x,
                                       by = "Date",
-                                      max_dist = 7,
-                                      distance_col = "Days") %>%
-      filter(eHospitalNum == pHospitalNum)
-    return(EndoHistoMerge)
+                                      max_dist = 8,
+                                      distance_col = "Days")
+    eHospitalNuma <- rlang::sym("eHospitalNum")
+    pHospitalNuma <- rlang::sym("pHospitalNum")
+    
+    EndoHistoMerge1<-EndoHistoMerge%>%filter(!!eHospitalNuma == !!pHospitalNuma)
+    
+    return(EndoHistoMerge1)
   }

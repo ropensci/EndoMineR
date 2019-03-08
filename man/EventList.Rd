@@ -14,7 +14,6 @@ extracted from the pathology so is part of pathology type.
 }
 \examples{
 # unique(unlist(EventList(), use.names = FALSE))
-
 }
 \keyword{Event}
 \keyword{extraction}

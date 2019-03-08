@@ -34,16 +34,24 @@ if (getRversion() >= "2.15.1")
       "rgb",
       "setDT",
       "Myendo",
-      "Mypath"
+      "Mypath",
+      "im",
+      "manual_pal"
     )
   )
 
 ########### General graph tidy up functions ##############
 
 
+#' #' Sets the publication theme for all the ggplots
+#' #'
+#' #' 
+#' @import grid 
+#' @keywords ggplot themes
+#' @export
+#' @examples #None needed
+
 theme_Publication <- function(base_size=14, base_family="helvetica") {
-  library(grid)
-  library(ggthemes)
   (theme_foundation(base_size=base_size, base_family=base_family)
     + theme(plot.title = element_text(face = "bold",
                                       size = rel(1.2), hjust = 0.5),
@@ -74,14 +82,29 @@ theme_Publication <- function(base_size=14, base_family="helvetica") {
   
 }
 
+
+#' #' Sets the publication theme for all the ggplots
+#' #'
+#' #' 
+#' @keywords ggplot themes
+#' @export
+#' @examples #None needed
+
+
 scale_fill_Publication <- function(...){
-  library(scales)
   discrete_scale("fill","Publication",manual_pal(values = c("#386cb0","#fdb462","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")), ...)
   
 }
 
+
+#' Sets the publication theme for all the ggplots
+#'
+#' 
+#' @keywords ggplot themes
+#' @export
+#' @examples #None needed
+
 scale_colour_Publication <- function(...){
-  library(scales)
   discrete_scale("colour","Publication",manual_pal(values = c("#386cb0","#fdb462","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")), ...)
   
 }
@@ -412,8 +435,7 @@ PatientFlow_CircosPlots <-
 #' type of procedure to another using circos plots.
 #' @param dataframe dataframe
 #' @param Title The plot title
-#' @param HospNum_Id Column with the patient's unique hospital number
-#' @importFrom GGally ggpairs
+#' @import GGally 
 #' @return Myplot the EDA final plot
 #' @keywords Circos
 #' @export
@@ -423,8 +445,7 @@ PatientFlow_CircosPlots <-
 
 EndoDataVizEDA <-
   function(dataframe,Title) {
-Myplot <-ggpairs(data=sample, # data.frame with variables
-          title=Title) # title of the plot
+Myplot <-ggpairs(data=sample,title=Title) # title of the plot
 return(Myplot)
 }
 
@@ -440,6 +461,7 @@ return(Myplot)
 #' type of procedure to another using circos plots.
 #' @param dataframe dataframe
 #' @param Prop The proportion column
+#' @param xdata The proportion column
 #' @import ggplot2
 #' @return Myplot the EDA final plot
 #' @keywords Circos
@@ -475,7 +497,6 @@ return(Myplot)
 #' @param dataframe dataframe
 #' @param number The numeric column
 #' @param xdata The Time column
-#' @param HospNum_Id Column with the patient's unique hospital number
 #' @import ggplot2
 #' @return Myplot the EDA final plot
 #' @keywords Time plots
@@ -547,6 +568,7 @@ return(t)
 #' @param Numx The numeric x column
 #' @param Numy The numeric y column
 #' @import ggplot2
+#' @importFrom stats lm
 #' @keywords basic numeric vs numeric plot
 #' @export
 #' @return Myplot

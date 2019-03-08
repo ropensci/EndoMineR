@@ -7,9 +7,7 @@
 HistolMacDescrip(MacroString)
 }
 \arguments{
-\item{dataframe}{dataframe}
-
-\item{MacroColumn}{column to extract the numbers from. Usually the column
+\item{MacroString}{column to extract the numbers from. Usually the column
 with the Nature of the specimen or the Macroscopic description in it}
 }
 \description{

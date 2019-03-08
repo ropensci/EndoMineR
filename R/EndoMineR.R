@@ -38,7 +38,8 @@ if (getRversion() >= "2.15.1")
       "rgb",
       "setDT",
       "origin",
-      "FreqYear"
+      "FreqYear",
+      "Original.y"
     )
   )
 
@@ -185,27 +186,7 @@ LastStatus <- function(dataframe, HospNum, EVENT,indicatorEvent,endEvent) {
   return(CRIM)
 }
 
-#' Number of tests done per month
-#'
-#' This determines the number of tests done per month
-#' @param dataframe dataframe
-#' @param Endo_ResultPerformed Column with the date the Endoscopy was performed
-#' @importFrom dplyr group_by summarise
-#' @importFrom lubridate dmy month
-#' @importFrom magrittr '%>%'
-#' @importFrom rlang sym
-#' @keywords cats
-#' @export
-#' @examples ee<-SurveilCapacity(Myendo,'Dateofprocedure')
 
-SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
-  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
-  ret<-dataframe %>% mutate(month =format(as.Date(!!Endo_ResultPerformeda), "%m"),
-                            year = format(!!Endo_ResultPerformeda, "%Y")) %>%
-    group_by(year,month) %>% summarise(n = n())
-  dataframe<-data.frame(ret)
-  return(dataframe)
-}
 
 #' Number of tests done per month and year by indication
 #'
@@ -237,9 +218,10 @@ SurveilCapacity <- function(dataframe, Endo_ResultPerformed) {
 #' # POSIX format) is also necessary.  Finally the string which indicates the text
 #' # indication needs to be inpoutted. In this case we are looking for all
 #' # endoscopies done
-#' # where the indication is surveillance (so searching on 'Surv' will do fine) .
+#' # where the indication is surveillance (so searching on 'Surv' will do fine).
+#' #If you want all the tests then put '.*' instead of Surv
 #' rm(list=ls(all=TRUE))
-#' ff<-HowManyOverTime(Myendo,'Indications','Dateofprocedure','Surv')
+#' ff<-HowManyOverTime(Myendo,'Indications','Dateofprocedure','.*')
 
 
 HowManyOverTime <-
@@ -407,11 +389,10 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 
 
 
-CategoricalByEndoscopist <- function(ProportionColumn, EndoscopistReportColumn) {
+CategoricalByEndoscopist <- function(ProportionColumn, EndoscopistColumn) {
  
-  
   # Need to include indefinite for dysplasia
-  PropByEndo <- prop.table(table(EndoscopistReportColumn,
+  PropByEndo <- prop.table(table(EndoscopistColumn,
                             ProportionColumn))
   return(PropByEndo)
 }

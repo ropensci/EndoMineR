@@ -7,9 +7,7 @@
 EndoscInstrument(EndoInstrument)
 }
 \arguments{
-\item{dataframe}{dataframe with column of interest}
-
-\item{InstrumentColumn}{column of interest}
+\item{EndoInstrument}{column of interest}
 }
 \value{
 This returns a character vector

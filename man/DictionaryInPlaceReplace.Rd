@@ -9,9 +9,7 @@ DictionaryInPlaceReplace(inputString, list)
 \arguments{
 \item{inputString}{the input string}
 
-\item{list}{the list to perform replace with}
-
-\item{dataframe}{The dataframe}
+\item{list}{The replacing list}
 }
 \value{
 This returns a character vector

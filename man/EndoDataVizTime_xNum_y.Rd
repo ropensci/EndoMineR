@@ -12,8 +12,6 @@ EndoDataVizTime_xNum_y(dataframe, xdata, number)
 \item{xdata}{The Time column}
 
 \item{number}{The numeric column}
-
-\item{HospNum_Id}{Column with the patient's unique hospital number}
 }
 \value{
 Myplot the EDA final plot

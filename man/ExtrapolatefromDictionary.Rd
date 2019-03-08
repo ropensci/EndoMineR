@@ -7,12 +7,12 @@
 ExtrapolatefromDictionary(inputString, list)
 }
 \arguments{
-\item{dataframe}{The dataframe}
+\item{inputString}{The text string to process}
 
-\item{SampleLocation}{Column describing the Macroscopic sample from histology}
+\item{list}{of words to iterate through}
 }
 \description{
-Provides term mapping and extraction in one
+Provides term mapping and extraction in one.
 Standardises any term according to a mapping lexicon provided and then
 extracts the term. Thus is
 different to the DictionaryInPlaceReplace in that it provides a new column

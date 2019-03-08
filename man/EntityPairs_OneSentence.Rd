@@ -7,9 +7,11 @@
 EntityPairs_OneSentence(inputText, list1, list2)
 }
 \arguments{
-\item{EventColumn1}{The relevant pathology text column}
+\item{inputText}{The relevant pathology text column}
 
-\item{EventColumn2}{The alternative pathology text column}
+\item{list1}{First list to refer to}
+
+\item{list2}{The second list to look for}
 }
 \description{
 Use to see if words from two lists co-exist within a sentence. Eg site and tissue type.

@@ -7,9 +7,7 @@
 EndoscEndoscopist(EndoscopistColumn)
 }
 \arguments{
-\item{dataframe}{dataframe}
-
-\item{EndoReportColumn}{The endoscopy text column}
+\item{EndoscopistColumn}{The endoscopy text column}
 }
 \value{
 This returns a character vector

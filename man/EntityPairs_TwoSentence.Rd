@@ -7,15 +7,17 @@
 EntityPairs_TwoSentence(inputString, list1, list2)
 }
 \arguments{
-\item{EventColumn1}{The relevant pathology text column}
+\item{inputString}{The relevant pathology text column}
 
-\item{EventColumn2}{The alternative pathology text column}
+\item{list1}{The intial list to assess}
+
+\item{list2}{The other list to look for}
 }
 \description{
 This is used to look for relationships between site and event especially for endoscopy events
 }
 \examples{
-# tbb<-EntityPairs_TwoSentence(SelfOGD_Dunn,"FINDINGS")
+# tbb<-EntityPairs_TwoSentence(Myendo,"Findings")
 }
 \keyword{Find}
 \keyword{and}

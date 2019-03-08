@@ -4,7 +4,7 @@
 \alias{CategoricalByEndoscopist}
 \title{Plot a frequency table for categorical variables by endoscopist}
 \usage{
-CategoricalByEndoscopist(ProportionColumn, EndoscopistReportColumn)
+CategoricalByEndoscopist(ProportionColumn, EndoscopistColumn)
 }
 \arguments{
 \item{ProportionColumn}{The column (categorical data) of interest}

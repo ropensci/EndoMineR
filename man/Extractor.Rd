@@ -2,32 +2,19 @@
 % Please edit documentation in R/CleanUp.R
 \name{Extractor}
 \alias{Extractor}
-\title{Extrapolation from lists}
+\title{Extracts the columns from the raw report}
 \usage{
 Extractor(dataframeIn, Column, delim)
 }
 \arguments{
 \item{dataframeIn}{the dataframe}
 
-\item{Column}{The column you want to extract from}
+\item{Column}{the column to extract from}
 
 \item{delim}{the vector of words that will be used as the boundaries to
 extract against}
-
-\item{dataframe}{dataframe}
-
-\item{mylist}{The list of values}
-
-\item{Column}{the column to extract from}
 }
 \description{
-This takes a list of terms that you want to look for and
-then extracts these into a new column
-}
-\examples{
-#To be set up 
-Extracts the columns from the raw report
-
 This is the main extractor for the Endoscopy and Histology report.
 This depends on the user creating a list of words or characters that
 act as the words that should be split against. The list is then fed to the
@@ -36,7 +23,8 @@ regex used to split the text. Whatever has been specified in the list
 is used as a column header. Column headers don't tolerate special characters
 like : or ? and / and don't allow numbers as the start character so these
 have to be dealt with in the text before processing
-
+}
+\examples{
 # As column names cant start with a number, one of the dividing
 # words has to be converted
 # A list of dividing words (which will also act as column names)
@@ -48,6 +36,3 @@ Mypath2<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
 
 }
 \keyword{Extraction}
-\keyword{and}
-\keyword{sensitivity}
-\keyword{specificity}

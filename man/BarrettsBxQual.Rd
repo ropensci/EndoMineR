@@ -23,7 +23,6 @@ Prague score for that endoscopy.
 # Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
-v<-HistolDx(Mypath,'Diagnosis')
 v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
 v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 # The histology is then merged with the Endoscopy dataset. The merge occurs

@@ -7,7 +7,7 @@
 HistolBiopsyIndex(pathSiteString)
 }
 \arguments{
-\item{PathSite}{The column that has the pathology locatio and tissue type from HistolTypeAndSite}
+\item{pathSiteString}{The column that has the pathology locatio and tissue type from HistolTypeAndSite}
 }
 \description{
 This returns a number for all the biopsies taken based on distance from orifice. It is for biopsies only

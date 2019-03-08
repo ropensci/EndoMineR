@@ -34,7 +34,8 @@ if (getRversion() >= "2.15.1")
       "region",
       "rgb",
       "setDT",
-      "ind"
+      "ind",
+      "mytext"
     )
   )
 ###### Barrett's specific extrapolation Functions ######
@@ -165,7 +166,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
           TRUE ~ "Insufficient")
       )
     
-  return(df)
+  return(df$IMorNoIM)
 }
 
 
@@ -189,6 +190,9 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' @param dataframe the dataframe(which has to have been processed by the
 #' Barretts_PathStage function first to get IMorNoIM and the Barretts_PragueScore
 #' to get the C and M stage if available),
+#' @param CStage CStage column
+#' @param MStage MStage column
+#' @param IMorNoIM IMorNoIM column
 #' @keywords Follow-Up
 #' @importFrom stringr str_extract str_replace
 #' @export
@@ -220,7 +224,7 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 
   df<-dataframe %>%
     mutate(
-      ParisClass = case_when(
+      FU_Type = case_when(
         grepl("SM2|SM1|T1b_Unspec|T1a|LGD|HGD|IGD", !!IMorNoIMa,ignore.case=TRUE) ~ "Therapy",
         !!CStagea == "Insufficient" & !!MStagea == "Insufficient" ~ "NoRules",
         !!IMorNoIMa == "No_IM" & !is.na(!!MStagea) & as.numeric(!!MStagea) < 3 ~ "Rule1",
@@ -232,7 +236,7 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
         TRUE ~ "NoRules")
     )
   
-  return(df)
+  return(df$FU_Type)
 
 }
 
@@ -243,11 +247,11 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 #' of pathological grade vs
 #' endoscopic Paris grade.This should only be run after all the
 #' BarrettsDataAccord functions.
-#' @param EndoSubsetEMR The dataframe
-#' @param Column Endoscopy report field of interest
-#' @param Column2 Another endoscopy report field of interest
+#' @param Column Endoscopy report field of interest as a string vector
+#' @param Column2 Another endoscopy report field of interest as a string vector
 #' @keywords Does something with data
 #' @export
+#' @return a string vector
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
@@ -272,10 +276,10 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 #' mm<-BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
 #' rm(v)
 
-BarrettsParisEMR <- function(dataframe, Column, Column2) {
+BarrettsParisEMR <- function(Column, Column2) {
   
   #NewCol<-paste0(Column, Column2)
-  NewCol<-paste0(dataframe[,Column], dataframe[,Column2])
+  NewCol<-paste0(Column,Column2)
   NewCol <- data.frame(NewCol,stringsAsFactors = FALSE)
   
   # Get the worst pathology for that sample inc SM stages
@@ -287,124 +291,15 @@ BarrettsParisEMR <- function(dataframe, Column, Column2) {
         grepl("[Ii][Ii]b|2b|11b", NewCol,ignore.case=TRUE) ~  "2b",
         grepl("[Ii][Ii][Ii]|III", NewCol,ignore.case=TRUE) ~  "3",
         grepl("Paris [Tt]ype [Ii]s|1s ", NewCol,ignore.case=TRUE,perl=TRUE) ~  "!s",
-        grepl("[Ii]p|1p", NewCol,ignore.case=TRUE,perl=TRUE) ~  "1p",
+        grepl(" [Ii]p |1p", NewCol,ignore.case=TRUE,perl=TRUE) ~  "1p",
         TRUE ~ "No_Paris")
     )
   
-  return(df)
-  
-
+  return(df$ParisClass)
   
 }
 
 
-
-############## Surveillance functions ########
-
-
-#' How many Barrett's patients had surveillance
-#'
-#' This function graphs the patients who were not on surveillance programmes and
-#' sees how many then had an endoscopy.This allows us to determine how many
-#' index Barrett's detections went on to undergo surveillance.
-#' This should be run after the Barretts_PragueScore and
-#' Barretts_PathStage.
-#' @param dataframe dataframe
-#' @param PatientID column of interest with unique hospital number in it
-#' @param Endo_ResultPerformed column of interest with date endiscopy performed
-#' in it
-#' @param IndicationsFroExamination column of interest with indications in it
-#' (usually 'Surveillance' or similar)
-#' @keywords Patient Tracking
-#' @importFrom dplyr group_by slice mutate filter
-#' @importFrom magrittr '%>%'
-#' @importFrom rlang sym
-#' @export
-#' @examples #This takes the Myendo demo dataset
-#' # and then groups the Barrett's endoscopies by patient (as defined by their
-#' # unique hospital identifier and then orders by the date of procedure. It
-#' # should look in the Indications column for Barrett's related indication
-#' #ee<-BarrettsSurveil(Myendo,'HospitalNumber','Dateofprocedure','Indications')
-
-BarrettsSurveil <- function(dataframe,PatientID,Endo_ResultPerformed,
-                                              IndicationsFroExamination) {
-  dataframe <- data.frame(dataframe)
-  PatientIDa <- rlang::sym(PatientID)
-  Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
-  IndicationsFroExaminationa <-
-    rlang::sym(IndicationsFroExamination)
-  # So you want all those whose last endoscopy was non surveillance but who
-  # have
-  # a difftime between now and the last of > 3years So get the last endoscopy
-  # for each patient Filter out the endoscopies that were surveillance Get the
-  # difftime between now and the last endoscopy
-  # Filter for those who have been waiting >3 years post non surveillance
-  # endoscopy.Yes
-  
-  t <-
-    dataframe %>% arrange(as.Date(!!Endo_ResultPerformeda)) %>%
-    group_by(!!PatientIDa) %>%
-    slice(dplyr::n()) %>%
-    filter(!grepl("Surv|Barr", !!IndicationsFroExamination)) %>%
-    mutate(Years = difftime(
-      as.Date(Sys.Date()),
-      as.Date(!!Endo_ResultPerformeda),
-      units = "weeks"
-    ) / 52) %>%
-    filter(Years > 3)
-  
-  t<-data.frame(t)
-  
-  return(t)
-  
-}
-
-
-#' Unique Hospital Numbers of Barrett's patients
-#'
-#' This function gets the unique patient ID's for each patient,
-#' for each rule. It lists the unique PatientIDs assocaited with a rule
-#' ('Rule1','Rule2','Rule3','NoRules'). This allows us to determine how many
-#' patients will need follow up at specific time intervals.
-#' This should be run after the Barretts_PragueScore and
-#' Barretts_PathStage.
-#' @param dataframe dataframe with column of interest
-#' @param rule Rule of interest
-#' @param PatientID Column containing patient numbers
-#' @keywords Rule
-#' @export
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' v<-Mypath
-#' v<-HistolDx(v,'Diagnosis')
-#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
-#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' # The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' #Finally the unique hospital numbers are obtained according to the follow-up
-#' # rule you are looking for
-#' ff<-BarrettsSurveil_HospNum(b4,'Rule1','HospitalNumber')
-#' rm(v)
-
-BarrettsSurveil_HospNum <- function(dataframe, rule, PatientID) {
-  dataframe <- data.frame(dataframe)
-  dataframe <- subset(dataframe, dataframe$FU_Group == rule)
-  dataframe <- data.frame(unique(dataframe[, PatientID]))
-  names(dataframe) <- c("x")
-  return(dataframe)
-}
 
 ############## Pathology Quality #############
 
@@ -425,7 +320,6 @@ BarrettsSurveil_HospNum <- function(dataframe, rule, PatientID) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
 #' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
 #' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs

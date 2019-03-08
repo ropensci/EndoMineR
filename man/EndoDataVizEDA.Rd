@@ -10,8 +10,6 @@ EndoDataVizEDA(dataframe, Title)
 \item{dataframe}{dataframe}
 
 \item{Title}{The plot title}
-
-\item{HospNum_Id}{Column with the patient's unique hospital number}
 }
 \value{
 Myplot the EDA final plot

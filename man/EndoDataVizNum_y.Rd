@@ -9,6 +9,8 @@ EndoDataVizNum_y(dataframe, xdata, Prop)
 \arguments{
 \item{dataframe}{dataframe}
 
+\item{xdata}{The proportion column}
+
 \item{Prop}{The proportion column}
 }
 \value{
