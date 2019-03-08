@@ -188,10 +188,11 @@ FinalDataset$HistolTypeAndSite<-HistolTypeAndSite(FinalDataset$procedureperforme
 
 FinalDataset$tissue<-ExtrapolatefromDictionary(FinalDataset$Original.x,HistolType())
 
-#This one needs some attention- why is there a discrepancy between the dataset and the number of rows?
+#This one needs some attention- why is there a discrepancy between the dataset and the number of rows? Something wrong with the unlisting here.
+#Probably needs a paste collapse first- maybe even as part of the function itself
 FinalDataset$TissueLocation<-unlist(EntityPairs_OneSentence(FinalDataset$Original.x,HistolType(),LocationList()))
 
-FinalDataset$EndoscopyEvent<-unlist(EntityPairs_TwoSentence(FinalDataset$findings,EventList(),LocationList()))
+FinalDataset$EndoscopyEvent<-unlist(EntityPairs_TwoSentence(FinalDataset$findings,LocationList(),EventList()))
 
 FinalDataset$EndoscopyEvent<-EndoscopyEvent(FinalDataset,"findings","procedureperformed","macroscopicdescription","Original.x")
 ```
