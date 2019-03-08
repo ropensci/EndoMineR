@@ -132,6 +132,7 @@ textPrep<-function(inputText){
   #standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
   
   #returns a 
+  inputText<-tolower(inputText)
   return(inputText)
 }
 
@@ -876,8 +877,8 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
   list1<-paste0(unlist(list1,use.names=F),collapse="|")
   list2<-paste0(unlist(list2,use.names=F),collapse="|")
   
-  text<-textPrep(inputText)
-  text<-standardisedTextOutput<-stri_split_boundaries(text, type="sentence")
+  #text<-textPrep(inputText)
+  text<-standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
   r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(list2)), str_extract_all(tolower(x),tolower(list1)), MoreArgs = list(sep=":")))
   
   r1<-lapply(r1,function(x) unlist(x))

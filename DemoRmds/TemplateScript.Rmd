@@ -203,16 +203,15 @@ FinalDatasetBarr<-Barretts_PragueScore(FinalDataset,'findings','Original.y')
 FinalDatasetBarr$IMorNoIM<-Barretts_PathStage(FinalDatasetBarr,"Original.x")
 FinalDatasetBarr$FUType<-Barretts_FUType(FinalDatasetBarr,"CStage","MStage","IMorNoIM")
 FinalDatasetBarr$Paris<-BarrettsParisEMR(FinalDatasetBarr$procedureperformed,FinalDatasetBarr$findings)
+BarrettsBxQual(FinalDatasetBarr,'Date.x','pHospitalNum','endoscopist')
 
-OverdueSurveillance<-BarrettsSurveil(FinalDatasetBarr,'pHospitalNum','Date.x','indications')
 
 
-FinalDatasetBarr<-SurveilTimeByRow(FinalDatasetBarr,'pHospitalNum','Date.x')
 ######################################### Data forking (filtering and subsetting) #########################
 #Now frame the question you are interested in and develop subsets
 ```
 
-```{r Generic}
+```{r Generic Analyses}
 FinalDatasetBarr<-SurveilTimeByRow(FinalDatasetBarr,'pHospitalNum','Date.x')
 
 #Gives you all the last tests done:
