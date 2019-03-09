@@ -121,7 +121,8 @@ This involves how the relevant columns were accordionised (eg categorising the p
 
 
 ```{r Acquisition}
-library(PhysiMineR)
+library(EndoMineR)
+library(tidyverse)
 
 
 
@@ -177,24 +178,33 @@ FinalDataset$procedureperformed<-EndoscProcPerformed(FinalDataset$procedureperfo
 
 ```
 
-```{r Extrapolate}
+```{r Extrapolate1- calculated and keyword}
 ######################################### Data accordionisation######################################### 
 #Now extrapolation with histology
 FinalDataset$NumBx<-HistolNumbOfBx(FinalDataset$macroscopicdescription,'specimen')
 FinalDataset$BxSize<-HistolBxSize(FinalDataset$macroscopicdescription)
 FinalDataset$HistolTypeAndSite<-HistolTypeAndSite(FinalDataset$procedureperformed,FinalDataset$macroscopicdescription,FinalDataset$Original.x)
 
-#Some non-specific extrapolation:
+#Some non-specific extrapolation- simple keyword
 
 FinalDataset$tissue<-ExtrapolatefromDictionary(FinalDataset$Original.x,HistolType())
 
 #This one needs some attention- why is there a discrepancy between the dataset and the number of rows? Something wrong with the unlisting here.
 #Probably needs a paste collapse first- maybe even as part of the function itself
+```
+
+```{r Extrapolate2- colocation}
+#Colocation extrapolation
 FinalDataset$TissueLocation<-unlist(EntityPairs_OneSentence(FinalDataset$Original.x,HistolType(),LocationList()))
-
 FinalDataset$EndoscopyEvent<-unlist(EntityPairs_TwoSentence(FinalDataset$findings,LocationList(),EventList()))
-
 FinalDataset$EndoscopyEvent<-EndoscopyEvent(FinalDataset,"findings","procedureperformed","macroscopicdescription","Original.x")
+
+#Temporal colocation. As an example, with histology. This requires udpipe to be downloaded as can't have it as part of the function:
+library(udpipe)
+udmodel <- udpipe_download_model(language = "english")
+FinalDataset$Temporal<-Temporal(FinalDataset$findings)
+FinalDataset$TemporalAndHistol<-EntityPairs_OneSentence(FinalDataset$Temporal,HistolType(),TemporalList())
+
 ```
 
 ```{r Disease1-Barretts}

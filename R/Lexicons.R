@@ -202,6 +202,28 @@ EventList<-function(){
   return(Event)
 }
 
+#' Temporal list
+#'
+#' This function returns all the conversions from common version of events to 
+#' a standardised event list, much like the Location standardidastion function
+#' It is used in the Barretts_EventType. This does not include EMR as this is 
+#' extracted from the pathology so is part of pathology type.
+#' @keywords Temporal extraction
+#' @examples # unique(unlist(Temporal(), use.names = FALSE))
+#' @export
+#' 
+TemporalList<-function(){
+  
+  Temporal <- list("Past" = "Past", 
+                "Present" = "Present",
+                "Future" = "Future"
+  )
+  
+  #To get the list as a list of values only in a regex use
+  #paste0(unlist(Temporal,use.names=F),collapse="|")
+  
+  return(Temporal)
+}
 
 #' Biopsy index list
 #'
