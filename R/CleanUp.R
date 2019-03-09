@@ -666,17 +666,6 @@ EndoscProcPerformed <- function(EndoProcPerformed) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 ##########Histology clean up functions##########
 
 
@@ -706,6 +695,65 @@ HistolMacDescrip <- function(MacroString) {
 
 ############## Extraction Tools ###################
 
+
+#' Temporal sentences
+#'
+#' This extracts sentences that have a tense to them so you can see
+#' if there are intended actions for example in assessing quality
+#' of a report eg 'I will prescribe this medication. The function
+#' requires you to decide whether you want present, past of future tenses. You
+#' can also choose to exclude tenses.
+#' 
+#'
+#' @param dataframe dataframe
+#' @param column The column of interest
+#' @keywords Macroscopic
+#' @importFrom stringr str_replace
+#' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
+#' @export
+#' @examples pp<-Temporal(Myendo$Findings)
+
+Temporal<-function(inputString){
+  
+  
+  udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+  x <- udpipe_annotate(udmodel_english, x = inputString)
+  x2 <- as.data.frame(x)
+  
+  
+  #Ways to determine the temporality of the sentence. English has no future tense so it is determined
+  #by examining the Verbform not being past or present and the presence of a modal auxilliary
+  
+  x2$Temporal<-ifelse(grepl("Pres",x2$feats),"Present",
+                      ifelse(grepl("Past",x2$feats),"Past",
+                             ifelse(grepl("AUX",x2$upos),"Future","NoTense")))
+  
+  #Now group back into the report text
+  Newx<-x2 %>% group_by(doc_id,sentence)  %>% summarise(upos = paste(upos, collapse=";"),
+                                                        xpos = paste(xpos, collapse=";"),
+                                                        dep_rel = paste(dep_rel, collapse=";"),
+                                                        misc = paste(misc, collapse=";"),
+                                                        Temporal = paste(Temporal, collapse=";"))%>%group_by(doc_id)
+  #This now gives the per sentence temporality
+  Newx<-data.frame(Newx)
+  
+  #Now tag each sentence with paste and get rid of no tense and merge with the sentence
+  Newx$Temporal<-paste(str_replace_all(Newx$Temporal,";NoTense|NoTense|^;",""),":::",Newx$sentence)
+  
+  #Now to group by whole text:
+  Newxdoc<-Newx %>% 
+    group_by(doc_id) %>% summarise(
+      Temporal = paste(Temporal, collapse="\n"))
+  
+  #Return tagged character vector
+return(Newxdoc$Temporal)
+  
+}
+
+
+
+
+
 #' Parts of speech tagging for reports
 #'
 #' This uses udpipe to tag the text. It then compresses all of the text 
@@ -724,30 +772,22 @@ udmodel <- udpipe_download_model(language = "english")
 udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 #Get into a tokenised form first
 #Myendo$Findings<-textPrep(Myendo$Findings)
-x <- udpipe_annotate(udmodel_english, x = Myendo$Findings)
+x <- udpipe_annotate(udmodel_english, x = head(Myendo$Findings,100))
 x2 <- as.data.frame(x)
-x3 <- cbind_morphological(x2)
-x4<-cbind_dependencies(x3)
-Newx<-x3 %>% group_by(doc_id,sentence) %>% summarise(upos = paste(upos, collapse=";"),
+#x3 <- cbind_morphological(x2) #Dont need this for temporal assessment
+#x4<-cbind_dependencies(x3)  #Dont need this for temporal assessment
+
+#now to select out the 
+
+
+
+
+#To get all in one long cell per original document:
+Newx<-x3 %>% group_by(doc_id,sentence)  %>% summarise(upos = paste(upos, collapse=";"),
                                              xpos = paste(xpos, collapse=";"),
                                              dep_rel = paste(dep_rel, collapse=";"),
                                              misc = paste(misc, collapse=";"),
-                                             has_morph = paste(has_morph, collapse=";"),
-                                             morph_abbr = paste(morph_abbr, collapse=";"),
-                                             morph_case = paste(morph_case, collapse=";"),
-                                             morph_definite = paste(morph_definite, collapse=";"),
-                                             morph_degree = paste(morph_degree, collapse=";"),
-                                             morph_foreign = paste(morph_foreign, collapse=";"),
-                                             morph_gender = paste(morph_gender, collapse=";"),
-                                             morph_mood = paste(morph_mood, collapse=";"),
-                                             morph_number = paste(morph_number, collapse=";"),
-                                             morph_numtype = paste(morph_numtype, collapse=";"),
-                                             morph_person = paste(morph_person, collapse=";"),
-                                             morph_poss = paste(morph_poss, collapse=";"),
-                                             morph_prontype = paste(morph_prontype, collapse=";"),
-                                             morph_reflex = paste(morph_reflex, collapse=";"),
-                                             morph_tense = paste(morph_tense, collapse=";"),
-                                             morph_verbform = paste(morph_verbform, collapse=";"))%>%group_by(doc_id)
+                                             has_morph = paste(has_morph, collapse=";"))%>%group_by(doc_id)
 Newx<-data.frame(Newx)
 
 
@@ -758,31 +798,9 @@ Newxdoc<-Newx %>%
                                  xpos = paste(xpos, collapse=";"),
                                  dep_rel = paste(dep_rel, collapse=";"),
                                  misc = paste(misc, collapse=";"),
-                                 has_morph = paste(has_morph, collapse=";"),
-                                 morph_abbr = paste(morph_abbr, collapse=";"),
-                                 morph_case = paste(morph_case, collapse=";"),
-                                 morph_definite = paste(morph_definite, collapse=";"),
-                                 morph_degree = paste(morph_degree, collapse=";"),
-                                 morph_foreign = paste(morph_foreign, collapse=";"),
-                                 morph_gender = paste(morph_gender, collapse=";"),
-                                 morph_mood = paste(morph_mood, collapse=";"),
-                                 morph_number = paste(morph_number, collapse=";"),
-                                 morph_numtype = paste(morph_numtype, collapse=";"),
-                                 morph_person = paste(morph_person, collapse=";"),
-                                 morph_poss = paste(morph_poss, collapse=";"),
-                                 morph_prontype = paste(morph_prontype, collapse=";"),
-                                 morph_reflex = paste(morph_reflex, collapse=";"),
-                                 morph_tense = paste(morph_tense, collapse=";"),
-                                 morph_verbform = paste(morph_verbform, collapse=";"))
+                                 has_morph = paste(has_morph, collapse=";"))
 
-
-
-
-Newxdoc$EventList<-ExtrapolatefromDictionary(Newxdoc$sentence,EventList())
-Newx$Symptoms<-ExtrapolatefromDictionary(Newx$sentence,GISymptomsList())
-Newx$Location<-ExtrapolatefromDictionary(Newx$sentence,LocationList())
-
-return(Newx)
+return(Newxdoc)
 }
 
 #' Extrapolate from Dictionary
