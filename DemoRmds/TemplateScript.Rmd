@@ -138,7 +138,12 @@ data(PathDataFrameFinal)
 
 ######################################### Data cleaning & Data merging######################################### 
 #Now all the text preparation functions
+TheOGDReportFinal$OGDReportWhole<-gsub("\\.,","\\.",TheOGDReportFinal$OGDReportWhole)
+TheOGDReportFinal$OGDReportWhole<-gsub(",([A-Z])","\\.\\1",TheOGDReportFinal$OGDReportWhole)
+TheOGDReportFinal$OGDReportWhole<-gsub("\\. ,",".",TheOGDReportFinal$OGDReportWhole)
 TheOGDReportFinal_prep<-tolower(textPrep(TheOGDReportFinal$OGDReportWhole))
+#Get rid of some extra wierd commas etc. Ill need to do this in the actual data too...
+
 TheOGDReportFinal_prep<-data.frame(TheOGDReportFinal_prep,stringsAsFactors = FALSE)
 
 #Then do the basic extraction:
@@ -173,9 +178,7 @@ FinalDataset<-Endomerge2(MyOGD,"dateofprocedure","hospitalnumber",MyPath,"datere
 FinalDataset$endoscopist<-EndoscEndoscopist(FinalDataset$endoscopist)
 #How to add this dataframe to the other dataframe?
 EndoscMeds()
-FinalDataset$Instrument<-EndoscInstrument(FinalDataset$instrument)
-FinalDataset$procedureperformed<-EndoscProcPerformed(FinalDataset$procedureperformed)
-
+FinalDataset$instrument<-EndoscInstrument(FinalDataset$instrument)
 ```
 
 ```{r Extrapolate1- calculated and keyword}
@@ -184,6 +187,7 @@ FinalDataset$procedureperformed<-EndoscProcPerformed(FinalDataset$procedureperfo
 FinalDataset$NumBx<-HistolNumbOfBx(FinalDataset$macroscopicdescription,'specimen')
 FinalDataset$BxSize<-HistolBxSize(FinalDataset$macroscopicdescription)
 FinalDataset$HistolTypeAndSite<-HistolTypeAndSite(FinalDataset$procedureperformed,FinalDataset$macroscopicdescription,FinalDataset$Original.x)
+  try<-HistolTypeAndSite(FinalDataset$procedureperformed,FinalDataset$macroscopicdescription,FinalDataset$Original.x)
 
 #Some non-specific extrapolation- simple keyword
 
@@ -202,6 +206,7 @@ FinalDataset$EndoscopyEvent<-EndoscopyEvent(FinalDataset,"findings","procedurepe
 #Temporal colocation. As an example, with histology. This requires udpipe to be downloaded as can't have it as part of the function:
 library(udpipe)
 udmodel <- udpipe_download_model(language = "english")
+udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 FinalDataset$Temporal<-Temporal(FinalDataset$findings)
 FinalDataset$TemporalAndHistol<-EntityPairs_OneSentence(FinalDataset$Temporal,HistolType(),TemporalList())
 

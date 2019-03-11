@@ -15,9 +15,10 @@ DictionaryInPlaceReplace(inputString, list)
 This returns a character vector
 }
 \description{
-Standardises terms according to a user defined list and replaces them in place
+This maps terms according to the lexicons and replaces them with the 
+standardised term within the text. It is used within the textPrep function
 }
 \examples{
-#Needs an example
+inputText<-DictionaryInPlaceReplace(TheOGDReportFinal$OGDReportWhole,LocationList())
 }
 \keyword{Replace}

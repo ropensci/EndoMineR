@@ -26,7 +26,8 @@ the location is listed. It needs to be run AFTER the HistolTypeAndSite function 
 added to the event. Used in the OPCS4 coding
 }
 \examples{
-# Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings","ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+# Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings",
+#"ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 }
 \keyword{Find}
 \keyword{and}

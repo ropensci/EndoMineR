@@ -24,11 +24,9 @@ BarrettsDataAccord functions.
 # Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
-v<-Mypath
-v<-HistolDx(v,'Diagnosis')
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
 'HospitalNumber')
 #The function relies on the other Barrett's functions being run as well:
 b1<-Barretts_PragueScore(v,'Findings')
@@ -42,7 +40,7 @@ colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
 # from the endoscopy report free text to
 # the histopathology scores for the same endoscopies so you can see what the
 # lesion recognition is like overall
-mm<-BarrettsParisEMR(b4,"ProcedurePerformed","Findings")
+mm<-BarrettsParisEMR(b4$ProcedurePerformed,b4$Findings)
 rm(v)
 }
 \keyword{Does}

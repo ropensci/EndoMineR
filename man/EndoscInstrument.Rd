@@ -13,11 +13,10 @@ EndoscInstrument(EndoInstrument)
 This returns a character vector
 }
 \description{
-This cleans Instument column from the report assuming such a column exists
-(where instrument usually refers to the endoscope number being used.
+This cleans the Instument column from the report assuming such a column exists
+(where instrument usually refers to the endoscope number being used.)
 It gets rid of common entries that are not needed.
-It should be used after the Extractor and the optional
-NewLines has been used.
+It should be used after the Extractor.
 }
 \examples{
 Myendo$Instrument<-EndoscInstrument(Myendo$Instrument)

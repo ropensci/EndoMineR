@@ -63,7 +63,12 @@ if (getRversion() >= "2.15.1")
       "upper",
       "pathSiteString",
       "outputFinal",
-      "theme_foundation"
+      "theme_foundation",
+      "udmodel",
+      "x3",
+      "FINDINGSmyDx",
+      "FindingsAfterProcessing",
+      "primDxVector"
     )
   )
 
@@ -83,15 +88,15 @@ if (getRversion() >= "2.15.1")
 
 #' textPrep function
 #'
-#' This is a helper function to prepare the data for the extraction of event, tissue type and site
-#' from raw pathology and endoscopy files associated with the endoscopy. This is used within the 
-#' BarrettsPathSite and BarrettsEventType function and is also used to generate OPCS-4 codes. Note
-#' it needs a dataframe not a tibble so this needs to be converted prior to usage.
+#' THis function prepares teh data by cleaning 
+#' punctuation, checking spelling against the lexicons, mapping terms
+#' accorsing to the lexicons, removing negative expressions
+#' and lower casing everything. 
 #' @keywords Find and replace
 #' @param inputText The relevant pathology text column
 #' @importFrom stringi stri_split_boundaries
 #' @export
-#' @return This returns a nested list
+#' @return This returns a string vector.
 #' @examples CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
 #' 
 textPrep<-function(inputText){
@@ -139,14 +144,15 @@ textPrep<-function(inputText){
 
 #' Dictionary In Place Replace
 #'
-#' Standardises terms according to a user defined list and replaces them in place
+#' This maps terms according to the lexicons and replaces them with the 
+#' standardised term within the text. It is used within the textPrep function
 #'
 #' @param inputString the input string
 #' @param list The replacing list
 #' @keywords Replace
 #' @export
 #' @return This returns a character vector
-#' @examples #Needs an example
+#' @examples inputText<-DictionaryInPlaceReplace(TheOGDReportFinal$OGDReportWhole,LocationList())
 
 
 
@@ -337,7 +343,8 @@ NegativeRemove <- function(inputText) {
 #' @param replacement the pattern replaceme with
 #' @param x the target string
 #' @return This returns a character vector
-#' @examples # Pending
+#' @examples L <- tolower(str_split(HistolType,"\\|"))
+#' inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
 #' 
 
 
@@ -354,9 +361,6 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
 #' This does a general clean up of whitespace,
 #' semi-colons,full stops at the start
 #' of lines and converts end sentence full stops to new lines.
-#' It should be used after the Extractor.
-#' It is used for columns where there is a lot of free text to extract. It
-#' really extracts and standardises the sentences.
 #' @param vector column of interest
 #' @keywords Cleaner
 #' @export
@@ -544,8 +548,7 @@ Extractor2 <- function(x, y, stra, strb, t) {
 #' function has been used this cleans the endoscopist column from the report.
 #' It gets rid of titles
 #' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional NewLines
-#' has been used.
+#' It should be used after the Extractor.
 #'
 #' @param EndoscopistColumn The endoscopy text column
 #' @keywords Endoscopist extraction
@@ -565,60 +568,15 @@ EndoscEndoscopist <- function(EndoscopistColumn) {
   return(EndoscopistColumn)
 }
 
-#' Cleans medication column if present
-#'
-#' This cleans medication column from the report assuming such a column exists.
-#' It gets rid of common entries that are not needed. It also splits the
-#' medication into fentanyl and midazolam doses for use in the global rating
-#' scale tables later. It should be used after the Extractor and the optional
-#' NewLines has been used.
-#' @param dataframe dataframe with column of interest
-#' @param MedColumn column of interest
-#' @keywords Endoscopy medications
-#' @return This returns a dataframe as it creates three character vectors
-#' @importFrom stringr str_extract str_replace
-#' @export
-#' @examples cc<-EndoscMeds(Myendo,'Medications')
 
-EndoscMeds <- function(dataframe, MedColumn) {
-  # Extraction of the Medications: Extract the fentanyl if present
-  
-  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
-  dataframe[,MedColumn]<-as.character(dataframe[,MedColumn])
-  
-  dataframe$Fent <-
-    str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Fent <- as.numeric(str_replace_all(dataframe$Fent,"Fentanyl|mcg", ""))
-  
-  # Extract the midazolam if present
-  
-  dataframe$Midaz <-
-    str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
-  dataframe$Midaz <- as.numeric(str_replace_all(dataframe$Midaz,"Midazolam|mg", ""))
-  
-  
-  # Extract the pethidine if present
-  dataframe$Peth <-
-    str_extract(dataframe[, MedColumn], "Pethidine\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Peth <- as.numeric(str_replace_all(dataframe$Peth,"Pethidine|mcg", ""))
-  
-  
-  # Extract the propofol if present
-  dataframe$Prop <-
-    str_extract(dataframe[, MedColumn], "Propofol\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Prop <- as.numeric(str_replace_all(dataframe$Prop,"Propofol|mcg ", ""))
-  
-  return(dataframe)
-}
 
 
 #' Cleans instrument column if present
 #'
-#' This cleans Instument column from the report assuming such a column exists
-#' (where instrument usually refers to the endoscope number being used.
+#' This cleans the Instument column from the report assuming such a column exists
+#' (where instrument usually refers to the endoscope number being used.)
 #' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional
-#' NewLines has been used.
+#' It should be used after the Extractor.
 #' @param EndoInstrument column of interest
 #' @keywords Instrument
 #' @return This returns a character vector
@@ -640,59 +598,6 @@ Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
   return(EndoInstrument)
 }
 
-EndoscMeds
-EndoscInstrument
-#'  Cleans Procedure performed column if present
-#'
-#' This cleans the Procedure Performed column from the report assuming
-#' such a column exists. Procedure Performed relates to whether this was a
-#' Gastroscopy or Colonoscopy and or the type of therapy used etc.
-#' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor and the optional NewLines
-#' has been used.
-#' @param EndoProcPerformed column of interest
-#' @keywords Procedure
-#' @return This returns a character vector
-#' @importFrom stringr str_replace
-#' @export
-#' @examples Myendo$ProcedurePerformed<-EndoscProcPerformed(Myendo$ProcedurePerformed)
-
-EndoscProcPerformed <- function(EndoProcPerformed) {
-  # Extraction of the eg Colonoscopy or gastroscopy etc:
-  EndoProcPerformed <- str_replace_all(EndoProcPerformed,
-"Withdrawal.*|Quality.*|Adequate.*|Good.*|Poor.*|None.*|FINDINGS", "")
-  return(EndoProcPerformed)
-}
-
-
-
-##########Histology clean up functions##########
-
-
-
-#' Cleans spelt numbers in histology report
-#'
-#' This extracts numbers from written (spelt) numbers in the Macroscopic
-#' description text. This means the text can then be used to extract the number
-#' and size of biopsies.This is used as part of the
-#' HistolNumOfBx function below and normally not used as a stand alone
-#' function.
-#'
-#' @param MacroString column to extract the numbers from. Usually the column
-#' with the Nature of the specimen or the Macroscopic description in it
-#' @keywords Macroscopic
-#' @importFrom stringr str_replace
-#' @export
-#' @examples pp<-HistolMacDescrip(Mypath$Macroscopicdescription)
-
-
-HistolMacDescrip <- function(MacroString) {
-  # Conversion of text numbers to allow number of biopsies to be extracted
-  MacroString <- DictionaryInPlaceReplace(MacroString,WordsToNumbers())
-  return(MacroString)
-}
-
-
 ############## Extraction Tools ###################
 
 
@@ -705,18 +610,19 @@ HistolMacDescrip <- function(MacroString) {
 #' can also choose to exclude tenses.
 #' 
 #'
-#' @param dataframe dataframe
-#' @param column The column of interest
+#' @param inputString the string to be analysed
 #' @keywords Macroscopic
-#' @importFrom stringr str_replace
+#' @importFrom stringr str_replace_all
 #' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
+#' @importFrom dpylr group_by summarise %>%
 #' @export
-#' @examples pp<-Temporal(Myendo$Findings)
+#' @examples pp<-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+#' Temporal(Myendo$Findings)
 
 Temporal<-function(inputString){
   
   
-  udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+  #Load udpipe annotator outside of function as take too much memory
   x <- udpipe_annotate(udmodel_english, x = inputString)
   x2 <- as.data.frame(x)
   
@@ -757,7 +663,8 @@ return(Newxdoc$Temporal)
 #' Parts of speech tagging for reports
 #'
 #' This uses udpipe to tag the text. It then compresses all of the text 
-#' so you have continuous POS tagging or the whole text
+#' so you have continuous POS tagging or the whole text. The udpipe package has to be
+#' pre downloaded to run this.
 #' 
 #'
 #' @param dataframe dataframe
@@ -768,8 +675,9 @@ return(Newxdoc$Temporal)
 #' @examples pp<-HistolMacDescrip(Mypath$Macroscopicdescription)
 
 EndoPOS<-function(dataframe){
-udmodel <- udpipe_download_model(language = "english")
-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+  #Load outsie of function as take too much memory
+#udmodel <- udpipe_download_model(language = "english")
+#udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 #Get into a tokenised form first
 #Myendo$Findings<-textPrep(Myendo$Findings)
 x <- udpipe_annotate(udmodel_english, x = head(Myendo$Findings,100))
@@ -987,6 +895,53 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 
 ############################# Extrapolating Endoscopy ################################
 
+
+#' Cleans medication column if present
+#'
+#' This cleans medication column from the report assuming such a column exists.
+#' It gets rid of common entries that are not needed. It also splits the
+#' medication into fentanyl and midazolam numeric doses for use. 
+#' It should be used after the Extractor
+#' @param dataframe dataframe with column of interest
+#' @param MedColumn column of interest
+#' @keywords Endoscopy medications
+#' @return This returns a dataframe
+#' @importFrom stringr str_extract str_replace
+#' @export
+#' @examples cc<-EndoscMeds(Myendo,'Medications')
+
+EndoscMeds <- function(dataframe, MedColumn) {
+  # Extraction of the Medications: Extract the fentanyl if present
+  
+  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
+  dataframe[,MedColumn]<-as.character(dataframe[,MedColumn])
+  
+  dataframe$Fent <-
+    str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Fent <- as.numeric(str_replace_all(dataframe$Fent,"Fentanyl|mcg", ""))
+  
+  # Extract the midazolam if present
+  
+  dataframe$Midaz <-
+    str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
+  dataframe$Midaz <- as.numeric(str_replace_all(dataframe$Midaz,"Midazolam|mg", ""))
+  
+  
+  # Extract the pethidine if present
+  dataframe$Peth <-
+    str_extract(dataframe[, MedColumn], "Pethidine\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Peth <- as.numeric(str_replace_all(dataframe$Peth,"Pethidine|mcg", ""))
+  
+  
+  # Extract the propofol if present
+  dataframe$Prop <-
+    str_extract(dataframe[, MedColumn], "Propofol\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Prop <- as.numeric(str_replace_all(dataframe$Prop,"Propofol|mcg ", ""))
+  
+  return(dataframe)
+}
+
+
 #' EndoscopyEvent 
 #'
 #' This extracts the endoscopic event. It looks for the event term and then looks in the event sentence as well as the one above to see if
@@ -1000,7 +955,8 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' @param Histology Column with free text histology (usually microscopic histology)
 #' @return This returns a character vector
 #' @export
-#' @examples # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings","ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+#' @examples # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings",
+#' #"ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 
 EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology){
   
@@ -1057,8 +1013,8 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
 
 
 HistolNumbOfBx <- function(inputString, regString) {
-  inputString <- HistolMacDescrip(inputString)
-  mylist <-
+  inputString <- DictionaryInPlaceReplace(inputString,WordsToNumbers())
+    mylist <-
     #I need to collapse the unlist
     stringr::str_match_all(inputString, 
                            paste(unlist(lapply(strsplit(regString,"\\|",fixed=FALSE),
@@ -1110,7 +1066,8 @@ HistolBxSize <- function(MacroColumn) {
 #' @export
 #' @return a list with two columns, one is the type and site and the other
 #' is the index to be used for OPCS4 coding later if needed.
-#' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn$PROCEDUREPERFORMED,SelfOGD_Dunn$MACROSCOPICALDESCRIPTION,SelfOGD_Dunn$HISTOLOGY)
+#' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn$PROCEDUREPERFORMED,
+#' SelfOGD_Dunn$MACROSCOPICALDESCRIPTION,SelfOGD_Dunn$HISTOLOGY)
 #####To do: Perhaps create a BiopsySiteIndex as part of this function as it is an inevitable
 #result of the function prior to OPCS4 coding.
 HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
@@ -1130,9 +1087,11 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
                  ifelse(grepl("Colonoscopy|Flexi",procedureString),
                         str_remove_all(output, paste0('(',tolower(paste0(unlist(upper,use.names=F),collapse="|")),')',':biopsy')),output))
   
+  output<-unlist(output)
+  
   biopsyIndexresults<-ExtrapolatefromDictionary(output,BiopsyIndex())
   
-  output<-list(output,biopsyIndexresults)
+  output<-list(HistolTypeAndSite=output,BiopsyIndex=biopsyIndexresults)
   return(output)
 }
 
@@ -1186,7 +1145,8 @@ HistolBiopsyIndex<-function(pathSiteString){
 #' @importFrom stringr str_detect
 #' @export
 #' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
-#' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+#' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
+#' "PathSite","EndoscopyEvent")
 
 
 #Take the PathSite codes which should have been coded from PathSite using the HistolBiopsyIndex
@@ -1334,7 +1294,8 @@ ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
 #' @importFrom stringi stri_split_lines
 #' @export
 #' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
-#' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED","PathSite","EndoscopyEvent")
+#' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
+#' "PathSite","EndoscopyEvent")
 
 
 
@@ -1407,7 +1368,7 @@ ExtrapolateEndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,EN
           grepl("hiatus",tolower(.x),ignore.case=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
           grepl("oesophagitis",tolower(.x),ignore.case=TRUE) ~  "K20  -  Oesophagitis",
           grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
-          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
+          grepl("(?=[^\\.]*(oesophageal|oesophagus))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
           grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
           grepl("gastritis",tolower(.x),ignore.case=TRUE) ~  "K297  -  Gastritis - unspecified",
           grepl("duodenitis",tolower(.x),ignore.case=TRUE) ~  "K298  -  Duodenitis",
@@ -1417,8 +1378,8 @@ ExtrapolateEndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,EN
       ),
       FindingsAfterProcessing = map(
         FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
-                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
-                                             (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
+                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenum|oesophagus|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
+                                             (?:(?=[^\\.]*(stomach))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
       )
         )
   
@@ -1444,7 +1405,7 @@ ExtrapolateEndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,EN
           grepl("hiatus",tolower(.x),ignore.case=TRUE) ~  "K449  -  Diaphragmatic hernia without obstruction or gangrene",
           grepl("oesophagitis",tolower(.x),ignore.case=TRUE) ~  "K20  -  Oesophagitis",
           grepl("(?=[^\\.]*(duodenal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K26  -  Duodenal ulcer",
-          grepl("(?=[^\\.]*(oesophageal))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
+          grepl("(?=[^\\.]*(oesophageal|oesophagus))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K221  -  Oesophageal ulcer",
           grepl("(?=[^\\.]*(gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$)",tolower(.x),ignore.case=TRUE,perl=TRUE) ~  "K25  -  Gastric ulcer",
           grepl("gastritis",tolower(.x),ignore.case=TRUE) ~  "K297  -  Gastritis - unspecified",
           grepl("duodenitis",tolower(.x),ignore.case=TRUE) ~  "K298  -  Duodenitis",
@@ -1454,7 +1415,7 @@ ExtrapolateEndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,EN
       ),
       FindingsAfterProcessing = map(
         FindingsAfterProcessing, ~ .x[!grepl("(mitotic|emr|tumour|dysplasia|hiatus|stricture|barrett|inlet patch|
-                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenal|oesophageal|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
+                                             hiatus|esophagitis|duodenitis|gastritis)|(?:(?=[^\\.]*(duodenum|oesophagus|gastric|stomach|pylor))(?=[^\\.]*ulcer)[^\\.]*(\\.|$))|
                                              (?:(?=[^\\.]*(gastric))(?=[^\\.]*polyp)[^\\.]*(\\.|$))|(candid)", tolower(.x),ignore.case=TRUE,perl=TRUE)]
       )
     )

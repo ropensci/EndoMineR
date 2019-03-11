@@ -12,14 +12,13 @@ EndoscMeds(dataframe, MedColumn)
 \item{MedColumn}{column of interest}
 }
 \value{
-This returns a dataframe as it creates three character vectors
+This returns a dataframe
 }
 \description{
 This cleans medication column from the report assuming such a column exists.
 It gets rid of common entries that are not needed. It also splits the
-medication into fentanyl and midazolam doses for use in the global rating
-scale tables later. It should be used after the Extractor and the optional
-NewLines has been used.
+medication into fentanyl and midazolam numeric doses for use. 
+It should be used after the Extractor
 }
 \examples{
 cc<-EndoscMeds(Myendo,'Medications')

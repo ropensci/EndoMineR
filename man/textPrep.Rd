@@ -10,13 +10,13 @@ textPrep(inputText)
 \item{inputText}{The relevant pathology text column}
 }
 \value{
-This returns a nested list
+This returns a string vector.
 }
 \description{
-This is a helper function to prepare the data for the extraction of event, tissue type and site
-from raw pathology and endoscopy files associated with the endoscopy. This is used within the 
-BarrettsPathSite and BarrettsEventType function and is also used to generate OPCS-4 codes. Note
-it needs a dataframe not a tibble so this needs to be converted prior to usage.
+THis function prepares teh data by cleaning 
+punctuation, checking spelling against the lexicons, mapping terms
+accorsing to the lexicons, removing negative expressions
+and lower casing everything.
 }
 \examples{
 CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)

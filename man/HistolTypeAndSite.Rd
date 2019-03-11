@@ -21,7 +21,8 @@ is the index to be used for OPCS4 coding later if needed.
 This needs some blurb to be written. Used in the OPCS4 coding
 }
 \examples{
-# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn$PROCEDUREPERFORMED,SelfOGD_Dunn$MACROSCOPICALDESCRIPTION,SelfOGD_Dunn$HISTOLOGY)
+# SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn$PROCEDUREPERFORMED,
+SelfOGD_Dunn$MACROSCOPICALDESCRIPTION,SelfOGD_Dunn$HISTOLOGY)
 }
 \keyword{Find}
 \keyword{and}

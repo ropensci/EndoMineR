@@ -21,7 +21,8 @@ This is a helper function for finding and replacing from dictionaries like the e
 It uses fuzzy find and replace to account for spelling errors
 }
 \examples{
-# Pending
+L <- tolower(str_split(HistolType,"\\\\|"))
+inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
 
 }
 \keyword{Find}
