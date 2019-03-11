@@ -11,7 +11,8 @@ EndoPOS(dataframe)
 }
 \description{
 This uses udpipe to tag the text. It then compresses all of the text 
-so you have continuous POS tagging or the whole text
+so you have continuous POS tagging or the whole text. The udpipe package has to be
+pre downloaded to run this.
 }
 \examples{
 pp<-HistolMacDescrip(Mypath$Macroscopicdescription)

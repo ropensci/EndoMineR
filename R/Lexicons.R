@@ -73,7 +73,7 @@ LocationListUpper<-function(){
               "fundal|fundus"="stomach",
               "pyloric"="Pylorus",
               "gastric cardia"="Cardia",
-              "oesophagus|oesophageal"="Oesophageal")
+              "oesophagus|oesophageal"="Oesophagus")
   
   
   #To get the list as a list of values only in a regex use
