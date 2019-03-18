@@ -8,6 +8,11 @@
 \usage{
 theme_Publication(base_size = 14, base_family = "helvetica")
 }
+\arguments{
+\item{base_size}{the base size}
+
+\item{base_family}{the base family}
+}
 \description{
 #' Sets the publication theme for all the ggplots
 #'

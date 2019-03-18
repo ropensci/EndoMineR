@@ -4,10 +4,10 @@
 \alias{EndoPOS}
 \title{Parts of speech tagging for reports}
 \usage{
-EndoPOS(dataframe)
+EndoPOS(inputString)
 }
 \arguments{
-\item{dataframe}{dataframe}
+\item{inputString}{The input string vector}
 }
 \description{
 This uses udpipe to tag the text. It then compresses all of the text 
@@ -15,6 +15,20 @@ so you have continuous POS tagging or the whole text. The udpipe package has to 
 pre downloaded to run this.
 }
 \examples{
-pp<-HistolMacDescrip(Mypath$Macroscopicdescription)
+library(udpipe)
+#udmodel <- udpipe_download_model(language = "english")
+#udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+#Just some quick cleaning up- this will be done in the actual data set eventually 
+#Myendo$OGDReportWhole<-gsub("\\\\.\\\\s+\\\\,"," ",Myendo$OGDReportWhole)
+#Myendo$OGDReportWhole<-gsub("^\\\\s+\\\\,"," ",Myendo$OGDReportWhole)
+#Myendo$RowIndex<-as.numeric(rownames(Myendo))
+#We will only use the first 100 
+#Myendo2<-head(Myendo,100)
+#MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole)
+#Then merge the MyPOSframe with the original by row number.
+#Myendo$RowIndex<-as.numeric(rownames(Myendo))
+#Get the whole merged dataset with all the POS tags and morphological
+#and all the dependecies.
+#MergedUp<-merge(Myendo2,MyPOSframe,by.x="RowIndex",by.y="doc_id")
 }
 \keyword{Macroscopic}

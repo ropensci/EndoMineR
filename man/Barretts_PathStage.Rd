@@ -27,17 +27,10 @@ which is called Dx_Simplified
 \examples{
 # Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data 
-# cleaning
-# as part of the package.
-v<-HistolDx(Mypath,'Diagnosis')
-# The histology is then merged with the Endoscopy dataset. The merge occurs
-# according to date and Hospital number
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-'HospitalNumber')
+# cleaning as part of the package.
 # The function then takes the Histology column from the merged data set (v).
 # It extracts the worst histological grade for a specimen
-nn<-HistolDx(Mypath,'Diagnosis')
-b<-Barretts_PathStage(nn,'Dx_Simplified')
+b<-Barretts_PathStage(Mypath,'Histology')
 rm(v)
 }
 \keyword{Pathology}

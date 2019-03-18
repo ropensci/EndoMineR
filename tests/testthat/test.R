@@ -131,7 +131,7 @@ test_that("EndoscEndoscopist", {
 test_that("EndoscMeds", {
   MyEndoscMedsTest<-data.frame(c("Fentanyl 125mcg, Midazolam 5mg"))
   names(MyEndoscMedsTest)<-"Medications"
-  MyendoMeds <- EndoscMeds(MyEndoscMedsTest,"Medications")
+  MyendoMeds <- EndoscMeds(MyEndoscMedsTest$Medications)
   expect_true(all(!is.na(MyendoMeds$Medications)))
   expect_true(all(!is.na(MyendoMeds$Fent)))
   expect_true(all(!is.na(MyendoMeds$Midaz)))
@@ -148,20 +148,6 @@ test_that("EndoscInstrument", {
   expect_true(all(!is.na(MyEndoscInstrTest)))
   expect_identical(MyEndoscInstrTest,"FG5")
 })
-
-
-
-#### EndoscProcPerformed test ####
-
-test_that("EndoscProcPerformed", {
-  MyEndoscProcPerfTest<-data.frame(c("OGD - Quality of Procedure: Adequate"))
-  names(MyEndoscProcPerfTest)<-"ProcPerformed"
-  MyEndoscProcPerfTest <- EndoscProcPerformed(MyEndoscProcPerfTest$ProcPerformed)
-  expect_true(all(!is.na(MyEndoscProcPerfTest)))
-  expect_identical(MyEndoscProcPerfTest,"OGD - ")
-})
-
-
 
 
 
@@ -206,19 +192,7 @@ test_that("ColumnCleanUp", {
 
 
 
-#### HistolMacDescrip test ####
 
-test_that("HistolMacDescrip", {
-  
-  ff<-"Three specimens collected the largest
-measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm"
-  ff<-data.frame(ff)
-  names(ff)<-"Macroscopicdescription"
-  HistolHistolMacDescripTest<-HistolMacDescrip(ff$Macroscopicdescription)
-  expect_true(all(!is.na(HistolHistolMacDescripTest)))
-  expect_identical(HistolHistolMacDescripTest,
-"3specimens collected the largest\nmeasuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm")
-})
 #### HistolNumbOfBx test ####
 
 test_that("HistolNumbOfBx", {
@@ -319,7 +293,7 @@ test_that("MetricByEndoscopist", {
 #### MetricByEndoscopist test ####
 
 test_that("MetricByEndoscopist", {
-  Myendo <- EndoscMeds(Myendo, "Medications")
+  Myendo <- cbind(EndoscMeds(Myendo$Medications),Myendo)
   Fent <- MetricByEndoscopist(Myendo, "Endoscopist", "Fent")
   expect_true(class(Fent) == "data.frame")
 })
@@ -332,11 +306,12 @@ test_that("MetricByEndoscopist", {
 
 test_that("GRS_Type_Assess_By_Unit", {
 
- vColon2<-HistolNumbOfBx(vColon$Macroscopicdescription,'specimen')
- vColon3<-HistolBxSize(vColon2)
- cbind(vColon3,vColon)
- GRSTable<-GRS_Type_Assess_By_Unit(vColon2,'ProcedurePerformed', 
+ #vColon<-HistolNumbOfBx(vColon$Macroscopicdescription,'specimen')
+ #vColon3<-HistolBxSize(vColon2)
+ #cbind(vColon3,vColon)
+ GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed', 
  'Endoscopist','Diagnosis','Histology')
+ expect_true(nrow(GRSTable) > 0)
 })
 
 

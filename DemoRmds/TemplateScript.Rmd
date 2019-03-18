@@ -177,7 +177,7 @@ FinalDataset<-Endomerge2(MyOGD,"dateofprocedure","hospitalnumber",MyPath,"datere
 #Now all the cleaning functions. Firstly endoscopy
 FinalDataset$endoscopist<-EndoscEndoscopist(FinalDataset$endoscopist)
 #How to add this dataframe to the other dataframe?
-EndoscMeds()
+FinalDataset<-cbind(EndoscMeds(FinalDataset$medications),FinalDataset)
 FinalDataset$instrument<-EndoscInstrument(FinalDataset$instrument)
 ```
 
@@ -186,12 +186,8 @@ FinalDataset$instrument<-EndoscInstrument(FinalDataset$instrument)
 #Now extrapolation with histology
 FinalDataset$NumBx<-HistolNumbOfBx(FinalDataset$macroscopicdescription,'specimen')
 FinalDataset$BxSize<-HistolBxSize(FinalDataset$macroscopicdescription)
-FinalDataset$HistolTypeAndSite<-HistolTypeAndSite(FinalDataset$procedureperformed,FinalDataset$macroscopicdescription,FinalDataset$Original.x)
-  try<-HistolTypeAndSite(FinalDataset$procedureperformed,FinalDataset$macroscopicdescription,FinalDataset$Original.x)
-
-#Some non-specific extrapolation- simple keyword
-
-FinalDataset$tissue<-ExtrapolatefromDictionary(FinalDataset$Original.x,HistolType())
+ HistolTypeAndSiteToJoin<-HistolTypeAndSite(FinalDataset$procedureperformed,FinalDataset$macroscopicdescription,FinalDataset$Original.x)
+FinalDataset<-cbind(FinalDataset,HistolTypeAndSiteToJoin)
 
 #This one needs some attention- why is there a discrepancy between the dataset and the number of rows? Something wrong with the unlisting here.
 #Probably needs a paste collapse first- maybe even as part of the function itself
@@ -199,8 +195,7 @@ FinalDataset$tissue<-ExtrapolatefromDictionary(FinalDataset$Original.x,HistolTyp
 
 ```{r Extrapolate2- colocation}
 #Colocation extrapolation
-FinalDataset$TissueLocation<-unlist(EntityPairs_OneSentence(FinalDataset$Original.x,HistolType(),LocationList()))
-FinalDataset$EndoscopyEvent<-unlist(EntityPairs_TwoSentence(FinalDataset$findings,LocationList(),EventList()))
+#FinalDataset$EndoscopyEvent<-unlist(EntityPairs_TwoSentence(FinalDataset$findings,LocationList(),EventList()))
 FinalDataset$EndoscopyEvent<-EndoscopyEvent(FinalDataset,"findings","procedureperformed","macroscopicdescription","Original.x")
 
 #Temporal colocation. As an example, with histology. This requires udpipe to be downloaded as can't have it as part of the function:
@@ -208,7 +203,6 @@ library(udpipe)
 udmodel <- udpipe_download_model(language = "english")
 udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 FinalDataset$Temporal<-Temporal(FinalDataset$findings)
-FinalDataset$TemporalAndHistol<-EntityPairs_OneSentence(FinalDataset$Temporal,HistolType(),TemporalList())
 
 ```
 
@@ -235,7 +229,6 @@ LastTestsDone<-SurveilLastTest(FinalDatasetBarr,'pHospitalNum','Date.x')
 FirstTestsDone<-SurveilFirstTest(FinalDatasetBarr,'pHospitalNum','Date.x')
 
 #Need to sort this one out
-LastStatus()
 
 ff<-HowManyOverTime(FinalDatasetBarr,'indications','Date.x','.*')
 

@@ -39,6 +39,13 @@ if (getRversion() >= "2.15.1")
       "sentence",
       "upos",
       "xpos",
+      "feats",
+      "udmodel_english",
+      "cbind_dependencies",
+      "head_token_id",
+      "deps",
+      "morph_voice",
+      "OriginalReport",
       "dep_rel",
       "misc",
       "has_morph",
@@ -58,7 +65,6 @@ if (getRversion() >= "2.15.1")
       "morph_tense",
       "morph_verbform",
       "str_subset",
-      "tibble",
       "lower",
       "upper",
       "pathSiteString",
@@ -68,7 +74,8 @@ if (getRversion() >= "2.15.1")
       "x3",
       "FINDINGSmyDx",
       "FindingsAfterProcessing",
-      "primDxVector"
+      "primDxVector",
+      "Temporal"
     )
   )
 
@@ -136,9 +143,124 @@ textPrep<-function(inputText){
   #5. Split the lines so text is tokenized by sentence
   #standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
   
-  #returns a 
+  #returns a lower case version
   inputText<-tolower(inputText)
+  
+  #Merge the POS frame with the original text so tagging happens right at the beginning
+  #Will also need to add the Extractor output to the dataframe.
+  MyPOSframe<-EndoPOS(inputText)
+  MyPOSframe$RowIndex<-as.numeric(rownames(MyPOSframe))
+  
+  #Now tag the text so all the POS and dependencies and morphology and POS tags are present. 
   return(inputText)
+}
+
+#' Parts of speech tagging for reports
+#'
+#' This uses udpipe to tag the text. It then compresses all of the text 
+#' so you have continuous POS tagging or the whole text. The udpipe package has to be
+#' pre downloaded to run this.
+#' 
+#'
+#' @param inputString The input string vector
+#' @keywords Macroscopic
+#' @importFrom stringr str_replace
+#' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
+#' @export
+#' @examples library(udpipe)
+#' #udmodel <- udpipe_download_model(language = "english")
+#' #udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+#' #Just some quick cleaning up- this will be done in the actual data set eventually 
+#' #Myendo$OGDReportWhole<-gsub("\\.\\s+\\,"," ",Myendo$OGDReportWhole)
+#' #Myendo$OGDReportWhole<-gsub("^\\s+\\,"," ",Myendo$OGDReportWhole)
+#' #Myendo$RowIndex<-as.numeric(rownames(Myendo))
+#' #We will only use the first 100 
+#' #Myendo2<-head(Myendo,100)
+#' #MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole) #returns a dataframe
+#' #Then merge the MyPOSframe with the original by row number.
+#' #Myendo$RowIndex<-as.numeric(rownames(Myendo))
+#' #Get the whole merged dataset with all the POS tags and morphological
+#' #and all the dependecies.
+#' #MergedUp<-merge(Myendo2,MyPOSframe,by.x="RowIndex",by.y="doc_id")
+
+
+
+EndoPOS<-function(inputString){
+  #Load outsie of function as take too much memory
+  #
+  #udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+  #Get into a tokenised form first
+  #Have to do this on the raw pre-prepared data so that sentences can be recognised.
+  
+  
+  x <- udpipe_annotate(udmodel_english, x = inputString)
+  x2 <- as.data.frame(x)
+  x3 <- cbind_morphological(x2) #Dont need this for temporal assessment
+  x4 <- cbind_dependencies(x3)  #Dont need this for temporal assessment
+  
+  
+  
+  
+  #To get all in one long cell per original document:
+  Newx<-x3 %>% group_by(doc_id,sentence)  %>% summarise(upos = paste(upos, collapse=";"),
+                                                        xpos = paste(xpos, collapse=";"),
+                                                        feats = paste(feats, collapse=";"),
+                                                        head_token_id = paste(head_token_id, collapse=";"),
+                                                        dep_rel = paste(dep_rel, collapse=";"),
+                                                        deps = paste(deps, collapse=";"),
+                                                        misc = paste(misc, collapse=";"))%>%group_by(doc_id)
+  #has_morph = paste(has_morph, collapse=";"),
+  #morph_abbr = paste(morph_abbr, collapse=";"),
+  #morph_case = paste(morph_case, collapse=";"),
+  #morph_definite = paste(morph_definite, collapse=";"),
+  #morph_degree = paste(morph_degree, collapse=";"),
+  #morph_gender = paste(morph_gender, collapse=";"),
+  #morph_mood = paste(morph_mood, collapse=";"),
+  #morph_number = paste(morph_number, collapse=";"),
+  #morph_numtype = paste(morph_numtype, collapse=";"),
+  #morph_person = paste(morph_person, collapse=";"),
+  #morph_prontype = paste(morph_prontype, collapse=";"),
+  #morph_tense = paste(morph_tense, collapse=";"),
+  #morph_typo = paste(morph_typo, collapse=";"),
+  #morph_verbform = paste(morph_verbform, collapse=";")
+  #morph_voice = paste(morph_voice, collapse=";"))
+  
+  Newx<-data.frame(Newx)
+  
+  
+  Newxdoc<-Newx %>% 
+    group_by(doc_id) %>% summarise(
+      sentence = paste(sentence, collapse="\n"),
+      upos = paste(upos, collapse="\n"),
+      xpos= paste(collapse="\n"),
+      feats = paste(feats, collapse="\n"),
+      head_token_id = paste(head_token_id, collapse="\n"),
+      dep_rel = paste(dep_rel, collapse="\n"),
+      deps = paste(deps, collapse="\n"),
+      misc = paste(misc, collapse="\n"))
+  #has_morph = paste(has_morph, collapse="\n"),
+  #morph_abbr = paste(morph_abbr, collapse="\n"),
+  #morph_case = paste(morph_case, collapse="\n"),
+  #morph_definite = paste(morph_definite, collapse="\n"),
+  #morph_degree = paste(morph_degree, collapse="\n"),
+  #morph_gender = paste(morph_gender, collapse="\n"),
+  #morph_mood = paste(morph_mood, collapse="\n"),
+  #morph_number = paste(morph_number, collapse="\n"),
+  #morph_numtype = paste(morph_numtype, collapse="\n"),
+  #morph_person = paste(morph_person, collapse="\n"),
+  #morph_poss = paste(morph_poss, collapse="\n"),
+  #morph_prontype = paste(morph_prontype, collapse="\n"),
+  #morph_tense = paste(morph_tense, collapse="\n"),
+  #morph_typo = paste(morph_typo, collapse="\n"),
+  #morph_verbform = paste(morph_verbform, collapse="\n"),
+  #morph_voice = paste(morph_voice, collapse="\n"))
+  
+  #Need to convert the docids as they are alphabetically grouped, to allow merge with original dataframe
+  
+  Newxdoc$doc_id<-as.numeric(gsub("doc","",Newxdoc$doc_id))
+  Newxdoc<-data.frame(Newxdoc[order(Newxdoc$doc_id),],stringsAsFactors=FALSE)
+  #Newxdoc$sentence<-OriginalReport
+  return(Newxdoc)
 }
 
 
@@ -397,8 +519,8 @@ ColumnCleanUp <- function(vector) {
   
   
   #Get rid of strange things
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\,"," ",x))
-  
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,"," ",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
   return(retVector)
 }
@@ -610,22 +732,17 @@ Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
 #' can also choose to exclude tenses.
 #' 
 #'
-#' @param inputString the string to be analysed
+#' @param x2 the dataframe with all the POS tags added
 #' @keywords Macroscopic
 #' @importFrom stringr str_replace_all
 #' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
-#' @importFrom dpylr group_by summarise %>%
+#' @importFrom dplyr group_by summarise %>%
 #' @export
 #' @examples pp<-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
-#' Temporal(Myendo$Findings)
+#' # Run the EndoPOS example first 
 
-Temporal<-function(inputString){
-  
-  
-  #Load udpipe annotator outside of function as take too much memory
-  x <- udpipe_annotate(udmodel_english, x = inputString)
-  x2 <- as.data.frame(x)
-  
+TemporalPOS<-function(x2){
+  #Need to derive method to analyse on a sentence by sentence basis?- use tokeniser from stringi?
   
   #Ways to determine the temporality of the sentence. English has no future tense so it is determined
   #by examining the Verbform not being past or present and the presence of a modal auxilliary
@@ -660,55 +777,46 @@ return(Newxdoc$Temporal)
 
 
 
-#' Parts of speech tagging for reports
+
+
+
+#' Extract sentences with the POS tags desired
 #'
 #' This uses udpipe to tag the text. It then compresses all of the text 
 #' so you have continuous POS tagging or the whole text. The udpipe package has to be
 #' pre downloaded to run this.
 #' 
 #'
-#' @param dataframe dataframe
+#' @param POS_seq The POS tag sequence to extract
+#' @param dataframe The dataframe
+#' @param columnPOS The column with the POS tags
+#' @param columnSentence The column with the sentence
 #' @keywords Macroscopic
-#' @importFrom stringr str_replace
-#' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
 #' @export
-#' @examples pp<-HistolMacDescrip(Mypath$Macroscopicdescription)
-
-EndoPOS<-function(dataframe){
-  #Load outsie of function as take too much memory
-#udmodel <- udpipe_download_model(language = "english")
-#udmodel_english <- udpipe_load_model(file = udmodel$file_model)
-#Get into a tokenised form first
-#Myendo$Findings<-textPrep(Myendo$Findings)
-x <- udpipe_annotate(udmodel_english, x = head(Myendo$Findings,100))
-x2 <- as.data.frame(x)
-#x3 <- cbind_morphological(x2) #Dont need this for temporal assessment
-#x4<-cbind_dependencies(x3)  #Dont need this for temporal assessment
-
-#now to select out the 
+#' @examples #Has to be after POS extraction is done
+#' mylist<-POS_Extract("NOUN;ADJ;NOUN",MergedUp$upos,MergedUp$sentence)
+#' MergedUp$Extr<-mylist
 
 
-
-
-#To get all in one long cell per original document:
-Newx<-x3 %>% group_by(doc_id,sentence)  %>% summarise(upos = paste(upos, collapse=";"),
-                                             xpos = paste(xpos, collapse=";"),
-                                             dep_rel = paste(dep_rel, collapse=";"),
-                                             misc = paste(misc, collapse=";"),
-                                             has_morph = paste(has_morph, collapse=";"))%>%group_by(doc_id)
-Newx<-data.frame(Newx)
-
-
-Newxdoc<-Newx %>% 
-  group_by(doc_id) %>% summarise(
-                                 sentence = paste(sentence, collapse="\n"),
-                                 upos = paste(upos, collapse="\n"),
-                                 xpos = paste(xpos, collapse=";"),
-                                 dep_rel = paste(dep_rel, collapse=";"),
-                                 misc = paste(misc, collapse=";"),
-                                 has_morph = paste(has_morph, collapse=";"))
-
-return(Newxdoc)
+POS_Extract<-function(POS_seq,columnPOS,columnSentence){
+  #Convert the POS tags to list nested ilst
+  columnPOS<-strsplit(columnPOS,"\n")
+  
+  #Search the list for the tags that match, and keep the matching indices in a list
+  myIndexes<-lapply(columnPOS,function(x) grep(POS_seq,x))
+  
+  #Get the index for the matched tags
+  
+  #Return the index of the matched tags for the other columns too
+  # Select the corresponding indices for the next column:
+  columnSentence<-strsplit(columnSentence,"\n")
+  
+  #Select the indices
+  my<-Map(`[`, columnSentence, myIndexes)
+  
+  
+  #For each part of the list select out the index of the list:
+  return(my)
 }
 
 #' Extrapolate from Dictionary
@@ -723,6 +831,7 @@ return(Newxdoc)
 #' @param list of words to iterate through
 #' @keywords Withdrawal
 #' @importFrom fuzzyjoin regex_left_join
+#' @import tibble
 #' @export
 #' @examples #Firstly we extract histology from the raw report
 #' # using the extractor function
@@ -760,7 +869,7 @@ ExtrapolatefromDictionary<-function(inputString,list){
   replaceValue<-paste0(unlist(list,use.names=F))
   
   #Create a tibble to merge with the list
-  d1 <- tibble(key = replace, val = replaceValue)
+  d1 <- tibble::tibble(key = replace, val = replaceValue)
   
   
   #Select the elements that have characters in them
@@ -822,9 +931,10 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 #' @param list1 The intial list to assess
 #' @param list2 The other list to look for
 #' @importFrom stringr str_replace_na str_c str_split str_which
+#' @importFrom stringi stri_split_boundaries
 #' @importFrom purrr flatten_chr map_chr map map_if
 #' @export
-#' @examples # tbb<-EntityPairs_TwoSentence(Myendo,"Findings")
+#' @examples # tbb<-EntityPairs_TwoSentence(Myendo$Findings,EventList(),HistolType())
 
 EntityPairs_TwoSentence<-function(inputString,list1,list2){
     
@@ -859,12 +969,12 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
           `[[`(1))
     
     
-    
     words<-words[words != ""] 
     x1 <- str_extract_all(tolower(x),tolower(paste(unlist(list1), collapse="|")))
     i1 <- which(lengths(x1) > 0)
     
-
+#browser()
+    
     try(if(any(i1)) {
       EventList %>%
         map(
@@ -902,42 +1012,43 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' It gets rid of common entries that are not needed. It also splits the
 #' medication into fentanyl and midazolam numeric doses for use. 
 #' It should be used after the Extractor
-#' @param dataframe dataframe with column of interest
-#' @param MedColumn column of interest
+#' @param MedColumn column of interest as a string vector
 #' @keywords Endoscopy medications
 #' @return This returns a dataframe
 #' @importFrom stringr str_extract str_replace
 #' @export
-#' @examples cc<-EndoscMeds(Myendo,'Medications')
+#' @examples MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+#' 
 
-EndoscMeds <- function(dataframe, MedColumn) {
+EndoscMeds <- function(MedColumn) {
   # Extraction of the Medications: Extract the fentanyl if present
   
-  dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
-  dataframe[,MedColumn]<-as.character(dataframe[,MedColumn])
-  
+  dataframe<-data.frame(MedColumn,stringsAsFactors = FALSE)
+
   dataframe$Fent <-
-    str_extract(dataframe[, MedColumn], "Fentanyl\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Fent <- as.numeric(str_replace_all(dataframe$Fent,"Fentanyl|mcg", ""))
+    str_extract(dataframe$MedColumn, "[Ff]entanyl\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Fent <- as.numeric(str_replace_all(dataframe$Fent,"[Ff]entanyl|mcg", ""))
   
   # Extract the midazolam if present
   
   dataframe$Midaz <-
-    str_extract(dataframe$Medications, "Midazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
-  dataframe$Midaz <- as.numeric(str_replace_all(dataframe$Midaz,"Midazolam|mg", ""))
+    str_extract(dataframe$MedColumn, "[Mm]idazolam\\s*(\\d*(\\.\\d+)?)\\s*mg")
+  dataframe$Midaz <- as.numeric(str_replace_all(dataframe$Midaz,"[Mm]idazolam|mg", ""))
   
   
   # Extract the pethidine if present
   dataframe$Peth <-
-    str_extract(dataframe[, MedColumn], "Pethidine\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Peth <- as.numeric(str_replace_all(dataframe$Peth,"Pethidine|mcg", ""))
+    str_extract(dataframe$MedColumn, "[Pp]ethidine\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Peth <- as.numeric(str_replace_all(dataframe$Peth,"[Pp]ethidine|mcg", ""))
   
   
   # Extract the propofol if present
   dataframe$Prop <-
-    str_extract(dataframe[, MedColumn], "Propofol\\s*(\\d*(\\.\\d+)?)\\s*mcg")
-  dataframe$Prop <- as.numeric(str_replace_all(dataframe$Prop,"Propofol|mcg ", ""))
+    str_extract(dataframe$MedColumn, "[Pp]ropofol\\s*(\\d*(\\.\\d+)?)\\s*mcg")
+  dataframe$Prop <- as.numeric(str_replace_all(dataframe$Prop,"[Pp]ropofol|mcg ", ""))
   
+  #Drop the first column to avoid repetition
+
   return(dataframe)
 }
 
@@ -964,9 +1075,9 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   dataframe<-data.frame(dataframe,stringsAsFactors = FALSE)
   
   # Extract the events from the 
-  output<-EntityPairs_TwoSentence(dataframe,EventColumn1)
+  output<-EntityPairs_TwoSentence(dataframe[,EventColumn1],EventList(),LocationList())
   
-  MyHistolEvents<-HistolTypeAndSite(dataframe,Procedure,Histology,Macroscopic)
+  MyHistolEvents<-HistolTypeAndSite(dataframe[,Procedure],dataframe[,Histology],dataframe[,Macroscopic])
   output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
   
   #Add emr only if this is seen in the histopath
@@ -1066,10 +1177,10 @@ HistolBxSize <- function(MacroColumn) {
 #' @export
 #' @return a list with two columns, one is the type and site and the other
 #' is the index to be used for OPCS4 coding later if needed.
-#' @examples # SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn$PROCEDUREPERFORMED,
-#' SelfOGD_Dunn$MACROSCOPICALDESCRIPTION,SelfOGD_Dunn$HISTOLOGY)
-#####To do: Perhaps create a BiopsySiteIndex as part of this function as it is an inevitable
-#result of the function prior to OPCS4 coding.
+#' @examples  Myendo$PathSite<-HistolTypeAndSite(Myendo$procedureperformed,
+#' Myendo$mscroscopicaldescription,Myendo$Original.x) #This example needs correction
+
+
 HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 
   output<-ifelse(EntityPairs_OneSentence(inputString1,HistolType(),LocationList())=="NA:NA", 
@@ -1096,31 +1207,6 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 }
 
 
-
-#' HistolBiopsyIndex 
-#'
-#' This returns a number for all the biopsies taken based on distance from orifice. It is for biopsies only
-#' YOU COULD DITCH THIS ONE AS IT IS JUCT A FUNCTION TO EXTRPOLATE FROM A DICTIONARY 
-#' AS PER THE FUNCTION INSIDE THIS FUNCTION
-#' @keywords Pathology biopsy index
-#' @export
-#' @param pathSiteString The column that has the pathology locatio and tissue type from HistolTypeAndSite
-#' @importFrom stringr str_extract_all
-#' @examples # SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
-#' SelfOGD_Dunn$PathSite<-HistolTypeAndSite(SelfOGD_Dunn,"MACROSCOPICALDESCRIPTION","HISTOLOGY")
-#' HistolBiopsyIndex(SelfOGD_Dunn$PathSite) 
-#Consider getting rid of this and integrating (as I've done but not tested) into the HistolType
-#and Site function.
-
-HistolBiopsyIndex<-function(pathSiteString){
-  
- myresults<-ExtrapolatefromDictionary(pathSiteString,BiopsyIndex())
- return(myresults)
-}
-
-
-
-
 ############################# Extrapolating Codes ################################
 
 
@@ -1145,8 +1231,8 @@ HistolBiopsyIndex<-function(pathSiteString){
 #' @importFrom stringr str_detect
 #' @export
 #' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
-#' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
-#' "PathSite","EndoscopyEvent")
+#' # SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
+#' # "PathSite","EndoscopyEvent")
 
 
 #Take the PathSite codes which should have been coded from PathSite using the HistolBiopsyIndex
@@ -1294,15 +1380,9 @@ ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event) {
 #' @importFrom stringi stri_split_lines
 #' @export
 #' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
-#' SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
-#' "PathSite","EndoscopyEvent")
+#' # SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
+#' # "PathSite","EndoscopyEvent")
 
-
-
-#The plan: 
-#1. Look at th ENDOSCOPICDIAGNOSIS column first and implement algorithm to look for keywords that map to diagnostic codes
-#2. Need to establish an order of importance of diagnostic codes.
-#3. Map all the diagnoses from the drop down box to primary diagnosis codes
 ExtrapolateEndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,ENDOSCOPICDIAGNOSIS,EndoscopyEvent) { 
   
   

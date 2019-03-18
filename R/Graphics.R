@@ -48,8 +48,8 @@ if (getRversion() >= "2.15.1")
 #' #' 
 #' @import grid 
 #' @keywords ggplot themes
-#' @param base_size
-#' @param base_family
+#' @param base_size the base size
+#' @param base_family the base family
 #' @export
 #' @examples #None needed
 

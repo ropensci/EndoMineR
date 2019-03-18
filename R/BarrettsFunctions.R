@@ -133,17 +133,10 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 #' @importFrom rlang sym
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data 
-#' # cleaning
-#' # as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
+#' # cleaning as part of the package.
 #' # The function then takes the Histology column from the merged data set (v).
 #' # It extracts the worst histological grade for a specimen
-#' nn<-HistolDx(Mypath,'Diagnosis')
-#' b<-Barretts_PathStage(nn,'Dx_Simplified')
+#' b<-Barretts_PathStage(Mypath,'Histology')
 #' rm(v)
 
 Barretts_PathStage <- function(dataframe, PathColumn) {
@@ -200,7 +193,9 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
+#' # Mypath demo dataset. These functions are all part of Histology data
+#' # cleaning as part of the package.
+#' v<-Mypath
 #' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
 #' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
@@ -208,12 +203,13 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' #The function relies on the other Barrett's functions being run as well:
-#' b<-Barretts_PathStage(v,'Histology')
-#' b2<-Barretts_PragueScore(b,'Findings')
+#' v$IMorNoIM<-Barretts_PathStage(v,'Histology')
+#' v<-Barretts_PragueScore(v,'Findings')
+#' 
 #' #The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' cc<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
+#' v$FU_Type<-Barretts_FUType(v,"CStage","MStage","IMorNoIM")
 #' rm(v)
 
 Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
@@ -253,26 +249,8 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 #' @keywords Does something with data
 #' @export
 #' @return a string vector
-#' @examples # Firstly relevant columns are extrapolated from the
-#' # Mypath demo dataset. These functions are all part of Histology data
-#' # cleaning as part of the package.
-#' # The histology is then merged with the Endoscopy dataset. The merge occurs
-#' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
-#' 'HospitalNumber')
-#' #The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function compares the Paris score 
-#' # from the endoscopy report free text to
-#' # the histopathology scores for the same endoscopies so you can see what the
-#' # lesion recognition is like overall
-#' mm<-BarrettsParisEMR(b4$ProcedurePerformed,b4$Findings)
+#' @examples # 
+#' Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
 #' rm(v)
 
 BarrettsParisEMR <- function(Column, Column2) {
@@ -289,7 +267,7 @@ BarrettsParisEMR <- function(Column, Column2) {
         grepl("[Ii][Ii]a|2a|11a", NewCol,ignore.case=TRUE) ~ "2a",
         grepl("[Ii][Ii]b|2b|11b", NewCol,ignore.case=TRUE) ~  "2b",
         grepl("[Ii][Ii][Ii]|III", NewCol,ignore.case=TRUE) ~  "3",
-        grepl("Paris [Tt]ype [Ii]s|1s ", NewCol,ignore.case=TRUE,perl=TRUE) ~  "!s",
+        grepl("Paris [Tt]ype [Ii]s|1s ", NewCol,ignore.case=TRUE,perl=TRUE) ~  "1s",
         grepl(" [Ii]p |1p", NewCol,ignore.case=TRUE,perl=TRUE) ~  "1p",
         TRUE ~ "No_Paris")
     )
@@ -319,25 +297,28 @@ BarrettsParisEMR <- function(Column, Column2) {
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
-#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
+#' Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
+#' Mypath$BxSize<-HistolBxSize(Mypath$Macroscopicdescription)
+#' 
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
+#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
 #' 'HospitalNumber')
+#' 
 #' # The function relies on the other Barrett's functions being run as well:
 #' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
+#' b1$PathStage<-Barretts_PathStage(b1,'Histology')
 
 #' # The follow-up group depends on the histology and the Prague score for a
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' b1$FU_Type<-Barretts_FUType(b1,"CStage","MStage","PathStage")
+#' colnames(b1)[colnames(b1) == 'pHospitalNum'] <- 'HospitalNumber'
+#' 
 #' # The number of average number of biopsies is then calculated and
 #' # compared to the average Prague C score so that those who are taking
 #' # too few biopsies can be determined
-#' hh<-BarrettsBxQual(b4,'Date.x','HospitalNumber',
+#' hh<-BarrettsBxQual(b1,'Date.x','HospitalNumber',
 #'                                      'Endoscopist')
 #' rm(v)
 
@@ -349,6 +330,11 @@ BarrettsBxQual <- function(dataframe,
   PatientIDa <- rlang::sym(PatientID)
   Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
   Endoscopista <- rlang::sym(Endoscopist)
+  
+  #Make sure the C and M stage is mueric (wil be character from the PragueScore function to
+  #incorporate "Insufficient " as an outcome)
+  dataframe$CStage<-as.numeric(dataframe$CStage)
+  dataframe$MStage<-as.numeric(dataframe$MStage)
   
   GroupedByEndoscopy <-
     suppressWarnings(dataframe %>% filter(!is.na(CStage), !is.na(NumBx)) %>%

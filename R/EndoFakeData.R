@@ -49,10 +49,10 @@ Endomerge2 <-
                                       by = "Date",
                                       max_dist = 8,
                                       distance_col = "Days")
-    eHospitalNuma <- rlang::sym("eHospitalNum")
-    pHospitalNuma <- rlang::sym("pHospitalNum")
-    
-    EndoHistoMerge1<-EndoHistoMerge%>%filter(!!eHospitalNuma == !!pHospitalNuma)
+
+    EndoHistoMerge$pHospitalNum<-trimws(EndoHistoMerge$pHospitalNum)
+    EndoHistoMerge$eHospitalNum<-trimws(gsub("\n","",EndoHistoMerge$eHospitalNum))
+    EndoHistoMerge1<-EndoHistoMerge[EndoHistoMerge$eHospitalNum == EndoHistoMerge$pHospitalNum,]
     
     return(EndoHistoMerge1)
   }

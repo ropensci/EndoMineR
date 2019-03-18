@@ -25,8 +25,8 @@ column with the procedure, furthest path site and event performed
 }
 \examples{
 # Need to run the HistolTypeSite and EndoscopyEvent functions first here
-SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
-"PathSite","EndoscopyEvent")
+# SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
+# "PathSite","EndoscopyEvent")
 }
 \keyword{OPCS-4}
 \keyword{codes}
