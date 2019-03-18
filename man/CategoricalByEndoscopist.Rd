@@ -2,7 +2,8 @@
 % Please edit documentation in R/EndoMineR.R
 \name{CategoricalByEndoscopist}
 \alias{CategoricalByEndoscopist}
-\title{Plot a frequency table for categorical variables by endoscopist}
+\title{This creates a proportion table for categorical variables by endoscopist
+It of course relies on a Endoscopist column being present}
 \usage{
 CategoricalByEndoscopist(ProportionColumn, EndoscopistColumn)
 }
@@ -12,34 +13,28 @@ CategoricalByEndoscopist(ProportionColumn, EndoscopistColumn)
 \item{EndoscopistColumn}{The endoscopist column}
 }
 \description{
-This takes any of the numerical metrics in the dataset and plots it by
-endoscopist.
+This creates a proportion table for categorical variables by endoscopist
 It of course relies on a Endoscopist column being present
 }
 \examples{
 #The function plots any numeric metric by endoscopist
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
-v<-HistolDx(Mypath,'Diagnosis')
-v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
+v<-Mypath
+v$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
 v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 'HospitalNumber')
 #The function relies on the other Barrett's functions being run as well:
-b1<-Barretts_PragueScore(v,'Findings')
-b2<-Barretts_PathStage(b1,'Histology')
-# The follow-up group depends on the histology and the Prague score for a
-# patient so it takes the processed Barrett's data and then looks in the
-# Findings column for permutations of the Prague score.
-b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+v$IMorNoIM<-Barretts_PathStage(v,'Histology')
+colnames(v)[colnames(v) == 'pHospitalNum'] <- 'HospitalNumber'
 # The function takes the column with the extracted worst grade of
 # histopathology and returns the proportion of each finding (ie
 # proportion with low grade dysplasia, high grade etc.) for each
 # endoscopist
-kk<-CategoricalByEndoscopist(b4$IMorNoIM,b4$Endoscopist)
+kk<-CategoricalByEndoscopist(v$IMorNoIM,v$Endoscopist)
 rm(Myendo)
 }
 \keyword{Endoscopist}

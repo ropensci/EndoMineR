@@ -17,7 +17,7 @@ EntityPairs_TwoSentence(inputString, list1, list2)
 This is used to look for relationships between site and event especially for endoscopy events
 }
 \examples{
-# tbb<-EntityPairs_TwoSentence(Myendo,"Findings")
+# tbb<-EntityPairs_TwoSentence(Myendo$Findings,EventList(),HistolType())
 }
 \keyword{Find}
 \keyword{and}

@@ -48,7 +48,7 @@ if (getRversion() >= "2.15.1")
 #' Extract the time difference between each test in days
 #'
 #' This determines the time difference between each test for a patient in days
-#' It returns the time since the first and the last study.
+#' It returns the time since the first and the last study as a new dataframe.
 #'
 #' @param dataframe dataframe,
 #' @param HospNum_Id Patient ID
@@ -80,7 +80,8 @@ SurveilTimeByRow <-
 
 #' Extract the last test done by a patient only
 #'
-#' Extracts the last test only per patient
+#' Extracts the last test only per patient and returns a new dataframe listing the
+#' patientID and the last test done
 #' @param dataframe dataframe
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
@@ -107,7 +108,8 @@ SurveilLastTest <-
 
 #' Extracts the first test only per patient
 #'
-#' Extracts the first test only per patient
+#' Extracts the first test only per patient and returns a new dataframe listing the
+#' patientID and the last test done
 #' @param dataframe dataframe
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
@@ -134,17 +136,16 @@ SurveilFirstTest <-
 
 #' Last status
 #'
-#' This looks at the last EVENT a patient had to get time to outcomes.
-#' For example if a patient underwent ablation for Barrett's oesophagus we
-#' could get the CRIM score by assessing the first time-point where the event
-#' is nothing after RFA has been done.
+#' This function selects patients who have had a start event and an end
+#' event of the users choosing so you can determine things like how long
+#' it takes to get a certain outcome. For example, how long does it take to
+#' get a patient into a fully squamous oesophagus after Barrett's ablation?
 #' @param dataframe The dataframe
 #' @param HospNum The Hospital Number column
-#' @param EVENT The column  called EVENT that determines what procedure the
-#' patient had at that endoscopy
-#' @param indicatorEvent The name of the Event that references the outcome
-#' @param endEvent The event that indicates the outcome has been reached
-#' @keywords CRIM
+#' @param EVENT The column that contains the outcome of choice
+#' @param indicatorEvent The name of the start event (can be a regular expression)
+#' @param endEvent The name of the endpoint (can be a regular expression)
+#' @keywords ourcome
 #' @importFrom dplyr group_by slice mutate lead
 #' @importFrom rlang sym
 #' @export
@@ -152,38 +153,38 @@ SurveilFirstTest <-
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
 #' v<-Mypath
-#' v<-HistolDx(v,'Diagnosis')
 #' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
 #' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
+#' 
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
+#' 
 #' # The function relies on the other Barrett's functions being run as well:
 #' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-#' colnames(b2)[colnames(b2) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function groups the procedures by patient and then looks at those which
-#' # have 'nothing' in the event column (which means biopsies only) which was
-#' # preceded by radiofrequency ablation (RFA) so that these patients are
-#' # labelled as having clearance of intestinal metaplasia. The result is a true
-#'# or false column.
-#' b2$EVENT<-EndoscopyEvent(b2,"Findings","ProcedurePerformed","Macroscopicdescription","Histology")
-#' nn<-Barretts_CRIM(b2,'HospitalNumber',"EVENT")
+#' b1$IMorNoIM<-Barretts_PathStage(b1,'Histology')
+#' colnames(b1)[colnames(b1) == 'pHospitalNum'] <- 'HospitalNumber'
+#' # The function groups the procedures by patient and gives all the procedures between
+#' # the indicatorEvent amd the procedure just after the endpoint. Eg if the start is RFA and the 
+#' # endpoint is biopsies then it will give all RFA procedures and the first biopsy procedure
+#'
+#' b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed",
+#' "Macroscopicdescription","Histology")
+#' nn<-TimeToStatus(b1,'HospitalNumber',"EndoscopyEvent","rfa","dilat")
 #' rm(v)
 
-LastStatus <- function(dataframe, HospNum, EVENT,indicatorEvent,endEvent) {
+TimeToStatus <- function(dataframe, HospNum, EVENT,indicatorEvent,endEvent) {
   dataframe <- data.frame(dataframe)
   HospNuma <- rlang::sym(HospNum)
   EVENTa <- rlang::sym(EVENT)
-  
-  CRIM <-
+  startAndEnd <-
     dataframe %>% group_by(!!HospNuma) %>%
-    mutate(ind = (!!EVENTa) == indicatorEvent &
-             lead(!!EVENTa) == endEvent) %>%
+    mutate(ind = grepl(indicatorEvent, !!EVENTa,ignore.case=TRUE,perl=TRUE) &
+             grepl(endEvent, !!EVENTa,ignore.case=TRUE,perl=TRUE)) %>%
     slice(sort(c(which(ind), which(ind) + 1)))
-  CRIM<-data.frame(CRIM)
-  return(CRIM)
+  startAndEnd<-data.frame(startAndEnd)
+  return(startAndEnd)
 }
 
 
@@ -345,13 +346,9 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 
 ############## Group by endoscopist #####
 
-# Groups anything by Endoscopist and returns the table and a ggplot
+# Groups anything by Endoscopist and returns the table
 
-
-#' Plot a frequency table for categorical variables by endoscopist
-#'
-#' This takes any of the numerical metrics in the dataset and plots it by
-#' endoscopist.
+#' This creates a proportion table for categorical variables by endoscopist
 #' It of course relies on a Endoscopist column being present
 #' @param ProportionColumn The column (categorical data) of interest
 #' @param EndoscopistColumn The endoscopist column
@@ -364,27 +361,21 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 #' @examples #The function plots any numeric metric by endoscopist
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-HistolDx(Mypath,'Diagnosis')
-#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
+#' v<-Mypath
+#' v$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
 #' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
 #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 #' 'HospitalNumber')
 #' #The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b2<-Barretts_PathStage(b1,'Histology')
-
-#' # The follow-up group depends on the histology and the Prague score for a
-#' # patient so it takes the processed Barrett's data and then looks in the
-#' # Findings column for permutations of the Prague score.
-#' b4<-Barretts_FUType(b2,"CStage","MStage","IMorNoIM")
-#' colnames(b4)[colnames(b4) == 'pHospitalNum'] <- 'HospitalNumber'
+#' v$IMorNoIM<-Barretts_PathStage(v,'Histology')
+#' colnames(v)[colnames(v) == 'pHospitalNum'] <- 'HospitalNumber'
 #' # The function takes the column with the extracted worst grade of
 #' # histopathology and returns the proportion of each finding (ie
 #' # proportion with low grade dysplasia, high grade etc.) for each
 #' # endoscopist
-#' kk<-CategoricalByEndoscopist(b4$IMorNoIM,b4$Endoscopist)
+#' kk<-CategoricalByEndoscopist(v$IMorNoIM,v$Endoscopist)
 #' rm(Myendo)
 
 
@@ -458,14 +449,12 @@ GRS_Type_Assess_By_Unit <-
     
     #Function should get proportions of a procedure that result in a finding:
     
-    Adenoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma=(sum(grepl("[Aa]denoma", Original.y))/n())*100)
-    Adenocarcinoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma=(sum(grepl(".*denoca.*", Original.y))/n())*100)
-    HGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD=(sum(grepl(".*[Hh]igh [Gg]rade.*", Original.y))/n())*100)
-    LGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD=(sum(grepl(".*[Ll]ow [Gg]rade.*", Original.y))/n())*100)
-    Serrated<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated=(sum(grepl(".*[Ss]errated.*", Original.y))/n())*100)
-    Hyperplastic<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic=(sum(grepl(".*yperplastic.*", Original.y))/n())*100)
-    
-    
+    Adenoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma=(sum(grepl("[Aa]denoma", Original.y))/dplyr::n())*100)
+    Adenocarcinoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma=(sum(grepl(".*denoca.*", Original.y))/dplyr::n())*100)
+    HGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD=(sum(grepl(".*[Hh]igh [Gg]rade.*", Original.y))/dplyr::n())*100)
+    LGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD=(sum(grepl(".*[Ll]ow [Gg]rade.*", Original.y))/dplyr::n())*100)
+    Serrated<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated=(sum(grepl(".*[Ss]errated.*", Original.y))/dplyr::n())*100)
+    Hyperplastic<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic=(sum(grepl(".*yperplastic.*", Original.y))/dplyr::n())*100)
     
     FinalTable <-
       full_join(Adenoma, Adenocarcinoma, by = Endo_Endoscopist)

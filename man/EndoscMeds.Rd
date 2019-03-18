@@ -4,12 +4,10 @@
 \alias{EndoscMeds}
 \title{Cleans medication column if present}
 \usage{
-EndoscMeds(dataframe, MedColumn)
+EndoscMeds(MedColumn)
 }
 \arguments{
-\item{dataframe}{dataframe with column of interest}
-
-\item{MedColumn}{column of interest}
+\item{MedColumn}{column of interest as a string vector}
 }
 \value{
 This returns a dataframe
@@ -21,7 +19,8 @@ medication into fentanyl and midazolam numeric doses for use.
 It should be used after the Extractor
 }
 \examples{
-cc<-EndoscMeds(Myendo,'Medications')
+MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+
 }
 \keyword{Endoscopy}
 \keyword{medications}

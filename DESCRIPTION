@@ -13,6 +13,7 @@ Imports:
         data.table,
         magrittr,
         tidyr,
+        tidyverse,
         tm,
         lubridate,
         stringr,

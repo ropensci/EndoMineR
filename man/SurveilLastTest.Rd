@@ -14,7 +14,8 @@ SurveilLastTest(dataframe, HospNum_Id, Endo_ResultPerformed)
 \item{Endo_ResultPerformed}{Date of the Endoscopy}
 }
 \description{
-Extracts the last test only per patient
+Extracts the last test only per patient and returns a new dataframe listing the
+patientID and the last test done
 }
 \examples{
 cc<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')

@@ -26,8 +26,8 @@ pathology diagnosis to the final primary code
 }
 \examples{
 # Need to run the HistolTypeSite and EndoscopyEvent functions first here
-SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
-"PathSite","EndoscopyEvent")
+# SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
+# "PathSite","EndoscopyEvent")
 }
 \keyword{OPCS-4}
 \keyword{codes}
