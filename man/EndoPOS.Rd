@@ -24,7 +24,7 @@ library(udpipe)
 #Myendo$RowIndex<-as.numeric(rownames(Myendo))
 #We will only use the first 100 
 #Myendo2<-head(Myendo,100)
-#MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole)
+#MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole) #returns a dataframe
 #Then merge the MyPOSframe with the original by row number.
 #Myendo$RowIndex<-as.numeric(rownames(Myendo))
 #Get the whole merged dataset with all the POS tags and morphological

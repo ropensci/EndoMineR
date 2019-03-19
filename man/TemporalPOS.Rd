@@ -17,7 +17,7 @@ requires you to decide whether you want present, past of future tenses. You
 can also choose to exclude tenses.
 }
 \examples{
-pp<-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+#pp<-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 # Run the EndoPOS example first 
 }
 \keyword{Macroscopic}

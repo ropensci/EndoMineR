@@ -100,7 +100,7 @@ SurveilLastTest <-
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
     ret<-dataframe %>% group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
-      filter(row_number() == n())
+      filter(row_number() == dplyr::n())
     dataframe<-data.frame(ret)
     return(dataframe)
   }
@@ -242,7 +242,7 @@ HowManyOverTime <-
         month = month(as.Date(!!Endo_ResultPerformeda)),
         year = year(as.Date(!!Endo_ResultPerformeda))
       ) %>%
-      summarise(Number = n())
+      summarise(Number = dplyr::n())
     
     names(TestNumbers) <- c("day", "week", "month", "year", "freq")
     TestNumbers$MonthYear <-
@@ -250,8 +250,6 @@ HowManyOverTime <-
     
     TestNumbers$MonthYear <- dmy(TestNumbers$MonthYear)
     TestNumbers<-data.frame(TestNumbers)%>% arrange(year,month,week,day)
-
-
     return(TestNumbers)
   }
 
@@ -326,8 +324,8 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' @examples #The function plots any numeric metric by endoscopist
 #' # and also gives a table with it. In this example we plot medication by
 #' # endoscopist
-#' Myendo<-EndoscMeds(Myendo,'Medications')
-#' kk<-MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+#' MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+#' kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
 #' rm(Myendo)
 
 

@@ -19,7 +19,7 @@ accorsing to the lexicons, removing negative expressions
 and lower casing everything.
 }
 \examples{
-CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
+# CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
 
 }
 \keyword{Find}
