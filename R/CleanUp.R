@@ -104,7 +104,7 @@ if (getRversion() >= "2.15.1")
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a string vector.
-#' @examples CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
+#' @examples # CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
 #' 
 textPrep<-function(inputText){
   
@@ -114,8 +114,6 @@ textPrep<-function(inputText){
 
   #1b General cleanup tasks
   inputText <- ColumnCleanUp(inputText)
-  
-
   
   #2a . Fuzzy find and replace and term mapping using the find and replace function above using the Location list
   
@@ -148,11 +146,16 @@ textPrep<-function(inputText){
   
   #Merge the POS frame with the original text so tagging happens right at the beginning
   #Will also need to add the Extractor output to the dataframe.
-  MyPOSframe<-EndoPOS(inputText)
+  
+  standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) paste0(unlist(x),collapse="\n"))
+  
+  
+  MyPOSframe<-EndoPOS(as.character(standardisedTextOutput))
   MyPOSframe$RowIndex<-as.numeric(rownames(MyPOSframe))
   
   #Now tag the text so all the POS and dependencies and morphology and POS tags are present. 
-  return(inputText)
+  return(MyPOSframe)
 }
 
 #' Parts of speech tagging for reports
@@ -186,9 +189,6 @@ textPrep<-function(inputText){
 
 
 EndoPOS<-function(inputString){
-  #Load outsie of function as take too much memory
-  #
-  #udmodel_english <- udpipe_load_model(file = udmodel$file_model)
   #Get into a tokenised form first
   #Have to do this on the raw pre-prepared data so that sentences can be recognised.
   
@@ -202,7 +202,8 @@ EndoPOS<-function(inputString){
   
   
   #To get all in one long cell per original document:
-  Newx<-x3 %>% group_by(doc_id,sentence)  %>% summarise(upos = paste(upos, collapse=";"),
+  Newx<-x3 %>% group_by(doc_id,sentence_id)  %>% summarise(upos = paste(upos, collapse=";"),
+                                                           sentence=paste(unique(sentence), collapse=";"),
                                                         xpos = paste(xpos, collapse=";"),
                                                         feats = paste(feats, collapse=";"),
                                                         head_token_id = paste(head_token_id, collapse=";"),
@@ -465,7 +466,8 @@ NegativeRemove <- function(inputText) {
 #' @param replacement the pattern replaceme with
 #' @param x the target string
 #' @return This returns a character vector
-#' @examples L <- tolower(str_split(HistolType,"\\|"))
+#' @examples L <- tolower(stringr::str_split(HistolType(),"\\|"))
+#' inputText<-TheOGDReportFinal$OGDReportWhole
 #' inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
 #' 
 
@@ -738,7 +740,7 @@ Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
 #' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
 #' @importFrom dplyr group_by summarise %>%
 #' @export
-#' @examples pp<-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+#' @examples #pp<-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 #' # Run the EndoPOS example first 
 
 TemporalPOS<-function(x2){
@@ -794,8 +796,8 @@ return(Newxdoc$Temporal)
 #' @keywords Macroscopic
 #' @export
 #' @examples #Has to be after POS extraction is done
-#' mylist<-POS_Extract("NOUN;ADJ;NOUN",MergedUp$upos,MergedUp$sentence)
-#' MergedUp$Extr<-mylist
+#' #mylist<-POS_Extract("NOUN;ADJ;NOUN",MergedUp$upos,MergedUp$sentence)
+#' #MergedUp$Extr<-mylist
 
 
 POS_Extract<-function(POS_seq,columnPOS,columnSentence){
@@ -831,7 +833,7 @@ POS_Extract<-function(POS_seq,columnPOS,columnSentence){
 #' @param list of words to iterate through
 #' @keywords Withdrawal
 #' @importFrom fuzzyjoin regex_left_join
-#' @import tibble
+#' @importFrom dplyr as_tibble pull
 #' @export
 #' @examples #Firstly we extract histology from the raw report
 #' # using the extractor function
@@ -868,8 +870,11 @@ ExtrapolatefromDictionary<-function(inputString,list){
   #The result of the replacement 
   replaceValue<-paste0(unlist(list,use.names=F))
   
+  #Create a dataframe
+  df1<-data.frame(key = replace, val = replaceValue)
+  
   #Create a tibble to merge with the list
-  d1 <- tibble::tibble(key = replace, val = replaceValue)
+  d1 <- as_tibble(df1)
   
   
   #Select the elements that have characters in them
@@ -880,8 +885,8 @@ ExtrapolatefromDictionary<-function(inputString,list){
   #function also creates a new column with the value in it. This is an important
   #function as uses a table lookup
   ToIndex[i1] <- map(ToIndex[i1], ~ 
-                       tibble(key = .x) %>%
-                       regex_left_join(d1) %>%
+                       tibble::tibble(key = .x) %>%
+                       fuzzyjoin::regex_left_join(d1) %>%
                        pull(val))
   
   #This unlists the nested list
@@ -1402,9 +1407,6 @@ ExtrapolateEndoscopicICD10 <- function(dataframe, Procedure,PathSite,FINDINGS,EN
   #Use case when on nested list to generate ICD-10 codes and then remove from the list.
   
   #If it matches the grep then add the diagnosis, and then chop into list and remove that string
-  
-  
-  
   
   
   dataframe<-dataframe %>%

@@ -21,7 +21,8 @@ This is a helper function for finding and replacing from dictionaries like the e
 It uses fuzzy find and replace to account for spelling errors
 }
 \examples{
-L <- tolower(str_split(HistolType,"\\\\|"))
+L <- tolower(stringr::str_split(HistolType(),"\\\\|"))
+inputText<-TheOGDReportFinal$OGDReportWhole
 inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
 
 }
