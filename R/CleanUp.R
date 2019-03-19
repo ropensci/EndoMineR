@@ -790,7 +790,6 @@ return(Newxdoc$Temporal)
 #' 
 #'
 #' @param POS_seq The POS tag sequence to extract
-#' @param dataframe The dataframe
 #' @param columnPOS The column with the POS tags
 #' @param columnSentence The column with the sentence
 #' @keywords Macroscopic
