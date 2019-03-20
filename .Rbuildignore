@@ -9,3 +9,4 @@
 ^_pkgdown\.yaml$
 ^codecov\.yml$
 ^\.github$
+^paper$

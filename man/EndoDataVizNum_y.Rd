@@ -2,14 +2,14 @@
 % Please edit documentation in R/Graphics.R
 \name{EndoDataVizNum_y}
 \alias{EndoDataVizNum_y}
-\title{Create non Numeric x versus y}
+\title{Create non-Numeric x versus y}
 \usage{
 EndoDataVizNum_y(dataframe, xdata, Prop)
 }
 \arguments{
 \item{dataframe}{dataframe}
 
-\item{xdata}{The proportion column}
+\item{xdata}{The category column}
 
 \item{Prop}{The proportion column}
 }
@@ -24,5 +24,8 @@ type of procedure to another using circos plots.
 }
 \examples{
 # This function plot numeric y vs non-numeric x
+MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+EndoDataVizNum_y(kk,'Endoscopist','avg')
 }
 \keyword{Circos}

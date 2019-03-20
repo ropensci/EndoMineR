@@ -12,8 +12,6 @@ POS_Extract(POS_seq, columnPOS, columnSentence)
 \item{columnPOS}{The column with the POS tags}
 
 \item{columnSentence}{The column with the sentence}
-
-\item{dataframe}{The dataframe}
 }
 \description{
 This uses udpipe to tag the text. It then compresses all of the text 

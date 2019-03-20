@@ -47,13 +47,15 @@ if (getRversion() >= "2.15.1")
 #' #'
 #' #' 
 #' @import grid 
+#' @import scales
+#' @import ggthemes 
 #' @keywords ggplot themes
 #' @param base_size the base size
 #' @param base_family the base family
 #' @export
 #' @examples #None needed
 
-theme_Publication <- function(base_size=14, base_family="helvetica") {
+theme_Publication <- function(base_size=14, base_family="Helvetica") {
   (theme_foundation(base_size=base_size, base_family=base_family)
     + theme(plot.title = element_text(face = "bold",
                                       size = rel(1.2), hjust = 0.5),
@@ -89,6 +91,9 @@ theme_Publication <- function(base_size=14, base_family="helvetica") {
 #' #'
 #' #' 
 #' @keywords ggplot themes
+#' @import grid 
+#' @import ggthemes 
+#' @import scales
 #' @export
 #' @examples #None needed
 
@@ -101,7 +106,9 @@ scale_fill_Publication <- function(...){
 
 #' Sets the publication theme for all the ggplots
 #'
-#' 
+#' @import grid 
+#' @import scales
+#' @import ggthemes 
 #' @keywords ggplot themes
 #' @export
 #' @examples #None needed
@@ -442,12 +449,17 @@ PatientFlow_CircosPlots <-
 #' @keywords Circos
 #' @export
 #' @examples # This function does EDA
+#' #Get some numeric columns eg number of biopsies and size
+#' Mypath$Size<-HistolBxSize(Mypath$Macroscopicdescription)
+#' Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
+#' Mypath2<-Mypath[,c("NumBx","Size")]
+#' EndoDataVizEDA(Mypath2,"My graph")
 
 
 
 EndoDataVizEDA <-
   function(dataframe,Title) {
-Myplot <-ggpairs(data=sample,title=Title) # title of the plot
+Myplot <-ggpairs(data=dataframe,title=Title) # title of the plot
 return(Myplot)
 }
 
@@ -457,29 +469,35 @@ return(Myplot)
 
 #Make sure the data is inputted in the correct format ie one column is the endoscopist
 
-#' Create non Numeric x versus y
+#' Create non-Numeric x versus y
 #'
 #' This allows us to look at the overall flow from one
 #' type of procedure to another using circos plots.
 #' @param dataframe dataframe
 #' @param Prop The proportion column
-#' @param xdata The proportion column
+#' @param xdata The category column
 #' @import ggplot2
 #' @return Myplot the EDA final plot
 #' @keywords Circos
 #' @export
 #' @return Myplot
 #' @examples # This function plot numeric y vs non-numeric x
+#' MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+#' kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+#' EndoDataVizNum_y(kk,'Endoscopist','avg')
 
 
 # # Then just plot it:
 
 EndoDataVizNum_y <-
   function(dataframe,xdata,Prop) {
-Myplot <-
-  ggplot(data = dataframe, aes(x = xdata, y = Prop ,group=1)) +
+    
+  Myplot <-
+  ggplot(data = dataframe, aes(x = dataframe[,xdata], y = dataframe[,Prop] ,group=1)) +
   geom_point() +
-  labs(title="Number of procedures per year")+
+  labs(title=paste0(xdata," vs ",Prop))+
+  xlab(xdata) +
+  ylab(Prop) +
   scale_colour_Publication()+
   scale_fill_Publication()+
   theme_Publication()
@@ -505,99 +523,24 @@ return(Myplot)
 #' @export
 #' @return Myplot
 #' @examples # This function plot numeric y vs non-numeric x
-#' 
-#' 
-EndoDataVizTime_xNum_y <-
+#' #Get some numeric columns eg number of biopsies and size
+#' Mypath$Size<-HistolBxSize(Mypath$Macroscopicdescription)
+#' Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
+#' Mypath2<-Mypath[,c("NumBx","Size")]
+#' EndoDataVizNum_xNum_y(Mypath,'Size','NumBx')
+
+EndoDataVizNum_xNum_y <-
   function(dataframe,xdata,number) {
 Myplot <-
-  ggplot(data = dataframe, aes(x = xdata, y = number)) +
+  ggplot(data = dataframe, aes(x = dataframe[,xdata], y = dataframe[,number],group=1)) +
   geom_point() +
-  geom_line() +
   geom_smooth(method = "loess") +
-  labs(title="Number per year")+
+  labs(title=paste0(xdata," vs ",number))+
+  xlab(xdata) +
+  ylab(number) +
   scale_colour_Publication()+
   scale_fill_Publication()+
   theme_Publication()
+return(Myplot)
 }
 
-##################### Time series plots  #########################
-
-
-
-
-
-##################### Non-numeric x Numeric y bar #########################
-
-#Make sure the data is inputted in the correct format ie one column is the endoscopist
-
-#' Create non Numeric x versus y
-#'
-#' This allows us to look at the overall flow from one
-#' type of procedure to another using circos plots.
-#' @param dataframe dataframe
-#' @param b The numeric column
-#' @param Proportion The Proportion column
-#' @import ggplot2
-#' @keywords proportions plot
-#' @export
-#' @return Myplot
-#' @examples # This function plot numeric y vs non-numeric x
-#' 
-#' 
-EndoDataVizNum_xProp_y <-
-  function(dataframe,b,Proportion) {
-##Input needs to be two columns. x is the term and y is the proportion that have it.
-t <-ggplot(dataframe, aes(x=b, y=Proportion)) + 
-  geom_bar(stat="identity")+
-  xlab("Documentation")+
-  labs(title="Proportion of Reports Containing Terms")+
-  scale_colour_Publication()+
-  theme_Publication()
-
-return(t)
-}
-#################### Grouped distributions #######################
-#Use violin/boxplot/ridgeplot
-#This function will produce all of them so any can be used
-
-
-##################### Numeric x Numeric y  #########################
-#Make sure the data is inputted in the correct format ie one column is the endoscopist
-
-#' Create  Numeric x versus y
-#'
-#' @param dataframe dataframe
-#' @param Numx The numeric x column
-#' @param Numy The numeric y column
-#' @import ggplot2
-#' @importFrom stats lm
-#' @keywords basic numeric vs numeric plot
-#' @export
-#' @return Myplot
-#' @examples # This function plot numeric y vs non-numeric x
-#' 
-#' 
-EndoDataVizNum_xNum_y <-
-  function(dataframe,Numx,Numy) {
-    
-    Myplot <-
-  ggplot(data = dataframe, aes(x = Numx, y = Numy)) +
-  geom_point() +
-  geom_jitter()+
-  geom_smooth(method=lm)+
-  labs(title="Number of procedures per year")+
-  scale_colour_Publication()+
-  scale_fill_Publication()+
-  theme_Publication()
-    
-    return(Myplot)
-}
-##################### Grouped numeric vs numeric ####################
-#This function will produce all permutations so you can choose between them
-
-##################### Time Series ####################
-#This function will produce all permutations so you can choose between them
-
-##########Tables###########
-#library(stargazer)
-#stargazer(iris,type = "html",style = "qje",out="star_descriptive.doc")

@@ -16,15 +16,18 @@ pre downloaded to run this.
 }
 \examples{
 library(udpipe)
-#udmodel <- udpipe_download_model(language = "english")
-#udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+
 #Just some quick cleaning up- this will be done in the actual data set eventually 
 #Myendo$OGDReportWhole<-gsub("\\\\.\\\\s+\\\\,"," ",Myendo$OGDReportWhole)
 #Myendo$OGDReportWhole<-gsub("^\\\\s+\\\\,"," ",Myendo$OGDReportWhole)
 #Myendo$RowIndex<-as.numeric(rownames(Myendo))
+
 #We will only use the first 100 
 #Myendo2<-head(Myendo,100)
+
+#Run the function
 #MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole) #returns a dataframe
+
 #Then merge the MyPOSframe with the original by row number.
 #Myendo$RowIndex<-as.numeric(rownames(Myendo))
 #Get the whole merged dataset with all the POS tags and morphological

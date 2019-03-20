@@ -5,3 +5,4 @@ bookdown
 pkgdown
 _pkgdown.yaml
 *.Rdata
+docs
