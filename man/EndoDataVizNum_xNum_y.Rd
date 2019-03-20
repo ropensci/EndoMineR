@@ -2,29 +2,33 @@
 % Please edit documentation in R/Graphics.R
 \name{EndoDataVizNum_xNum_y}
 \alias{EndoDataVizNum_xNum_y}
-\title{Create  Numeric x versus y}
+\title{Create non Numeric x versus y}
 \usage{
-EndoDataVizNum_xNum_y(dataframe, Numx, Numy)
+EndoDataVizNum_xNum_y(dataframe, xdata, number)
 }
 \arguments{
 \item{dataframe}{dataframe}
 
-\item{Numx}{The numeric x column}
+\item{xdata}{The Time column}
 
-\item{Numy}{The numeric y column}
+\item{number}{The numeric column}
 }
 \value{
+Myplot the EDA final plot
+
 Myplot
 }
 \description{
-Create  Numeric x versus y
+This allows us to look at the overall flow from one
+type of procedure to another using circos plots.
 }
 \examples{
 # This function plot numeric y vs non-numeric x
-
-
+#Get some numeric columns eg number of biopsies and size
+Mypath$Size<-HistolBxSize(Mypath$Macroscopicdescription)
+Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
+Mypath2<-Mypath[,c("NumBx","Size")]
+EndoDataVizNum_xNum_y(Mypath,'Size','NumBx')
 }
-\keyword{basic}
-\keyword{numeric}
-\keyword{plot}
-\keyword{vs}
+\keyword{Time}
+\keyword{plots}

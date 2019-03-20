@@ -6,7 +6,7 @@
 #'
 #'}
 \usage{
-theme_Publication(base_size = 14, base_family = "helvetica")
+theme_Publication(base_size = 14, base_family = "Helvetica")
 }
 \arguments{
 \item{base_size}{the base size}

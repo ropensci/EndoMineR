@@ -75,7 +75,8 @@ if (getRversion() >= "2.15.1")
       "FINDINGSmyDx",
       "FindingsAfterProcessing",
       "primDxVector",
-      "Temporal"
+      "Temporal",
+      "sentence_id"
     )
   )
 
@@ -171,15 +172,18 @@ textPrep<-function(inputText){
 #' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
 #' @export
 #' @examples library(udpipe)
-#' #udmodel <- udpipe_download_model(language = "english")
-#' #udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+#' 
 #' #Just some quick cleaning up- this will be done in the actual data set eventually 
 #' #Myendo$OGDReportWhole<-gsub("\\.\\s+\\,"," ",Myendo$OGDReportWhole)
 #' #Myendo$OGDReportWhole<-gsub("^\\s+\\,"," ",Myendo$OGDReportWhole)
 #' #Myendo$RowIndex<-as.numeric(rownames(Myendo))
+#' 
 #' #We will only use the first 100 
 #' #Myendo2<-head(Myendo,100)
+#' 
+#' #Run the function
 #' #MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole) #returns a dataframe
+#' 
 #' #Then merge the MyPOSframe with the original by row number.
 #' #Myendo$RowIndex<-as.numeric(rownames(Myendo))
 #' #Get the whole merged dataset with all the POS tags and morphological
@@ -191,18 +195,17 @@ textPrep<-function(inputText){
 EndoPOS<-function(inputString){
   #Get into a tokenised form first
   #Have to do this on the raw pre-prepared data so that sentences can be recognised.
-  
-  
+  #Get the model from the data folder to save user from having to download it each time.
+  udmodel_english<-udpipe_load_model(file = "~/EndoMineR/inst/POS_Corpus/english-ewt-ud-2.3-181115.udpipe")
   x <- udpipe_annotate(udmodel_english, x = inputString)
   x2 <- as.data.frame(x)
-  x3 <- cbind_morphological(x2) #Dont need this for temporal assessment
-  x4 <- cbind_dependencies(x3)  #Dont need this for temporal assessment
+
   
   
   
   
   #To get all in one long cell per original document:
-  Newx<-x3 %>% group_by(doc_id,sentence_id)  %>% summarise(upos = paste(upos, collapse=";"),
+  Newx<-x2 %>% group_by(doc_id,sentence_id)  %>% summarise(upos = paste(upos, collapse=";"),
                                                            sentence=paste(unique(sentence), collapse=";"),
                                                         xpos = paste(xpos, collapse=";"),
                                                         feats = paste(feats, collapse=";"),
@@ -740,8 +743,10 @@ Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
 #' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
 #' @importFrom dplyr group_by summarise %>%
 #' @export
-#' @examples #pp<-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
+#' @examples
 #' # Run the EndoPOS example first 
+#' Myendo2<-head(Myendo,100)
+#' MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole)
 
 TemporalPOS<-function(x2){
   #Need to derive method to analyse on a sentence by sentence basis?- use tokeniser from stringi?

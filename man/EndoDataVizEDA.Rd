@@ -20,5 +20,10 @@ type of procedure to another using circos plots.
 }
 \examples{
 # This function does EDA
+#Get some numeric columns eg number of biopsies and size
+Mypath$Size<-HistolBxSize(Mypath$Macroscopicdescription)
+Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
+Mypath2<-Mypath[,c("NumBx","Size")]
+EndoDataVizEDA(Mypath2,"My graph")
 }
 \keyword{Circos}
