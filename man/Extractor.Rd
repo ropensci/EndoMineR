@@ -4,12 +4,10 @@
 \alias{Extractor}
 \title{Extracts the columns from the raw report}
 \usage{
-Extractor(dataframeIn, Column, delim)
+Extractor(inputString, delim)
 }
 \arguments{
-\item{dataframeIn}{the dataframe}
-
-\item{Column}{the column to extract from}
+\item{inputString}{the column to extract from}
 
 \item{delim}{the vector of words that will be used as the boundaries to
 extract against}
@@ -32,7 +30,7 @@ have to be dealt with in the text before processing
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-Mypath2<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+Mypath2<-Extractor(PathDataFrameFinaL$PathReportWhole,mywords)
 
 }
 \keyword{Extraction}

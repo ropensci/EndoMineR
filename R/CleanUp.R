@@ -102,12 +102,13 @@ if (getRversion() >= "2.15.1")
 #' and lower casing everything. 
 #' @keywords Find and replace
 #' @param inputText The relevant pathology text column
+#' @param delim the delimitors so the extractor can be used
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a string vector.
 #' @examples # CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
 #' 
-textPrep<-function(inputText){
+textPrep<-function(inputText,delim){
   
   #1. Flatten the text
   inputText<-tolower(inputText)
@@ -139,9 +140,7 @@ textPrep<-function(inputText){
   inputText<-DictionaryInPlaceReplace(inputText,EventList())
   inputText<-DictionaryInPlaceReplace(inputText,HistolType())
   
-  #5. Split the lines so text is tokenized by sentence
-  #standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
-  
+
   #returns a lower case version
   inputText<-tolower(inputText)
   
@@ -151,12 +150,24 @@ textPrep<-function(inputText){
   standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
   standardisedTextOutput<-lapply(standardisedTextOutput, function(x) paste0(unlist(x),collapse="\n"))
   
-  
+  #Create the dataframe with all the POS extracted:
   MyPOSframe<-EndoPOS(as.character(standardisedTextOutput))
-  MyPOSframe$RowIndex<-as.numeric(rownames(MyPOSframe))
   
-  #Now tag the text so all the POS and dependencies and morphology and POS tags are present. 
-  return(MyPOSframe)
+  
+  #Create the dataframe with the extraction according to delimiters:
+  delimextract<-Extractor(MyPOSframe$sentence,tolower(delim))
+  
+  #Create a column in both dataframes that can act as a join
+  MyPOSframe$RowIndex<-as.numeric(rownames(MyPOSframe))
+  delimextract$RowIndex<-as.numeric(rownames(delimextract))
+  
+  
+  #Now merge the POS tags and the extraction:
+  MyCompleteFrame<-merge(delimextract,MyPOSframe,by="RowIndex")
+  
+  MyCompleteFrame<-data.frame(MyCompleteFrame,stringsAsFactors = FALSE)
+  
+  return(MyCompleteFrame)
 }
 
 #' Parts of speech tagging for reports
@@ -259,7 +270,8 @@ EndoPOS<-function(inputString){
   #morph_verbform = paste(morph_verbform, collapse="\n"),
   #morph_voice = paste(morph_voice, collapse="\n"))
   
-  #Need to convert the docids as they are alphabetically grouped, to allow merge with original dataframe
+  # Need to convert the docids as they are alphabetically grouped, to allow merge 
+  # with original dataframe
   
   Newxdoc$doc_id<-as.numeric(gsub("doc","",Newxdoc$doc_id))
   Newxdoc<-data.frame(Newxdoc[order(Newxdoc$doc_id),],stringsAsFactors=FALSE)
@@ -504,6 +516,13 @@ ColumnCleanUp <- function(vector) {
   vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
   vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
   vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
+  vector<-gsub("\\.,","\\.",vector)
+  vector<-gsub(",([A-Z])","\\.\\1",vector)
+  vector<-gsub("\\. ,",".",vector)
+  vector<-gsub("\\.\\s+\\,"," ",vector)
+  vector<-gsub("^\\s+\\,"," ",vector)
+  vector<-gsub("\\\\.*", "", vector)
+  vector<-gsub("       ", "", vector)
   
   #Get rid of query type punctuation:
   vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
@@ -549,8 +568,7 @@ ColumnCleanUp <- function(vector) {
 #' like : or ? and / and don't allow numbers as the start character so these
 #' have to be dealt with in the text before processing
 #'
-#' @param dataframeIn the dataframe
-#' @param Column the column to extract from
+#' @param inputString the column to extract from
 #' @param delim the vector of words that will be used as the boundaries to
 #' extract against
 #' @importFrom stringr str_extract
@@ -566,35 +584,35 @@ ColumnCleanUp <- function(vector) {
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' Mypath2<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+#' Mypath2<-Extractor(PathDataFrameFinaL$PathReportWhole,mywords)
 #'
 
-Extractor <- function(dataframeIn, Column, delim) {
-  dataframeInForLater<-dataframeIn
-  ColumnForLater<-Column
-  Columna <- rlang::sym(Column)
-  dataframeIn <- data.frame(dataframeIn,stringsAsFactors = FALSE)
-  dataframeIn<-dataframeIn %>%
-    tidyr::separate(!!Columna, into = c("added_name",delim),
+Extractor <- function(inputString, delim) {
+  
+  #Save inputString so can be merge back in as the origincal for later
+  inputStringForLater<- inputString
+  
+  #Create dataframe for tidyverse usage
+  inputStringdf <- data.frame(inputString,stringsAsFactors = FALSE)
+  
+  #Do the separation according to delimiters
+  inputStringdf <- inputStringdf %>%
+    tidyr::separate(inputString, into = c("added_name",delim),
                     sep = paste(delim, collapse = "|"),
                     extra = "drop", fill = "right")
-  names(dataframeIn) <- gsub(".", "", names(dataframeIn), fixed = TRUE)
-  dataframeIn <- apply(dataframeIn, 2, function(x) gsub("\\\\.*", "", x))
-  dataframeIn <- apply(dataframeIn, 2, function(x) gsub("       ", "", x))
   
-  #Convert back to a dataframe as has been converted to a matrix
-  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
-  dataframeIn<-dataframeIn[,-1]
+  #Make sure columns names are correct
+  names(inputStringdf) <- gsub(".", "", names(inputStringdf), fixed = TRUE)
+ 
+  #Get rid of the errant first column 
+  inputStringdf <- inputStringdf [,-1]
   
-  dataframeIn<- lapply(dataframeIn, function(x) ColumnCleanUp(x))
-  
-  names(dataframeIn) <- gsub(".","",names(dataframeIn),fixed=TRUE)
-  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
   #Add the original column back in so have the original reference
-  dataframeIn$Original<-dataframeInForLater[,ColumnForLater]
-  dataframeIn<-data.frame(dataframeIn,stringsAsFactors = FALSE)
-  return(dataframeIn)
+  inputStringdf$Original<- inputString
+  inputStringdf <-data.frame(inputStringdf,stringsAsFactors = FALSE)
+  return(inputStringdf)
 }
+
 
 
 
@@ -939,8 +957,9 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 #' @param inputString The relevant pathology text column
 #' @param list1 The intial list to assess
 #' @param list2 The other list to look for
-#' @importFrom stringr str_replace_na str_c str_split str_which
+#' @importFrom stringr str_replace_na str_c str_split str_which str_extract_all regex str_subset
 #' @importFrom stringi stri_split_boundaries
+#' @importFrom rlang is_empty
 #' @importFrom purrr flatten_chr map_chr map map_if
 #' @export
 #' @examples # tbb<-EntityPairs_TwoSentence(Myendo$Findings,EventList(),HistolType())
@@ -966,6 +985,8 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
     
     #Cleaning
     x<-trimws(x)
+
+    #browser()
     
     #Prepare the text so that all empty text is replaced with NA and 
     #ready for processing
@@ -982,7 +1003,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
     x1 <- str_extract_all(tolower(x),tolower(paste(unlist(list1), collapse="|")))
     i1 <- which(lengths(x1) > 0)
     
-#browser()
+#browser
     
     try(if(any(i1)) {
       EventList %>%
@@ -994,7 +1015,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
                 str_c(collapse = ' ') %>%
                 
                 str_extract_all(regex(tofind, ignore_case = TRUE)) %>%
-                map_if(is_empty, ~ NA_character_) %>%
+                map_if(rlang::is_empty, ~ NA_character_) %>%
                 flatten_chr()%>%
                 `[[`(length(.)) %>%
                 
@@ -1086,7 +1107,7 @@ EndoscopyEvent<-function(dataframe,EventColumn1,Procedure,Macroscopic,Histology)
   # Extract the events from the 
   output<-EntityPairs_TwoSentence(dataframe[,EventColumn1],EventList(),LocationList())
   
-  MyHistolEvents<-HistolTypeAndSite(dataframe[,Procedure],dataframe[,Histology],dataframe[,Macroscopic])
+  MyHistolEvents<-HistolTypeAndSite(dataframe[,Histology],dataframe[,Macroscopic],dataframe[,Procedure])
   output<-unlist(lapply(output, function(x) paste(x,collapse=";")))
   
   #Add emr only if this is seen in the histopath
@@ -1186,8 +1207,8 @@ HistolBxSize <- function(MacroColumn) {
 #' @export
 #' @return a list with two columns, one is the type and site and the other
 #' is the index to be used for OPCS4 coding later if needed.
-#' @examples  Myendo$PathSite<-HistolTypeAndSite(Myendo$procedureperformed,
-#' Myendo$mscroscopicaldescription,Myendo$Original.x) #This example needs correction
+#' @examples  Myendo$PathSite<-HistolTypeAndSite(Myendo$Original.x,
+#' Myendo$mscroscopicaldescription,Myendo$procedureperformed) #This example needs correction
 
 
 HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
@@ -1203,9 +1224,9 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
   output<-lapply(output, function(x) paste(unlist(unique(unlist(strsplit(x,",")))),collapse=","))
   
   output<-ifelse(grepl("Gastroscopy",procedureString),
-                 str_remove_all(output, paste0('(',tolower( paste0(unlist(lower,use.names=F),collapse="|")),')',':biopsy')),
+                 str_remove_all(output, paste0('(',tolower( paste0(unlist(LocationListLower(),use.names=F),collapse="|")),')',':biopsy')),
                  ifelse(grepl("Colonoscopy|Flexi",procedureString),
-                        str_remove_all(output, paste0('(',tolower(paste0(unlist(upper,use.names=F),collapse="|")),')',':biopsy')),output))
+                        str_remove_all(output, paste0('(',tolower(paste0(unlist(LocationListUpper(),use.names=F),collapse="|")),')',':biopsy')),output))
   
   output<-unlist(output)
   

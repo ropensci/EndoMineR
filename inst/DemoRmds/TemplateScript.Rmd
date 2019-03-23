@@ -138,27 +138,18 @@ data(PathDataFrameFinal)
 
 ######################################### Data cleaning & Data merging######################################### 
 #Now all the text preparation functions
-TheOGDReportFinal$OGDReportWhole<-gsub("\\.,","\\.",TheOGDReportFinal$OGDReportWhole)
-TheOGDReportFinal$OGDReportWhole<-gsub(",([A-Z])","\\.\\1",TheOGDReportFinal$OGDReportWhole)
-TheOGDReportFinal$OGDReportWhole<-gsub("\\. ,",".",TheOGDReportFinal$OGDReportWhole)
-TheOGDReportFinal_prep<-tolower(textPrep(TheOGDReportFinal$OGDReportWhole))
-#Get rid of some extra wierd commas etc. Ill need to do this in the actual data too...
 
-TheOGDReportFinal_prep<-data.frame(TheOGDReportFinal_prep,stringsAsFactors = FALSE)
-
-#Then do the basic extraction:
+#Prepare the text for OGD
 mywordsOGD<-c("hospital number:","patient name:","general practitioner","date of procedure:","endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:","indications:", "procedure performed:","findings:","diagnosis:")
-MyOGD<-Extractor(TheOGDReportFinal_prep,"TheOGDReportFinal_prep",mywordsOGD)
+MyOGD<-textPrep(TheOGDReportFinal$OGDReportWhole,mywordsOGD)
 
 
-PathDataFrameFinal_prep<-tolower(textPrep(PathDataFrameFinal$PathReportWhole))
-PathDataFrameFinal_prep<-data.frame(PathDataFrameFinal_prep,stringsAsFactors = FALSE)
-
+#Prepare the text for Pathology
 mywordsPath<-c("hospital number:","patient name:","dob:","general practitioner:","date received:","nature of specimen:","macroscopic description:" ,"diagnosis:")
-MyPath<-Extractor(PathDataFrameFinal_prep,"PathDataFrameFinal_prep",mywordsPath)
+MyPath<-textPrep(PathDataFrameFinal$PathReportWhole,mywordsPath)
+
 
 ```
-
 
 
 ```{r Merge}
@@ -176,7 +167,7 @@ FinalDataset<-Endomerge2(MyOGD,"dateofprocedure","hospitalnumber",MyPath,"datere
 
 #Now all the cleaning functions. Firstly endoscopy
 FinalDataset$endoscopist<-EndoscEndoscopist(FinalDataset$endoscopist)
-#How to add this dataframe to the other dataframe?
+#Clean the meds (need to bind to the existing dataframe)
 FinalDataset<-cbind(EndoscMeds(FinalDataset$medications),FinalDataset)
 FinalDataset$instrument<-EndoscInstrument(FinalDataset$instrument)
 ```
