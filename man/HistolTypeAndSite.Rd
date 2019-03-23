@@ -21,8 +21,8 @@ is the index to be used for OPCS4 coding later if needed.
 This needs some blurb to be written. Used in the OPCS4 coding
 }
 \examples{
- Myendo$PathSite<-HistolTypeAndSite(Myendo$procedureperformed,
-Myendo$mscroscopicaldescription,Myendo$Original.x) #This example needs correction
+ Myendo$PathSite<-HistolTypeAndSite(Myendo$Original.x,
+Myendo$mscroscopicaldescription,Myendo$procedureperformed) #This example needs correction
 }
 \keyword{Find}
 \keyword{and}
