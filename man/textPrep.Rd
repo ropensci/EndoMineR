@@ -4,18 +4,20 @@
 \alias{textPrep}
 \title{textPrep function}
 \usage{
-textPrep(inputText, delim)
+textPrep(inputText, delim, NegEx = c("TRUE", "FALSE"))
 }
 \arguments{
 \item{inputText}{The relevant pathology text column}
 
 \item{delim}{the delimitors so the extractor can be used}
+
+\item{NegEx}{parameter to say whether the NegativeRemove function used.}
 }
 \value{
 This returns a string vector.
 }
 \description{
-THis function prepares teh data by cleaning 
+This function prepares the data by cleaning 
 punctuation, checking spelling against the lexicons, mapping terms
 accorsing to the lexicons, removing negative expressions
 and lower casing everything.

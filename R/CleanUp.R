@@ -96,19 +96,20 @@ if (getRversion() >= "2.15.1")
 
 #' textPrep function
 #'
-#' THis function prepares teh data by cleaning 
+#' This function prepares the data by cleaning 
 #' punctuation, checking spelling against the lexicons, mapping terms
 #' accorsing to the lexicons, removing negative expressions
 #' and lower casing everything. 
 #' @keywords Find and replace
 #' @param inputText The relevant pathology text column
 #' @param delim the delimitors so the extractor can be used
+#' @param NegEx parameter to say whether the NegativeRemove function used.
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a string vector.
 #' @examples # CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
 #' 
-textPrep<-function(inputText,delim){
+textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2')){
   
   #1. Flatten the text
   inputText<-tolower(inputText)
@@ -132,8 +133,14 @@ textPrep<-function(inputText,delim){
   inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
   
   
-  #3.Remove all the negative phrases from the report:
+  #3.Remove all the negative phrases from the report if the parameter has been supplied
+  
+  #Need to write here if the NegativeRemove has been ticked then should use it
+  
+  if (missing(NegEx)||NegEx==TRUE)
+    {
   inputText<-NegativeRemove(inputText)
+  }
   
   #4. Need to map the terms to the lexicons to make sure everything standardised.
   inputText<-DictionaryInPlaceReplace(inputText,LocationList())
@@ -155,7 +162,14 @@ textPrep<-function(inputText,delim){
   
   
   #Create the dataframe with the extraction according to delimiters:
+  if (Extractor==1)
+  {
   delimextract<-Extractor(MyPOSframe$sentence,tolower(delim))
+  }
+  if (missing(Extractor)||Extractor==2)
+  {
+    delimextract<-Extractor(MyPOSframe$sentence,tolower(delim))
+  }
   
   #Create a column in both dataframes that can act as a join
   MyPOSframe$RowIndex<-as.numeric(rownames(MyPOSframe))
@@ -166,6 +180,7 @@ textPrep<-function(inputText,delim){
   MyCompleteFrame<-merge(delimextract,MyPOSframe,by="RowIndex")
   
   MyCompleteFrame<-data.frame(MyCompleteFrame,stringsAsFactors = FALSE)
+  names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
   
   return(MyCompleteFrame)
 }
@@ -746,65 +761,6 @@ Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
 ############## Extraction Tools ###################
 
 
-#' Temporal sentences
-#'
-#' This extracts sentences that have a tense to them so you can see
-#' if there are intended actions for example in assessing quality
-#' of a report eg 'I will prescribe this medication. The function
-#' requires you to decide whether you want present, past of future tenses. You
-#' can also choose to exclude tenses.
-#' 
-#'
-#' @param x2 the dataframe with all the POS tags added
-#' @keywords Macroscopic
-#' @importFrom stringr str_replace_all
-#' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
-#' @importFrom dplyr group_by summarise %>%
-#' @export
-#' @examples
-#' # Run the EndoPOS example first 
-#' Myendo2<-head(Myendo,100)
-#' MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole)
-
-TemporalPOS<-function(x2){
-  #Need to derive method to analyse on a sentence by sentence basis?- use tokeniser from stringi?
-  
-  #Ways to determine the temporality of the sentence. English has no future tense so it is determined
-  #by examining the Verbform not being past or present and the presence of a modal auxilliary
-  
-  x2$Temporal<-ifelse(grepl("Pres",x2$feats),"Present",
-                      ifelse(grepl("Past",x2$feats),"Past",
-                             ifelse(grepl("AUX",x2$upos),"Future","NoTense")))
-  
-  #Now group back into the report text
-  Newx<-x2 %>% group_by(doc_id,sentence)  %>% summarise(upos = paste(upos, collapse=";"),
-                                                        xpos = paste(xpos, collapse=";"),
-                                                        dep_rel = paste(dep_rel, collapse=";"),
-                                                        misc = paste(misc, collapse=";"),
-                                                        Temporal = paste(Temporal, collapse=";"))%>%group_by(doc_id)
-  #This now gives the per sentence temporality
-  Newx<-data.frame(Newx)
-  
-  #Now tag each sentence with paste and get rid of no tense and merge with the sentence
-  Newx$Temporal<-paste(str_replace_all(Newx$Temporal,";NoTense|NoTense|^;",""),":::",Newx$sentence)
-  
-  #Now to group by whole text:
-  Newxdoc<-Newx %>% 
-    group_by(doc_id) %>% summarise(
-      Temporal = paste(Temporal, collapse="\n"))
-  
-  #Return tagged character vector
-return(Newxdoc$Temporal)
-  
-}
-
-
-
-
-
-
-
-
 #' Extract sentences with the POS tags desired
 #'
 #' This uses udpipe to tag the text. It then compresses all of the text 
@@ -823,7 +779,7 @@ return(Newxdoc$Temporal)
 
 
 POS_Extract<-function(POS_seq,columnPOS,columnSentence){
-  #Convert the POS tags to list nested ilst
+  #Convert the POS tags to list nested list
   columnPOS<-strsplit(columnPOS,"\n")
   
   #Search the list for the tags that match, and keep the matching indices in a list
@@ -975,7 +931,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
   #Some clean up to get rid of white space- all of this prob already covered in the ColumnCleanUp function but for investigation later
   text<-lapply(text,function(x) gsub("[[:punct:]]+"," ",x))
   #Prepare the list to use as a lookup:
-  tofind <-tolower(list2)
+  tofind <-paste(tolower(list2),collapse="|")
   
   #Prepare the second list to use as a lookup
   EventList<-unique(tolower(unlist(list1,use.names = FALSE)))
@@ -986,7 +942,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
     #Cleaning
     x<-trimws(x)
 
-    #browser()
+    
     
     #Prepare the text so that all empty text is replaced with NA and 
     #ready for processing
@@ -1003,7 +959,6 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
     x1 <- str_extract_all(tolower(x),tolower(paste(unlist(list1), collapse="|")))
     i1 <- which(lengths(x1) > 0)
     
-#browser
     
     try(if(any(i1)) {
       EventList %>%

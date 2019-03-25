@@ -134,6 +134,11 @@ data(PathDataFrameFinal)
 
 ```
   
+  
+  
+  
+  
+  
 ```{r Prep}
 
 ######################################### Data cleaning & Data merging######################################### 
@@ -152,12 +157,19 @@ MyPath<-textPrep(PathDataFrameFinal$PathReportWhole,mywordsPath)
 ```
 
 
+
+
+
+
 ```{r Merge}
 #########################################  Data merging ######################################### 
 #Now merge the two
 FinalDataset<-Endomerge2(MyOGD,"dateofprocedure","hospitalnumber",MyPath,"datereceived","hospitalnumber")
 
 ```
+
+
+
 
 
 ```{r Clean}
@@ -172,6 +184,13 @@ FinalDataset<-cbind(EndoscMeds(FinalDataset$medications),FinalDataset)
 FinalDataset$instrument<-EndoscInstrument(FinalDataset$instrument)
 ```
 
+
+
+
+
+
+
+
 ```{r Extrapolate1- calculated and keyword}
 ######################################### Data accordionisation######################################### 
 #Now extrapolation with histology
@@ -184,15 +203,18 @@ FinalDataset<-cbind(FinalDataset,HistolTypeAndSiteToJoin)
 #Probably needs a paste collapse first- maybe even as part of the function itself
 ```
 
+
+
+
+
+
+
 ```{r Extrapolate2- colocation}
 #Colocation extrapolation
 #FinalDataset$EndoscopyEvent<-unlist(EntityPairs_TwoSentence(FinalDataset$findings,LocationList(),EventList()))
 FinalDataset$EndoscopyEvent<-EndoscopyEvent(FinalDataset,"findings","procedureperformed","macroscopicdescription","Original.x")
 
 #Temporal colocation. As an example, with histology. This requires udpipe to be downloaded as can't have it as part of the function:
-library(udpipe)
-udmodel <- udpipe_download_model(language = "english")
-udmodel_english <- udpipe_load_model(file = udmodel$file_model)
 FinalDataset$Temporal<-Temporal(FinalDataset$findings)
 
 ```
@@ -200,11 +222,11 @@ FinalDataset$Temporal<-Temporal(FinalDataset$findings)
 ```{r Disease1-Barretts}
 ######################################### Disease specific functions ######################################### 
 
-FinalDatasetBarr<-Barretts_PragueScore(FinalDataset,'findings','Original.y')
+FinalDatasetBarr<-Barretts_PragueScore(FinalDataset,'findings','Original.x')
 FinalDatasetBarr$IMorNoIM<-Barretts_PathStage(FinalDatasetBarr,"Original.x")
 FinalDatasetBarr$FUType<-Barretts_FUType(FinalDatasetBarr,"CStage","MStage","IMorNoIM")
 FinalDatasetBarr$Paris<-BarrettsParisEMR(FinalDatasetBarr$procedureperformed,FinalDatasetBarr$findings)
-BarrettsBxQual(FinalDatasetBarr,'Date.x','pHospitalNum','endoscopist')
+BarrettsBxQual2<-BarrettsBxQual(FinalDatasetBarr,'Date.x','pHospitalNum','endoscopist')
 
 
 
@@ -230,27 +252,12 @@ ff<-HowManyOverTime(FinalDatasetBarr,'indications','Date.x','.*')
 
 
 
-library(MASS)
-# Fit the full model 
-data<-na.omit(NegImpALL_BRAVO_WithImpNoMissing)
-full.model <- glm(AcidRefluxBRAVO ~ ., data = data)
-# Stepwise regression model
-step.model <- stepAIC(full.model, direction = "both", trace = FALSE)
-summary(step.model)
-
-library(pROC)
-predpr <- predict(full.model,type=c("response"))
-roccurve <- roc(AcidRefluxBRAVO ~ predpr, data = data)
-plot(roccurve)
-auc(roccurve)
-
-detach("package:MASS", unload=TRUE)
 
 
 ```
 
 ```{r DataViz}
-#Univariate analysis:
+
 
 
 
