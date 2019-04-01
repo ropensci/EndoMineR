@@ -1,4 +1,4 @@
-#Throughput functions
+#Work in progress. This will contain functions that assess patient flow and other management issues in endoscopy
 
 #eg number of certain type of endocopy done and graphical
 

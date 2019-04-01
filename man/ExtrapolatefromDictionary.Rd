@@ -24,12 +24,12 @@ with the extracted terms as opposed to changing it in place
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-MypathExtraction<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+MypathExtraction<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 names(MypathExtraction)[names(MypathExtraction) == 'Datereceived'] <- 'Dateofprocedure'
-MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
+MypathExtraction$datereceived <- as.Date(MypathExtraction$datereceived)
 # The function then standardises the histology terms through a series of
 # regular expressions
-ll<-ExtrapolatefromDictionary(Mypath$Histology,HistolType())
+ll<-ExtrapolatefromDictionary(Mypath$histology,HistolType())
 rm(MypathExtraction)
 }
 \keyword{Withdrawal}
