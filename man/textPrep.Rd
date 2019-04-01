@@ -4,7 +4,8 @@
 \alias{textPrep}
 \title{textPrep function}
 \usage{
-textPrep(inputText, delim, NegEx = c("TRUE", "FALSE"))
+textPrep(inputText, delim, NegEx = c("TRUE", "FALSE"),
+  Extractor = c("1", "2"), ExtractPOS = c("1", "2"))
 }
 \arguments{
 \item{inputText}{The relevant pathology text column}
@@ -23,8 +24,10 @@ accorsing to the lexicons, removing negative expressions
 and lower casing everything.
 }
 \examples{
-# CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
-
+mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+"Date received:","Clinical Details:","Macroscopic description:",
+"Histology:","Diagnosis:")
+CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx=TRUE,Extractor=1,ExtractPOS=2)
 }
 \keyword{Find}
 \keyword{and}

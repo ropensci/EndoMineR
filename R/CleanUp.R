@@ -104,12 +104,18 @@ if (getRversion() >= "2.15.1")
 #' @param inputText The relevant pathology text column
 #' @param delim the delimitors so the extractor can be used
 #' @param NegEx parameter to say whether the NegativeRemove function used.
+#' @param Extractor this states which Extractor you want to use. 1 is 
+#' Extractor 1 (for uniformly ordered headers), 2 is Extractor2 for
+#' text when headers are sometimes missing
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a string vector.
-#' @examples # CleanResults<-textPrep(TheOGDReportFinal$OGDReportWhole)
-#' 
-textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2')){
+#' @examples mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx=TRUE,Extractor=1,ExtractPOS=2)
+
+textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'),ExtractPOS=c('1','2')){
   
   #1. Flatten the text
   inputText<-tolower(inputText)
@@ -157,30 +163,61 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
   standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
   standardisedTextOutput<-lapply(standardisedTextOutput, function(x) paste0(unlist(x),collapse="\n"))
   
-  #Create the dataframe with all the POS extracted:
-  MyPOSframe<-EndoPOS(as.character(standardisedTextOutput))
+
   
   
-  #Create the dataframe with the extraction according to delimiters:
+  #If the more complex Extractor is required:
   if (Extractor==1)
   {
-  delimextract<-Extractor(MyPOSframe$sentence,tolower(delim))
+    MyCompleteFrame<-Extractor(as.character(standardisedTextOutput),tolower(delim))
   }
+  
+  
+  #If the normal Extractor is required:
   if (missing(Extractor)||Extractor==2)
   {
-    delimextract<-Extractor(MyPOSframe$sentence,tolower(delim))
+    
+    #Convert the delimiters into a list and use it to initiate an empty data frame 
+    #which also contains the original column:
+    #EndoscTree<-list(delim)
+    
+    easydf <- data.frame(matrix(ncol = length(delim),nrow=length(inputText)))
+    
+    #Make sure the delimiters are lower case as the text will be by now
+    delim<-tolower(delim)
+    #Name the new dataframe columns
+    #colnames(easydf)<-delim
+    easydf$inputText<-inputText
+    for(i in 1:(length(delim)-1)) {
+      MyCompleteFrame<-Extractor2(easydf,'inputText',as.character(delim[i]),
+                       as.character(delim[i+1]),as.character(delim[i]))
+    }
+    
   }
   
-  #Create a column in both dataframes that can act as a join
-  MyPOSframe$RowIndex<-as.numeric(rownames(MyPOSframe))
-  delimextract$RowIndex<-as.numeric(rownames(delimextract))
+
+  #Optionally add the POS (parameter driven)
   
+  if (ExtractPOS==1)
+  {
+    #Create the dataframe with all the POS extracted:
+    MyPOSframe<-EndoPOS(as.character(standardisedTextOutput))
+    
+    #Create a column in both dataframes that can act as a join
+    MyPOSframe$RowIndex<-as.numeric(rownames(MyPOSframe))
+    MyCompleteFrame$RowIndex<-as.numeric(rownames(MyCompleteFrame))
+    
+    #Now merge the POS tags and the extraction:
+    MyCompleteFrame<-merge(delimextract,MyPOSframe,by="RowIndex")
+    MyCompleteFrame<-data.frame(MyCompleteFrame,stringsAsFactors = FALSE)
+  }
+  if (missing(ExtractPOS)||ExtractPOS==2)
+  {
+    MyCompleteFrame<-MyCompleteFrame
+  }
   
-  #Now merge the POS tags and the extraction:
-  MyCompleteFrame<-merge(delimextract,MyPOSframe,by="RowIndex")
-  
-  MyCompleteFrame<-data.frame(MyCompleteFrame,stringsAsFactors = FALSE)
-  names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
+    #Last minute clean up:
+    names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
   
   return(MyCompleteFrame)
 }
@@ -293,6 +330,127 @@ EndoPOS<-function(inputString){
   #Newxdoc$sentence<-OriginalReport
   return(Newxdoc)
 }
+
+
+#' Extracts the columns from the raw report
+#'
+#' This is the main extractor for the Endoscopy and Histology report.
+#' This depends on the user creating a list of words or characters that
+#' act as the words that should be split against. The list is then fed to the
+#' Extractor in a loop so that it acts as the beginning and the end of the
+#' regex used to split the text. Whatever has been specified in the list
+#' is used as a column header. Column headers don't tolerate special characters
+#' like : or ? and / and don't allow numbers as the start character so these
+#' have to be dealt with in the text before processing
+#'
+#' @param inputString the column to extract from
+#' @param delim the vector of words that will be used as the boundaries to
+#' extract against
+#' @importFrom stringr str_extract
+#' @importFrom tidyr separate
+#' @importFrom rlang sym
+#' @keywords Extraction
+#' @export
+#' @examples
+#' # As column names cant start with a number, one of the dividing
+#' # words has to be converted
+#' # A list of dividing words (which will also act as column names)
+#' # is then constructed
+#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+#' "Date received:","Clinical Details:","Macroscopic description:",
+#' "Histology:","Diagnosis:")
+#' Mypath2<-Extractor(PathDataFrameFinal$PathReportWhole,mywords)
+#'
+
+Extractor <- function(inputString, delim) {
+  
+  #Save inputString so can be merge back in as the origincal for later
+  inputStringForLater<- inputString
+  
+  #Create dataframe for tidyverse usage
+  inputStringdf <- data.frame(inputString,stringsAsFactors = FALSE)
+  
+  #Do the separation according to delimiters
+  inputStringdf <- inputStringdf %>%
+    tidyr::separate(inputString, into = c("added_name",delim),
+                    sep = paste(delim, collapse = "|"),
+                    extra = "drop", fill = "right")
+  
+  #Make sure columns names are correct
+  names(inputStringdf) <- gsub(".", "", names(inputStringdf), fixed = TRUE)
+  
+  #Get rid of the errant first column 
+  inputStringdf <- inputStringdf [,-1]
+  
+  #Add the original column back in so have the original reference
+  inputStringdf$Original<- inputString
+  inputStringdf <-data.frame(inputStringdf,stringsAsFactors = FALSE)
+  return(inputStringdf)
+}
+
+
+
+
+
+#' Extractor2
+#'
+#' This is the alternative extractor for the Endoscopy and Histology report.
+#' THis performs the same essentially as the main extractor but is useful when the
+#' semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
+#' As per the main Extractor, This function on the user creating a list of words or characters that
+#' act as the words that should be split against. The list is then fed to the
+#' Extractor in a loop so that it acts as the beginning and the end of the
+#' regex used to split the text. Whatever has been specified in the list
+#' is used as a column header. Column headers don't tolerate special characters
+#' like : or ? and / and don't allow numbers as the start character so these
+#' have to be dealt with in the text before processing
+#'
+#' @param x the dataframe
+#' @param y the column to extract from
+#' @param stra the start of the boundary to extract
+#' @param strb the end of the boundary to extract
+#' @param t the column name to create
+#' @importFrom stringr str_extract
+#' @keywords Extraction
+#' @export
+#' @examples v<-TheOGDReportFinal
+#' Myendo<-TheOGDReportFinal
+#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
+#' Myendo$OGDReportWhole)
+#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
+#' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
+#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
+#' 'Findings:','Endoscopic Diagnosis:')
+#' for(i in 1:(length(EndoscTree)-1)) {
+#'  Myendo<-Extractor2(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
+#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
+#' }
+#' res<-Myendo
+
+
+Extractor2 <- function(x, y, stra, strb, t) {
+  
+  t <- gsub("[^[:alnum:],]", " ", t)
+  
+  t <- gsub(" ", "", t, fixed = TRUE)
+  
+  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
+                                                              "(.*)", strb, sep = ""), dotall = TRUE))
+  x[, t] <- gsub("\\\\.*", "", x[, t])
+  
+  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
+  x[, t] <- gsub("       ", "", x[, t])
+  x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
+  if (strb != "") {
+    x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
+  }
+  x[, t] <- gsub("       ", "", x[, t])
+  x[, t]<- ColumnCleanUp(x[, t])
+  
+  
+  return(x)
+}
+
 
 
 #' Dictionary In Place Replace
@@ -569,133 +727,6 @@ ColumnCleanUp <- function(vector) {
 
 
 
-############# Main extraction ################
-
-
-#' Extracts the columns from the raw report
-#'
-#' This is the main extractor for the Endoscopy and Histology report.
-#' This depends on the user creating a list of words or characters that
-#' act as the words that should be split against. The list is then fed to the
-#' Extractor in a loop so that it acts as the beginning and the end of the
-#' regex used to split the text. Whatever has been specified in the list
-#' is used as a column header. Column headers don't tolerate special characters
-#' like : or ? and / and don't allow numbers as the start character so these
-#' have to be dealt with in the text before processing
-#'
-#' @param inputString the column to extract from
-#' @param delim the vector of words that will be used as the boundaries to
-#' extract against
-#' @importFrom stringr str_extract
-#' @importFrom tidyr separate
-#' @importFrom rlang sym
-#' @keywords Extraction
-#' @export
-#' @examples
-#' # As column names cant start with a number, one of the dividing
-#' # words has to be converted
-#' # A list of dividing words (which will also act as column names)
-#' # is then constructed
-#' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#' "Date received:","Clinical Details:","Macroscopic description:",
-#' "Histology:","Diagnosis:")
-#' Mypath2<-Extractor(PathDataFrameFinaL$PathReportWhole,mywords)
-#'
-
-Extractor <- function(inputString, delim) {
-  
-  #Save inputString so can be merge back in as the origincal for later
-  inputStringForLater<- inputString
-  
-  #Create dataframe for tidyverse usage
-  inputStringdf <- data.frame(inputString,stringsAsFactors = FALSE)
-  
-  #Do the separation according to delimiters
-  inputStringdf <- inputStringdf %>%
-    tidyr::separate(inputString, into = c("added_name",delim),
-                    sep = paste(delim, collapse = "|"),
-                    extra = "drop", fill = "right")
-  
-  #Make sure columns names are correct
-  names(inputStringdf) <- gsub(".", "", names(inputStringdf), fixed = TRUE)
- 
-  #Get rid of the errant first column 
-  inputStringdf <- inputStringdf [,-1]
-  
-  #Add the original column back in so have the original reference
-  inputStringdf$Original<- inputString
-  inputStringdf <-data.frame(inputStringdf,stringsAsFactors = FALSE)
-  return(inputStringdf)
-}
-
-
-
-
-
-#' Extractor2
-#'
-#' This is the alternative extractor for the Endoscopy and Histology report.
-#' THis performs the same essentially as the main extractor but is useful when the
-#' semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
-#' As per the main Extractor, This function on the user creating a list of words or characters that
-#' act as the words that should be split against. The list is then fed to the
-#' Extractor in a loop so that it acts as the beginning and the end of the
-#' regex used to split the text. Whatever has been specified in the list
-#' is used as a column header. Column headers don't tolerate special characters
-#' like : or ? and / and don't allow numbers as the start character so these
-#' have to be dealt with in the text before processing
-#'
-#' @param x the dataframe
-#' @param y the column to extract from
-#' @param stra the start of the boundary to extract
-#' @param strb the end of the boundary to extract
-#' @param t the column name to create
-#' @importFrom stringr str_extract
-#' @keywords Extraction
-#' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
-#' Myendo$OGDReportWhole)
-#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
-#' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
-#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
-#' 'Findings:','Endoscopic Diagnosis:')
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor2(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' res<-Myendo
-
-
-Extractor2 <- function(x, y, stra, strb, t) {
-  x <- data.frame(x)
-  t <- gsub("[^[:alnum:],]", " ", t)
-  
-  t <- gsub(" ", "", t, fixed = TRUE)
-  
-  
-  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
-                                                              "(.*)", strb, sep = ""), dotall = TRUE))
-  
-  
-  x[, t] <- gsub("\\\\.*", "", x[, t])
-  
-  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
-  x[, t] <- gsub("       ", "", x[, t])
-  x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
-  if (strb != "") {
-    x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
-  }
-  x[, t] <- gsub("       ", "", x[, t])
-  x[, t]<- ColumnCleanUp(x[, t])
-  
-  
-  return(x)
-}
-
-
-
 
 
 
@@ -758,7 +789,7 @@ Loan Scope \\(specify\\s*serial no|\\)|-.*|,.*|
   return(EndoInstrument)
 }
 
-############## Extraction Tools ###################
+############## Extraction Utilities - Basic ###################
 
 
 #' Extract sentences with the POS tags desired
@@ -818,12 +849,12 @@ POS_Extract<-function(POS_seq,columnPOS,columnSentence){
 #' mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' MypathExtraction<-Extractor(PathDataFrameFinal,"PathReportWhole",mywords)
+#' MypathExtraction<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 #' names(MypathExtraction)[names(MypathExtraction) == 'Datereceived'] <- 'Dateofprocedure'
-#' MypathExtraction$Dateofprocedure <- as.Date(MypathExtraction$Dateofprocedure)
+#' MypathExtraction$datereceived <- as.Date(MypathExtraction$datereceived)
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions
-#' ll<-ExtrapolatefromDictionary(Mypath$Histology,HistolType())
+#' ll<-ExtrapolatefromDictionary(Mypath$histology,HistolType())
 #' rm(MypathExtraction)
 
 
@@ -876,7 +907,7 @@ ExtrapolatefromDictionary<-function(inputString,list){
   return(ToIndex)
 }
 
-############## Colocate ###################
+############## Extraction Utilities- Colocation ###################
 
 #' EntityPairs_OneSentence 
 #'
