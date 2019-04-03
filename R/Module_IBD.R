@@ -13,7 +13,7 @@
 #' # @importFrom stringr str_extract
 #' # @keywords Extraction
 #' # @export
-#' #@examples v<-TheOGDReportFinal
+#' # @examples v<-TheOGDReportFinal
 #' #' Myendo<-TheOGDReportFinal
 #' #' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
 #' #' Myendo$OGDReportWhole)
