@@ -38,7 +38,7 @@ EndoscTree <-
     "Endoscopic Diagnosis:"
   )
 
-MyendoColon <-Extractor(MyendoColon,"OGDReportWhole",EndoscTree)
+MyendoColon <-Extractor(MyendoColon$OGDReportWhole,EndoscTree)
 
 
 
@@ -47,7 +47,7 @@ mywords<-c("Hospital Number","Patient Name","DOB:","General Practitioner:",
            "Macroscopic description:",
            "Histology:","Diagnosis:")
 
-MypathColon <-Extractor(PathDataFrameFinalColon,"PathReportWhole",mywords)
+MypathColon <-Extractor(PathDataFrameFinalColon$PathReportWhole,mywords)
 names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
 MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
 

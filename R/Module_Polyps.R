@@ -1,0 +1,80 @@
+########################### Diagnostic yield functions #######
+
+#' Create GRS metrics by endoscopist (X-ref with pathology)
+#'
+#' This extracts the polyps types from the data
+#' (for colonoscopy and flexible sigmoidosscopy data)
+#' and output the adenoma,adenocarcinoma and
+#' hyperplastic detection rate by endoscopist as well
+#' as overall number of colonoscopies.
+#' This will be extended to other GRS outputs in the future.
+#' @param dataframe The dataframe
+#' @param ProcPerformed The column containing the Procedure type performed
+#' @param Endo_Endoscopist column containing the Endoscopist name
+#' @param Dx The column with the Histological diagnosis
+#' @param Histol The column with the Histology text in it
+#' @importFrom dplyr group_by_ do full_join
+#' @keywords Withdrawal
+#' @export
+#' @examples # Firstly merge histology and endoscopy datasets for the colon:
+#'
+#' MypathColon<-PathDataFrameFinalColon
+#' MyendoColon <- ColonFinal
+#' MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
+#' MyendoColon$OGDReportWhole)
+#' EndoscTree <-c("Hospital Number:","Patient Name:","General Practitioner:",
+#'        "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
+#'        "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
+#'        "Findings:","Endoscopic Diagnosis:")
+#' MyendoColon<-Extractor(MyendoColon$OGDReportWhole,EndoscTree)
+#' Histoltree <-c(
+#'     "Hospital Number:","Patient Name:","DOB:","General Practitioner:",
+#'     "Date received:","Clinical Details","Nature of specimen","Macroscopic description:","Histology",
+#'     "Diagnosis")
+#'
+#' MypathColon <-Extractor(MypathColon$PathReportWhole,Histoltree)
+#'
+#' names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
+#' MypathColon$dateofprocedure <- as.Date(MypathColon$dateofprocedure)
+#' vColon <-Endomerge2(MypathColon, "dateofprocedure","hospitalnumber",
+#'                     MyendoColon, "dateofprocedure","hospitalNumber")
+#' nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
+#' 'Endoscopist','Diagnosis','Histology')
+#' rm(vColon)
+#' rm(MypathColon)
+#' rm(MyendoColon)
+
+
+GRS_Type_Assess_By_Unit <-
+  function(dataframe,
+           ProcPerformed,
+           Endo_Endoscopist,
+           Dx,
+           Histol) {
+    dataframe <- data.frame(dataframe)
+    dataframe <- dataframe[grepl("Colonoscopy", dataframe[, ProcPerformed]),]
+    
+    #Function should get proportions of a procedure that result in a finding:
+    
+    Adenoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma=(sum(grepl("[Aa]denoma", Original.y))/dplyr::n())*100)
+    Adenocarcinoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma=(sum(grepl(".*denoca.*", Original.y))/dplyr::n())*100)
+    HGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD=(sum(grepl(".*[Hh]igh [Gg]rade.*", Original.y))/dplyr::n())*100)
+    LGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD=(sum(grepl(".*[Ll]ow [Gg]rade.*", Original.y))/dplyr::n())*100)
+    Serrated<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated=(sum(grepl(".*[Ss]errated.*", Original.y))/dplyr::n())*100)
+    Hyperplastic<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic=(sum(grepl(".*yperplastic.*", Original.y))/dplyr::n())*100)
+    
+    FinalTable <-
+      full_join(Adenoma, Adenocarcinoma, by = Endo_Endoscopist)
+    FinalTable <-
+      full_join(FinalTable, HGD, by = Endo_Endoscopist)
+    FinalTable <-
+      full_join(FinalTable, LGD, by = Endo_Endoscopist)
+    FinalTable <-
+      full_join(FinalTable, Serrated, by = Endo_Endoscopist)
+    FinalTable <-
+      full_join(FinalTable, Hyperplastic, by = Endo_Endoscopist)
+    
+    # Need to add the total colonoscopy count in here
+    FinalTable<-data.frame(FinalTable)
+    return(FinalTable)
+  }
