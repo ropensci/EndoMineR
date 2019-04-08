@@ -132,7 +132,6 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 #' @keywords Pathology extraction
 #' @export
 #' @importFrom rlang sym
-#' @importFrom dplyr case_when
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data 
 #' # cleaning as part of the package.
