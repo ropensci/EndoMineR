@@ -191,7 +191,6 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' @param IMorNoIM IMorNoIM column
 #' @keywords Follow-Up
 #' @importFrom stringr str_extract str_replace
-#' @importFrom dplyr case_when
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
