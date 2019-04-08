@@ -36,6 +36,43 @@
 #' }
 "ColonFinal"
 
+#' Fake Lower GI Endoscopy Set including Pathology
+#'
+#' A dataset containing fake lower GI endoscopy reports and pathology reports all
+#' pre-extracted
+#' 
+#'
+#' @format A data frame with 2000 rows and 26 variables:
+#' \describe{
+#'   \item{pHospitalNum}{The HospitalNum, in text}
+#'   \item{PatientName.x}{The PatientName, in text}
+#'   \item{GeneralPractitioner.x}{The GeneralPractitioner report, in text}
+#'   \item{Date.x}{The Date, in date}
+#'   \item{Endoscopist}{The Endoscopist report, in text}
+#'   \item{Secondendoscopist}{The Secondendoscopist report, in text}
+#'   \item{Medications}{The Medications report, in text}
+#'   \item{Instrument}{The Instrument report, in text}
+#'   \item{ExtentofExam}{The ExtentofExam report, in text}
+#'   \item{Indications}{The Indications report, in text}
+#'   \item{ProcedurePerformed}{The ProcedurePerformed report, in text}
+#'   \item{Findings}{The Findings report, in text}
+#'   \item{EndoscopicDiagnosis}{The EndoscopicDiagnosis report, in text}
+#'   \item{Original.x}{The Original endosocpy report, in text}
+#'   \item{eHospitalNum}{The HospitalNum, in text}
+#'   \item{PatientName.y}{The PatientName, in text}
+#'   \item{DOB}{The DOB, in date}
+#'   \item{GeneralPractitioner.y}{The GeneralPractitioner report, in text}
+#'   \item{Date.y}{The Date.y , in date}
+#'   \item{ClinicalDetails}{The ClinicalDetails report, in text}
+#'   \item{Natureofspecimen}{The Natureofspecimen report, in text}
+#'   \item{Macroscopicdescription}{The Macroscopicdescription report, in text}
+#'   \item{Histology}{The Histology report, in text}
+#'   \item{Diagnosis}{The Diagnosis report, in text}
+#'   \item{Original.y}{The whole report, in text}
+#'   \item{Days}{Days, in numbers}
+#' }
+"vColon"
+
 #' Fake Lower GI Pathology Set
 #'
 #' A dataset containing fake pathology reports for lower GI endoscopy tissue specimens.

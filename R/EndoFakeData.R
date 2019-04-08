@@ -6,7 +6,9 @@
 #'
 #' Merges endoscopy and histology data. This takes the endoscopy dataset date
 #' performed and the hospital number column
-#' and merges with the equivalent column in the pathology dataset
+#' and merges with the equivalent column in the pathology dataset. This is
+#' merged within a 7 day time frame as pathology is often reported after 
+#' endoscopic
 #' @param x Endoscopy dataframe
 #' @param EndoDate The date the endoscopy was performed
 #' @param EndoHospNumber The unique hospital number in the endoscopy dataset
