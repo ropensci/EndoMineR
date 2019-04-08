@@ -5,7 +5,7 @@
 \title{textPrep function}
 \usage{
 textPrep(inputText, delim, NegEx = c("TRUE", "FALSE"),
-  Extractor = c("1", "2"), ExtractPOS = c("1", "2"))
+  Extractor = c("1", "2"))
 }
 \arguments{
 \item{inputText}{The relevant pathology text column}
@@ -36,7 +36,7 @@ are removed and POS tagging is not performed.
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extractor="1",ExtractPOS="2")
+CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extractor="1")
 }
 \keyword{Find}
 \keyword{and}
