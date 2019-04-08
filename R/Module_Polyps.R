@@ -16,13 +16,9 @@
 #' @importFrom dplyr group_by_ do full_join
 #' @keywords Withdrawal
 #' @export
-#' @examples # Firstly merge histology and endoscopy datasets for the colon:
-#'
-#' nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
+#' @examples nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
 #' 'Endoscopist','Diagnosis','Histology')
-#' rm(vColon)
-#' rm(MypathColon)
-#' rm(MyendoColon)
+
 
 
 GRS_Type_Assess_By_Unit <-
