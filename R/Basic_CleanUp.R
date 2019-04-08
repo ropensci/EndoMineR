@@ -118,14 +118,13 @@ if (getRversion() >= "2.15.1")
 #' @examples mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx=TRUE,Extractor=1,ExtractPOS=2)
+#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extractor="1",ExtractPOS="2")
 
 textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'),ExtractPOS=c('1','2')){
   
   #1. Flatten the text
   inputText<-tolower(inputText)
   
-
   #1b General cleanup tasks
   inputText <- ColumnCleanUp(inputText)
   
@@ -148,7 +147,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'),
   
   #Need to write here if the NegativeRemove has been ticked then should use it
   
-  if (missing(NegEx)||NegEx==TRUE)
+  if (missing(NegEx)||NegEx=="TRUE")
     {
   inputText<-NegativeRemove(inputText)
   }
@@ -172,14 +171,14 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'),
   
   
   #If the more complex Extractor is required:
-  if (Extractor==1)
+  if (missing(Extractor)||Extractor=="1")
   {
     MyCompleteFrame<-Extractor(as.character(standardisedTextOutput),tolower(delim))
   }
   
   
   #If the normal Extractor is required:
-  if (missing(Extractor)||Extractor==2)
+  if (Extractor=="2")
   {
     
     #Convert the delimiters into a list and use it to initiate an empty data frame 
@@ -203,7 +202,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'),
 
   #Optionally add the POS (parameter driven)
   
-  if (ExtractPOS==1)
+  if (ExtractPOS=="1")
   {
     #Create the dataframe with all the POS extracted:
     MyPOSframe<-EndoPOS(as.character(standardisedTextOutput))
@@ -216,7 +215,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'),
     MyCompleteFrame<-merge(MyCompleteFrame,MyPOSframe,by="RowIndex")
     MyCompleteFrame<-data.frame(MyCompleteFrame,stringsAsFactors = FALSE)
   }
-  if (missing(ExtractPOS)||ExtractPOS==2)
+  if (missing(ExtractPOS)||ExtractPOS=="2")
   {
     MyCompleteFrame<-MyCompleteFrame
   }
@@ -390,7 +389,7 @@ Extractor <- function(inputString, delim) {
   #Add the original column back in so have the original reference
   inputStringdf$Original<- inputString
   inputStringdf <-data.frame(inputStringdf,stringsAsFactors = FALSE)
-  names(inputStringdf)<-gsub(".","",names(inputStringdf))
+  names(inputStringdf)<-gsub(".","",names(inputStringdf),fixed=TRUE)
   return(inputStringdf)
 }
 

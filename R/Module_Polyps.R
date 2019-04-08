@@ -18,26 +18,6 @@
 #' @export
 #' @examples # Firstly merge histology and endoscopy datasets for the colon:
 #'
-#' MypathColon<-PathDataFrameFinalColon
-#' MyendoColon <- ColonFinal
-#' MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
-#' MyendoColon$OGDReportWhole)
-#' EndoscTree <-c("Hospital Number:","Patient Name:","General Practitioner:",
-#'        "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#'        "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
-#'        "Findings:","Endoscopic Diagnosis:")
-#' MyendoColon<-Extractor(MyendoColon$OGDReportWhole,EndoscTree)
-#' Histoltree <-c(
-#'     "Hospital Number:","Patient Name:","DOB:","General Practitioner:",
-#'     "Date received:","Clinical Details","Nature of specimen","Macroscopic description:","Histology",
-#'     "Diagnosis")
-#'
-#' MypathColon <-Extractor(MypathColon$PathReportWhole,Histoltree)
-#'
-#' names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
-#' MypathColon$dateofprocedure <- as.Date(MypathColon$dateofprocedure)
-#' vColon <-Endomerge2(MypathColon, "dateofprocedure","hospitalnumber",
-#'                     MyendoColon, "dateofprocedure","hospitalNumber")
 #' nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
 #' 'Endoscopist','Diagnosis','Histology')
 #' rm(vColon)

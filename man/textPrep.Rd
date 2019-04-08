@@ -36,7 +36,7 @@ are removed and POS tagging is not performed.
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx=TRUE,Extractor=1,ExtractPOS=2)
+CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extractor="1",ExtractPOS="2")
 }
 \keyword{Find}
 \keyword{and}

@@ -15,51 +15,51 @@ v <-
 
 
 #For the colon data
-MypathColon<-PathDataFrameFinalColon
-MyendoColon <- ColonFinal
-MyendoColon$OGDReportWhole <-
-  gsub("2nd Endoscopist:",
-       "Second endoscopist:",
-       MyendoColon$OGDReportWhole)
-EndoscTree <-
-  c(
-    "Hospital Number:",
-    "Patient Name:",
-    "General Practitioner:",
-    "Date of procedure:",
-    "Endoscopist:",
-    "Second endoscopist:",
-    "Medications",
-    "Instrument",
-    "Extent of Exam:",
-    "Indications:",
-    "Procedure Performed:",
-    "Findings:",
-    "Endoscopic Diagnosis:"
-  )
-
-MyendoColon <-Extractor(MyendoColon$OGDReportWhole,EndoscTree)
-
-
-
-mywords<-c("Hospital Number","Patient Name","DOB:","General Practitioner:",
-           "Date received:","Clinical Details:",
-           "Macroscopic description:",
-           "Histology:","Diagnosis:")
-
-MypathColon <-Extractor(PathDataFrameFinalColon$PathReportWhole,mywords)
-names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
-MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
-
-vColon <-
-  Endomerge2(
-    MyendoColon,
-    "Dateofprocedure",
-    "HospitalNumber",
-    MypathColon,
-    "Dateofprocedure",
-    "HospitalNumber"
-  )
+# MypathColon<-PathDataFrameFinalColon
+# MyendoColon <- ColonFinal
+# MyendoColon$OGDReportWhole <-
+#   gsub("2nd Endoscopist:",
+#        "Second endoscopist:",
+#        MyendoColon$OGDReportWhole)
+# EndoscTree <-
+#   c(
+#     "Hospital Number:",
+#     "Patient Name:",
+#     "General Practitioner:",
+#     "Date of procedure:",
+#     "Endoscopist:",
+#     "Second endoscopist:",
+#     "Medications",
+#     "Instrument",
+#     "Extent of Exam:",
+#     "Indications:",
+#     "Procedure Performed:",
+#     "Findings:",
+#     "Endoscopic Diagnosis:"
+#   )
+# 
+# MyendoColon <-Extractor(MyendoColon$OGDReportWhole,EndoscTree)
+# 
+# 
+# 
+# mywords<-c("Hospital Number","Patient Name","DOB:","General Practitioner:",
+#            "Date received:","Clinical Details:",
+#            "Macroscopic description:",
+#            "Histology:","Diagnosis:")
+# 
+# MypathColon <-Extractor(PathDataFrameFinalColon$PathReportWhole,mywords)
+# names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
+# MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
+# 
+# vColon <-
+#   Endomerge2(
+#     MyendoColon,
+#     "Dateofprocedure",
+#     "HospitalNumber",
+#     MypathColon,
+#     "Dateofprocedure",
+#     "HospitalNumber"
+#   )
 
 
 ##### rrrrrrrrrrrrrrrrrrrCleanUp test functions ####
@@ -301,14 +301,11 @@ test_that("MetricByEndoscopist", {
 
 
 
-
 #### GRS_Type_Assess_By_Unit test ####
 
 test_that("GRS_Type_Assess_By_Unit", {
 
- #vColon<-HistolNumbOfBx(vColon$Macroscopicdescription,'specimen')
- #vColon3<-HistolBxSize(vColon2)
- #cbind(vColon3,vColon)
+data(vColon)
  GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed', 
  'Endoscopist','Diagnosis','Histology')
  expect_true(nrow(GRSTable) > 0)
