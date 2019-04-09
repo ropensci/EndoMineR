@@ -812,6 +812,47 @@ ExtrapolatefromDictionary<-function(inputString,list){
   return(ToIndex)
 }
 
+
+#' Extract sentences with the POS tags desired
+#'
+#' This uses udpipe to tag the text. It then compresses all of the text 
+#' so you have continuous POS tagging or the whole text. The udpipe package has to be
+#' pre downloaded to run this.
+#' 
+#'
+#' @param POS_seq The POS tag sequence to extract
+#' @param columnPOS The column with the POS tags
+#' @param columnSentence The column with the sentence
+#' @keywords Macroscopic
+#' @export
+#' @examples #Has to be after POS extraction is done
+#' #mylist<-POS_Extract("NOUN;ADJ;NOUN",MergedUp$upos,MergedUp$sentence)
+#' #MergedUp$Extr<-mylist
+
+
+dev_POS_Extract<-function(POS_seq,columnPOS,columnSentence){
+  #Convert the POS tags to list nested list
+  columnPOS<-strsplit(columnPOS,"\n")
+  
+  #Search the list for the tags that match, and keep the matching indices in a list
+  myIndexes<-lapply(columnPOS,function(x) grep(POS_seq,x))
+  
+  #Get the index for the matched tags
+  
+  #Return the index of the matched tags for the other columns too
+  # Select the corresponding indices for the next column:
+  columnSentence<-strsplit(columnSentence,"\n")
+  
+  #Select the indices
+  my<-Map(`[`, columnSentence, myIndexes)
+  
+  
+  #For each part of the list select out the index of the list:
+  return(my)
+}
+
+
+
 ############## Extraction Utilities- Colocation ###################
 
 #' EntityPairs_OneSentence 
