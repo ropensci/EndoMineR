@@ -52,6 +52,7 @@ if (getRversion() >= "2.15.1")
 #' @param EndoReportColumn2 second column of interest
 #' @importFrom stringr str_extract str_replace str_extract_all
 #' @importFrom purrr map
+#' @importFrom dplyr case_when
 #' @keywords  Prague score
 #' @export
 #' @examples #The example takes the endoscopy demo dataset and searches the
@@ -131,6 +132,7 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 #' @keywords Pathology extraction
 #' @export
 #' @importFrom rlang sym
+#' @importFrom dplyr case_when
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data 
 #' # cleaning as part of the package.
@@ -189,6 +191,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' @param IMorNoIM IMorNoIM column
 #' @keywords Follow-Up
 #' @importFrom stringr str_extract str_replace
+#'@importFrom dplyr case_when
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
@@ -247,6 +250,7 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 #' @param Column Endoscopy report field of interest as a string vector
 #' @param Column2 Another endoscopy report field of interest as a string vector
 #' @keywords Does something with data
+#' @importFrom dplyr case_when
 #' @export
 #' @return a string vector
 #' @examples # 
