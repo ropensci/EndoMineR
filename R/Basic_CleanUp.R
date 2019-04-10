@@ -200,26 +200,8 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
   }
   
 
-  #Optionally add the POS (parameter driven)
   
-  if (ExtractPOS=="1")
-  {
-    #Create the dataframe with all the POS extracted:
-    MyPOSframe<-EndoPOS(as.character(standardisedTextOutput))
-    
-    #Create a column in both dataframes that can act as a join
-    MyPOSframe$RowIndex<-as.numeric(rownames(MyPOSframe))
-    MyCompleteFrame$RowIndex<-as.numeric(rownames(MyCompleteFrame))
-    
-    #Now merge the POS tags and the extraction:
-    MyCompleteFrame<-merge(MyCompleteFrame,MyPOSframe,by="RowIndex")
-    MyCompleteFrame<-data.frame(MyCompleteFrame,stringsAsFactors = FALSE)
-  }
-  if (missing(ExtractPOS)||ExtractPOS=="2")
-  {
-    MyCompleteFrame<-MyCompleteFrame
-  }
-  
+ 
     #Last minute clean up:
     names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
   
@@ -645,9 +627,9 @@ ColumnCleanUp <- function(vector) {
 #' EndoPaste(testList)
 
 
-EndoPaste<-function(x){
-  delim<-paste(names(x))
-  v1<-do.call(paste, c(Map(paste, names(x), x), sep="_"))
+EndoPaste<-function(dfIn){
+  delim<-paste(names(dfIn))
+  v1<-do.call(paste, c(Map(paste, names(dfIn), dfIn), sep="_"))
   df<-data.frame(X1_X2_X3 = unname(v1))
   return(list(df,delim))
 }
