@@ -152,6 +152,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
   inputText<-NegativeRemove(inputText)
   }
   
+  
   #4. Need to map the terms to the lexicons to make sure everything standardised.
   inputText<-DictionaryInPlaceReplace(inputText,LocationList())
   inputText<-DictionaryInPlaceReplace(inputText,EventList())
@@ -199,6 +200,8 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
     
   }
   
+
+
     #Last minute clean up:
     names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
   
@@ -606,10 +609,31 @@ ColumnCleanUp <- function(vector) {
 
 
 
+#' Paste into one
+#'
+#' As spreadsheets are likely to be submitted with pre-segregated data as appears from 
+#' endoscopy software output, these should be remerged prior to cleaning. This function
+#' takes the column headers and places it before each text so that the original
+#' full text is recreated. It will use the column headers as the delimiter. This should 
+#' be used before textPrep as the textPrep function takes a character vector (ie the whole
+#' report and not a segregated one) only
+#' @keywords Merge dataframe columns into one text
+#' @param x the dataframe
+#' @export
+#' @return This returns a list with a dataframe containingone column of the merged text
+#' and a character vector which is the delimiter list for when the textPrep function is used
+#' @examples testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
+#' ), HospitalNumber = c("H55435", "Y3425345", "Z343424"), Text = c("All bad. Not good", 
+#' "Serious issues", "from a land far away")), class = "data.frame", row.names = c(NA, -3L))
+#' EndoMineR::EndoPaste(testList)
 
 
-
-
+EndoPaste<-function(dfIn){
+  delim<-paste(names(dfIn))
+  v1<-do.call(paste, c(Map(paste, names(dfIn), dfIn), sep="_"))
+  df<-data.frame(X1_X2_X3 = unname(v1))
+  return(list(df,delim))
+}
 
 
 
@@ -682,6 +706,11 @@ ExtrapolatefromDictionary<-function(inputString,list){
   
   return(ToIndex)
 }
+
+
+
+
+
 
 ############## Extraction Utilities- Colocation ###################
 
