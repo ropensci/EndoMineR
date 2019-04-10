@@ -620,6 +620,7 @@ ColumnCleanUp <- function(vector) {
 #' report and not a segregated one) only
 #' @keywords Merge dataframe columns into one text
 #' @param x the dataframe
+#' @export
 #' @return This returns a list with a dataframe containingone column of the merged text
 #' and a character vector which is the delimiter list for when the textPrep function is used
 #' @examples testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
