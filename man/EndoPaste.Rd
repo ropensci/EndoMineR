@@ -25,7 +25,7 @@ report and not a segregated one) only
 testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
 ), HospitalNumber = c("H55435", "Y3425345", "Z343424"), Text = c("All bad. Not good", 
 "Serious issues", "from a land far away")), class = "data.frame", row.names = c(NA, -3L))
-EndoPaste(testList)
+EndoMineR::EndoPaste(testList)
 }
 \keyword{Merge}
 \keyword{columns}
