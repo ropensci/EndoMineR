@@ -611,4 +611,5 @@ dev_SensAndSpecif<-function(dataframe,ref,actual){
   stats<-list(Sensitivity=Sensitivity,Specificity=Specificity,PPV=PPV,NPV=NPV,Accuracy=Accuracy)
   
   return(stats)
+}
 

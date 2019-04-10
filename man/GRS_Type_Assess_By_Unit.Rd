@@ -27,12 +27,7 @@ as overall number of colonoscopies.
 This will be extended to other GRS outputs in the future.
 }
 \examples{
-# Firstly merge histology and endoscopy datasets for the colon:
-
 nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
 'Endoscopist','Diagnosis','Histology')
-rm(vColon)
-rm(MypathColon)
-rm(MyendoColon)
 }
 \keyword{Withdrawal}
