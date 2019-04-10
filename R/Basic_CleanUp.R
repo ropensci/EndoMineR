@@ -260,7 +260,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
 #'
 
 dev_EndoPOS<-function(inputString){
-  #Get into a tokenised form first...
+  #Get into a tokenised form first...Like this
   #Have to do this on the raw pre-prepared data so that sentences can be recognised.
   #Get the model from the data folder to save user from having to download it each time.
   udmodel_english<-udpipe_load_model(file = "~/EndoMineR/inst/POS_Corpus/english-ewt-ud-2.3-181115.udpipe")
