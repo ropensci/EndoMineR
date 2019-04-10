@@ -266,7 +266,7 @@ dev_EndoPOS<-function(inputString){
   udmodel_english<-udpipe_load_model(file = "~/EndoMineR/inst/POS_Corpus/english-ewt-ud-2.3-181115.udpipe")
   x <- udpipe_annotate(udmodel_english, x = inputString)
   x2 <- as.data.frame(x)
-  
+  #
   
   
   
