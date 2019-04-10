@@ -152,6 +152,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
   inputText<-NegativeRemove(inputText)
   }
   
+  
   #4. Need to map the terms to the lexicons to make sure everything standardised.
   inputText<-DictionaryInPlaceReplace(inputText,LocationList())
   inputText<-DictionaryInPlaceReplace(inputText,EventList())
@@ -208,7 +209,114 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
   return(MyCompleteFrame)
 }
 
+#' Parts of speech tagging for reports
+#'
+#' This uses udpipe to tag the text. It then compresses all of the text 
+#' so you have continuous POS tagging or the whole text. The udpipe package has to be
+#' pre downloaded to run this.
+#' 
+#'
+#' @param inputString The input string vector
+#' @keywords Macroscopic
+#' @importFrom stringr str_replace
+#' @importFrom udpipe udpipe_download_model udpipe_load_model udpipe_annotate cbind_morphological
+#' @export
+#' @examples library(udpipe)
+#' 
+#' #Just some quick cleaning up- this will be done in the actual data set eventually 
+#' #Myendo$OGDReportWhole<-gsub("\\.\\s+\\,"," ",Myendo$OGDReportWhole)
+#' #Myendo$OGDReportWhole<-gsub("^\\s+\\,"," ",Myendo$OGDReportWhole)
+#' #Myendo$RowIndex<-as.numeric(rownames(Myendo))
+#' 
+#' #We will only use the first 100 
+#' #Myendo2<-head(Myendo,100)
+#' 
+#' #Run the function
+#' #MyPOSframe<-EndoPOS(Myendo2$OGDReportWhole) #returns a dataframe
+#' 
+#' #Then merge the MyPOSframe with the original by row number.
+#' #Myendo$RowIndex<-as.numeric(rownames(Myendo))
+#' #Get the whole merged dataset with all the POS tags and morphological
+#' #and all the dependecies.
+#' #MergedUp<-merge(Myendo2,MyPOSframe,by.x="RowIndex",by.y="doc_id")
 
+
+
+dev_EndoPOS<-function(inputString){
+  #Get into a tokenised form first
+  #Have to do this on the raw pre-prepared data so that sentences can be recognised.
+  #Get the model from the data folder to save user from having to download it each time.
+  udmodel_english<-udpipe_load_model(file = "~/EndoMineR/inst/POS_Corpus/english-ewt-ud-2.3-181115.udpipe")
+  x <- udpipe_annotate(udmodel_english, x = inputString)
+  x2 <- as.data.frame(x)
+  
+  
+  
+  
+  
+  #To get all in one long cell per original document:
+  Newx<-x2 %>% group_by(doc_id,sentence_id)  %>% summarise(upos = paste(upos, collapse=";"),
+                                                           sentence=paste(unique(sentence), collapse=";"),
+                                                           xpos = paste(xpos, collapse=";"),
+                                                           feats = paste(feats, collapse=";"),
+                                                           head_token_id = paste(head_token_id, collapse=";"),
+                                                           dep_rel = paste(dep_rel, collapse=";"),
+                                                           deps = paste(deps, collapse=";"),
+                                                           misc = paste(misc, collapse=";"))%>%group_by(doc_id)
+  #has_morph = paste(has_morph, collapse=";"),
+  #morph_abbr = paste(morph_abbr, collapse=";"),
+  #morph_case = paste(morph_case, collapse=";"),
+  #morph_definite = paste(morph_definite, collapse=";"),
+  #morph_degree = paste(morph_degree, collapse=";"),
+  #morph_gender = paste(morph_gender, collapse=";"),
+  #morph_mood = paste(morph_mood, collapse=";"),
+  #morph_number = paste(morph_number, collapse=";"),
+  #morph_numtype = paste(morph_numtype, collapse=";"),
+  #morph_person = paste(morph_person, collapse=";"),
+  #morph_prontype = paste(morph_prontype, collapse=";"),
+  #morph_tense = paste(morph_tense, collapse=";"),
+  #morph_typo = paste(morph_typo, collapse=";"),
+  #morph_verbform = paste(morph_verbform, collapse=";")
+  #morph_voice = paste(morph_voice, collapse=";"))
+  
+  Newx<-data.frame(Newx)
+  
+  
+  Newxdoc<-Newx %>% 
+    group_by(doc_id) %>% summarise(
+      sentence = paste(sentence, collapse="\n"),
+      upos = paste(upos, collapse="\n"),
+      xpos= paste(collapse="\n"),
+      feats = paste(feats, collapse="\n"),
+      head_token_id = paste(head_token_id, collapse="\n"),
+      dep_rel = paste(dep_rel, collapse="\n"),
+      deps = paste(deps, collapse="\n"),
+      misc = paste(misc, collapse="\n"))
+  #has_morph = paste(has_morph, collapse="\n"),
+  #morph_abbr = paste(morph_abbr, collapse="\n"),
+  #morph_case = paste(morph_case, collapse="\n"),
+  #morph_definite = paste(morph_definite, collapse="\n"),
+  #morph_degree = paste(morph_degree, collapse="\n"),
+  #morph_gender = paste(morph_gender, collapse="\n"),
+  #morph_mood = paste(morph_mood, collapse="\n"),
+  #morph_number = paste(morph_number, collapse="\n"),
+  #morph_numtype = paste(morph_numtype, collapse="\n"),
+  #morph_person = paste(morph_person, collapse="\n"),
+  #morph_poss = paste(morph_poss, collapse="\n"),
+  #morph_prontype = paste(morph_prontype, collapse="\n"),
+  #morph_tense = paste(morph_tense, collapse="\n"),
+  #morph_typo = paste(morph_typo, collapse="\n"),
+  #morph_verbform = paste(morph_verbform, collapse="\n"),
+  #morph_voice = paste(morph_voice, collapse="\n"))
+  
+  # Need to convert the docids as they are alphabetically grouped, to allow merge 
+  # with original dataframe
+  
+  Newxdoc$doc_id<-as.numeric(gsub("doc","",Newxdoc$doc_id))
+  Newxdoc<-data.frame(Newxdoc[order(Newxdoc$doc_id),],stringsAsFactors=FALSE)
+  #Newxdoc$sentence<-OriginalReport
+  return(Newxdoc)
+}
 
 
 #' Extracts the columns from the raw report
@@ -636,10 +744,6 @@ EndoPaste<-function(dfIn){
 
 
 
-
-
-
-
 ############## Extraction Utilities - Basic ###################
 
 #' Extrapolate from Dictionary
@@ -709,6 +813,47 @@ ExtrapolatefromDictionary<-function(inputString,list){
   
   return(ToIndex)
 }
+
+
+#' Extract sentences with the POS tags desired
+#'
+#' This uses udpipe to tag the text. It then compresses all of the text 
+#' so you have continuous POS tagging or the whole text. The udpipe package has to be
+#' pre downloaded to run this.
+#' 
+#'
+#' @param POS_seq The POS tag sequence to extract
+#' @param columnPOS The column with the POS tags
+#' @param columnSentence The column with the sentence
+#' @keywords Macroscopic
+#' @export
+#' @examples #Has to be after POS extraction is done
+#' #mylist<-POS_Extract("NOUN;ADJ;NOUN",MergedUp$upos,MergedUp$sentence)
+#' #MergedUp$Extr<-mylist
+
+
+dev_POS_Extract<-function(POS_seq,columnPOS,columnSentence){
+  #Convert the POS tags to list nested list
+  columnPOS<-strsplit(columnPOS,"\n")
+  
+  #Search the list for the tags that match, and keep the matching indices in a list
+  myIndexes<-lapply(columnPOS,function(x) grep(POS_seq,x))
+  
+  #Get the index for the matched tags
+  
+  #Return the index of the matched tags for the other columns too
+  # Select the corresponding indices for the next column:
+  columnSentence<-strsplit(columnSentence,"\n")
+  
+  #Select the indices
+  my<-Map(`[`, columnSentence, myIndexes)
+  
+  
+  #For each part of the list select out the index of the list:
+  return(my)
+}
+
+
 
 ############## Extraction Utilities- Colocation ###################
 
