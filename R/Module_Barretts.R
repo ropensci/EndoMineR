@@ -52,6 +52,7 @@ if (getRversion() >= "2.15.1")
 #' @param EndoReportColumn2 second column of interest
 #' @importFrom stringr str_extract str_replace str_extract_all
 #' @importFrom purrr map
+#' @importFrom dplyr case_when
 #' @keywords  Prague score
 #' @export
 #' @examples #The example takes the endoscopy demo dataset and searches the
@@ -64,7 +65,6 @@ if (getRversion() >= "2.15.1")
 #'
 #' aa<-Barretts_PragueScore(Myendo,'Findings','OGDReportWhole')
 
-#Change to BarrPrague nee Barretts_PragueScore
 Barretts_PragueScore <- function(dataframe, EndoReportColumn,EndoReportColumn2) {
   dataframe <- data.frame(dataframe)
 
@@ -103,7 +103,6 @@ dataframe<-dataframe %>%
 
 dataframe$MStage<-lapply(dataframe$MStage, function(x) gsub("Insufficient","",x))
 dataframe$MStage<-lapply(dataframe$MStage, function(x) gsub("m","",x))
-
 dataframe$MStage<-suppressWarnings(unlist(lapply(dataframe$MStage, function(x) max(as.numeric(x),na.rm=TRUE))))
 #If there are more than two numbers pick the highest one
 
@@ -131,6 +130,7 @@ dataframe$MStage<-ifelse(is.infinite(dataframe$MStage),ifelse(dataframe$CStage!=
 #' @keywords Pathology extraction
 #' @export
 #' @importFrom rlang sym
+#' @importFrom dplyr case_when
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data 
 #' # cleaning as part of the package.
@@ -189,6 +189,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' @param IMorNoIM IMorNoIM column
 #' @keywords Follow-Up
 #' @importFrom stringr str_extract str_replace
+#' @importFrom dplyr case_when
 #' @export
 #' @examples # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
@@ -243,10 +244,11 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 #' This looks at the Paris grades of each EMR and then creates a heatmap
 #' of pathological grade vs
 #' endoscopic Paris grade.This should only be run after all the
-#' BarrettsDataAccord functions.
+#' BarrettsAll functions.
 #' @param Column Endoscopy report field of interest as a string vector
 #' @param Column2 Another endoscopy report field of interest as a string vector
 #' @keywords Does something with data
+#' @importFrom dplyr case_when
 #' @export
 #' @return a string vector
 #' @examples # 
