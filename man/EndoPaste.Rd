@@ -4,11 +4,7 @@
 \alias{EndoPaste}
 \title{Paste into one}
 \usage{
-<<<<<<< HEAD
-EndoPaste(dfIn)
-=======
 EndoPaste(x)
->>>>>>> dev2
 }
 \arguments{
 \item{x}{the dataframe}
@@ -29,11 +25,7 @@ report and not a segregated one) only
 testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
 ), HospitalNumber = c("H55435", "Y3425345", "Z343424"), Text = c("All bad. Not good", 
 "Serious issues", "from a land far away")), class = "data.frame", row.names = c(NA, -3L))
-<<<<<<< HEAD
-EndoMineR::EndoPaste(testList)
-=======
 EndoPaste(testList)
->>>>>>> dev2
 }
 \keyword{Merge}
 \keyword{columns}

@@ -15,7 +15,8 @@ EntityPairs_OneSentence(inputText, list1, list2)
 }
 \description{
 Use to see if words from two lists co-exist within a sentence. Eg site and tissue type.
-This function only looks in one sentence for the two terms. This should be ised a
+This function only looks in one sentence for the two terms. If you suspect the terms may
+occur in adjacent sentences then use the EntityPairs_TwoSentence function.
 }
 \examples{
 # tbb<-EntityPairs_OneSentence(Mypath$Histology,HistolType(),LocationList())

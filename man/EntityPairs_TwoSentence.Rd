@@ -15,6 +15,8 @@ EntityPairs_TwoSentence(inputString, list1, list2)
 }
 \description{
 This is used to look for relationships between site and event especially for endoscopy events
+where sentences such as 'The stomach polyp was large. It was removed with a snare' ie the therapy
+and the site are in two different locations.
 }
 \examples{
 # tbb<-EntityPairs_TwoSentence(Myendo$Findings,EventList(),HistolType())
