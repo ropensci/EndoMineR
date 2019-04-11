@@ -18,7 +18,7 @@ a string vector
 This looks at the Paris grades of each EMR and then creates a heatmap
 of pathological grade vs
 endoscopic Paris grade.This should only be run after all the
-BarrettsDataAccord functions.
+BarrettsAll functions.
 }
 \examples{
 # 

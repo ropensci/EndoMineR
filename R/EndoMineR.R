@@ -168,7 +168,7 @@ SurveilFirstTest <-
 #' colnames(b1)[colnames(b1) == 'pHospitalNum'] <- 'HospitalNumber'
 #' 
 #' # The function groups the procedures by patient and gives 
-#' all the procedures between
+#' #all the procedures between
 #' # the indicatorEvent amd the procedure just after the endpoint. 
 #' Eg if the start is RFA and the 
 #' # endpoint is biopsies then it will give all RFA procedures and 

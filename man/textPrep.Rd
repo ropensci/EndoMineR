@@ -24,13 +24,13 @@ This returns a string vector.
 \description{
 This function prepares the data by cleaning 
 punctuation, checking spelling against the lexicons, mapping terms
-accorsing to the lexicons, removing negative expressions
+according to the lexicons, removing negative expressions
 and lower casing everything. It contains several of the other functions
 in the package for ease of use. The user can decide whether to also include
-POS tagging and Negative removal as well as which extractor. By default the
+Negative removal as well as which extractor. By default the
 extractor called 'Extractor' (which assumes all headers are present in the
 same order in each text entry) is used. Also by default the negative phrases
-are removed and POS tagging is not performed.
+are removed.
 }
 \examples{
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
@@ -38,6 +38,5 @@ mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Histology:","Diagnosis:")
 CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extractor="1")
 }
-\keyword{Find}
-\keyword{and}
-\keyword{replace}
+\keyword{cleaning}
+\keyword{text}
