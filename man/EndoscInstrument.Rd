@@ -16,7 +16,9 @@ This returns a character vector
 This cleans the Instument column from the report assuming such a column exists
 (where instrument usually refers to the endoscope number being used.)
 It gets rid of common entries that are not needed.
-It should be used after the Extractor.
+It should be used after the textPrep function.
+Note this is possibly going to be deprecated in the next version 
+as the endoscope coding used here is not widely used.
 }
 \examples{
 Myendo$Instrument<-EndoscInstrument(Myendo$Instrument)

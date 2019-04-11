@@ -7,7 +7,7 @@
 #' function has been used this cleans the endoscopist column from the report.
 #' It gets rid of titles
 #' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor.
+#' It should be used after the textPrep function
 #'
 #' @param EndoscopistColumn The endoscopy text column
 #' @keywords Endoscopist extraction
@@ -35,7 +35,9 @@ EndoscEndoscopist <- function(EndoscopistColumn) {
 #' This cleans the Instument column from the report assuming such a column exists
 #' (where instrument usually refers to the endoscope number being used.)
 #' It gets rid of common entries that are not needed.
-#' It should be used after the Extractor.
+#' It should be used after the textPrep function.
+#' Note this is possibly going to be deprecated in the next version 
+#' as the endoscope coding used here is not widely used.
 #' @param EndoInstrument column of interest
 #' @keywords Instrument
 #' @return This returns a character vector
@@ -65,7 +67,7 @@ EndoscInstrument <- function(EndoInstrument) {
 #' This cleans medication column from the report assuming such a column exists.
 #' It gets rid of common entries that are not needed. It also splits the
 #' medication into fentanyl and midazolam numeric doses for use. 
-#' It should be used after the Extractor
+#' It should be used after the textPrep function.
 #' @param MedColumn column of interest as a string vector
 #' @keywords Endoscopy medications
 #' @return This returns a dataframe
@@ -109,9 +111,11 @@ EndoscMeds <- function(MedColumn) {
 
 #' EndoscopyEvent 
 #'
-#' This extracts the endoscopic event. It looks for the event term and then looks in the event sentence as well as the one above to see if
-#' the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
-#' added to the event. Used in the OPCS4 coding
+#' This extracts the endoscopic event. It looks for the event 
+#' term and then looks in the event sentence as well as the one above to see if
+#' the location is listed. It needs to be run AFTER the 
+#' HistolTypeAndSite function as emr needs to be
+#' added to the event.
 #' @keywords Find and replace
 #' @param dataframe datafrane of interest
 #' @param EventColumn1 The relevant endoscopt free text column describing the findings

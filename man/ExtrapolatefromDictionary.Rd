@@ -14,7 +14,7 @@ ExtrapolatefromDictionary(inputString, list)
 \description{
 Provides term mapping and extraction in one.
 Standardises any term according to a mapping lexicon provided and then
-extracts the term. Thus is
+extracts the term. This is
 different to the DictionaryInPlaceReplace in that it provides a new column
 with the extracted terms as opposed to changing it in place
 }

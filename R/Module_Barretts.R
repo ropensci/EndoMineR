@@ -280,7 +280,6 @@ BarrettsAll<-function(Endodataframe,EndoReportColumn,EndoReportColumn2,Pathdataf
 #' @return a string vector
 #' @examples # 
 #' Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
-#' rm(v)
 
 BarrettsParisEMR <- function(Column, Column2) {
   
