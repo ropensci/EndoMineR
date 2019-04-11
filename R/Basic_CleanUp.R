@@ -122,7 +122,7 @@ if (getRversion() >= "2.15.1")
 
 textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2')){
   
-  #1. Flatten the text
+  #1. Flatten the text.
   inputText<-tolower(inputText)
   
   #1b General cleanup tasks
@@ -240,6 +240,9 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
 #' "Histology:","Diagnosis:")
 #' Mypath2<-Extractor(PathDataFrameFinal$PathReportWhole,mywords)
 #'
+
+
+
 
 Extractor <- function(inputString, delim) {
   
@@ -608,7 +611,6 @@ ColumnCleanUp <- function(vector) {
 
 
 
-
 #' Paste into one
 #'
 #' As spreadsheets are likely to be submitted with pre-segregated data as appears from 
@@ -625,12 +627,12 @@ ColumnCleanUp <- function(vector) {
 #' @examples testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
 #' ), HospitalNumber = c("H55435", "Y3425345", "Z343424"), Text = c("All bad. Not good", 
 #' "Serious issues", "from a land far away")), class = "data.frame", row.names = c(NA, -3L))
-#' EndoMineR::EndoPaste(testList)
+#' EndoPaste(testList)
 
 
-EndoPaste<-function(dfIn){
-  delim<-paste(names(dfIn))
-  v1<-do.call(paste, c(Map(paste, names(dfIn), dfIn), sep="_"))
+EndoPaste<-function(x){
+  delim<-paste(names(x))
+  v1<-do.call(paste, c(Map(paste, names(x), x), sep="_"))
   df<-data.frame(X1_X2_X3 = unname(v1))
   return(list(df,delim))
 }
@@ -710,8 +712,11 @@ ExtrapolatefromDictionary<-function(inputString,list){
 
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> dev2
 ############## Extraction Utilities- Colocation ###################
 
 #' EntityPairs_OneSentence 
