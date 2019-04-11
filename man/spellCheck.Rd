@@ -17,7 +17,9 @@ spellCheck(pattern, replacement, x, fixed = FALSE, ...)
 This returns a character vector
 }
 \description{
-This is a helper function for finding and replacing from dictionaries like the event list
+This is a helper function for finding and replacing from lexicons
+like the event list. The lexicons are all named lists where the name
+is the text to replace and the value what it should be replaced with
 It uses fuzzy find and replace to account for spelling errors
 }
 \examples{

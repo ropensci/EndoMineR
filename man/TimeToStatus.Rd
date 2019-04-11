@@ -21,7 +21,8 @@ TimeToStatus(dataframe, HospNum, EVENT, indicatorEvent, endEvent)
 This function selects patients who have had a start event and an end
 event of the users choosing so you can determine things like how long
 it takes to get a certain outcome. For example, how long does it take to
-get a patient into a fully squamous oesophagus after Barrett's ablation?
+get a patient into a fully squamous oesophagus after Barrett's ablation
+for dysplasia?
 }
 \examples{
 # Firstly relevant columns are extrapolated from the
@@ -40,9 +41,13 @@ v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
 b1<-Barretts_PragueScore(v,'Findings')
 b1$IMorNoIM<-Barretts_PathStage(b1,'Histology')
 colnames(b1)[colnames(b1) == 'pHospitalNum'] <- 'HospitalNumber'
-# The function groups the procedures by patient and gives all the procedures between
-# the indicatorEvent amd the procedure just after the endpoint. Eg if the start is RFA and the 
-# endpoint is biopsies then it will give all RFA procedures and the first biopsy procedure
+
+# The function groups the procedures by patient and gives 
+all the procedures between
+# the indicatorEvent amd the procedure just after the endpoint. 
+Eg if the start is RFA and the 
+# endpoint is biopsies then it will give all RFA procedures and 
+the first biopsy procedure
 
 b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed",
 "Macroscopicdescription","Histology")
