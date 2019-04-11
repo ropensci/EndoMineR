@@ -23,7 +23,6 @@ BarrettsAll functions.
 \examples{
 # 
 Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
-rm(v)
 }
 \keyword{Does}
 \keyword{data}
