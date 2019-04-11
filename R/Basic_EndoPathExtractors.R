@@ -259,13 +259,3 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
   output<-list(HistolTypeAndSite=output,BiopsyIndex=biopsyIndexresults)
   return(output)
 }
-
-
-
-
-
-
-
-
-
-
