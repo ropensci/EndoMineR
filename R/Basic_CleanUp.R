@@ -98,14 +98,14 @@ if (getRversion() >= "2.15.1")
 #'
 #' This function prepares the data by cleaning 
 #' punctuation, checking spelling against the lexicons, mapping terms
-#' accorsing to the lexicons, removing negative expressions
+#' according to the lexicons, removing negative expressions
 #' and lower casing everything. It contains several of the other functions
 #' in the package for ease of use. The user can decide whether to also include
-#' POS tagging and Negative removal as well as which extractor. By default the
+#' Negative removal as well as which extractor. By default the
 #' extractor called 'Extractor' (which assumes all headers are present in the
 #' same order in each text entry) is used. Also by default the negative phrases
-#' are removed and POS tagging is not performed.
-#' @keywords Find and replace
+#' are removed.
+#' @keywords text cleaning
 #' @param inputText The relevant pathology text column
 #' @param delim the delimitors so the extractor can be used
 #' @param NegEx parameter to say whether the NegativeRemove function used.
@@ -214,9 +214,9 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
 #' Extracts the columns from the raw report
 #'
 #' This is the main extractor for the Endoscopy and Histology report.
-#' This depends on the user creating a list of words or characters that
-#' act as the words that should be split against. The list is then fed to the
-#' Extractor in a loop so that it acts as the beginning and the end of the
+#' This relies on the user creating a list of words representing the
+#' subheadings. The list is then fed to the
+#' Extractor so that it acts as the beginning and the end of the
 #' regex used to split the text. Whatever has been specified in the list
 #' is used as a column header. Column headers don't tolerate special characters
 #' like : or ? and / and don't allow numbers as the start character so these
@@ -278,11 +278,13 @@ Extractor <- function(inputString, delim) {
 #' Extractor2
 #'
 #' This is the alternative extractor for the Endoscopy and Histology report.
-#' THis performs the same essentially as the main extractor but is useful when the
-#' semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
-#' As per the main Extractor, This function on the user creating a list of words or characters that
-#' act as the words that should be split against. The list is then fed to the
-#' Extractor in a loop so that it acts as the beginning and the end of the
+#' This performs essentially the same process as the main extractor but is useful when the
+#' semi-structured text is organised in a non-standard way ie the delimiting 
+#' text is not always in the same order.
+#' As per the main Extractor, This function relies on the user creating a list 
+#' of words or characters that act as the words that should be split against. 
+#' The list is then fed to the
+#' Extractor2 in a loop so that it acts as the beginning and the end of the
 #' regex used to split the text. Whatever has been specified in the list
 #' is used as a column header. Column headers don't tolerate special characters
 #' like : or ? and / and don't allow numbers as the start character so these
@@ -340,12 +342,12 @@ Extractor2 <- function(x, y, stra, strb, t) {
 
 #' Dictionary In Place Replace
 #'
-#' This maps terms in the text replaces them with the 
+#' This maps terms in the text and replaces them with the 
 #' standardised term (mapped in the lexicon file) within the text.
 #' It is used within the textPrep function.
 
 #'
-#' @param inputString the input string
+#' @param inputString the input string (ie the full medical report)
 #' @param list The replacing list
 #' @keywords Replace
 #' @export
@@ -382,22 +384,18 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 
 #' Removes negative and normal sentences
 #'
-#' Extraction of the Negative sentences so that normal findings can be
+#' Extraction of the negative sentences so that normal findings can be
 #' removed and not counted when searching for true diseases. eg remove
-#' No evidence of candidal infection so it doesn't get included if
-#' looking for candidal infections.
-#' It should be used after the Extractor and the optional
-#' NewLines has been used. It can be used as part of the other functions
-#' or as a way of providing a 'positive diagnosis only' type output (see
-#' HistolDx)
+#' 'No evidence of candidal infection' so it doesn't get included if
+#' looking for candidal infections. It is used by default as part of
+#' the textPrep function but can be turned off as an optional parameter
 #' @param inputText column of interest
 #' @keywords Negative Sentences
 #' @importFrom stringr str_replace
 #' @export
 #' @return This returns a column within a dataframe. THis should be changed to a 
 #' character vector eventually
-#' @examples # Build a character vector and then
-#' # incorporate into a dataframe
+#' @examples # Build a character vector and then incorporate into a dataframe
 #' anexample<-c("There is no evidence of polyp here",
 #' "Although the prep was poor,there was no adenoma found",
 #' "The colon was basically inflammed, but no polyp was seen",
@@ -533,7 +531,9 @@ NegativeRemove <- function(inputText) {
 
 #' Find and Replace function
 #'
-#' This is a helper function for finding and replacing from dictionaries like the event list
+#' This is a helper function for finding and replacing from lexicons
+#' like the event list. The lexicons are all named lists where the name
+#' is the text to replace and the value what it should be replaced with
 #' It uses fuzzy find and replace to account for spelling errors
 #' @keywords Find and replace
 #' @importFrom utils aregexec
@@ -645,7 +645,7 @@ EndoPaste<-function(x){
 #'
 #' Provides term mapping and extraction in one.
 #' Standardises any term according to a mapping lexicon provided and then
-#' extracts the term. Thus is
+#' extracts the term. This is
 #' different to the DictionaryInPlaceReplace in that it provides a new column
 #' with the extracted terms as opposed to changing it in place
 #'
@@ -709,20 +709,13 @@ ExtrapolatefromDictionary<-function(inputString,list){
   return(ToIndex)
 }
 
-
-
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> dev2
 ############## Extraction Utilities- Colocation ###################
 
 #' EntityPairs_OneSentence 
 #'
 #' Use to see if words from two lists co-exist within a sentence. Eg site and tissue type.
-#' This function only looks in one sentence for the two terms. This should be ised a
+#' This function only looks in one sentence for the two terms. If you suspect the terms may
+#' occur in adjacent sentences then use the EntityPairs_TwoSentence function.
 #' @keywords PathPairLookup
 #' @param inputText The relevant pathology text column
 #' @param list1 First list to refer to
@@ -739,7 +732,8 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
   
   #text<-textPrep(inputText)
   text<-standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
-  r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(list2)), str_extract_all(tolower(x),tolower(list1)), MoreArgs = list(sep=":")))
+  r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(list2)), 
+            str_extract_all(tolower(x),tolower(list1)), MoreArgs = list(sep=":")))
   
   r1<-lapply(r1,function(x) unlist(x))
   #Unlist into a single row-This should output a character vector
@@ -751,6 +745,8 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 #' EntityPairs_TwoSentence
 #'
 #' This is used to look for relationships between site and event especially for endoscopy events
+#' where sentences such as 'The stomach polyp was large. It was removed with a snare' ie the therapy
+#' and the site are in two different locations.
 #' @keywords Find and replace
 #' @param inputString The relevant pathology text column
 #' @param list1 The intial list to assess
