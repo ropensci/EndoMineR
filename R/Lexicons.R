@@ -2,7 +2,7 @@
 
 #' Extract pathology type
 #'
-#' This standardizes terms to describe the pathology tissue type being exmained
+#' This standardizes terms to describe the pathology tissue type being examined
 #' @keywords Pathology type
 #' @export
 #' @examples #No examples as just returns a list
@@ -54,8 +54,8 @@ LocationList<-function(){
 
 #' Use list of standard locations for upper GI endoscopy
 #'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' The is a list of standard locations at endoscopy that is used in the
+#' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
 #' therapeutic event. It just returns the list in the function
 #'
 #'
@@ -85,8 +85,8 @@ LocationListUpper<-function(){
 
 #' Use list of standard locations for upper GI endoscopy
 #'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' The is a list of standard locations at endoscopy that is used in the 
+#' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
 #' therapeutic event. It just returns the list in the function
 #'
 #'
@@ -106,8 +106,8 @@ LocationListUniversal<-function(){
 
 #' Use list of standard locations for lower GI endoscopy
 #'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' The is a list of standard locations at endoscopy that is used in the 
+#' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
 #' therapeutic event. It just returns the list in the function
 #'
 #'
@@ -173,8 +173,8 @@ RFACath<-function(){
 #' Event list
 #'
 #' This function returns all the conversions from common version of events to 
-#' a standardised event list, much like the Location standardidastion function
-#' It is used in the Barretts_EventType. This does not include EMR as this is 
+#' a standardised event list, much like the Location standardisation function
+#' This does not include EMR as this is 
 #' extracted from the pathology so is part of pathology type.
 #' @keywords Event extraction
 #' @examples # unique(unlist(EventList(), use.names = FALSE))

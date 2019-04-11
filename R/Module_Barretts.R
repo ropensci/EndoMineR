@@ -239,6 +239,33 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 }
 
 
+
+#' All basic Barrett's functions
+#'
+#' Function to encapsulate all the Barrett's functions together
+#' @param Endodataframe endoscopy dataframe of interest
+#' @param EndoReportColumn Endoscopy report field of interest as a string vector
+#' @param EndoReportColumn2 Second endoscopy report field of interest as a string vector
+#' @param Pathdataframe pathology dataframe of interest
+#' @param PathColumn Pathology report field of interest as a string vector
+#' @keywords Does something with data
+#' @importFrom dplyr case_when
+#' @export
+#' @return Newdf
+#' @examples 
+#' Barretts_df<-BarrettsAll(Myendo,'Findings','OGDReportWhole',Mypath,'Histology')
+
+BarrettsAll<-function(Endodataframe,EndoReportColumn,EndoReportColumn2,Pathdataframe,PathColumn){
+  
+  Newdf<-Barretts_PragueScore(Endodataframe,EndoReportColumn,EndoReportColumn2)
+  Newdf$IMorNoIM<-Barretts_PathStage(Pathdataframe,PathColumn)
+  #The named columns here are derived from the previous functions outputs
+  Newdf$FU_Type<-Barretts_FUType(Newdf,"CStage","MStage","IMorNoIM")
+  return(Newdf)
+  
+}
+
+
 #' Paris vs histopath Barrett's
 #'
 #' This looks at the Paris grades of each EMR and then creates a heatmap
@@ -257,7 +284,6 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 
 BarrettsParisEMR <- function(Column, Column2) {
   
-  #NewCol<-paste0(Column, Column2)
   NewCol<-paste0(Column,Column2)
   NewCol <- data.frame(NewCol,stringsAsFactors = FALSE)
   
