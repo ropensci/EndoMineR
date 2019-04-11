@@ -80,7 +80,7 @@ SurveilTimeByRow <-
 
 #' Extract the last test done by a patient only
 #'
-#' Extracts the last test only per patient and returns a new dataframe listing the
+#' This extracts the last test only per patient and returns a new dataframe listing the
 #' patientID and the last test done
 #' @param dataframe dataframe
 #' @param HospNum_Id Patient ID
@@ -109,7 +109,7 @@ SurveilLastTest <-
 #' Extracts the first test only per patient
 #'
 #' Extracts the first test only per patient and returns a new dataframe listing the
-#' patientID and the last test done
+#' patientID and the first test done
 #' @param dataframe dataframe
 #' @param HospNum_Id Patient ID
 #' @param Endo_ResultPerformed Date of the Endoscopy
@@ -139,7 +139,8 @@ SurveilFirstTest <-
 #' This function selects patients who have had a start event and an end
 #' event of the users choosing so you can determine things like how long
 #' it takes to get a certain outcome. For example, how long does it take to
-#' get a patient into a fully squamous oesophagus after Barrett's ablation?
+#' get a patient into a fully squamous oesophagus after Barrett's ablation
+#' for dysplasia?
 #' @param dataframe The dataframe
 #' @param HospNum The Hospital Number column
 #' @param EVENT The column that contains the outcome of choice
@@ -165,9 +166,13 @@ SurveilFirstTest <-
 #' b1<-Barretts_PragueScore(v,'Findings')
 #' b1$IMorNoIM<-Barretts_PathStage(b1,'Histology')
 #' colnames(b1)[colnames(b1) == 'pHospitalNum'] <- 'HospitalNumber'
-#' # The function groups the procedures by patient and gives all the procedures between
-#' # the indicatorEvent amd the procedure just after the endpoint. Eg if the start is RFA and the 
-#' # endpoint is biopsies then it will give all RFA procedures and the first biopsy procedure
+#' 
+#' # The function groups the procedures by patient and gives 
+#' all the procedures between
+#' # the indicatorEvent amd the procedure just after the endpoint. 
+#' Eg if the start is RFA and the 
+#' # endpoint is biopsies then it will give all RFA procedures and 
+#' the first biopsy procedure
 #'
 #' b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed",
 #' "Macroscopicdescription","Histology")
