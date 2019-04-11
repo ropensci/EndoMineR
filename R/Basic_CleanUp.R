@@ -122,7 +122,7 @@ if (getRversion() >= "2.15.1")
 
 textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2')){
   
-  #1. Flatten the text.
+  #1. Flatten the text..
   inputText<-tolower(inputText)
   
   #1b General cleanup tasks
