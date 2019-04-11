@@ -242,6 +242,9 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
 #' Mypath2<-Extractor(PathDataFrameFinal$PathReportWhole,mywords)
 #'
 
+
+
+
 Extractor <- function(inputString, delim) {
   
   #Save inputString so can be merge back in as the origincal for later
@@ -610,6 +613,10 @@ ColumnCleanUp <- function(vector) {
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev2
 #' Paste into one
 #'
 #' As spreadsheets are likely to be submitted with pre-segregated data as appears from 
@@ -620,12 +627,16 @@ ColumnCleanUp <- function(vector) {
 #' report and not a segregated one) only
 #' @keywords Merge dataframe columns into one text
 #' @param x the dataframe
+<<<<<<< HEAD
 #' @export
+=======
+>>>>>>> dev2
 #' @return This returns a list with a dataframe containingone column of the merged text
 #' and a character vector which is the delimiter list for when the textPrep function is used
 #' @examples testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
 #' ), HospitalNumber = c("H55435", "Y3425345", "Z343424"), Text = c("All bad. Not good", 
 #' "Serious issues", "from a land far away")), class = "data.frame", row.names = c(NA, -3L))
+<<<<<<< HEAD
 #' EndoMineR::EndoPaste(testList)
 
 
@@ -635,6 +646,19 @@ EndoPaste<-function(dfIn){
   df<-data.frame(X1_X2_X3 = unname(v1))
   return(list(df,delim))
 }
+=======
+#' EndoPaste(testList)
+
+
+EndoPaste<-function(x){
+  delim<-paste(names(x))
+  v1<-do.call(paste, c(Map(paste, names(x), x), sep="_"))
+  df<-data.frame(X1_X2_X3 = unname(v1))
+  return(list(df,delim))
+}
+
+
+>>>>>>> dev2
 
 
 
@@ -711,8 +735,11 @@ ExtrapolatefromDictionary<-function(inputString,list){
 
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> dev2
 ############## Extraction Utilities- Colocation ###################
 
 #' EntityPairs_OneSentence 
