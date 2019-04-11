@@ -433,37 +433,6 @@ PatientFlow_CircosPlots <-
 
 
 
-##################### Exploratory data analysis #########################
-
-#Make sure the data is inputted in the correct format ie one column is the endoscopist
-#And the other column is the metric. This can also be used for Time vs numeric eg how many tests
-#have been done etc.
-#' Create a Circos plot for patient flow
-#'
-#' This allows us to look at the overall flow from one
-#' type of procedure to another using circos plots.
-#' @param dataframe dataframe
-#' @param Title The plot title
-#' @import GGally 
-#' @return Myplot the EDA final plot
-#' @keywords Circos
-#' @export
-#' @examples # This function does EDA
-#' #Get some numeric columns eg number of biopsies and size
-#' Mypath$Size<-HistolBxSize(Mypath$Macroscopicdescription)
-#' Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
-#' Mypath2<-Mypath[,c("NumBx","Size")]
-#' EndoDataVizEDA(Mypath2,"My graph")
-
-
-
-EndoDataVizEDA <-
-  function(dataframe,Title) {
-Myplot <-ggpairs(data=dataframe,title=Title) # title of the plot
-return(Myplot)
-}
-
-
 
 ##################### Non-numeric x Numeric y points #########################
 
