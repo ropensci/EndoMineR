@@ -329,7 +329,11 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' @examples #The function plots any numeric metric by endoscopist
 #' # and also gives a table with it. In this example we plot medication by
 #' # endoscopist
+#' #Lets bind the output of EndoscMeds to the main dataframe so we
+#' #have a complete dataframe with all the meds extracted
 #' MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+#' 
+#' #Now lets look at the fentanly use per Endoscopist:
 #' kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
 #' rm(Myendo)
 
