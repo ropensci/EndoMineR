@@ -65,7 +65,6 @@ if (getRversion() >= "2.15.1")
 #'
 #' aa<-Barretts_PragueScore(Myendo,'Findings','OGDReportWhole')
 
-#Change to BarrPrague nee Barretts_PragueScore
 Barretts_PragueScore <- function(dataframe, EndoReportColumn,EndoReportColumn2) {
   dataframe <- data.frame(dataframe)
 
@@ -104,7 +103,6 @@ dataframe<-dataframe %>%
 
 dataframe$MStage<-lapply(dataframe$MStage, function(x) gsub("Insufficient","",x))
 dataframe$MStage<-lapply(dataframe$MStage, function(x) gsub("m","",x))
-
 dataframe$MStage<-suppressWarnings(unlist(lapply(dataframe$MStage, function(x) max(as.numeric(x),na.rm=TRUE))))
 #If there are more than two numbers pick the highest one
 
@@ -241,12 +239,39 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 }
 
 
+
+#' All basic Barrett's functions
+#'
+#' Function to encapsulate all the Barrett's functions together
+#' @param Endodataframe endoscopy dataframe of interest
+#' @param EndoReportColumn Endoscopy report field of interest as a string vector
+#' @param EndoReportColumn2 Second endoscopy report field of interest as a string vector
+#' @param Pathdataframe pathology dataframe of interest
+#' @param PathColumn Pathology report field of interest as a string vector
+#' @keywords Does something with data
+#' @importFrom dplyr case_when
+#' @export
+#' @return Newdf
+#' @examples 
+#' Barretts_df<-BarrettsAll(Myendo,'Findings','OGDReportWhole',Mypath,'Histology')
+
+BarrettsAll<-function(Endodataframe,EndoReportColumn,EndoReportColumn2,Pathdataframe,PathColumn){
+  
+  Newdf<-Barretts_PragueScore(Endodataframe,EndoReportColumn,EndoReportColumn2)
+  Newdf$IMorNoIM<-Barretts_PathStage(Pathdataframe,PathColumn)
+  #The named columns here are derived from the previous functions outputs
+  Newdf$FU_Type<-Barretts_FUType(Newdf,"CStage","MStage","IMorNoIM")
+  return(Newdf)
+  
+}
+
+
 #' Paris vs histopath Barrett's
 #'
 #' This looks at the Paris grades of each EMR and then creates a heatmap
 #' of pathological grade vs
 #' endoscopic Paris grade.This should only be run after all the
-#' BarrettsDataAccord functions.
+#' BarrettsAll functions.
 #' @param Column Endoscopy report field of interest as a string vector
 #' @param Column2 Another endoscopy report field of interest as a string vector
 #' @keywords Does something with data
@@ -259,7 +284,6 @@ Barretts_FUType <- function(dataframe,CStage,MStage,IMorNoIM) {
 
 BarrettsParisEMR <- function(Column, Column2) {
   
-  #NewCol<-paste0(Column, Column2)
   NewCol<-paste0(Column,Column2)
   NewCol <- data.frame(NewCol,stringsAsFactors = FALSE)
   
