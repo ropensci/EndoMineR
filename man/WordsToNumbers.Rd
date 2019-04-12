@@ -7,10 +7,7 @@
 WordsToNumbers()
 }
 \description{
-This function returns all the conversions from common version of events to 
-a standardised event list, much like the Location standardidastion function
-It is used in the Barretts_EventType. This does not include EMR as this is 
-extracted from the pathology so is part of pathology type.
+This function converts words to numbers.
 }
 \examples{
 # unique(unlist(EventList(), use.names = FALSE))
