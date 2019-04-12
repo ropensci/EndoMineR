@@ -282,16 +282,10 @@ BarrettsAll <- function(Endodataframe, EndoReportColumn, EndoReportColumn2, Path
 #' @importFrom dplyr case_when
 #' @export
 #' @return a string vector
-<<<<<<< HEAD
-#' @examples
-#' #
-#' Myendo$EMR <- BarrettsParisEMR(Myendo$ProcedurePerformed, Myendo$Findings)
-#' rm(v)
-=======
 #' @examples # 
 #' Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
 
->>>>>>> master
+
 BarrettsParisEMR <- function(Column, Column2) {
   NewCol <- paste0(Column, Column2)
   NewCol <- data.frame(NewCol, stringsAsFactors = FALSE)

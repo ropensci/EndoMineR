@@ -18,14 +18,8 @@ a string vector
 This creates a column of Paris grade for all samples where this is mentioned.
 }
 \examples{
-<<<<<<< HEAD
-#
-Myendo$EMR <- BarrettsParisEMR(Myendo$ProcedurePerformed, Myendo$Findings)
-rm(v)
-=======
 # 
 Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
->>>>>>> master
 }
 \keyword{Does}
 \keyword{data}

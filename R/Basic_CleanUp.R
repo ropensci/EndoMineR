@@ -201,14 +201,6 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
   }
   
 
-<<<<<<< HEAD
-  #Optionally add the POS (parameter driven)
-  
-
-  
-=======
-
->>>>>>> master
     #Last minute clean up:
     names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
   
