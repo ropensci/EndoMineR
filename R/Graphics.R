@@ -94,6 +94,7 @@ theme_Publication <- function(base_size=14, base_family="Helvetica") {
 #' @import grid 
 #' @import ggthemes 
 #' @import scales
+#' @param ... 
 #' @export
 #' @examples #None needed
 
