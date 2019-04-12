@@ -172,7 +172,7 @@ SurveilFirstTest <-
 #' # the indicatorEvent amd the procedure just after the endpoint. 
 #' # Eg if the start is RFA and the 
 #' # endpoint is biopsies then it will give all RFA procedures and 
-#' the first biopsy procedure
+#' # the first biopsy procedure
 #'
 #' b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed",
 #' "Macroscopicdescription","Histology")
