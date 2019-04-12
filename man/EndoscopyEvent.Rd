@@ -21,9 +21,11 @@ EndoscopyEvent(dataframe, EventColumn1, Procedure, Macroscopic, Histology)
 This returns a character vector
 }
 \description{
-This extracts the endoscopic event. It looks for the event term and then looks in the event sentence as well as the one above to see if
-the location is listed. It needs to be run AFTER the HistolTypeAndSite function as emr needs to be
-added to the event. Used in the OPCS4 coding
+This extracts the endoscopic event. It looks for the event 
+term and then looks in the event sentence as well as the one above to see if
+the location is listed. It needs to be run AFTER the 
+HistolTypeAndSite function as emr needs to be
+added to the event.
 }
 \examples{
 # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings",

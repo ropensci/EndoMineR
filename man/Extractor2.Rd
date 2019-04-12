@@ -19,11 +19,13 @@ Extractor2(x, y, stra, strb, t)
 }
 \description{
 This is the alternative extractor for the Endoscopy and Histology report.
-THis performs the same essentially as the main extractor but is useful when the
-semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
-As per the main Extractor, This function on the user creating a list of words or characters that
-act as the words that should be split against. The list is then fed to the
-Extractor in a loop so that it acts as the beginning and the end of the
+This performs essentially the same process as the main extractor but is useful when the
+semi-structured text is organised in a non-standard way ie the delimiting 
+text is not always in the same order.
+As per the main Extractor, This function relies on the user creating a list 
+of words or characters that act as the words that should be split against. 
+The list is then fed to the
+Extractor2 in a loop so that it acts as the beginning and the end of the
 regex used to split the text. Whatever has been specified in the list
 is used as a column header. Column headers don't tolerate special characters
 like : or ? and / and don't allow numbers as the start character so these

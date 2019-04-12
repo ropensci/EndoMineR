@@ -23,11 +23,11 @@ This creates a basic graph using the template specified in theme_Publication.
 }
 \examples{
 # This function plot numeric y vs non-numeric x
-# Get some numeric columns eg number of biopsies and size
-Mypath$Size <- HistolBxSize(Mypath$Macroscopicdescription)
-Mypath$NumBx <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
-Mypath2 <- Mypath[, c("NumBx", "Size")]
-EndoBasicGraph(Mypath, "Size", "NumBx")
+#Get some numeric columns eg number of biopsies and size
+Mypath$Size<-HistolBxSize(Mypath$Macroscopicdescription)
+Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
+Mypath2<-Mypath[,c("NumBx","Size")]
+EndoBasicGraph(Mypath,'Size','NumBx')
 }
 \keyword{Time}
 \keyword{plots}

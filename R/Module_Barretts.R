@@ -249,7 +249,10 @@ Barretts_FUType <- function(dataframe, CStage, MStage, IMorNoIM) {
 
 #' All basic Barrett's functions
 #'
-#' Function to encapsulate all the Barrett's functions together
+#' Function to encapsulate all the Barrett's functions together. This includes the Prague
+#' score and the worst pathological grade and then feeds both of these things into
+#' the follow up function. The output is a dataframe with all the original data as
+#' well as the new columns that have been created.
 #' @param Endodataframe endoscopy dataframe of interest
 #' @param EndoReportColumn Endoscopy report field of interest as a string vector
 #' @param EndoReportColumn2 Second endoscopy report field of interest as a string vector
@@ -272,20 +275,23 @@ BarrettsAll <- function(Endodataframe, EndoReportColumn, EndoReportColumn2, Path
 
 #' Paris vs histopath Barrett's
 #'
-#' This looks at the Paris grades of each EMR and then creates a heatmap
-#' of pathological grade vs
-#' endoscopic Paris grade.This should only be run after all the
-#' BarrettsAll functions.
+#' This creates a column of Paris grade for all samples where this is mentioned.
 #' @param Column Endoscopy report field of interest as a string vector
 #' @param Column2 Another endoscopy report field of interest as a string vector
 #' @keywords Does something with data
 #' @importFrom dplyr case_when
 #' @export
 #' @return a string vector
+<<<<<<< HEAD
 #' @examples
 #' #
 #' Myendo$EMR <- BarrettsParisEMR(Myendo$ProcedurePerformed, Myendo$Findings)
 #' rm(v)
+=======
+#' @examples # 
+#' Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
+
+>>>>>>> master
 BarrettsParisEMR <- function(Column, Column2) {
   NewCol <- paste0(Column, Column2)
   NewCol <- data.frame(NewCol, stringsAsFactors = FALSE)
@@ -315,7 +321,10 @@ BarrettsParisEMR <- function(Column, Column2) {
 #' Barrett's number of biopsies
 #'
 #' This function gets the biopsies taken per endoscopy and compares to the
-#' Prague score for that endoscopy.
+#' Prague score for that endoscopy.Endoscopists should be taking a certain
+#' number of biopsies given the length of a Barrett's segment so it
+#' should be straightforward to detect a shortfall in the number
+#' of biopsies being taken.
 #' @param dataframe dataframe
 #' @param Endo_ResultPerformed Date of the Endocscopy
 #' @param PatientID Patient's unique identifier

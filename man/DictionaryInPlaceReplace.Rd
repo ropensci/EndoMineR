@@ -7,7 +7,7 @@
 DictionaryInPlaceReplace(inputString, list)
 }
 \arguments{
-\item{inputString}{the input string}
+\item{inputString}{the input string (ie the full medical report)}
 
 \item{list}{The replacing list}
 }
@@ -15,7 +15,7 @@ DictionaryInPlaceReplace(inputString, list)
 This returns a character vector
 }
 \description{
-This maps terms in the text replaces them with the 
+This maps terms in the text and replaces them with the 
 standardised term (mapped in the lexicon file) within the text.
 It is used within the textPrep function.
 }

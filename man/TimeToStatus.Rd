@@ -46,6 +46,7 @@ colnames(b1)[colnames(b1) == "pHospitalNum"] <- "HospitalNumber"
 
 # The function groups the procedures by patient and gives
 # all the procedures between
+<<<<<<< HEAD
 # the indicatorEvent amd the procedure just after the endpoint.
 # Eg if the start is RFA and the
 # endpoint is biopsies then it will give all RFA procedures and
@@ -56,6 +57,16 @@ b1$EndoscopyEvent <- EndoscopyEvent(
   "Macroscopicdescription", "Histology"
 )
 nn <- TimeToStatus(b1, "HospitalNumber", "EndoscopyEvent", "rfa", "dilat")
+=======
+# the indicatorEvent amd the procedure just after the endpoint. 
+# Eg if the start is RFA and the 
+# endpoint is biopsies then it will give all RFA procedures and 
+# the first biopsy procedure
+
+b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed",
+"Macroscopicdescription","Histology")
+nn<-TimeToStatus(b1,'HospitalNumber',"EndoscopyEvent","rfa","dilat")
+>>>>>>> master
 rm(v)
 }
 \keyword{ourcome}

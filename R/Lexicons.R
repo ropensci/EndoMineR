@@ -31,9 +31,11 @@ HistolType <- function() {
 
 #' Use list of standard locations
 #'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a
-#' therapeutic event. It just returns the list in the function
+
+#' The is a list of standard locations at endoscopy. It used for the site of biopsies/EMRs 
+#' and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function.
+
 #'
 #'
 #' @keywords Location
@@ -53,8 +55,10 @@ LocationList <- function() {
 #' Use list of standard locations for upper GI endoscopy
 #'
 #' The is a list of standard locations at endoscopy that is used in the
-#' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a
-#' therapeutic event. It just returns the list in the function
+
+#' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function.
+
 #'
 #'
 #' @keywords Location
@@ -82,9 +86,11 @@ LocationListUpper <- function() {
 
 #' Use list of standard locations for upper GI endoscopy
 #'
+
 #' The is a list of standard locations at endoscopy that is used in the
 #' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a
 #' therapeutic event. It just returns the list in the function
+
 #'
 #'
 #' @keywords Location
@@ -145,7 +151,7 @@ LocationListLower <- function() {
 
 #' Use list of catheters used in radiofrequency ablation
 #'
-#' The takes a list of catheters used in radiofrequency ablation
+#' The takes a list of catheters used in radiofrequency ablation.
 #'
 #' @keywords RFA
 #' @export
@@ -166,9 +172,11 @@ RFACath <- function() {
 
 #' Event list
 #'
+
 #' This function returns all the conversions from common version of events to
 #' a standardised event list, much like the Location standardisation function
 #' This does not include EMR as this is
+
 #' extracted from the pathology so is part of pathology type.
 #' @keywords Event extraction
 #' @examples
@@ -197,36 +205,14 @@ EventList <- function() {
   return(Event)
 }
 
-#' Temporal list
-#'
-#' This function returns all the conversions from common version of events to
-#' a standardised event list, much like the Location standardidastion function
-#' It is used in the Barretts_EventType. This does not include EMR as this is
-#' extracted from the pathology so is part of pathology type.
-#' @keywords Temporal extraction
-#' @examples
-#' # unique(unlist(Temporal(), use.names = FALSE))
-#' @export
-#'
-TemporalList <- function() {
-  Temporal <- list(
-    "Past" = "Past",
-    "Present" = "Present",
-    "Future" = "Future"
-  )
-
-  # To get the list as a list of values only in a regex use
-  # paste0(unlist(Temporal,use.names=F),collapse="|")
-
-  return(Temporal)
-}
 
 #' Biopsy index list
 #'
 #' This function returns all the conversions from common version of events to
 #' a standardised event list, much like the Location standardidastion function
-#' It is used in the Barretts_EventType. This does not include EMR as this is
-#' extracted from the pathology so is part of pathology type.
+#' This does not include EMR as this is 
+#' extracted from the pathology so is part of pathology type. It is used for
+#' automated OPCS-4 coding.
 #' @keywords Event extraction
 #' @export
 #' @examples
@@ -270,8 +256,10 @@ BiopsyIndex <- function() {
 
 #' GISymptoms
 #'
-#' This function returns all the Common GI symptoms. They are simply listed as is without grouping
-#' or mapping. They have been derived from a manual list with synonyms derived from the UMLS Methatharus
+#' This function returns all the common GI symptoms. 
+#' They are simply listed as is without grouping
+#' or mapping. They have been derived from a manual 
+#' list with synonyms derived from the UMLS Methatharus
 #' using the browser.
 #' @keywords Event extraction
 #' @export
@@ -697,10 +685,7 @@ GISymptomsList <- function() {
 
 #' Words to numbers
 #'
-#' This function returns all the conversions from common version of events to
-#' a standardised event list, much like the Location standardidastion function
-#' It is used in the Barretts_EventType. This does not include EMR as this is
-#' extracted from the pathology so is part of pathology type.
+#' This function converts words to numbers.
 #' @keywords Event extraction
 #' @export
 #' @examples
@@ -732,69 +717,3 @@ WordsToNumbers <- function() {
   return(NumberConv)
 }
 
-#' #' Validate columns
-#' #'
-#' #' This is an attempt to determine whether functions are accurate in their extraction
-#' #' It is part of a validation pipeline to make sure the data outputted from a function
-#' #' is accurate
-#' #' It essentially is a comparison of actual vs expected output. The intention is to
-#' #' then quantify the output of a function for a specific dataset.
-#' #'
-#' #' @param dataframe dataframe
-#' #' @param testcolumn The dataframe column to run the function on
-#' #' @param pHospitalNum the hospital number of the patient so can be identified
-#' #' @importFrom openxlsx write.xlsx
-#' #' @keywords validation
-#' #' @export
-#' #' @examples #ValidationR(HistolBxSize,myHistol$histology_report)
-#'
-#' sensAndSpecificMultip<-function(FUN =funct,dataframe,Column,pHospitalNum){
-#'   dd<-funct(dataframe,Column)
-#'   #Now just want the columns that have changed or have been added from the original as well
-#'   #as well as the columns that sound very similar to the original
-#'   #ie need to get the original column called Column as well as the new column created (can
-#'   # I get this from the diff between two data frames? dd-dataframe??)
-#'   #This gets the new column name from the dataframe that the function has run
-#'   MyNegsFiltered$FindingsAlgoNegs<-as.list(strsplit(MyNegsFiltered$FindingsAlgoNegs, ";"))
-#'   MyNegsFiltered$negativeresults<-as.list(strsplit(MyNegsFiltered$negativeresults, ";"))
-#'   #pHospitalNum
-#'   ff<-setdiff(union(names(dataframe), names(dd)), names(dataframe))
-#'   ff<-data.frame(dd[,Column],dd[,ff],dd[,pHospitalNum])
-#'   write.xlsx(ff, paste0(getwd(),"/MyValidation.xlsx"))
-#' }
-#' #dataframe[,pHospitalNum],
-
-
-#' #' Validate columns
-#' #'
-#' #' This is an attempt to determine whether functions are accurate in their extraction
-#' #' It is part of a validation pipeline to make sure the data outputted from a function
-#' #' is accurate
-#' #' It essentially is a comparison of actual vs expected output where there are multiple
-#' #' outputs in the column
-#' #' The intention is to then quantify the output of a function for a specific dataset.
-#' #'
-#' #' @param dataframe dataframe
-#' #' @param testcolumn The dataframe column to run the function on
-#' #' @param pHospitalNum the hospital number of the patient so can be identified
-#' #' @importFrom openxlsx write.xlsx
-#' #' @keywords validation
-#' #' @export
-#' #' @examples #ValidationR(HistolBxSize,myHistol$histology_report)
-#'
-#' ValidationR<-function(FUN =funct,dataframe,Column,pHospitalNum){
-#'   dd<-funct(dataframe,Column)
-#'   #Now just want the columns that have changed or have been added from the original as well
-#'   #as well as the columns that sound very similar to the original
-#'   #ie need to get the original column called Column as well as the new column created (can
-#'   # I get this from the diff between two data frames? dd-dataframe??)
-#'   #This gets the new column name from the dataframe that the function has run
-#'   MyNegsFiltered$FindingsAlgoNegs<-as.list(strsplit(MyNegsFiltered$FindingsAlgoNegs, ";"))
-#'   MyNegsFiltered$negativeresults<-as.list(strsplit(MyNegsFiltered$negativeresults, ";"))
-#'   #pHospitalNum
-#'   ff<-setdiff(union(names(dataframe), names(dd)), names(dataframe))
-#'   ff<-data.frame(dd[,Column],dd[,ff],dd[,pHospitalNum])
-#'   write.xlsx(ff, paste0(getwd(),"/MyValidation.xlsx"))
-#' }
-#' #dataframe[,pHospitalNum],
-#'
