@@ -21,8 +21,8 @@ endoscopic Paris grade.This should only be run after all the
 BarrettsAll functions.
 }
 \examples{
-# 
-Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
+#
+Myendo$EMR <- BarrettsParisEMR(Myendo$ProcedurePerformed, Myendo$Findings)
 rm(v)
 }
 \keyword{Does}

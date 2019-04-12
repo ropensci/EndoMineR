@@ -18,7 +18,9 @@ Extracts the first test only per patient and returns a new dataframe listing the
 patientID and the first test done
 }
 \examples{
-dd<-SurveilFirstTest(Myendo,'HospitalNumber',
-'Dateofprocedure')
+dd <- SurveilFirstTest(
+  Myendo, "HospitalNumber",
+  "Dateofprocedure"
+)
 }
 \keyword{Surveillance}

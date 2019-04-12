@@ -19,11 +19,11 @@ endoscopist.
 It of course relies on a Endoscopist column being present
 }
 \examples{
-#The function plots any numeric metric by endoscopist
+# The function plots any numeric metric by endoscopist
 # and also gives a table with it. In this example we plot medication by
 # endoscopist
-MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
-kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
+kk <- MetricByEndoscopist(MyendoNew, "Endoscopist", "Fent")
 rm(Myendo)
 }
 \keyword{Endoscopist}

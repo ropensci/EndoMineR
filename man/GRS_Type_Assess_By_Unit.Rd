@@ -27,7 +27,9 @@ as overall number of colonoscopies.
 This will be extended to other GRS outputs in the future.
 }
 \examples{
-nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
-'Endoscopist','Diagnosis','Histology')
+nn <- GRS_Type_Assess_By_Unit(
+  vColon, "ProcedurePerformed",
+  "Endoscopist", "Diagnosis", "Histology"
+)
 }
 \keyword{Withdrawal}

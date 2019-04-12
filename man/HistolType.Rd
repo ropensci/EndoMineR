@@ -10,7 +10,7 @@ HistolType()
 This standardizes terms to describe the pathology tissue type being examined
 }
 \examples{
-#No examples as just returns a list
+# No examples as just returns a list
 }
 \keyword{Pathology}
 \keyword{type}

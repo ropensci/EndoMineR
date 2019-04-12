@@ -25,7 +25,7 @@ Newdf
 Function to encapsulate all the Barrett's functions together
 }
 \examples{
-Barretts_df<-BarrettsAll(Myendo,'Findings','OGDReportWhole',Mypath,'Histology')
+Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
 }
 \keyword{Does}
 \keyword{data}

@@ -15,12 +15,11 @@ This returns a dataframe
 \description{
 This cleans medication column from the report assuming such a column exists.
 It gets rid of common entries that are not needed. It also splits the
-medication into fentanyl and midazolam numeric doses for use. 
+medication into fentanyl and midazolam numeric doses for use.
 It should be used after the Extractor
 }
 \examples{
-MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
-
+MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
 }
 \keyword{Endoscopy}
 \keyword{medications}
