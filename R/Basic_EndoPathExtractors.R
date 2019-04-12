@@ -67,13 +67,8 @@ EndoscInstrument <- function(EndoInstrument) {
 #'
 #' This cleans medication column from the report assuming such a column exists.
 #' It gets rid of common entries that are not needed. It also splits the
-<<<<<<< HEAD
-#' medication into fentanyl and midazolam numeric doses for use.
-#' It should be used after the Extractor
-=======
 #' medication into fentanyl and midazolam numeric doses for use. 
 #' It should be used after the textPrep function.
->>>>>>> master
 #' @param MedColumn column of interest as a string vector
 #' @keywords Endoscopy medications
 #' @return This returns a dataframe
