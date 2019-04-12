@@ -118,41 +118,7 @@ scale_colour_Publication <- function(...){
   
 }
 
-# EndoSubsetEMR <- EndoSubsetEMR[EndoSubsetEMR$EVENT == "EMR", ]
-# 
-# # Create the matrix
-# df3 <-
-#   data.frame(EndoSubsetEMR$ParisClass, EndoSubsetEMR$IMorNoIM)
-# # Reorganise the column names and rows Get rid of no Paris EMR's
-# dfy <- df3[!df3$EndoSubsetEMR.ParisClass == "No_Paris", ]
-# # Get the histology proportions by the Paris grade
-# tr4 <- as.data.frame.matrix(prop.table(table(dfy), 1))
-# 
-# tr5 <- as.matrix(tr4)
-# tr5 <- head(tr5, -1)
-# # Create the heatmap par(oma = c(4, 0, 0, 4))
-# 
-# tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
-# tr5 <- t(tr5)
-# tr5 <- tr5[!!rowSums(!is.na(tr5)), ]
-# tr5 <- t(tr5)
-# if (nrow(tr5) > 2 & ncol(tr5) > 2) {
-#   colors <- c(seq(-1, 0.2, length = 100),
-#               seq(0.21, 0.8, length = 100),
-#               seq(0.81, 1, length = 100))
-#   
-#   gplots::heatmap.2(
-#     tr5,
-#     trace = "none",
-#     breaks = colors,
-#     density.info = "none",
-#     dendrogram = "none",
-#     Rowv = FALSE,
-#     Colv = FALSE,
-#     cexRow = 3.5,
-#     cexCol = 1.5
-#   )
-# }
+
 
 
 ########################################## Patient flow functions#######
@@ -433,56 +399,10 @@ PatientFlow_CircosPlots <-
 
 
 
-
-##################### Non-numeric x Numeric y points #########################
-
-#Make sure the data is inputted in the correct format ie one column is the endoscopist
-
-#' Create non-Numeric x versus y
-#'
-#' This allows us to look at the overall flow from one
-#' type of procedure to another using circos plots.
-#' @param dataframe dataframe
-#' @param Prop The proportion column
-#' @param xdata The category column
-#' @import ggplot2
-#' @return Myplot the EDA final plot
-#' @keywords Circos
-#' @export
-#' @return Myplot
-#' @examples # This function plot numeric y vs non-numeric x
-#' MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
-#' kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
-#' EndoDataVizNum_y(kk,'Endoscopist','avg')
+##################### Basic Graph #########################
 
 
-# # Then just plot it:
-
-EndoDataVizNum_y <-
-  function(dataframe,xdata,Prop) {
-    
-  Myplot <-
-  ggplot(data = dataframe, aes(x = dataframe[,xdata], y = dataframe[,Prop] ,group=1)) +
-  geom_point() +
-  labs(title=paste0(xdata," vs ",Prop))+
-  xlab(xdata) +
-  ylab(Prop) +
-  scale_colour_Publication()+
-  scale_fill_Publication()+
-  theme_Publication()
-
-return(Myplot)
-}
-
-##################### Time x Numeric y points #########################
-
-
-#Make sure the data is inputted in the correct format ie one column is the endoscopist
-
-#' Create non Numeric x versus y
-#'
-#' This allows us to look at the overall flow from one
-#' type of procedure to another using circos plots.
+#' This creates a basic graph using the template specified in theme_Publication.
 #' @param dataframe dataframe
 #' @param number The numeric column
 #' @param xdata The Time column
@@ -496,9 +416,9 @@ return(Myplot)
 #' Mypath$Size<-HistolBxSize(Mypath$Macroscopicdescription)
 #' Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
 #' Mypath2<-Mypath[,c("NumBx","Size")]
-#' EndoDataVizNum_xNum_y(Mypath,'Size','NumBx')
+#' EndoBasicGraph(Mypath,'Size','NumBx')
 
-EndoDataVizNum_xNum_y <-
+EndoBasicGraph <-
   function(dataframe,xdata,number) {
 Myplot <-
   ggplot(data = dataframe, aes(x = dataframe[,xdata], y = dataframe[,number],group=1)) +
