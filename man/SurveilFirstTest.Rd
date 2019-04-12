@@ -15,7 +15,7 @@ SurveilFirstTest(dataframe, HospNum_Id, Endo_ResultPerformed)
 }
 \description{
 Extracts the first test only per patient and returns a new dataframe listing the
-patientID and the last test done
+patientID and the first test done
 }
 \examples{
 dd<-SurveilFirstTest(Myendo,'HospitalNumber',
