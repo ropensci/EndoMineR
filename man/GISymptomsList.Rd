@@ -7,8 +7,10 @@
 GISymptomsList()
 }
 \description{
-This function returns all the Common GI symptoms. They are simply listed as is without grouping
-or mapping. They have been derived from a manual list with synonyms derived from the UMLS Methatharus
+This function returns all the common GI symptoms. 
+They are simply listed as is without grouping
+or mapping. They have been derived from a manual 
+list with synonyms derived from the UMLS Methatharus
 using the browser.
 }
 \examples{

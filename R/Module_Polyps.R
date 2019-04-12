@@ -4,7 +4,7 @@
 #'
 #' This extracts the polyps types from the data
 #' (for colonoscopy and flexible sigmoidosscopy data)
-#' and output the adenoma,adenocarcinoma and
+#' and outputs the adenoma,adenocarcinoma and
 #' hyperplastic detection rate by endoscopist as well
 #' as overall number of colonoscopies.
 #' This will be extended to other GRS outputs in the future.

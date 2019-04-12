@@ -31,9 +31,9 @@ HistolType <- function() {
 
 #' Use list of standard locations
 #'
-#' The is a list of standard locations at endoscopy that is used in the TermStandardLocator as well
-#' as extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
-#' therapeutic event. It just returns the list in the function
+#' The is a list of standard locations at endoscopy. It used for the site of biopsies/EMRs 
+#' and potentially in functions looking at the site of a 
+#' therapeutic event. It just returns the list in the function.
 #'
 #'
 #' @keywords Location
@@ -56,7 +56,7 @@ LocationList<-function(){
 #'
 #' The is a list of standard locations at endoscopy that is used in the
 #' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
-#' therapeutic event. It just returns the list in the function
+#' therapeutic event. It just returns the list in the function.
 #'
 #'
 #' @keywords Location
@@ -87,7 +87,7 @@ LocationListUpper<-function(){
 #'
 #' The is a list of standard locations at endoscopy that is used in the 
 #' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
-#' therapeutic event. It just returns the list in the function
+#' therapeutic event. It just returns the list in the function.
 #'
 #'
 #' @keywords Location
@@ -149,7 +149,7 @@ LocationListLower<-function(){
 
 #' Use list of catheters used in radiofrequency ablation
 #'
-#' The takes a list of catheters used in radiofrequency ablation
+#' The takes a list of catheters used in radiofrequency ablation.
 #'
 #' @keywords RFA
 #' @export
@@ -173,7 +173,7 @@ RFACath<-function(){
 #' Event list
 #'
 #' This function returns all the conversions from common version of events to 
-#' a standardised event list, much like the Location standardisation function
+#' a standardised event list, much like the Location standardisation function.
 #' This does not include EMR as this is 
 #' extracted from the pathology so is part of pathology type.
 #' @keywords Event extraction
@@ -202,35 +202,14 @@ EventList<-function(){
   return(Event)
 }
 
-#' Temporal list
-#'
-#' This function returns all the conversions from common version of events to 
-#' a standardised event list, much like the Location standardidastion function
-#' It is used in the Barretts_EventType. This does not include EMR as this is 
-#' extracted from the pathology so is part of pathology type.
-#' @keywords Temporal extraction
-#' @examples # unique(unlist(Temporal(), use.names = FALSE))
-#' @export
-#' 
-TemporalList<-function(){
-  
-  Temporal <- list("Past" = "Past", 
-                "Present" = "Present",
-                "Future" = "Future"
-  )
-  
-  #To get the list as a list of values only in a regex use
-  #paste0(unlist(Temporal,use.names=F),collapse="|")
-  
-  return(Temporal)
-}
 
 #' Biopsy index list
 #'
 #' This function returns all the conversions from common version of events to 
 #' a standardised event list, much like the Location standardidastion function
-#' It is used in the Barretts_EventType. This does not include EMR as this is 
-#' extracted from the pathology so is part of pathology type.
+#' This does not include EMR as this is 
+#' extracted from the pathology so is part of pathology type. It is used for
+#' automated OPCS-4 coding.
 #' @keywords Event extraction
 #' @export
 #' @examples # unique(unlist(EventList(), use.names = FALSE))
@@ -273,8 +252,10 @@ BiopsyIndex<-function(){
 
 #' GISymptoms
 #'
-#' This function returns all the Common GI symptoms. They are simply listed as is without grouping
-#' or mapping. They have been derived from a manual list with synonyms derived from the UMLS Methatharus
+#' This function returns all the common GI symptoms. 
+#' They are simply listed as is without grouping
+#' or mapping. They have been derived from a manual 
+#' list with synonyms derived from the UMLS Methatharus
 #' using the browser.
 #' @keywords Event extraction
 #' @export
@@ -699,10 +680,7 @@ GISymptomsList<-function(){
 
 #' Words to numbers
 #'
-#' This function returns all the conversions from common version of events to 
-#' a standardised event list, much like the Location standardidastion function
-#' It is used in the Barretts_EventType. This does not include EMR as this is 
-#' extracted from the pathology so is part of pathology type.
+#' This function converts words to numbers.
 #' @keywords Event extraction
 #' @export
 #' @examples # unique(unlist(EventList(), use.names = FALSE))
