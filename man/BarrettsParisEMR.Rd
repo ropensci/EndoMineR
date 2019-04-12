@@ -15,15 +15,17 @@ BarrettsParisEMR(Column, Column2)
 a string vector
 }
 \description{
-This looks at the Paris grades of each EMR and then creates a heatmap
-of pathological grade vs
-endoscopic Paris grade.This should only be run after all the
-BarrettsAll functions.
+This creates a column of Paris grade for all samples where this is mentioned.
 }
 \examples{
+<<<<<<< HEAD
 #
 Myendo$EMR <- BarrettsParisEMR(Myendo$ProcedurePerformed, Myendo$Findings)
 rm(v)
+=======
+# 
+Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
+>>>>>>> master
 }
 \keyword{Does}
 \keyword{data}

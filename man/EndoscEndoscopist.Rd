@@ -17,7 +17,7 @@ If an endoscopist column is part of the dataset once the extractor
 function has been used this cleans the endoscopist column from the report.
 It gets rid of titles
 It gets rid of common entries that are not needed.
-It should be used after the Extractor.
+It should be used after the textPrep function
 }
 \examples{
 Myendo$Endoscopist <- EndoscEndoscopist(Myendo$Endoscopist)

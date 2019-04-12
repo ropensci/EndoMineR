@@ -33,8 +33,7 @@ by month and year).
 # the column which holds the test indication (in this example it is called
 # 'Indication' The date of the procedure column(which can be date format or
 # POSIX format) is also necessary.  Finally the string which indicates the text
-# indication needs to be inpoutted. In this case we are looking for all
-# endoscopies done
+# indication needs to be inpoutted. In this case we are looking for all endoscopies done
 # where the indication is surveillance (so searching on 'Surv' will do fine).
 # If you want all the tests then put '.*' instead of Surv
 rm(list = ls(all = TRUE))

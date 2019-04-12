@@ -234,8 +234,7 @@ TimeToStatus <- function(dataframe, HospNum, EVENT, indicatorEvent, endEvent) {
 #' # the column which holds the test indication (in this example it is called
 #' # 'Indication' The date of the procedure column(which can be date format or
 #' # POSIX format) is also necessary.  Finally the string which indicates the text
-#' # indication needs to be inpoutted. In this case we are looking for all
-#' # endoscopies done
+#' # indication needs to be inpoutted. In this case we are looking for all endoscopies done
 #' # where the indication is surveillance (so searching on 'Surv' will do fine).
 #' # If you want all the tests then put '.*' instead of Surv
 #' rm(list = ls(all = TRUE))
@@ -338,12 +337,17 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' @importFrom rlang sym
 #' @keywords Endoscopist
 #' @export
-#' @examples
-#' # The function plots any numeric metric by endoscopist
-#' # and also gives a table with it. In this example we plot medication by
+
+#' @examples #The function gives a table with any numeric
+#' # metric by endoscopist
+#' # In this example we tabulate medication by
 #' # endoscopist
-#' MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
-#' kk <- MetricByEndoscopist(MyendoNew, "Endoscopist", "Fent")
+#' # Lets bind the output of EndoscMeds to the main dataframe so we
+#' # have a complete dataframe with all the meds extracted
+#' MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+#' 
+#' # Now lets look at the fentanly use per Endoscopist:
+#' kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
 #' rm(Myendo)
 MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
   group <- rlang::sym(Column)

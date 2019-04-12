@@ -22,7 +22,10 @@ BarrettsAll(Endodataframe, EndoReportColumn, EndoReportColumn2,
 Newdf
 }
 \description{
-Function to encapsulate all the Barrett's functions together
+Function to encapsulate all the Barrett's functions together. This includes the Prague
+score and the worst pathological grade and then feeds both of these things into
+the follow up function. The output is a dataframe with all the original data as
+well as the new columns that have been created.
 }
 \examples{
 Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")

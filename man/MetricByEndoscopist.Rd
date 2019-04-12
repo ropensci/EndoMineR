@@ -19,11 +19,24 @@ endoscopist.
 It of course relies on a Endoscopist column being present
 }
 \examples{
+<<<<<<< HEAD
 # The function plots any numeric metric by endoscopist
 # and also gives a table with it. In this example we plot medication by
 # endoscopist
 MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
 kk <- MetricByEndoscopist(MyendoNew, "Endoscopist", "Fent")
+=======
+#The function gives a table with any numeric
+# metric by endoscopist
+# In this example we tabulate medication by
+# endoscopist
+# Lets bind the output of EndoscMeds to the main dataframe so we
+# have a complete dataframe with all the meds extracted
+MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+
+# Now lets look at the fentanly use per Endoscopist:
+kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+>>>>>>> master
 rm(Myendo)
 }
 \keyword{Endoscopist}
