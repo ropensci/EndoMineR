@@ -2,7 +2,9 @@
 % Please edit documentation in R/Graphics.R
 \name{EndoDataVizNum_xNum_y}
 \alias{EndoDataVizNum_xNum_y}
-\title{Create non Numeric x versus y}
+\title{This creates a graph with any categorical data along the x-axis
+and numeric data along teh y-axis. It implements the template styles as per 
+theme_Publication.}
 \usage{
 EndoDataVizNum_xNum_y(dataframe, xdata, number)
 }
@@ -19,8 +21,9 @@ Myplot the EDA final plot
 Myplot
 }
 \description{
-This allows us to look at the overall flow from one
-type of procedure to another using circos plots.
+This creates a graph with any categorical data along the x-axis
+and numeric data along teh y-axis. It implements the template styles as per 
+theme_Publication.
 }
 \examples{
 # This function plot numeric y vs non-numeric x

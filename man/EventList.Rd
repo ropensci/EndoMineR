@@ -8,7 +8,7 @@ EventList()
 }
 \description{
 This function returns all the conversions from common version of events to 
-a standardised event list, much like the Location standardisation function
+a standardised event list, much like the Location standardisation function.
 This does not include EMR as this is 
 extracted from the pathology so is part of pathology type.
 }
