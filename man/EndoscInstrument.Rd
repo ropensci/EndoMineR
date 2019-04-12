@@ -19,6 +19,6 @@ It gets rid of common entries that are not needed.
 It should be used after the Extractor.
 }
 \examples{
-Myendo$Instrument<-EndoscInstrument(Myendo$Instrument)
+Myendo$Instrument <- EndoscInstrument(Myendo$Instrument)
 }
 \keyword{Instrument}

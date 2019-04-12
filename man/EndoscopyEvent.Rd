@@ -27,7 +27,7 @@ added to the event. Used in the OPCS4 coding
 }
 \examples{
 # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings",
-#"ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+# "ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 }
 \keyword{Find}
 \keyword{and}

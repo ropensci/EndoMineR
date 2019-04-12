@@ -11,7 +11,7 @@
 #' @param theframe the dataframe,
 #' @param EndoReportColumn the column of interest,
 #' @param myNotableWords list of words you are interested in
-#' @import ggplot2 
+#' @import ggplot2
 #' @import stringr
 #' @import ggplus
 #' @keywords patient flow
@@ -50,7 +50,7 @@ eg hostpital number}
 #' @param theframe the dataframe,
 #' @param EndoReportColumn the column of interest,
 #' @param myNotableWords list of words you are interested in
-#' @import ggplot2 
+#' @import ggplot2
 #' @import stringr
 #' @import ggplus
 #' @keywords patient flow
@@ -72,23 +72,23 @@ eg hostpital number}
 PatientFlowBasic <- function(theframe, EndoReportColumn, myNotableWords) {
 
 theframe["RecodedColumn"] <- as.integer(factor(theframe[,EndoReportColumn], myNotableWords, ordered = TRUE))
-  
-  #Now develop the patient specific journey with faceted plot in ggplot2
+
+#Now develop the patient specific journey with faceted plot in ggplot2
   f<-ggplot(theframe) +
     geom_point(aes(Date.x,type),shape=16,size=1) +
-    xlab("Date") + 
+    xlab("Date") +
     ylab("Histopathological State") +
-    theme(axis.text.x=element_text(angle=-90)) 
-  
-  
-  
-  t<-facet_multiple(plot = f, 
-                 facets = 'pHospitalNum', 
-                 ncol = 2, 
+    theme(axis.text.x=element_text(angle=-90))
+
+
+
+t<-facet_multiple(plot = f,
+                 facets = 'pHospitalNum',
+                 ncol = 2,
                  nrow = 2)
   mylist<-as.list(aa,t)
-  
-  return(mylist)
+
+return(mylist)
 }
 Create a Sankey plot for patient flow
 
@@ -104,8 +104,8 @@ the procedure type (eg EMR,
 # provide a Sankey plot which allows the analyst to see the proportion
 # of patients moving from one state (in this case type of Procedure) to
 # another. This allows us to see for example how many EMRs are done after
-#RFA. For further patient flow examples see PatientFlow_CircosPlots
-names(Myendo)[names(Myendo) == 'HospitalNumber'] <- 'PatientID'
-gg<-SurveySankey(Myendo,"ProcedurePerformed","PatientID")
+# RFA. For further patient flow examples see PatientFlow_CircosPlots
+names(Myendo)[names(Myendo) == "HospitalNumber"] <- "PatientID"
+gg <- SurveySankey(Myendo, "ProcedurePerformed", "PatientID")
 }
 \keyword{Sankey}

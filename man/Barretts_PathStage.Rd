@@ -20,17 +20,17 @@ for histopathology reports to contain the worst overall grade
 rather than individual biopsy grades).
 Specfically it extracts the histopathology worst grade within the specimen
 FOr the sake of accuracy this should alwats be used after the HistolDx function
-and this removes negative sentences such as 'there is no dysplasia'. 
+and this removes negative sentences such as 'there is no dysplasia'.
 This current function should be used on the column derived from HistolDx
 which is called Dx_Simplified
 }
 \examples{
 # Firstly relevant columns are extrapolated from the
-# Mypath demo dataset. These functions are all part of Histology data 
+# Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
 # The function then takes the Histology column from the merged data set (v).
 # It extracts the worst histological grade for a specimen
-b<-Barretts_PathStage(Mypath,'Histology')
+b <- Barretts_PathStage(Mypath, "Histology")
 rm(v)
 }
 \keyword{Pathology}

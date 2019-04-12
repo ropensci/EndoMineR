@@ -2,7 +2,7 @@
 #'
 #' A dataset containing fake endoscopy reports. The report field is provided as a whole report
 #' without any fields having been already extracted
-#' 
+#'
 #'
 #' @format A data frame with 2000 rows and 1 variables:
 #' \describe{
@@ -15,7 +15,7 @@
 #' A dataset containing fake pathology reports for upper GI endoscopy tissue specimens.
 #' The report field is provided as a whole report
 #' without any fields having been already extracted
-#' 
+#'
 #'
 #' @format A data frame with 2000 rows and 1 variables:
 #' \describe{
@@ -28,7 +28,7 @@
 #'
 #' A dataset containing fake lower GI endoscopy reports. The report field is provided as a whole report
 #' without any fields having been already extracted
-#' 
+#'
 #'
 #' @format A data frame with 2000 rows and 1 variables:
 #' \describe{
@@ -40,7 +40,7 @@
 #'
 #' A dataset containing fake lower GI endoscopy reports and pathology reports all
 #' pre-extracted
-#' 
+#'
 #'
 #' @format A data frame with 2000 rows and 26 variables:
 #' \describe{
@@ -78,7 +78,7 @@
 #' A dataset containing fake pathology reports for lower GI endoscopy tissue specimens.
 #' The report field is provided as a whole report
 #' without any fields having been already extracted
-#' 
+#'
 #'
 #' @format A data frame with 2000 rows and 1 variables:
 #' \describe{

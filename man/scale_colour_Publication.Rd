@@ -10,7 +10,7 @@ scale_colour_Publication(...)
 Sets the publication theme for all the ggplots
 }
 \examples{
-#None needed
+# None needed
 }
 \keyword{ggplot}
 \keyword{themes}

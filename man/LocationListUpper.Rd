@@ -8,10 +8,10 @@ LocationListUpper()
 }
 \description{
 The is a list of standard locations at endoscopy that is used in the
-extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
+extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a
 therapeutic event. It just returns the list in the function
 }
 \examples{
-#No example needed
+# No example needed
 }
 \keyword{Location}

@@ -18,6 +18,6 @@ This extracts the last test only per patient and returns a new dataframe listing
 patientID and the last test done
 }
 \examples{
-cc<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+cc <- SurveilLastTest(Myendo, "HospitalNumber", "Dateofprocedure")
 }
 \keyword{Surveillance}

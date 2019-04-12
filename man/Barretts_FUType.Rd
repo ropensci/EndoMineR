@@ -26,8 +26,8 @@ presence of a Prague score. It should be run after
 Barretts_PathStage which looks for the worst stage of a
 specimen and which will determine the presence or absence of intestinal
 metaplasia if the sample is non-dysplastic. Because reports often do not record
-a Prague score a more pragmatic approach as been to assess the M stage and if 
-this is not present then to use the C stage extrapolated using the 
+a Prague score a more pragmatic approach as been to assess the M stage and if
+this is not present then to use the C stage extrapolated using the
 Barretts_Prague function
 }
 \examples{
@@ -36,21 +36,23 @@ Barretts_Prague function
 # cleaning as part of the package.
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
-v<-Mypath
-v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
-v$BxSize<-HistolBxSize(v$Macroscopicdescription)
+v <- Mypath
+v$NumBx <- HistolNumbOfBx(v$Macroscopicdescription, "specimen")
+v$BxSize <- HistolBxSize(v$Macroscopicdescription)
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-'HospitalNumber')
-#The function relies on the other Barrett's functions being run as well:
-v$IMorNoIM<-Barretts_PathStage(v,'Histology')
-v<-Barretts_PragueScore(v,'Findings')
+v <- Endomerge2(
+  Myendo, "Dateofprocedure", "HospitalNumber", v, "Dateofprocedure",
+  "HospitalNumber"
+)
+# The function relies on the other Barrett's functions being run as well:
+v$IMorNoIM <- Barretts_PathStage(v, "Histology")
+v <- Barretts_PragueScore(v, "Findings")
 
-#The follow-up group depends on the histology and the Prague score for a
+# The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-v$FU_Type<-Barretts_FUType(v,"CStage","MStage","IMorNoIM")
+v$FU_Type <- Barretts_FUType(v, "CStage", "MStage", "IMorNoIM")
 rm(v)
 }
 \keyword{Follow-Up}
