@@ -26,93 +26,53 @@ knitr::opts_chunk$set( warning=FALSE, message=FALSE)
 ```
 
 
-The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upon in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions. 
+An important design principle of EndoMineR was that it should address the important categories of questions we all have in gastroenterology, and endoscopy in particular. These questions roughly fall into the following: surveillance, quality and patient flow.
+
+
 
 ##Surveillance functions
 
-Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. How the data is organised is explained in the Principles section but essentially the details of this are all hidden in the function.
-
-<br>
+I often want to know how good our surveillance programmes are. How good are we at making sure patients come back in a timely way for their endoscopy after a polyp removal?
 
 ```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
 knitr::include_graphics("img/EndoMineR_Surveillance.svg")
 ```
 
-<br>
+Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test (of the same type) and the difference in timing between each test, always grouped by patient. 
 
-The basic surveillance functions are simple but are the most often used. SurveilTimeByRow will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.
-SurveilLastTest simply extracts the last and first test respectively for each patient. 
+As all these functions are simply looking at the date of the test, they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. 
+
+The basic surveillance functions are simple but are the most often used. **SurveilTimeByRow** will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. **SurveilLastToNow** will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.
+**SurveilLastTest** simply extracts the last and first test respectively for each patient. 
 
 ```{r exampleSurveillanceTimeByRow, eval = TRUE}
-#em1<-SurveilTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
-#pander(head(data.frame(em1[2],em1[ncol(em1)]),5))
-#em3<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
-#pander(head(data.frame(em3[2],em3[5]),5))
-#em4<-SurveilFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
-#pander(head(data.frame(em4[2],em4[5]),5))
-```
-
-Of course we also want to know how many tests have been done over a time period and this is provided by two functions
-
-```{r exampleSurveillanceCapacity}
-#em5<-SurveilCapacity(Myendo,"Dateofprocedure")
+em1<-SurveilTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
+pander(head(data.frame(em1[2],em1[ncol(em1)]),5))
 
 ```
 
-```{r exampleSurveillanceCapacity2,echo=FALSE}
-#pander::panderOptions('table.split.table', Inf)
-#pander(head(em5))
+```{r exampleSurveilLastTest}
+em3<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+pander(head(data.frame(em3[2],em3[5]),5))
 ```
 
 
+```{r exampleSurveilFirstTest}
+em4<-SurveilFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
+pander(head(data.frame(em4[2],em4[5]),5))
+```
 
-This function will return the number of tests by month. The more detailed function is:
+Of course we may also want to know how many tests have been done over a time period and this is provided by the function **HowManyTests**
+
+This function will return the number of tests by day, month and year so they can be easily graphed according to what you want.
 
 ```{r exampleHowManyTests}
-#how<-HowManyTests(Myendo,'Indications','Dateofprocedure','Surv')
+how<-HowManyOverTime(Myendo,'Indications','Dateofprocedure','Surv')
+pander(head(data.frame(how),5))
 ```
 
 
-This will provide the number of tests by month and year as a table as well as a ggplot. It returns a list containing both the ggplot and a dataframe so this can be accessed with how[1] and how[2]
 
-##Patient flow functions
-
-###Sankey plots
-We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. 
-For example, if we have a dataset with events such as 'radiofrequency ablation' and 'endoscopic mucosal resection' or 'nothing' we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type ("EMR","RFA","nothing" in this case)
-
-
-```{r exampleSurveySankey, eval = FALSE}
-#how<-SurveySankey(Myendo,"ProcedurePerformed")
-```
-
-<br>
-
-
-
-```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "100%"}
-knitr::include_graphics("img/EndoMineR_Sankey.svg")
-```
-
-<br>
-
-
-###Circos plots
-
-We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
-
-```{r examplePatientFlow_CircosPlots, eval = FALSE}
-#flow<-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")
-```
-
-<br>
-
-
-```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
-knitr::include_graphics("img/EndoMineR_Circos.svg")
-```
-
-<br>
 
 ##Assessment of quality functions
 
@@ -120,6 +80,7 @@ Quality is measured in a variety of ways. For endoscopy it is measured according
 
 
 ###Documentation Quality
+
 As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised of terms that should be mentioned in a report.
 
 **_Input_**
@@ -131,11 +92,12 @@ As regards adherence to documentation for example, a generic function is provide
 
 <br>
 
-In this example we are looking for the words Barrett's and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscope report
+In this example we are looking for the words Barrett's and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscopy report:
 
 ```{r exampleListLookup2, eval = TRUE}
-#myNotableWords <- c("arrett", "oeliac")
-#tt<-ListLookup(Myendo,'Findings',myNotableWords)
+library(tm)
+myNotableWords <- c("barrett", "coeliac")
+ListLookup(Myendo,'Findings',myNotableWords)
 ```
 
 ```{r exampleListLookup3, echo=FALSE}
@@ -152,12 +114,16 @@ So we can see that the terms are present in the minority of reports across endos
 ###Endoscopic Quality
 
 ####Sedation Usage
+
 Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:
 
 ```{r exampleEndoscChopperMeds}
-#Myendo<-EndoscMeds(Myendo,'Medications')
-#pander(head(data.frame(Myendo$HospitalNumber,Myendo$Fent,Myendo$Midaz),10))
-#MetricByEndoscopist(Myendo,'Endoscopist','Fent')
+library(dplyr)
+#We have to attach the output of EndoscMeds to the original dataframe
+MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+#Average Fentanyl use by endoscopist:
+Mytable<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+pander(head(data.frame(MyendoNew$Endoscopist,MyendoNew$Fent),10))
 ```
 
 
@@ -244,3 +210,43 @@ One function is provided to produce a table that gives the number of adenomas, a
 #pander(GRSTable)
 ```
 
+##Patient flow functions
+
+###Sankey plots
+
+We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. 
+
+For example, if we have a dataset with events such as 'radiofrequency ablation' and 'endoscopic mucosal resection' or 'nothing' we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type ("EMR","RFA","nothing" in this case)
+
+
+```{r exampleSurveySankey, eval = FALSE}
+#how<-SurveySankey(Myendo,"ProcedurePerformed")
+```
+
+<br>
+
+
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "100%"}
+knitr::include_graphics("img/EndoMineR_Sankey.svg")
+```
+
+<br>
+
+
+###Circos plots
+
+We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
+
+```{r examplePatientFlow_CircosPlots, eval = FALSE}
+#flow<-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")
+```
+
+<br>
+
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
+knitr::include_graphics("img/EndoMineR_Circos.svg")
+```
+
+<br>
