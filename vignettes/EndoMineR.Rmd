@@ -96,17 +96,17 @@ We can then define the list of delimiters that will split this text into separat
 
 
 ```{r exampleExtractor2,echo=TRUE}
-
+library(EndoMineR)
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
 
-PathDataFrameFinalColon3<-Extractor(PathDataFrameFinalColon2$Original,mywords)
+PathDataFrameFinalColon3<-Extractor(PathDataFrameFinalColon2$PathReportWhole,mywords)
 
 ```
 
 ```{r exampleExtractor3,echo=FALSE}
-PathDataFrameFinalColon3<-head(PathDataFrameFinalColon3[2:10],1)
+#PathDataFrameFinalColon3<-head(PathDataFrameFinalColon3[2:10],1)
 pander::panderOptions('table.split.table', Inf)
 pander(head(PathDataFrameFinalColon2,1))
 ```
@@ -145,14 +145,11 @@ MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
 
 The **EndoscopyEvent** function will extract any event that has been performed at the endoscopy and dump it in a new column. It does this by looking in pairs of sentences and therefore wraps around a more basic function called **EndoscopyPairs_TwoSentence**. This allows us to get the site that the event (usually a therapy) happened on. A example sentence might be 'There was a bleeding gastric ulcer. A clip was applied to it' We can only extract stomach:clip by reference to the two sentences.
 
-
 There is also a lot of information we can extract into a separate column from the histopathology information.
 We can derive the number of biopsies taken (usually specified in the macroscopic description of a sample) using the function **HistolNumbOfBx**. 
-
-We can also find the average biopsy size using **HistolBxSize**
+We can also find the average biopsy size using **HistolBxSize**.
 
 **HistolTypeAndSite** which itself performs a similar pairing process to EndoscopyEvent (for various reasons it uses a slightly different function called **EndoscopyPairs_OneSentence**. so can give the specimen type (ie polyp or biopsy sample) and the place it was taken from. It is better to derive this kind of information from the histology report rather than the endoscopy report as it tends to be more rigorously described in endoscopy reports.
-
 
 3. **Analyses**- The analyses provide graphing functions as well as analyses according to the cornerstone questions in gastroenterology- namely surveillance, patient tracking, quality of endoscopy and pathology reporting and diagnostic yield questions as explained in the EndoMineR principles pages. The analyses are separated into generic analyses that are relevant to any endo-pathological dataset, as well as specific analyses for adenoma detection rates and Barrett's surveillance and therapy. Further disease specific datasets will be included in future iterations.
 
@@ -237,13 +234,5 @@ pander(head(sh,5))
 A final function is also provided called **HistolTypeAndSite**. This is particularly useful when trying to find out which biopsies came from which site. 
 
 The output is provided as a site:specimen type pair. An alternative output is also provided which groups locations (eg the gastro-oesophageal junction is seen as part of the oesophagus). 
-
-
-```{r exampleHistolTypeAndSite, echo = FALSE}
-
-Myendo2<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure','HospitalNumber')
-PathSiteAndType <- HistolTypeAndSite(Myendo2$PathReportWhole,Myendo2$Macroscopicdescription, Myendo2$ProcedurePerformed)
-pander(head(data.frame(PathSiteAndType),5))
-```
 
 
