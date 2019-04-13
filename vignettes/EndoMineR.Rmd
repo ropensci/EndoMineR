@@ -44,7 +44,6 @@ knitr::include_graphics("img/EndoMineROverView.png")
 
 
 The package is basically divied into three parts. How all the functions are connected in shown in the adjoining figure. 
-
 The import of the raw data is left up to the user with the overall aim being that all the data is present in one dataframe. 
 
 
@@ -243,11 +242,8 @@ The output is provided as a site:specimen type pair. An alternative output is al
 ```{r exampleHistolTypeAndSite, echo = FALSE}
 
 Myendo2<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure','HospitalNumber')
-
 PathSiteAndType <- HistolTypeAndSite(Myendo2$PathReportWhole,Myendo2$Macroscopicdescription, Myendo2$ProcedurePerformed)
-Myendo2sh<-data.frame(Myendo2$HospitalNumber,Myendo2$PatientName,cbind(Myendo2$PathSite),cbind(PathSiteAndType,Myendo2))
-pander(head(Myendo2sh,5))
-
+pander(head(data.frame(PathSiteAndType),5))
 ```
 
 

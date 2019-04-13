@@ -240,10 +240,12 @@ HistolBxSize <- function(MacroColumn) {
 #' @return a list with two columns, one is the type and site and the other
 #' is the index to be used for OPCS4 coding later if needed.
 #' @examples
-#' Myendo$PathSite <- HistolTypeAndSite(
-#'   Myendo$Original.x,
-#'   Myendo$macroscopicaldescription, Myendo$procedureperformed
-#' ) # This example needs correction
+#'Myendo2<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',
+#'Mypath,'Dateofprocedure','HospitalNumber')
+#'PathSiteAndType <- HistolTypeAndSite(Myendo2$PathReportWhole,
+#'Myendo2$Macroscopicdescription, Myendo2$ProcedurePerformed)
+
+
 HistolTypeAndSite <- function(inputString1, inputString2, procedureString) {
   output <- ifelse(EntityPairs_OneSentence(inputString1, HistolType(), LocationList()) == "NA:NA",
     EntityPairs_OneSentence(inputString2, HistolType(), LocationList()),
