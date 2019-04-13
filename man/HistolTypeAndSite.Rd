@@ -23,7 +23,7 @@ This needs some blurb to be written. Used in the OPCS4 coding
 \examples{
 Myendo$PathSite <- HistolTypeAndSite(
   Myendo$Original.x,
-  Myendo$mscroscopicaldescription, Myendo$procedureperformed
+  Myendo$macroscopicaldescription, Myendo$procedureperformed
 ) # This example needs correction
 }
 \keyword{Find}

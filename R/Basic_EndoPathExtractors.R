@@ -242,7 +242,7 @@ HistolBxSize <- function(MacroColumn) {
 #' @examples
 #' Myendo$PathSite <- HistolTypeAndSite(
 #'   Myendo$Original.x,
-#'   Myendo$mscroscopicaldescription, Myendo$procedureperformed
+#'   Myendo$macroscopicaldescription, Myendo$procedureperformed
 #' ) # This example needs correction
 HistolTypeAndSite <- function(inputString1, inputString2, procedureString) {
   output <- ifelse(EntityPairs_OneSentence(inputString1, HistolType(), LocationList()) == "NA:NA",
