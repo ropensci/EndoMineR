@@ -350,8 +350,9 @@ BarrettsParisEMR <- function(Column, Column2) {
 #' # patient so it takes the processed Barrett's data and then looks in the
 #' # Findings column for permutations of the Prague score.
 #' b1$FU_Type <- Barretts_FUType(b1, "CStage", "MStage", "PathStage")
-#' colnames(b1)[colnames(b1) == "pHospitalNum"] <- "HospitalNumber"
 #' 
+#' 
+#' colnames(b1)[colnames(b1) == "pHospitalNum"] <- "HospitalNumber"
 #' # The number of average number of biopsies is then calculated and
 #' # compared to the average Prague C score so that those who are taking
 #' # too few biopsies can be determined
@@ -392,7 +393,7 @@ BarrettsBxQual <- function(dataframe,
   BxShortfallPre <-
     GroupedByEndoscopy %>%
     group_by(!!Endoscopista) %>%
-    summarise(MeanDiff = mean(Difference))
+    summarise(MeanDiff = round(mean(Difference),2))
 
   BxShortfallPre <- data.frame(BxShortfallPre)
   return(BxShortfallPre)

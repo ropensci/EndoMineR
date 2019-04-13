@@ -53,6 +53,7 @@ pander(head(data.frame(em1[2],em1[ncol(em1)]),5))
 ```
 
 ```{r exampleSurveilLastTest}
+library(dplyr)
 em3<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
 pander(head(data.frame(em3[2],em3[5]),5))
 ```
