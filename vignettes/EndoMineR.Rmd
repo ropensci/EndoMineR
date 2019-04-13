@@ -43,13 +43,70 @@ knitr::include_graphics("img/EndoMineROverView.png")
 
 
 
-The package is basically divied into three parts. How all the functions are connected in shown in the adjoining figure. The import of the raw data is left up to the user with the overall aim being that all the data is present in one dataframe. The user can either load data so that each row of the data is an endoscopic episode (or a pathology report) in its raw form and then allow the package to extract the relevant parts of the data, or the data can be pre-extracted (ie separate columns for the Endoscopist, medication given etc.) so that the Extraction step is skipped. The package can take either but the importing is left to the user.
+The package is basically divied into three parts. How all the functions are connected in shown in the adjoining figure. 
 
-1. **The extraction**- This is really when the data is provided as full text reports. You may already have the data in a spreadsheet in which case this part isn't necessary. The extraction is provided as one function Extractor, explained below.
+The import of the raw data is left up to the user with the overall aim being that all the data is present in one dataframe. 
 
-2. **Cleaning**- These are a group of functions that allow the user to extract and clean data commonly found in endoscopic and pathology reports. The cleaning functions usually remove common typos or extraneous information and do some reformatting. Some of the functions will also extract derived data into separate columns. The cleaning functions are provided on a per column basis (so if you have a column containing the endoscopist name, for example ,then EndoEndoscopist will clean this. However convenience functions are also provided to run the several cleaning functions at the same time as long as the relevant columns are present. EndoscAll for example will run several of the cleaning functions as long as the columns are properly named so that the subfunctions are run on the correct columns.This is also true for HistolAll
+
+## 1. **Extraction and cleaning**
+If using raw reports, then once you have imported the data into your R environment, you can go ahead and use the **textPrep** function. If you have pre-segregated data, tehn use the EndoPaste function. This basically reformats your data so that everything is merged back into a raw text file, but it keeps the column headers as delimiters for use later. This is shown in the figure below:
+
+
+
+Once the data is ready you can use the textPrep function. This function is really a wrapper for a number of different functions that work on your data. 
+
+a. **Dusting the data** Firstly the data is cleaned up so that extra newlines, spaces, unnecessary punctuation etc is dealt with. Although you dont need to know the details of this, if you want to look under the hood you can see that this is part of the ColumnCleanUp function.
+
+b. **Spell checking** The textPrep also implements a spell checker (the **spellCheck** function). This really checks the spelling of gastroenterology terms that are present in the in-built lexcicons. So if for example the report contains the terms 'Radiafrequency ablashion' then this will be corrected using Radiofrequency ablation. This is one function that acts to standardise the text in the report so that downstream analyses can be robust. 
+
+c. **Negative phrase removal** The text is then passed along to the **NegativeRemove** function. This will remove any phrases that contain negative sentences indicating a non-positive finding. For example it would remove 'There is no evidence of dysplasia here'. This makes text extraction analyses, which often report the detection of a positive finding, much more accurate. If you wish to include these types of phrases however, you can. This function is part of the parameters you can switch on and off for the textPrep function.
+
+d. **Term mapping** The next step is to perform term mapping. This means that variations of a term are all mapped to a single common term. For example 'RFA' and 'HALO' may be both mapped to 'Radiofrequency ablation'. This is performed using the using the **DictionaryInPlaceReplace** function. This function looks through all of the lexicons included in this package to perform this. The lexicons are all manually created and consist of key-value pairs which therefore map a key 9which is the term variant) to a value (which is the standardised term that should be used).
+
+e. **Segregating the data** Finally the text is ready to separate into columns. The basic **Extractor** function will take your data and the list of terms you have supplied that act as the column boundaries, the separate your data accordingly. There are a coupl of options here. If you think the headers for your text vary a little bit, then you can change the parameter in the textPrep function to use an alternatiuve Extractor, called **Extractor2** that can deal with this. It can be worth experimenting with your data to find out which is the better segregator.
+
+If your original data was already segregated, then use the **EndoPaste** function first. This will merge your columns back together so that the textPrep function can do all the cleaning. The EndoPaste function will output both the merged text as well as a list of delimiters (which have been taken from the column names). This should be used as the delimiter list when you use the textPrep function.
+
+If you wish, further cleaning functions are provided to get clean the Endoscopist name (**EndoscEndoscopist**). This will basically get rid of titles and make sure that names are properly formatted which is important for per Endoscopist analyses.
+
+
+
+## 2. Data linkage
+
+Endoscopy data may be linked with other types of data. The most common associated dataset is pathology data from biopsies etc taken at endoscopy. This pathology data should be processed in exactly the same way as the endoscopy data- namely with textPrep (with or without EndoPaste). 
+
+The resulting pathology dataset should then be merged with the endoscopy dataset using **Endomerge** which will merge all rows with the same hospital number and do a fuzzy match (up to 7 days after the endoscopy) with pathology so the right endoscopy event is associated with the right pathology report.
+
+## 3. Deriving new data from what you have
+
+Once the text has been separated in to the columns of your choosing you are ready to see what we can extract. Functions are provided to allow quite complex extractions at both a general level and also for specific diseases.
+
+a. **Generic functions to derive data**
+
+The extraction of medication type and dose is important for lots of analyses in endoscopy. This is provided with the function **EndoscMeds**. The function will take the column that you specify and then output a dataframe. You will need to re-bind this output with the original dataframe for further analyses. This can be done as follows:
+
+EXAMPLE HERE
+
+
+The **EndoscopyEvent** function will extract any event that has been performed at the endoscopy and dump it in a new column. It does this by looking in pairs of sentences and therefore wraps around a more basic function called **EndoscopyPairs_TwoSentence**. This allows us to get the site that the event (usually a therapy) happened on. A example sentence might be 'There was a bleeding gastric ulcer. A clip was applied to it' We can only extract stomach:clip by reference to the two sentences.
+
+
+There is also a lot of information we can extract into a separate column from the histopathology information.
+We can derive the number of biopsies taken (usually specified in the macroscopic description of a sample) using the function **HistolNumbOfBx**. 
+
+We can also find the average biopsy size using **HistolBxSize**
+
+**HistolTypeAndSite** which itself performs a similar pairing process to EndoscopyEvent (for various reasons it uses a slightly different function called **EndoscopyPairs_OneSentence**. so can give the specimen type (ie polyp or biopsy sample) and the place it was taken from. It is better to derive this kind of information from the histology report rather than the endoscopy report as it tends to be more rigorously described in endoscopy reports.
+
+
+
+
 
 3. **Analyses**- The analyses provide graphing functions as well as analyses according to the cornerstone questions in gastroenterology- namely surveillance, patient tracking, quality of endoscopy and pathology reporting and diagnostic yield questions as explained in the EndoMineR principles pages. The analyses are separated into generic analyses that are relevant to any endo-pathological dataset, as well as specific analyses for adenoma detection rates and Barrett's surveillance and therapy. Further disease specific datasets will be included in future iterations.
+
+
+
+
 
 
 
@@ -290,31 +347,5 @@ The user may want to extract specific diseases from a histology dataset. This ca
 ```{r exampleHistolExtrapolDx2, echo = FALSE}
 #pander(head(Mypath3,10))
 ```
-
-
-<br>
-<br>
-
-## Removal of negatives
-
-In addition, if there is a need to remove all sentences that give negative diagnoses (eg "There is no evidence of...") so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. It can be applied as a stand alone function but is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text to provide a Simplified Diagnosis column.
-
-<br>
-The original input example can be seen here
-
-```{r exampleNeg, echo = FALSE}
-#Mypath[7,10]
-```
-
-If we apply the function NegativeRemove we see this changes to:
-
-```{r exampleNeg2, echo = TRUE}
-#MypathNegRem<-NegativeRemove(Mypath,"Diagnosis")
-```
-
-```{r exampleNeg3, echo = FALSE}
-#MypathNegRem[7:10]
-```
-
 
 
