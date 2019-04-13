@@ -26,7 +26,7 @@ knitr::opts_chunk$set( warning=FALSE, message=FALSE)
 ```
 
 
-An important design principle of EndoMineR was that it should address the important categories of questions we all have in gastroenterology, and endoscopy in particular. These questions roughly fall into the following: surveillance, quality and patient flow.
+An important design principle of EndoMineR was that it should address the important categories of questions we all have in gastroenterology, and endoscopy in particular. These questions roughly fall into the following: surveillance, quality and also patient flow.
 
 
 
