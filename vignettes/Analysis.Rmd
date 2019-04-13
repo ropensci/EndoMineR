@@ -43,6 +43,7 @@ Surveillance relates to the timing of a test relative to other tests or all test
 As all these functions are simply looking at the date of the test, they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. 
 
 The basic surveillance functions are simple but are the most often used. **SurveilTimeByRow** will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. **SurveilLastToNow** will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.
+
 **SurveilLastTest** simply extracts the last and first test respectively for each patient. 
 
 ```{r exampleSurveillanceTimeByRow, eval = TRUE}
@@ -86,8 +87,8 @@ As regards adherence to documentation for example, a generic function is provide
 **_Input_**
                       
 ```{r exampleListLookup, eval = TRUE,echo=FALSE}
-#pander::panderOptions('table.split.table', Inf)
-#pander(head(data.frame(Myendo[2:3],Myendo[13])))
+pander::panderOptions('table.split.table', Inf)
+pander(head(data.frame(Myendo[2:3],Myendo[13])))
 ```
 
 <br>
@@ -134,82 +135,6 @@ pander(head(data.frame(MyendoNew$Endoscopist,MyendoNew$Fent),10))
 
 <br>
 
-###Pathology Detection Quality
-
-####Polyp and sample location
-
-<br>
-
-
-Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.
-
-To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings in histology. This also attempts to extract the sample location into a separate column
-
-```{r exampleTermStandardLocation}
-#f<-DictionaryLookup(Mypath$Histology,LocationList())
-
-#Just some column selection
-#fgg<-data.frame(f[(ncol(f)-1)],f[(ncol(f))])
-#pander(head(fgg,10))
-```
-
-Once this is done, a column called SampleLocation is appended to the existing dataset. This will attempt to state the location of all samples whether they are resections/ biopsies or polyps. If polyps specifically need to be located then the PolypLocator function can be used (after the TermStandardLocation function).
-
-```{r examplePolypTidyUpLocator}
-#fgg<-PolypLocator(fgg,'AllSampleLocator') 
-
-#Just some column selection
-#fg<-data.frame(fgg[(ncol(fgg)-2)],fgg[(ncol(fgg)-1)],fgg[(ncol(fgg))])
-#pander(head(fg,3))
-```
-
-
-
-A further difficult area is the assessment of endoscopic quality by looking at the pathology processed from an endoscopy. This package is excellent at dealing with this kind of question because of its ability to merge the datasets together:
-
-A particularly well developed area to look at is that of the Global Rating Scale for assessing the quality of colonoscopy. One of the metrics- the adenoma detection rate assesses the number of colonoscopies where at least one adenoma was detected.
-
-One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS requirement for the ADR as well as providing further metrics alongside
-
-
-####Adenoma Detection Rates
-
-```{r exampleGRS_Type_Assess_By_Unit, echo = TRUE,message=FALSE}
-#Import the endoscopy and pathology datasets for colonoscopy
-# MypathColon<-PathDataFrameFinalColon
-# MyendoColon <- ColonFinal
- #Rename the columns so that numbers do not lead the column titles
-# MyendoColon$OGDReportWhole <-gsub("2nd Endoscopist:","Second endoscopist:",
-# MyendoColon$OGDReportWhole)
- #Extract the columns needed from endoscopy
-# EndoscTree <-c("Hospital Number:","Patient Name:","General Practitioner:",
-#        "Date of procedure:","Endoscopist:","Second endoscopist:","Medications",
-#        "Instrument","Extent of Exam:","Indications:","Procedure Performed:",
-#        "Findings:","Endoscopic Diagnosis:")
-# MyendoColon<-Extractor(MyendoColon,"OGDReportWhole",EndoscTree)
- #Extract the columns needed from Histology
-# Histoltree <-c(
-#     "Hospital Number:","Patient Name:","DOB:","General Practitioner:",
-#     "Date received:","Clinical Details","Nature of specimen","Macroscopic description:","Histology",
-#     "Diagnosis")
-#Tidy up to allow merge
-# MypathColon <-Extractor(MypathColon,"PathReportWhole",Histoltree)
-# names(MypathColon)[names(MypathColon) == 'Datereceived'] <- 'Dateofprocedure'
-# MypathColon$Dateofprocedure <- as.Date(MypathColon$Dateofprocedure)
- #Do the merge
-# vColon <-Endomerge2(MypathColon, "Dateofprocedure","HospitalNumber",
-#                     MyendoColon, "Dateofprocedure","HospitalNumber")
-
- 
- #Use the function
-#GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed','Endoscopist','Diagnosis','Histology')
-
-```
-
-```{r exampleGRS_Type_Assess_By_Unit1, echo = FALSE,message=FALSE}
-#pander::panderOptions('table.split.table', Inf)
-#pander(GRSTable)
-```
 
 ##Patient flow functions
 
