@@ -63,7 +63,54 @@ c. **Negative phrase removal** The text is then passed along to the **NegativeRe
 
 d. **Term mapping** The next step is to perform term mapping. This means that variations of a term are all mapped to a single common term. For example 'RFA' and 'HALO' may be both mapped to 'Radiofrequency ablation'. This is performed using the using the **DictionaryInPlaceReplace** function. This function looks through all of the lexicons included in this package to perform this. The lexicons are all manually created and consist of key-value pairs which therefore map a key 9which is the term variant) to a value (which is the standardised term that should be used).
 
-e. **Segregating the data** Finally the text is ready to separate into columns. The basic **Extractor** function will take your data and the list of terms you have supplied that act as the column boundaries, the separate your data accordingly. There are a coupl of options here. If you think the headers for your text vary a little bit, then you can change the parameter in the textPrep function to use an alternatiuve Extractor, called **Extractor2** that can deal with this. It can be worth experimenting with your data to find out which is the better segregator.
+e. **Segregating the data** Finally the text is ready to separate into columns. The basic **Extractor** function will take your data and the list of terms you have supplied that act as the column boundaries, the separate your data accordingly. There are a couple of options here. If you think the headers for your text vary a little bit, then you can change the parameter in the textPrep function to use an alternatiuve Extractor, called **Extractor2** that can deal with this. It can be worth experimenting with your data to find out which is the better segregator.
+
+
+The Extractor (or Extractor2) is a very useful function. Different hospitals will use different software with different headings for endoscopic reports. The Extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in-built datasets as part of the package. 
+
+<br>
+
+A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe. 
+
+
+<br>
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
+knitr::include_graphics("img/EndoMineR_Extractor.svg")
+```
+
+
+
+Here we use an example dataset (which has not had separate columns selected already) as the input:
+
+```{r exampleExtractor,echo=FALSE}
+PathDataFrameFinalColon2<-PathDataFrameFinalColon
+names(PathDataFrameFinalColon2)<-"PathReportWhole"
+pander(head(PathDataFrameFinalColon2,1))
+```
+
+
+<br>
+
+We can then define the list of delimiters that will split this text into separate columns, title the columns according to the delimiters and return a dataframe. each column simply contains the text between the delimiters that the user has defined. These columns are then ready for the more refined cleaning provided by subesquent functions.
+
+<br>
+
+
+```{r exampleExtractor2,echo=TRUE}
+mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
+"Date received:","Clinical Details:","Macroscopic description:",
+"Histology:","Diagnosis:")
+PathDataFrameFinalColon2<-Extractor(PathDataFrameFinalColon2$PathReportWhole,mywords)
+
+```
+
+```{r exampleExtractor3,echo=FALSE}
+PathDataFrameFinalColon2<-head(PathDataFrameFinalColon2[2:10],1)
+pander::panderOptions('table.split.table', Inf)
+pander(head(PathDataFrameFinalColon2,1))
+```
+
+The Extractor function is embedded within textPrep so you may never have to use it directly, but you will always have to submit a list of delimiters so that textPrep can use the Extractor to do its segregation. 
 
 If your original data was already segregated, then use the **EndoPaste** function first. This will merge your columns back together so that the textPrep function can do all the cleaning. The EndoPaste function will output both the merged text as well as a list of delimiters (which have been taken from the column names). This should be used as the delimiter list when you use the textPrep function.
 
@@ -75,7 +122,11 @@ If you wish, further cleaning functions are provided to get clean the Endoscopis
 
 Endoscopy data may be linked with other types of data. The most common associated dataset is pathology data from biopsies etc taken at endoscopy. This pathology data should be processed in exactly the same way as the endoscopy data- namely with textPrep (with or without EndoPaste). 
 
-The resulting pathology dataset should then be merged with the endoscopy dataset using **Endomerge** which will merge all rows with the same hospital number and do a fuzzy match (up to 7 days after the endoscopy) with pathology so the right endoscopy event is associated with the right pathology report.
+The resulting pathology dataset should then be merged with the endoscopy dataset using **Endomerge** which will merge all rows with the same hospital number and do a fuzzy match (up to 7 days after the endoscopy) with pathology so the right endoscopy event is associated with the right pathology report.An example of merging the included datasets Mypath and Myendo is given here:
+
+```{r exampleEndomerge2,echo=FALSE}
+v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure','HospitalNumber')
+```
 
 ## 3. Deriving new data from what you have
 
@@ -85,7 +136,10 @@ a. **Generic functions to derive data**
 
 The extraction of medication type and dose is important for lots of analyses in endoscopy. This is provided with the function **EndoscMeds**. The function will take the column that you specify and then output a dataframe. You will need to re-bind this output with the original dataframe for further analyses. This can be done as follows:
 
-EXAMPLE HERE
+
+```{r exampleEndoscMeds,echo=FALSE}
+MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
+```
 
 
 The **EndoscopyEvent** function will extract any event that has been performed at the endoscopy and dump it in a new column. It does this by looking in pairs of sentences and therefore wraps around a more basic function called **EndoscopyPairs_TwoSentence**. This allows us to get the site that the event (usually a therapy) happened on. A example sentence might be 'There was a bleeding gastric ulcer. A clip was applied to it' We can only extract stomach:clip by reference to the two sentences.
@@ -99,106 +153,23 @@ We can also find the average biopsy size using **HistolBxSize**
 **HistolTypeAndSite** which itself performs a similar pairing process to EndoscopyEvent (for various reasons it uses a slightly different function called **EndoscopyPairs_OneSentence**. so can give the specimen type (ie polyp or biopsy sample) and the place it was taken from. It is better to derive this kind of information from the histology report rather than the endoscopy report as it tends to be more rigorously described in endoscopy reports.
 
 
-
-
-
 3. **Analyses**- The analyses provide graphing functions as well as analyses according to the cornerstone questions in gastroenterology- namely surveillance, patient tracking, quality of endoscopy and pathology reporting and diagnostic yield questions as explained in the EndoMineR principles pages. The analyses are separated into generic analyses that are relevant to any endo-pathological dataset, as well as specific analyses for adenoma detection rates and Barrett's surveillance and therapy. Further disease specific datasets will be included in future iterations.
-
-
-
-
-
-
-
-
-## The extractor function
-
-Endoscopic and pathological data will come in one of two forms- either as a collection of the whole text report or as spreadsheets with some degree of separation into different columns of the various aspects of that report eg. who the Endoscopist was, the patient's unique identifier etc.
-For the latter, the package user will not need to Extract information as it is already extracted and so can go straight to cleaning the data. For the former the Extractor function has been provided:
-
-<br>
-```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
-knitr::include_graphics("img/EndoMineR_Extractor.svg")
-```
-
-<br>
-
-The Extractor is a very useful function. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in-built datasets as part of the package. 
-
-
-<br>
-
-A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe. Here we use an example dataset (which has not had separate columns selected already) as the input:
-
-```{r exampleExtractor,echo=FALSE}
-#PathDataFrameFinalColon2<-PathDataFrameFinalColon
-#names(PathDataFrameFinalColon2)<-"PathReportWhole"
-#pander(head(PathDataFrameFinalColon2,1))
-```
-
-
-<br>
-
-We can then define the list of delimiters that will split this text into separate columns, title the columns according to the delimiters and return a dataframe. each column simply contains the text between the delimiters that the user has defined. These columns are then ready for the more refined cleaning provided by subesquent functions.
-
-<br>
-
-
-```{r exampleExtractor2,echo=TRUE}
-#mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
-#"Date received:","Clinical Details:","Macroscopic description:",
-#"Histology:","Diagnosis:")
-#PathDataFrameFinalColon2<-Extractor(PathDataFrameFinalColon2,"PathReportWhole",mywords)
-
-```
-
-```{r exampleExtractor3,echo=FALSE}
-#PathDataFrameFinalColon2<-head(PathDataFrameFinalColon2[2:10],1)
-#pander::panderOptions('table.split.table', Inf)
-#pander(head(PathDataFrameFinalColon2,1))
-```
-
 
 
 ## Endoscopic cleaning
 
-Once the extraction has been done into separate columns, various cleaning functions can be used for indivisual columns. This is illustrated in the figure below. Any one column does not have to be present in the final dataframe once extraction has happened. The functions are defined according to the most likely outputted columns from extraction from a typical dataset. If endoscopy reports are being extracted then the functions concentrate on these.
-
-<br>
-
-
-```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
-knitr::include_graphics("img/EndoMineR_EndoscopyClean.png")
-```
-
-<br>
-
-### Endoscopist cleaning
-
-For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up. 
-
-<br>
-
-The endoscopist column might initially look like this (as the last column in this dataframe)
+There will always be a certain amount of data cleaning that only the end user can do before data can be extracted. There is some cleaning that is common to many endoscopy reports and so functions have been provided for this. An abvious function is the cleaning of the endoscopist's name. This is done with the function **EndoscEndoscopist**. This removes titles and tidies up the names so that there aren't duplicate names (eg "Dr. Sebastian Zeki" and "Sebastian Zeki"). This is applied to any endoscopy column where the Endoscopist name has been isolated into its own column.
 
 <br>
 
 ```{r exampleEndoscEndoscopist, echo = FALSE}
-#pander(head(Myendo[2:6],10))
+pander(head(Myendo[2:6],10))
 ```
 
 
 
 ```{r exampleEndoscEndoscopist2,echo = TRUE}
-#Myendo2<-EndoscEndoscopist(Myendo,'Endoscopist')
-```
-
-This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist's name, getting rid of whitespace etc. This is important to prevent double outputs for the same Endoscopist because of, for example, the lack and presence of a '.' after Dr amongst other variations. The result is as follows:
-
-<br>
-
-```{r exampleEndoscEndoscopist3, echo = FALSE}
-#pander(head(Myendo2[2:6],10))
+EndoscEndoscopist(Myendo$Endoscopist[2:6])
 ```
 
 <br>
@@ -208,105 +179,24 @@ This function performs the cleaning of common things found in the text that may 
 
 The EndoscMeds currently extracts Fentanyl, Pethidine, Midazolam and Propofol doses into a separate column and reformats them as numeric columns so further calculations can be done. 
 
-Several other similar clean up functions are available for Endoscopy as follows. We will extract from the Raw endoscopy data first:
-
 ```{r exampleRawEndoExtract, echo = TRUE}
-#mywords<-c("Hospital:","Hospital Number:","Patient Name:","General Practitioner:","Date of #procedure:","Endoscopist:","Second Endoscopist",
-#           "Medications:","Instrument:","Extent of Exam:","Indications:","Procedure Performed:",
-#"Findings:","Diagnosis:")
-#TheOGDReportFinal2<-Extractor(TheOGDReportFinal,"OGDReportWhole",mywords)
+mywords<-c("Hospital:","Hospital Number:","Patient Name:","General Practitioner:","Date of #procedure:","Endoscopist:","Second Endoscopist","Medications:","Instrument:","Extent of Exam:","Indications:","Procedure Performed:","Findings:","Diagnosis:")
+TheOGDReportFinal2<-Extractor(TheOGDReportFinal$OGDReportWhole,mywords)
 
 ```
 
 
 
 ```{r exampleEndoCleaningFuncMed, echo = TRUE}
-#TheOGDReportFinal2df<-data.frame(TheOGDReportFinal2["HospitalNumber"],TheOGDReportFinal2["Instrument"],The#OGDReportFinal2["Indications"],TheOGDReportFinal2["Medications"],TheOGDReportFinal2["ProcedurePerformed"])
-#pander(head(TheOGDReportFinal2df,10))
-#v<-EndoscMeds(TheOGDReportFinal2df,'Medications')
+cbind(EndoscMeds(Myendo$Medications), Myendo)
+pander(head(cbind(EndoscMeds(Myendo$Medications), Myendo)[1:4],5))
 
 ```
 
-
-```{r exampleEndoCleaningFuncMed2, echo = FALSE}
-#pander(head(v,10))
-```
-
-### Instrument,Indications and Procedure type cleaning
-
-EndoscInstrument,EndoscIndications and EndoscProcPerformed all perform similar cleaning functions with the endoscope number, the indication for the investigation and the actual procedure performed respectively. Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases.
-
-## Histological cleaning
-
-The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting.
-In general, each histology report can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.
-
-<br>
-
-```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
-knitr::include_graphics("img/EndoMineR_HistopExtrapol.png")
-```
-
-
-<br>
-
-### Basic Histology Cleaning
-
-The histology cleaning functions are based around this. For example, the HistolDx cleans the Histology text if present.
- 
-<br>
-The original input example can be seen here:
-
-
-```{r exampleEHistolDx, echo = FALSE}
-#head(Mypath$Histology,2)
-```
-
-And once the function is run the result is here:
-
-```{r exampleEHistolDx2, echo = TRUE}
-#t<-HistolDx(Mypath,'Histology')
-```
-
-```{r exampleEHistolDx3, echo = FALSE}
-#head(t$Histol_Simplified,2)
-```
-
-
-<br>
-
-
-### Extraction of Diagnosis
-
-Some pathology reports also provide an overall impression or a list of diagnoses interpreted from the 
-description of the pathological text. This can also be extracted. The diagnoses may also included the absence of
-features and a function is provided to both clean up the Diagnosis column as well as exclude negative diagnoses. If a diagnosis column is present the function can be run as follows:
-
-
-
-```{r exampleHistolDx1, echo = FALSE}
-#head(Mypath$Diagnosis,2)
-
-```
-
-<br>
-
-with the following result:
-
-<br>
-
-```{r exampleHistolDx2, echo = TRUE}
-#t<-HistolDx(Mypath,'Diagnosis')
-```
-
-```{r exampleHistolDx3, echo = FALSE}
-#head(t$Dx_Simplified,2)
-```
 
 ### Extraction of elements from the Macroscopic Description
 
 Because the information from the Macroscopic Description is based around numbers, a further function has been provided called HistolNumOfBx to extract the number of biopsies taken.
-
 
 
 In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.
@@ -315,8 +205,8 @@ For example, if the report usually says:
 <br>
 
 ```{r exampleHistolNumbOfBx1, echo = FALSE}
-#sg<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$Macroscopicdescription)
-#pander(head(sg,5))
+sg<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$Macroscopicdescription)
+pander(head(sg,5))
 ```
 
 <br>
@@ -326,26 +216,20 @@ Based on this, the word that limits the number you are interested in is 'specime
 <br>
 
 ```{r exampleHistolNumbOfBx2, echo = TRUE}
-#v<-HistolNumbOfBx(Mypath,'Macroscopicdescription','specimen')
+Mypath$NumbOfBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
 ```
 
 ```{r exampleHistolNumbOfBx3, echo = FALSE}
-#sh<-data.frame(v$HospitalNumber,v$PatientName,v$NumbOfBx)
-#pander(head(sh,5))
+sh<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$NumbOfBx)
+pander(head(sh,5))
 ```
 
-### Extraction of Specific Disease Entities
 
-The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but will also take user defined words. These will have to be in the form of a regular expression or can be left as an empty string as in the examples
-<br>
+We might also be interested in the size of the biopsy taken. A further function called **HistolBxSize** is provided for this. This is also derived from the macroscopic description of the specimen
 
-```{r exampleHistolExtrapolDx, echo = TRUE}
-#Mypath3<-data.frame(Mypath["HospitalNumber"],Mypath["Diagnosis"])
-
+```{r exampleHistolBxSize1, echo = FALSE}
+Mypath$BxSize<-HistolBxSize(Mypath$Macroscopicdescription)
+sh<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$BxSize)
+pander(head(sh,5))
 ```
-
-```{r exampleHistolExtrapolDx2, echo = FALSE}
-#pander(head(Mypath3,10))
-```
-
 
