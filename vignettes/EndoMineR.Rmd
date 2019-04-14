@@ -97,7 +97,7 @@ The next step is to perform term mapping. This means that variations of a term a
 
 Here we use an example dataset (which has not had separate columns selected already) as the input:
 
-```{r exampleExtractor,echo=FALSE}
+```{r exampleExtractor,echo=TRUE}
 PathDataFrameFinalColon2<-PathDataFrameFinalColon
 names(PathDataFrameFinalColon2)<-"PathReportWhole"
 pander(head(PathDataFrameFinalColon2,1))
@@ -121,7 +121,7 @@ PathDataFrameFinalColon3<-Extractor(PathDataFrameFinalColon2$PathReportWhole,myw
 
 ```
 
-```{r exampleExtractor3,echo=FALSE}
+```{r exampleExtractor3,echo=TRUE}
 #PathDataFrameFinalColon3<-head(PathDataFrameFinalColon3[2:10],1)
 pander::panderOptions('table.split.table', Inf)
 pander(head(PathDataFrameFinalColon3[,1:9],1))
@@ -196,7 +196,7 @@ For example, if the report usually says:
 
 <br>
 
-```{r exampleHistolNumbOfBx1, echo = FALSE}
+```{r exampleHistolNumbOfBx1, echo = TRUE}
 sg<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$Macroscopicdescription)
 pander(head(sg,5))
 ```
@@ -219,7 +219,7 @@ pander(head(sh,5))
 
 We might also be interested in the size of the biopsy taken. A further function called **HistolBxSize** is provided for this. This is also derived from the macroscopic description of the specimen
 
-```{r exampleHistolBxSize1, echo = FALSE}
+```{r exampleHistolBxSize1, echo = TRUE}
 Mypath$BxSize<-HistolBxSize(Mypath$Macroscopicdescription)
 sh<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$BxSize)
 pander(head(sh,5))
