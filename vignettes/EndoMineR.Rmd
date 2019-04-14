@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r global_options, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
 ```
-## Aims of EndoMineR
+## **Aims of EndoMineR**
 
 The goal of EndoMineR is to extract as much information as possible from free or semi-structured endoscopy reports and their associated pathology specimens. 
 
@@ -33,12 +33,12 @@ Gastroenterology now has many standards against which practice is measured altho
 
 
 
-##How is the package divided?
+##**How is the package divided?**
 
 <br>
 
 ```{r fig.width=8, fig.height=8,fig.align='center',out.width = "50%",echo=FALSE}
-knitr::include_graphics("img/EndoMineROverView.png")
+knitr::include_graphics("img/EndoMineRBasic.jpg")
 ```
 
 
@@ -47,7 +47,7 @@ The package is basically divied into three parts. How all the functions are conn
 The import of the raw data is left up to the user with the overall aim being that all the data is present in one dataframe. 
 
 
-## 1. **Extraction and cleaning**
+## **1. Extraction and cleaning**
 If using raw reports, then once you have imported the data into your R environment, you can go ahead and use the **textPrep** function. If you have pre-segregated data, tehn use the EndoPaste function. This basically reformats your data so that everything is merged back into a raw text file, but it keeps the column headers as delimiters for use later. This is shown in the figure below:
 
 
@@ -119,7 +119,7 @@ If you wish, further cleaning functions are provided to get clean the Endoscopis
 
 
 
-## 2. Data linkage
+## **2. Data linkage**
 
 Endoscopy data may be linked with other types of data. The most common associated dataset is pathology data from biopsies etc taken at endoscopy. This pathology data should be processed in exactly the same way as the endoscopy data- namely with textPrep (with or without EndoPaste). 
 
@@ -129,18 +129,15 @@ The resulting pathology dataset should then be merged with the endoscopy dataset
 v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure','HospitalNumber')
 ```
 
-## 3. Deriving new data from what you have
+## **3. Deriving new data from what you have**
 
 Once the text has been separated in to the columns of your choosing you are ready to see what we can extract. Functions are provided to allow quite complex extractions at both a general level and also for specific diseases.
 
 a. **Generic functions to derive data**
 
-The extraction of medication type and dose is important for lots of analyses in endoscopy. This is provided with the function **EndoscMeds**. The function will take the column that you specify and then output a dataframe. You will need to re-bind this output with the original dataframe for further analyses. This can be done as follows:
+The extraction of medication type and dose is important for lots of analyses in endoscopy. This is provided with the function **EndoscMeds**. The function will take the column that you specify and then output a dataframe. You will need to re-bind this output with the original dataframe for further analyses. This is shown below
 
 
-```{r exampleEndoscMeds,echo=FALSE}
-MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
-```
 
 
 The **EndoscopyEvent** function will extract any event that has been performed at the endoscopy and dump it in a new column. It does this by looking in pairs of sentences and therefore wraps around a more basic function called **EndoscopyPairs_TwoSentence**. This allows us to get the site that the event (usually a therapy) happened on. A example sentence might be 'There was a bleeding gastric ulcer. A clip was applied to it' We can only extract stomach:clip by reference to the two sentences.
@@ -154,7 +151,7 @@ We can also find the average biopsy size using **HistolBxSize**.
 3. **Analyses**- The analyses provide graphing functions as well as analyses according to the cornerstone questions in gastroenterology- namely surveillance, patient tracking, quality of endoscopy and pathology reporting and diagnostic yield questions as explained in the EndoMineR principles pages. The analyses are separated into generic analyses that are relevant to any endo-pathological dataset, as well as specific analyses for adenoma detection rates and Barrett's surveillance and therapy. Further disease specific datasets will be included in future iterations.
 
 
-## Endoscopic cleaning
+## **Endoscopic cleaning**
 
 There will always be a certain amount of data cleaning that only the end user can do before data can be extracted. There is some cleaning that is common to many endoscopy reports and so functions have been provided for this. An abvious function is the cleaning of the endoscopist's name. This is done with the function **EndoscEndoscopist**. This removes titles and tidies up the names so that there aren't duplicate names (eg "Dr. Sebastian Zeki" and "Sebastian Zeki"). This is applied to any endoscopy column where the Endoscopist name has been isolated into its own column.
 
@@ -172,7 +169,7 @@ EndoscEndoscopist(Myendo$Endoscopist[2:6])
 
 <br>
 
-### Medication cleaning
+### **Medication cleaning**
 
 
 The EndoscMeds currently extracts Fentanyl, Pethidine, Midazolam and Propofol doses into a separate column and reformats them as numeric columns so further calculations can be done. 
@@ -186,15 +183,15 @@ TheOGDReportFinal2<-Extractor(TheOGDReportFinal$OGDReportWhole,mywords)
 
 
 ```{r exampleEndoCleaningFuncMed, echo = TRUE}
-cbind(EndoscMeds(Myendo$Medications), Myendo)
-pander(head(cbind(EndoscMeds(Myendo$Medications), Myendo)[1:4],5))
+MyendoMeds<-cbind(EndoscMeds(Myendo$Medications), Myendo)
+pander(head(MyendoMeds[1:4],5))
 
 ```
 
 
-### Extraction of elements from the Macroscopic Description
+### **Extraction of elements from the Macroscopic Description**
 
-Because the information from the Macroscopic Description is based around numbers, a further function has been provided called HistolNumOfBx to extract the number of biopsies taken.
+Because the information from the Macroscopic Description is based around numbers, a further function has been provided called **HistolNumOfBx** to extract the number of biopsies taken.
 
 
 In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.
