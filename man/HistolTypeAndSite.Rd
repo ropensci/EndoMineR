@@ -21,10 +21,10 @@ is the index to be used for OPCS4 coding later if needed.
 This needs some blurb to be written. Used in the OPCS4 coding
 }
 \examples{
-Myendo$PathSite <- HistolTypeAndSite(
-  Myendo$Original.x,
-  Myendo$macroscopicaldescription, Myendo$procedureperformed
-) # This example needs correction
+Myendo2<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',
+Mypath,'Dateofprocedure','HospitalNumber')
+PathSiteAndType <- HistolTypeAndSite(Myendo2$PathReportWhole,
+Myendo2$Macroscopicdescription, Myendo2$ProcedurePerformed)
 }
 \keyword{Find}
 \keyword{and}
