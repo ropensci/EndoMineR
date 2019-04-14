@@ -7,6 +7,7 @@ output:
     toc: true
     tod_depth: 4
     css: style.css
+
 vignette: >
   %\VignetteIndexEntry{EndoMineR}
   %\VignetteEngine{knitr::rmarkdown}
@@ -48,7 +49,7 @@ The import of the raw data is left up to the user with the overall aim being tha
 
 
 ## **1. Extraction and cleaning**
-If using raw reports, then once you have imported the data into your R environment, you can go ahead and use the **textPrep** function. If you have pre-segregated data, tehn use the EndoPaste function. This basically reformats your data so that everything is merged back into a raw text file, but it keeps the column headers as delimiters for use later. This is shown in the figure below:
+If using raw reports, then once you have imported the data into your R environment, you can go ahead and use the **textPrep** function. If you have pre-segregated data, then use the EndoPaste function. This basically reformats your data so that everything is merged back into a raw text file, but it keeps the column headers as delimiters for use later. This is shown in the figure below:
 
 
 
@@ -70,13 +71,6 @@ The Extractor (or Extractor2) is a very useful function. Different hospitals wil
 <br>
 
 A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe. 
-
-
-<br>
-```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
-knitr::include_graphics("img/EndoMineR_Extractor.svg")
-```
-
 
 
 Here we use an example dataset (which has not had separate columns selected already) as the input:
