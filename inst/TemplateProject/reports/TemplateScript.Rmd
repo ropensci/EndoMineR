@@ -3,7 +3,12 @@ title: "Template Script"
 author: "Sebastian Zeki"
 date: "20/11/2018"
 output: html_document
+
 ---
+
+
+To create this report within a project start by creating a project with library('ProjectTemplate'). This will create the skeleton project structure. Using 'usethis' may also help if you want to create collaborative projects using github as it should set up the github project for you.
+you can then drop this markdwon script in the project and use the chunk structure here to run your scripts
 
 ## Title and abstract
 
@@ -264,7 +269,7 @@ ff<-HowManyOverTime(FinalDatasetBarr,'indications','Date.x','.*')
 
 ```{r VarDiagram}
 #### Documenting the sets 
-
+library(CodeDepends)
 nodes <- create_node_df(n=10, 
                         nodes=c("TheOGDReportFinal", "PathDataFrameFinal", "MyOGD","MyPath","FinalDataset","FinalDatasetBarr","BarrettsBxQual2","LastTestsDone","FirstTestsDone","ff"),
                         label=c(stringr::str_wrap(paste0("TheOGDReportFinal: ",nrow(TheOGDReportFinal)),5),
