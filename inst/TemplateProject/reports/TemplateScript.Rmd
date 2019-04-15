@@ -149,7 +149,6 @@ mywordsOGD<-c("hospital number:","patient name:","general practitioner","date of
 #MyOGD<-textPrep(TheOGDReportFinal$OGDReportWhole,mywordsOGD)
 MyOGD<-textPrep(TheOGDReportFinal$OGDReportWhole,mywordsOGD,NegEx="TRUE",Extractor="1")
 
-
 #Prepare the text for Pathology
 mywordsPath<-c("hospital number:","patient name:","dob:","general practitioner:","date received:","nature of specimen:","macroscopic description:" ,"diagnosis:")
 #MyPath<-textPrep(PathDataFrameFinal$PathReportWhole,mywordsPath)
@@ -168,6 +167,8 @@ MyPath<-textPrep(PathDataFrameFinal$PathReportWhole,mywordsPath,NegEx="TRUE",Ext
 #Now merge the two
 FinalDataset<-Endomerge2(MyOGD,"dateofprocedure","hospitalnumber",MyPath,"datereceived","hospitalnumber")
 
+
+
 ```
 
 
@@ -184,6 +185,8 @@ FinalDataset$endoscopist<-EndoscEndoscopist(FinalDataset$endoscopist)
 #Clean the meds (need to bind to the existing dataframe)
 FinalDataset<-cbind(EndoscMeds(FinalDataset$medications),FinalDataset)
 FinalDataset$instrument<-EndoscInstrument(FinalDataset$instrument)
+
+
 ```
 
 
@@ -227,8 +230,6 @@ FinalDatasetBarr$FUType<-Barretts_FUType(FinalDatasetBarr,"CStage","MStage","IMo
 FinalDatasetBarr$Paris<-BarrettsParisEMR(FinalDatasetBarr$procedureperformed,FinalDatasetBarr$findings)
 BarrettsBxQual2<-BarrettsBxQual(FinalDatasetBarr,'Date.x','pHospitalNum','endoscopist')
 
-
-
 ######################################### Data forking (filtering and subsetting) #########################
 #Now frame the question you are interested in and develop subsets
 ```
@@ -241,7 +242,6 @@ LastTestsDone<-SurveilLastTest(FinalDatasetBarr,'pHospitalNum','Date.x')
 FirstTestsDone<-SurveilFirstTest(FinalDatasetBarr,'pHospitalNum','Date.x')
 
 #Need to sort this one out
-
 ff<-HowManyOverTime(FinalDatasetBarr,'indications','Date.x','.*')
 
 ```
@@ -265,19 +265,25 @@ ff<-HowManyOverTime(FinalDatasetBarr,'indications','Date.x','.*')
 ```{r VarDiagram}
 #### Documenting the sets 
 
-nodes <- create_node_df(n=6, 
-                        nodes=c("ImpAll", "AllBravo", "NegativeImpedance","MyBravoFromNegativeImpedance","MyBravoFromNegativeImpedancePOSITIVE_BRAVO","MyBravoFromNegativeImpedanceNEGATTIVE_BRAVO"),
-                        label=c(paste0("ImpAll: ",nrow(ImpAll)), stringr::str_wrap(paste0("All BRAVO: ",nrow(AllBravo)),10), stringr::str_wrap(paste0("Negative Impedance: ",nrow(NegativeImpedance)),10),
-                                stringr::str_wrap(paste0("MyBravo (Negative Impedance):",nrow(MyBravoFromNegativeImpedance)),10),
-                                stringr::str_wrap(paste0("Positive BRAVO:",nrow(MyBravoFromNegativeImpedancePOSITIVE_BRAVO)),10),
-                                stringr::str_wrap(paste0("Negative BRAVO: ",nrow(MyBravoFromNegativeImpedanceNEGATTIVE_BRAVO)),10)),
+nodes <- create_node_df(n=10, 
+                        nodes=c("TheOGDReportFinal", "PathDataFrameFinal", "MyOGD","MyPath","FinalDataset","FinalDatasetBarr","BarrettsBxQual2","LastTestsDone","FirstTestsDone","ff"),
+                        label=c(stringr::str_wrap(paste0("TheOGDReportFinal: ",nrow(TheOGDReportFinal)),5),
+                                stringr::str_wrap(paste0("PathDataFrameFinal: ",nrow(PathDataFrameFinal)),5), 
+                                stringr::str_wrap(paste0("MyOGD: ",nrow(MyOGD)),5),
+                                stringr::str_wrap(paste0("MyPath:",nrow(MyPath)),5),
+                                stringr::str_wrap(paste0("FinalDataset:",nrow(FinalDataset)),5),
+                                stringr::str_wrap(paste0("FinalDatasetBarr: ",nrow(FinalDatasetBarr)),5),
+                                stringr::str_wrap(paste0("BarrettsBxQual2: ",nrow(BarrettsBxQual2)),5),
+                                stringr::str_wrap(paste0("LastTestsDone: ",nrow(LastTestsDone)),5),
+                                stringr::str_wrap(paste0("FirstTestsDone: ",nrow(FirstTestsDone)),5),
+                                stringr::str_wrap(paste0("ff: ",nrow(ff)),5)),
                         shape = "rectangle",
-                        fontsize=5)
+                        fontsize=10)
 
 edges <-
   create_edge_df(
-    from = c(1,2,3,4,4),
-    to = c(3,4,4,5,6))
+    from = c(1,2,3,4,5,6,6,6,6),
+    to =   c(3,4,5,5,6,7,8,9,10))
 
 
 g <- create_graph(nodes_df=nodes, 
@@ -293,14 +299,14 @@ render_graph(g)
 ```{r CodeGraph}
 ####Documenting the code: 
 
- library(CodeDepends)
-sc = readScript("/home/rstudio/PhysiMineR/Questions/ImpedanceQues/NegImpBRAVO/NegativeImpedanceBRAVO.Rmd")
+library(CodeDepends)
+sc = readScript("/home/rstudio/EndoMineR_devSite/inst/TemplateProject/reports/TemplateScript.Rmd")
 g = makeVariableGraph( info =getInputs(sc))
-if(require(Rgraphviz))
+gif(require(Rgraphviz))
   edgemode(g) <- "directed"
 x <- layoutGraph(g, layoutType="neato")
 zz = layoutGraph(g)
-graph.par(list(nodes = list(fontsize = 100)))
+graph.par(list(nodes = list(fontsize = 25)))
 renderGraph(zz)
 
 
