@@ -67,7 +67,7 @@ It of course relies on a Endoscopist column being present" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -96,7 +96,10 @@ It of course relies on a Endoscopist column being present" />
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -182,12 +185,17 @@ It of course relies on a Endoscopist column being present</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>#The function plots any numeric metric by endoscopist</span>
-<span class='co'># and also gives a table with it. In this example we plot medication by</span>
+    <pre class="examples"><div class='input'><span class='co'>#The function gives a table with any numeric</span>
+<span class='co'># metric by endoscopist</span>
+<span class='co'># In this example we tabulate medication by</span>
 <span class='co'># endoscopist</span>
-<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'><a href='EndoscMeds.html'>EndoscMeds</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Medications'</span>)
-<span class='no'>kk</span><span class='kw'>&lt;-</span><span class='fu'>MetricByEndoscopist</span>(<span class='no'>Myendo</span>,<span class='st'>'Endoscopist'</span>,<span class='st'>'Fent'</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>Myendo</span>)</div></pre>
+<span class='co'># Lets bind the output of EndoscMeds to the main dataframe so we</span>
+<span class='co'># have a complete dataframe with all the meds extracted</span>
+<span class='no'>MyendoNew</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='fu'><a href='EndoscMeds.html'>EndoscMeds</a></span>(<span class='no'>Myendo</span>$<span class='no'>Medications</span>),<span class='no'>Myendo</span>)
+
+<span class='co'># Now lets look at the fentanly use per Endoscopist:</span>
+<span class='no'>kk</span><span class='kw'>&lt;-</span><span class='fu'>MetricByEndoscopist</span>(<span class='no'>MyendoNew</span>,<span class='st'>'Endoscopist'</span>,<span class='st'>'Fent'</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>Myendo</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: object 'Myendo' not found</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

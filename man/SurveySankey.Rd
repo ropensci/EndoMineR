@@ -92,20 +92,15 @@ return(mylist)
 }
 Create a Sankey plot for patient flow
 
-This creates a Sankey plot to see the order of tests for all patients:
-dfw is the dataframe, y is the value of in this case
-the procedure type (eg EMR,
- radiofrequency ablation for Barrett's but can be
- any description of a procedure you desire)
- Note the Hospital Number column MUST be called PatientID.
+The purpose of the function is to provide a Sankey plot 
+which allows the analyst to see the proportion
+of patients moving from one state (in this case type of Procedure) to
+another. This allows us to see for example how many EMRs are done after
+RFA.
 }
 \examples{
-# The purpose of the function is to
-# provide a Sankey plot which allows the analyst to see the proportion
-# of patients moving from one state (in this case type of Procedure) to
-# another. This allows us to see for example how many EMRs are done after
-# RFA. For further patient flow examples see PatientFlow_CircosPlots
 names(Myendo)[names(Myendo) == "HospitalNumber"] <- "PatientID"
 gg <- SurveySankey(Myendo, "ProcedurePerformed", "PatientID")
+
 }
 \keyword{Sankey}

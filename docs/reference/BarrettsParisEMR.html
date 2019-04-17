@@ -34,10 +34,7 @@
   
 <meta property="og:title" content="Paris vs histopath Barrett's — BarrettsParisEMR" />
 
-<meta property="og:description" content="This looks at the Paris grades of each EMR and then creates a heatmap
-of pathological grade vs
-endoscopic Paris grade.This should only be run after all the
-BarrettsDataAccord functions." />
+<meta property="og:description" content="This creates a column of Paris grade for all samples where this is mentioned." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -68,7 +65,7 @@ BarrettsDataAccord functions." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -97,7 +94,10 @@ BarrettsDataAccord functions." />
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -150,75 +150,47 @@ BarrettsDataAccord functions." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Paris vs histopath Barrett's</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/BarrettsFunctions.R'><code>R/BarrettsFunctions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Module_Barretts.R'><code>R/Module_Barretts.R</code></a></small>
     <div class="hidden name"><code>BarrettsParisEMR.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This looks at the Paris grades of each EMR and then creates a heatmap
-of pathological grade vs
-endoscopic Paris grade.This should only be run after all the
-BarrettsDataAccord functions.</p>
+    <p>This creates a column of Paris grade for all samples where this is mentioned.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>BarrettsParisEMR</span>(<span class='no'>EndoSubsetEMR</span>, <span class='no'>Column</span>, <span class='no'>Column2</span>)</pre>
+    <pre class="usage"><span class='fu'>BarrettsParisEMR</span>(<span class='no'>Column</span>, <span class='no'>Column2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>EndoSubsetEMR</th>
-      <td><p>The dataframe</p></td>
-    </tr>
-    <tr>
       <th>Column</th>
-      <td><p>Endoscopy report field of interest</p></td>
+      <td><p>Endoscopy report field of interest as a string vector</p></td>
     </tr>
     <tr>
       <th>Column2</th>
-      <td><p>Another endoscopy report field of interest</p></td>
+      <td><p>Another endoscopy report field of interest as a string vector</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>a string vector</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Firstly relevant columns are extrapolated from the</span>
-<span class='co'># Mypath demo dataset. These functions are all part of Histology data</span>
-<span class='co'># cleaning as part of the package.</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolAccessionNumber.html'>HistolAccessionNumber</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Histology'</span>,
-<span class='st'>'SP-\\d{2}-\\d{7}'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>,<span class='st'>""</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
-<span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
-<span class='co'># according to date and Hospital number</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>v</span>,<span class='st'>'Dateofprocedure'</span>,
-<span class='st'>'HospitalNumber'</span>)
-<span class='co'>#The function relies on the other Barrett's functions being run as well:</span>
-<span class='no'>b1</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PragueScore.html'>Barretts_PragueScore</a></span>(<span class='no'>v</span>,<span class='st'>'Findings'</span>)
-<span class='no'>b2</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PathStage.html'>Barretts_PathStage</a></span>(<span class='no'>b1</span>,<span class='st'>'Histology'</span>)
-<span class='no'>b3</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_EventType.html'>Barretts_EventType</a></span>(<span class='no'>b2</span>,<span class='st'>'Histology'</span>,
-<span class='st'>'ProcedurePerformed'</span>,<span class='st'>'Indications'</span>,<span class='st'>'Findings'</span>)
-<span class='co'># The follow-up group depends on the histology and the Prague score for a</span>
-<span class='co'># patient so it takes the processed Barrett's data and then looks in the</span>
-<span class='co'># Findings column for permutations of the Prague score.</span>
-<span class='no'>b4</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_FUType.html'>Barretts_FUType</a></span>(<span class='no'>b3</span>,<span class='st'>'Findings'</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>b4</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>b4</span>) <span class='kw'>==</span> <span class='st'>'pHospitalNum'</span>] <span class='kw'>&lt;-</span> <span class='st'>'HospitalNumber'</span>
-<span class='co'># The function compares the Paris score </span>
-<span class='co'># from the endoscopy report free text to</span>
-<span class='co'># the histopathology scores for the same endoscopies so you can see what the</span>
-<span class='co'># lesion recognition is like overall</span>
-<span class='no'>mm</span><span class='kw'>&lt;-</span><span class='fu'>BarrettsParisEMR</span>(<span class='no'>b4</span>,<span class='st'>"ProcedurePerformed"</span>,<span class='st'>"Findings"</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>v</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='co'># </span>
+<span class='no'>Myendo</span>$<span class='no'>EMR</span><span class='kw'>&lt;-</span><span class='fu'>BarrettsParisEMR</span>(<span class='no'>Myendo</span>$<span class='no'>ProcedurePerformed</span>,<span class='no'>Myendo</span>$<span class='no'>Findings</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

@@ -35,11 +35,13 @@
 <meta property="og:title" content="Extractor2 — Extractor2" />
 
 <meta property="og:description" content="This is the alternative extractor for the Endoscopy and Histology report.
-THis performs the same essentially as the main extractor but is useful when the
-semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
-As per the main Extractor, This function on the user creating a list of words or characters that
-act as the words that should be split against. The list is then fed to the
-Extractor in a loop so that it acts as the beginning and the end of the
+This performs essentially the same process as the main extractor but is useful when the
+semi-structured text is organised in a non-standard way ie the delimiting 
+text is not always in the same order.
+As per the main Extractor, This function relies on the user creating a list 
+of words or characters that act as the words that should be split against. 
+The list is then fed to the
+Extractor2 in a loop so that it acts as the beginning and the end of the
 regex used to split the text. Whatever has been specified in the list
 is used as a column header. Column headers don't tolerate special characters
 like : or ? and / and don't allow numbers as the start character so these
@@ -74,7 +76,7 @@ have to be dealt with in the text before processing" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -103,7 +105,10 @@ have to be dealt with in the text before processing" />
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -156,18 +161,20 @@ have to be dealt with in the text before processing" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Extractor2</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/CleanUp.R'><code>R/CleanUp.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_CleanUp.R'><code>R/Basic_CleanUp.R</code></a></small>
     <div class="hidden name"><code>Extractor2.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>This is the alternative extractor for the Endoscopy and Histology report.
-THis performs the same essentially as the main extractor but is useful when the
-semi-structured text is organised in a non-standard way ie the delimiting text is not always in the same order
-As per the main Extractor, This function on the user creating a list of words or characters that
-act as the words that should be split against. The list is then fed to the
-Extractor in a loop so that it acts as the beginning and the end of the
+This performs essentially the same process as the main extractor but is useful when the
+semi-structured text is organised in a non-standard way ie the delimiting 
+text is not always in the same order.
+As per the main Extractor, This function relies on the user creating a list 
+of words or characters that act as the words that should be split against. 
+The list is then fed to the
+Extractor2 in a loop so that it acts as the beginning and the end of the
 regex used to split the text. Whatever has been specified in the list
 is used as a column header. Column headers don't tolerate special characters
 like : or ? and / and don't allow numbers as the start character so these
@@ -208,10 +215,12 @@ have to be dealt with in the text before processing</p>
 <span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='no'>TheOGDReportFinal</span>
 <span class='no'>Myendo</span>$<span class='no'>OGDReportWhole</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/grep'>gsub</a></span>(<span class='st'>'2nd Endoscopist:'</span>,<span class='st'>'Second endoscopist:'</span>,
 <span class='no'>Myendo</span>$<span class='no'>OGDReportWhole</span>)
+
 <span class='no'>EndoscTree</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='st'>'Hospital Number:'</span>,<span class='st'>'Patient Name:'</span>,<span class='st'>'General Practitioner:'</span>,
 <span class='st'>'Date of procedure:'</span>,<span class='st'>'Endoscopist:'</span>,<span class='st'>'Second Endoscopist:'</span>,<span class='st'>'Medications'</span>,
 <span class='st'>'Instrument'</span>,<span class='st'>'Extent of Exam:'</span>,<span class='st'>'Indications:'</span>,<span class='st'>'Procedure Performed:'</span>,
 <span class='st'>'Findings:'</span>,<span class='st'>'Endoscopic Diagnosis:'</span>)
+
 <span class='kw'>for</span>(<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>:(<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/length'>length</a></span>(<span class='no'>EndoscTree</span>)-<span class='fl'>1</span>)) {
  <span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'>Extractor2</span>(<span class='no'>Myendo</span>,<span class='st'>'OGDReportWhole'</span>,<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/character'>as.character</a></span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>]),
  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/character'>as.character</a></span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>+<span class='fl'>1</span>]),<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/character'>as.character</a></span>(<span class='no'>EndoscTree</span>[<span class='no'>i</span>]))

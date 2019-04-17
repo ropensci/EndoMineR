@@ -38,8 +38,7 @@
 function has been used this cleans the endoscopist column from the report.
 It gets rid of titles
 It gets rid of common entries that are not needed.
-It should be used after the Extractor and the optional NewLines
-has been used." />
+It should be used after the textPrep function" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -70,7 +69,7 @@ has been used." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -99,7 +98,10 @@ has been used." />
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -152,7 +154,7 @@ has been used." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Cleans endoscopist column if present</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/CleanUp.R'><code>R/CleanUp.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_EndoPathExtractors.R'><code>R/Basic_EndoPathExtractors.R</code></a></small>
     <div class="hidden name"><code>EndoscEndoscopist.Rd</code></div>
     </div>
 
@@ -162,35 +164,36 @@ has been used." />
 function has been used this cleans the endoscopist column from the report.
 It gets rid of titles
 It gets rid of common entries that are not needed.
-It should be used after the Extractor and the optional NewLines
-has been used.</p>
+It should be used after the textPrep function</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>EndoscEndoscopist</span>(<span class='no'>dataframe</span>, <span class='no'>EndoReportColumn</span>)</pre>
+    <pre class="usage"><span class='fu'>EndoscEndoscopist</span>(<span class='no'>EndoscopistColumn</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataframe</th>
-      <td><p>dataframe</p></td>
-    </tr>
-    <tr>
-      <th>EndoReportColumn</th>
+      <th>EndoscopistColumn</th>
       <td><p>The endoscopy text column</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>This returns a character vector</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>de</span><span class='kw'>&lt;-</span><span class='fu'>EndoscEndoscopist</span>(<span class='no'>Myendo</span>,<span class='st'>'Endoscopist'</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>Myendo</span>$<span class='no'>Endoscopist</span> <span class='kw'>&lt;-</span> <span class='fu'>EndoscEndoscopist</span>(<span class='no'>Myendo</span>$<span class='no'>Endoscopist</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

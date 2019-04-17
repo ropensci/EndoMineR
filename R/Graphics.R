@@ -125,76 +125,13 @@ scale_colour_Publication <- function(...) {
 ########################################## Patient flow functions#######
 
 
-
-
-#' #' Determine the patient metric of choice over time WORK IN PROGRESS
-#' #'
-#' #' This function aims to show what is happening over time to a metric
-#' #' of choice on a per patient basis.
-#' #' An example might be to demonstrate the worst grade of histopathology
-#' #' on repeated endoscopic biopsies eg for Barrett's oesophagus
-#' #' @param theframe the dataframe,
-#' #' @param EndoReportColumn the column of interest,
-#' #' @param myNotableWords list of words you are interested in
-#' #' @import ggplot2
-#' #' @import stringr
-#' #' @import ggplus
-#' #' @keywords patient flow
-#' #' @export
-#' #' @examples #The function relies on defined a list of
-#' #' # words you are interested in and then choosing the column you are
-#' #' # interested in looking in for these words. This can be for histopathology
-#' #' # free text columns or endoscopic. In this example it is for endoscopic
-#' #' # columns
-#' #' v<-HistolAll(Mypath)
-#' #' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
-#' #' b<-Barretts_PathStage(v,'Histology')
-#' #' aa<-Barretts_PragueScore(b,'Findings')
-#' #' aa<-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
-#' #' myNotableWords<-c("No_IM","IM","LGD","HGD","T1a)
-#' #' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)
-#'
-#'
-#'
-#' PatientFlowBasic <- function(theframe, EndoReportColumn, myNotableWords) {
-#'
-#'   theframe["RecodedColumn"] <- as.integer(factor(theframe[,EndoReportColumn], myNotableWords, ordered = TRUE))
-#'
-#'   #Now develop the patient specific journey with faceted plot in ggplot2
-#'   f<-ggplot(theframe) +
-#'     geom_point(aes(Date.x,type),shape=16,size=1) +
-#'     xlab("Date") +
-#'     ylab("Histopathological State") +
-#'     theme(axis.text.x=element_text(angle=-90))
-#'
-#'
-#'
-#'   t<-facet_multiple(plot = f,
-#'                  facets = 'pHospitalNum',
-#'                  ncol = 2,
-#'                  nrow = 2)
-#'   mylist<-as.list(aa,t)
-#'
-#'   return(mylist)
-#' }
-
-
-
-
-
-
-
-
-
-
 #' Create a Sankey plot for patient flow
 #'
-#' This creates a Sankey plot to see the order of tests for all patients:
-#' dfw is the dataframe, y is the value of in this case
-#' the procedure type (eg EMR,
-#'  radiofrequency ablation for Barrett's but can be
-#'  any description of a procedure you desire)
-#'  Note the Hospital Number column MUST be called PatientID.
+#' The purpose of the function is to provide a Sankey plot 
+#' which allows the analyst to see the proportion
+#' of patients moving from one state (in this case type of Procedure) to
+#' another. This allows us to see for example how many EMRs are done after
+#' RFA.
 #' @param dfw the dataframe extracted using the standard cleanup scripts
 #' @param ProcPerformedColumn the column containing the test like P
 #' rocPerformed for example
@@ -205,14 +142,9 @@ scale_colour_Publication <- function(...) {
 #' @importFrom data.table 'setDT' 'rowid'
 #' @keywords Sankey
 #' @export
-#' @examples
-#' # The purpose of the function is to
-#' # provide a Sankey plot which allows the analyst to see the proportion
-#' # of patients moving from one state (in this case type of Procedure) to
-#' # another. This allows us to see for example how many EMRs are done after
-#' # RFA. For further patient flow examples see PatientFlow_CircosPlots
-#' names(Myendo)[names(Myendo) == "HospitalNumber"] <- "PatientID"
+#' @examples names(Myendo)[names(Myendo) == "HospitalNumber"] <- "PatientID"
 #' gg <- SurveySankey(Myendo, "ProcedurePerformed", "PatientID")
+#' 
 SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
   # Create the Sankey diagrams
   Sankey <-
@@ -225,7 +157,6 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
   PtFlow <- PtFlow[!is.na(names(PtFlow))]
   r <- c()
 
-  # names(PtFlow)<-gsub("X(\\d+)","Event\\1",names(PtFlow))
   for (i in seq_along(PtFlow)) {
     t <- paste("ord", i, sep = "")
     r <- c(r, t)
