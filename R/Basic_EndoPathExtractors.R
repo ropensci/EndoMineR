@@ -247,6 +247,7 @@ HistolBxSize <- function(MacroColumn) {
 
 
 HistolTypeAndSite <- function(inputString1, inputString2, procedureString) {
+
   output <- ifelse(EntityPairs_OneSentence(inputString1, HistolType(), LocationList()) == "NA:NA",
     EntityPairs_OneSentence(inputString2, HistolType(), LocationList()),
     EntityPairs_OneSentence(inputString1, HistolType(), LocationList())
