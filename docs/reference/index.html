@@ -91,10 +91,10 @@
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Polyps.html">Barrett's</a>
+      <a href="../articles/Barretts.html">Barrett's</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Lower GI Polyps</a>
+      <a href="../articles/Polyps.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -458,32 +458,7 @@ It of course relies on a Endoscopist column being present</p></td>
         <td>
           <p><code><a href="SurveySankey.html">SurveySankey()</a></code> </p>
         </td>
-        <td><p>#' Determine the patient metric of choice over time WORK IN PROGRESS
-#'
-#' This function aims to show what is happening over time to a metric
-#' of choice on a per patient basis.
-#' An example might be to demonstrate the worst grade of histopathology
-#' on repeated endoscopic biopsies eg for Barrett's oesophagus
-#' @param theframe the dataframe,
-#' @param EndoReportColumn the column of interest,
-#' @param myNotableWords list of words you are interested in
-#' @import ggplot2
-#' @import stringr
-#' @import ggplus
-#' @keywords patient flow
-#' @export
-#' @examples #The function relies on defined a list of
-#' # words you are interested in and then choosing the column you are
-#' # interested in looking in for these words. This can be for histopathology
-#' # free text columns or endoscopic. In this example it is for endoscopic
-#' # columns
-#' v&lt;-HistolAll(Mypath)
-#' v&lt;-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
-#' b&lt;-Barretts_PathStage(v,'Histology')
-#' aa&lt;-Barretts_PragueScore(b,'Findings')
-#' aa&lt;-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
-#' myNotableWords&lt;-c("No_IM","IM","LGD","HGD","T1a)
-#' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)</p></td>
+        <td><p>Create a Sankey plot for patient flow</p></td>
       </tr><tr>
         
         <td>

@@ -7,7 +7,7 @@ output: html_document
 ---
 
 
-To create this report within a project start by creating a project with library('ProjectTemplate'). This will create the skeleton project structure. Using 'usethis' may also help if you want to create collaborative projects using github as it should set up the github project for you.
+To create this report within a project start by creating a project with library('ProjectTemplate'). This will create the skeleton project structure. Using 'usethis' or 'rrtools' may also help if you want to create collaborative projects using github as it should set up the github project for you.
 you can then drop this markdwon script in the project and use the chunk structure here to run your scripts
 
 ## Title and abstract
