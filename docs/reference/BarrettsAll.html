@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Follow up group determination — BarrettsAll • EndoMineR</title>
+<title>All basic Barrett's functions — BarrettsAll • EndoMineR</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -32,13 +32,12 @@
 
   <link href="../extra.css" rel="stylesheet">
   
-<meta property="og:title" content="Follow up group determination — BarrettsAll" />
+<meta property="og:title" content="All basic Barrett's functions — BarrettsAll" />
 
-<meta property="og:description" content="This function collects all the Barrett's functions togather as a 
-parent function. The function checks the column names and performs
-the necessary subfunction as long as the column is named correctly. 
-The function follows the Histology function. You can use the same column
-names as suggested with the parent function HistolAll" />
+<meta property="og:description" content="Function to encapsulate all the Barrett's functions together. This includes the Prague
+score and the worst pathological grade and then feeds both of these things into
+the follow up function. The output is a dataframe with all the original data as
+well as the new columns that have been created." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -69,7 +68,7 @@ names as suggested with the parent function HistolAll" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -98,7 +97,10 @@ names as suggested with the parent function HistolAll" />
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -150,48 +152,63 @@ names as suggested with the parent function HistolAll" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Follow up group determination</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/BarrettsFunctions.R'><code>R/BarrettsFunctions.R</code></a></small>
+    <h1>All basic Barrett's functions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Module_Barretts.R'><code>R/Module_Barretts.R</code></a></small>
     <div class="hidden name"><code>BarrettsAll.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>This function collects all the Barrett's functions togather as a 
-parent function. The function checks the column names and performs
-the necessary subfunction as long as the column is named correctly. 
-The function follows the Histology function. You can use the same column
-names as suggested with the parent function HistolAll</p>
+    <p>Function to encapsulate all the Barrett's functions together. This includes the Prague
+score and the worst pathological grade and then feeds both of these things into
+the follow up function. The output is a dataframe with all the original data as
+well as the new columns that have been created.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>BarrettsAll</span>(<span class='no'>dataframe</span>)</pre>
+    <pre class="usage"><span class='fu'>BarrettsAll</span>(<span class='no'>Endodataframe</span>, <span class='no'>EndoReportColumn</span>, <span class='no'>EndoReportColumn2</span>,
+  <span class='no'>Pathdataframe</span>, <span class='no'>PathColumn</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataframe</th>
-      <td><p>the dataframe(merged endoscopy and histology).</p></td>
+      <th>Endodataframe</th>
+      <td><p>endoscopy dataframe of interest</p></td>
+    </tr>
+    <tr>
+      <th>EndoReportColumn</th>
+      <td><p>Endoscopy report field of interest as a string vector</p></td>
+    </tr>
+    <tr>
+      <th>EndoReportColumn2</th>
+      <td><p>Second endoscopy report field of interest as a string vector</p></td>
+    </tr>
+    <tr>
+      <th>Pathdataframe</th>
+      <td><p>pathology dataframe of interest</p></td>
+    </tr>
+    <tr>
+      <th>PathColumn</th>
+      <td><p>Pathology report field of interest as a string vector</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Newdf</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
-<span class='co'># according to date and Hospital number</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>Mypath</span>,<span class='st'>'Dateofprocedure'</span>,
-<span class='st'>'HospitalNumber'</span>)
-<span class='co'>#The function relies on the other Barrett's functions being run as well:</span>
-<span class='no'>dd</span><span class='kw'>&lt;-</span><span class='fu'>BarrettsAll</span>(<span class='no'>v</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>v</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>Barretts_df</span> <span class='kw'>&lt;-</span> <span class='fu'>BarrettsAll</span>(<span class='no'>Myendo</span>, <span class='st'>"Findings"</span>, <span class='st'>"OGDReportWhole"</span>, <span class='no'>Mypath</span>, <span class='st'>"Histology"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

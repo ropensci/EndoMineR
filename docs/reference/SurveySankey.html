@@ -15,7 +15,7 @@
 #' @param theframe the dataframe,
 #' @param EndoReportColumn the column of interest,
 #' @param myNotableWords list of words you are interested in
-#' @import ggplot2 
+#' @import ggplot2
 #' @import stringr
 #' @import ggplus
 #' @keywords patient flow
@@ -29,8 +29,7 @@
 #' v&lt;-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b&lt;-Barretts_PathStage(v,'Histology')
 #' aa&lt;-Barretts_PragueScore(b,'Findings')
-#' bb&lt;-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
-#' aa&lt;-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' aa&lt;-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
 #' myNotableWords&lt;-c("No_IM","IM","LGD","HGD","T1a)
 #' PatientFlowBasic(aa,"IMorNoIM",myNotableWords) — SurveySankey • EndoMineR</title>
 
@@ -67,7 +66,7 @@
 #' @param theframe the dataframe,
 #' @param EndoReportColumn the column of interest,
 #' @param myNotableWords list of words you are interested in
-#' @import ggplot2 
+#' @import ggplot2
 #' @import stringr
 #' @import ggplus
 #' @keywords patient flow
@@ -81,8 +80,7 @@
 #' v&lt;-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b&lt;-Barretts_PathStage(v,'Histology')
 #' aa&lt;-Barretts_PragueScore(b,'Findings')
-#' bb&lt;-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
-#' aa&lt;-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' aa&lt;-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
 #' myNotableWords&lt;-c("No_IM","IM","LGD","HGD","T1a)
 #' PatientFlowBasic(aa,"IMorNoIM",myNotableWords) — SurveySankey" />
 
@@ -95,7 +93,7 @@
 #' @param theframe the dataframe,
 #' @param EndoReportColumn the column of interest,
 #' @param myNotableWords list of words you are interested in
-#' @import ggplot2 
+#' @import ggplot2
 #' @import stringr
 #' @import ggplus
 #' @keywords patient flow
@@ -109,8 +107,7 @@
 #' v&amp;lt;-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b&amp;lt;-Barretts_PathStage(v,'Histology')
 #' aa&amp;lt;-Barretts_PragueScore(b,'Findings')
-#' bb&amp;lt;-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
-#' aa&amp;lt;-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' aa&amp;lt;-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
 #' myNotableWords&amp;lt;-c(&quot;No_IM&quot;,&quot;IM&quot;,&quot;LGD&quot;,&quot;HGD&quot;,&quot;T1a)
 #' PatientFlowBasic(aa,&quot;IMorNoIM&quot;,myNotableWords)" />
 <meta name="twitter:card" content="summary" />
@@ -143,7 +140,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -172,7 +169,10 @@
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -233,7 +233,7 @@
 #' @param theframe the dataframe,
 #' @param EndoReportColumn the column of interest,
 #' @param myNotableWords list of words you are interested in
-#' @import ggplot2 
+#' @import ggplot2
 #' @import stringr
 #' @import ggplus
 #' @keywords patient flow
@@ -247,11 +247,10 @@
 #' v&lt;-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b&lt;-Barretts_PathStage(v,'Histology')
 #' aa&lt;-Barretts_PragueScore(b,'Findings')
-#' bb&lt;-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
-#' aa&lt;-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' aa&lt;-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
 #' myNotableWords&lt;-c("No_IM","IM","LGD","HGD","T1a)
 #' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/EndoMineR.R'><code>R/EndoMineR.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Graphics.R'><code>R/Graphics.R</code></a></small>
     <div class="hidden name"><code>SurveySankey.Rd</code></div>
     </div>
 
@@ -266,7 +265,7 @@
 #' @param theframe the dataframe,
 #' @param EndoReportColumn the column of interest,
 #' @param myNotableWords list of words you are interested in
-#' @import ggplot2 
+#' @import ggplot2
 #' @import stringr
 #' @import ggplus
 #' @keywords patient flow
@@ -280,8 +279,7 @@
 #' v&lt;-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure','HospitalNumber')
 #' b&lt;-Barretts_PathStage(v,'Histology')
 #' aa&lt;-Barretts_PragueScore(b,'Findings')
-#' bb&lt;-Barretts_EventType(aa,'Histology','ProcedurePerformed','Indications','Findings')
-#' aa&lt;-SurveilTimeByRow(bb,'pHospitalNum','Date.y')
+#' aa&lt;-SurveilTimeByRow(aa,'pHospitalNum','Date.y')
 #' myNotableWords&lt;-c("No_IM","IM","LGD","HGD","T1a)
 #' PatientFlowBasic(aa,"IMorNoIM",myNotableWords)</p>
     
@@ -315,32 +313,27 @@ eg hostpital number</p></td>
     #Now develop the patient specific journey with faceted plot in ggplot2
   f&lt;-ggplot(theframe) +
     geom_point(aes(Date.x,type),shape=16,size=1) +
-    xlab("Date") + 
+    xlab("Date") +
     ylab("Histopathological State") +
     theme(axis.text.x=element_text(angle=-90))
-    t&lt;-facet_multiple(plot = f, 
-                 facets = 'pHospitalNum', 
-                 ncol = 2, 
+    t&lt;-facet_multiple(plot = f,
+                 facets = 'pHospitalNum',
+                 ncol = 2,
                  nrow = 2)
   mylist&lt;-as.list(aa,t)
     return(mylist)
     Create a Sankey plot for patient flow</p>
-<p>This creates a Sankey plot to see the order of tests for all patients:
-dfw is the dataframe, y is the value of in this case
-the procedure type (eg EMR,
- radiofrequency ablation for Barrett's but can be
- any description of a procedure you desire)
- Note the Hospital Number column MUST be called PatientID.</p>
+<p>The purpose of the function is to provide a Sankey plot 
+which allows the analyst to see the proportion
+of patients moving from one state (in this case type of Procedure) to
+another. This allows us to see for example how many EMRs are done after
+RFA.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># The purpose of the function is to</span>
-<span class='co'># provide a Sankey plot which allows the analyst to see the proportion</span>
-<span class='co'># of patients moving from one state (in this case type of Procedure) to</span>
-<span class='co'># another. This allows us to see for example how many EMRs are done after</span>
-<span class='co'>#RFA. For further patient flow examples see PatientFlow_CircosPlots</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>) <span class='kw'>==</span> <span class='st'>'HospitalNumber'</span>] <span class='kw'>&lt;-</span> <span class='st'>'PatientID'</span>
-<span class='no'>gg</span><span class='kw'>&lt;-</span><span class='fu'>SurveySankey</span>(<span class='no'>Myendo</span>,<span class='st'>"ProcedurePerformed"</span>,<span class='st'>"PatientID"</span>)</div><div class='output co'>#&gt; <span class='message'>Creating a generic function for ‘toJSON’ from package ‘jsonlite’ in package ‘googleVis’</span></div><div class='output co'>#&gt; <span class='message'>starting httpd help server ...</span></div><div class='output co'>#&gt; <span class='message'> done</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>) <span class='kw'>==</span> <span class='st'>"HospitalNumber"</span>] <span class='kw'>&lt;-</span> <span class='st'>"PatientID"</span>
+<span class='no'>gg</span> <span class='kw'>&lt;-</span> <span class='fu'>SurveySankey</span>(<span class='no'>Myendo</span>, <span class='st'>"ProcedurePerformed"</span>, <span class='st'>"PatientID"</span>)</div><div class='output co'>#&gt; <span class='message'>Creating a generic function for ‘toJSON’ from package ‘jsonlite’ in package ‘googleVis’</span></div><div class='output co'>#&gt; <span class='message'>starting httpd help server ...</span></div><div class='output co'>#&gt; <span class='message'> done</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

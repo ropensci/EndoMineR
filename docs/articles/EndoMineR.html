@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -60,7 +60,10 @@
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -112,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1>EndoMineR</h1>
-                        <h4 class="author">Sebastian Zeki 2018-12-01</h4>
+                        <h4 class="author">Sebastian Zeki 2019-04-17</h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/ropensci/EndoMineR/blob/master/vignettes/EndoMineR.Rmd"><code>vignettes/EndoMineR.Rmd</code></a></small>
@@ -124,31 +127,68 @@
     
 <div id="aims-of-endominer" class="section level2">
 <h2 class="hasAnchor">
-<a href="#aims-of-endominer" class="anchor"></a>Aims of EndoMineR</h2>
+<a href="#aims-of-endominer" class="anchor"></a><strong>Aims of EndoMineR</strong>
+</h2>
 <p>The goal of EndoMineR is to extract as much information as possible from free or semi-structured endoscopy reports and their associated pathology specimens.</p>
-<p>Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation. This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.</p>
+<p>Gastroenterology now has many standards against which practice is measured although many reporting systems do not include the reporting capability to give anything more than basic analysis. Much of the data is locked in semi-structured text. However the nature of semi-structured text means that data can be extracted in a standardised way- it just requires more manipulation.</p>
+<p>This package provides that manipulation so that complex endoscopic-pathological analyses, in line with recognised standards for these analyses, can be done.</p>
 </div>
 <div id="how-is-the-package-divided" class="section level2">
 <h2 class="hasAnchor">
-<a href="#how-is-the-package-divided" class="anchor"></a>How is the package divided?</h2>
+<a href="#how-is-the-package-divided" class="anchor"></a><strong>How is the package divided?</strong>
+</h2>
 <p><br></p>
-<p><img src="img/EndoMineROverView.png" width="50%" style="display: block; margin: auto;"></p>
-<p>The package is basically divied into three parts. How all the functions are connected in shown in the adjoining figure. The import of the raw data is left up to the user with the overall aim being that all the data is present in one dataframe. The user can either load data so that each row of the data is an endoscopic episode (or a pathology report) in its raw form and then allow the package to extract the relevant parts of the data, or the data can be pre-extracted (ie separate columns for the Endoscopist, medication given etc.) so that the Extraction step is skipped. The package can take either but the importing is left to the user.</p>
-<ol style="list-style-type: decimal">
-<li><p><strong>The extraction</strong>- This is really when the data is provided as full text reports. You may already have the data in a spreadsheet in which case this part isn’t necessary. The extraction is provided as one function Extractor, explained below.</p></li>
-<li><p><strong>Cleaning</strong>- These are a group of functions that allow the user to extract and clean data commonly found in endoscopic and pathology reports. The cleaning functions usually remove common typos or extraneous information and do some reformatting. Some of the functions will also extract derived data into separate columns. The cleaning functions are provided on a per column basis (so if you have a column containing the endoscopist name, for example ,then EndoEndoscopist will clean this. However convenience functions are also provided to run the several cleaning functions at the same time as long as the relevant columns are present. EndoscAll for example will run several of the cleaning functions as long as the columns are properly named so that the subfunctions are run on the correct columns.This is also true for HistolAll</p></li>
-<li><p><strong>Analyses</strong>- The analyses provide graphing functions as well as analyses according to the cornerstone questions in gastroenterology- namely surveillance, patient tracking, quality of endoscopy and pathology reporting and diagnostic yield questions as explained in the EndoMineR principles pages. The analyses are separated into generic analyses that are relevant to any endo-pathological dataset, as well as specific analyses for adenoma detection rates and Barrett’s surveillance and therapy. Further disease specific datasets will be included in future iterations.</p></li>
-</ol>
+<p><img src="img/EndoMineRBasic.jpg" width="50%" style="display: block; margin: auto;"></p>
+<p>The package is basically divied into three parts. How all the functions are connected in shown in the figure above. The import of the raw data is left up to the user with the overall aim being that all the data is present in one dataframe.</p>
 </div>
-<div id="the-extractor-function" class="section level2">
+<div id="extraction-and-cleaning" class="section level2">
 <h2 class="hasAnchor">
-<a href="#the-extractor-function" class="anchor"></a>The extractor function</h2>
-<p>Endoscopic and pathological data will come in one of two forms- either as a collection of the whole text report or as spreadsheets with some degree of separation into different columns of the various aspects of that report eg. who the Endoscopist was, the patient’s unique identifier etc. For the latter, the package user will not need to Extract information as it is already extracted and so can go straight to cleaning the data. For the former the Extractor function has been provided:</p>
-<p><br><img src="img/EndoMineR_Extractor.svg" style="display: block; margin: auto;"></p>
-<p><br></p>
-<p>The Extractor is a very useful function. Different hospitals will use different software with different headings for endoscopic reports. The extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in-built datasets as part of the package.</p>
-<p><br></p>
-<p>A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe. Here we use an example dataset (which has not had separate columns selected already) as the input:</p>
+<a href="#extraction-and-cleaning" class="anchor"></a><strong>1. Extraction and cleaning</strong>
+</h2>
+<p>If using raw reports, then once you have imported the data into your R environment, you can go ahead and use the <strong>textPrep</strong> function. If you have pre-segregated data, then use the EndoPaste function. This basically reformats your data so that everything is merged back into a raw text file, but it keeps the column headers as delimiters for use later.</p>
+<p><strong>EndoPaste</strong> is provided as an optional function to get your data in the right shape to allow EndoMineR to process the data properly.</p>
+<p>EndoPaste outputs the data as well as a list of delimiters (basically your column headings). The delimiters can then be used in the textPrep function. This would work as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#An example dataset</span>
+testList&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">PatientName =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Tom Hardy"</span>, <span class="st">"Elma Fudd"</span>, <span class="st">"Bingo Man"</span>), 
+                         <span class="dt">HospitalNumber =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"H55435"</span>, <span class="st">"Y3425345"</span>, <span class="st">"Z343424"</span>), <span class="dt">Text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"All bad. Not good"</span>, 
+<span class="st">"Serious issues"</span>, <span class="st">"from a land far away"</span>)), <span class="dt">class =</span> <span class="st">"data.frame"</span>, <span class="dt">row.names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">NA</span>, <span class="op">-</span>3L))
+myReadyDataset&lt;-<span class="kw"><a href="../reference/EndoPaste.html">EndoPaste</a></span>(testList)</code></pre></div>
+<p>The dataframe can be obtained from myReadyDataset[1] and the delimiters from myReadyDataset[2]</p>
+<p>Once the data is ready you can use the textPrep function. This function is really a wrapper for a number of different functions that work on your data.</p>
+<div id="a--dusting-the-data" class="section level4">
+<h4 class="hasAnchor">
+<a href="#a--dusting-the-data" class="anchor"></a>a. <strong>Dusting the data</strong>
+</h4>
+<p>Firstly the data is cleaned up so that extra newlines, spaces, unnecessary punctuation etc is dealt with. Although you dont need to know the details of this, if you want to look under the hood you can see that this is part of the ColumnCleanUp function.</p>
+</div>
+<div id="b--spell-checking" class="section level4">
+<h4 class="hasAnchor">
+<a href="#b--spell-checking" class="anchor"></a>b. <strong>Spell checking</strong>
+</h4>
+<p>The textPrep also implements a spell checker (the <strong>spellCheck</strong> function). This really checks the spelling of gastroenterology terms that are present in the in-built lexcicons. So if for example the report contains the terms ‘Radiafrequency ablashion’ then this will be corrected using Radiofrequency ablation. This is one function that acts to standardise the text in the report so that downstream analyses can be robust.</p>
+</div>
+<div id="c--negative-phrase-removal" class="section level4">
+<h4 class="hasAnchor">
+<a href="#c--negative-phrase-removal" class="anchor"></a>c. <strong>Negative phrase removal</strong>
+</h4>
+<p>The text is then passed along to the <strong>NegativeRemove</strong> function. This will remove any phrases that contain negative sentences indicating a non-positive finding. For example it would remove ‘There is no evidence of dysplasia here’. This makes text extraction analyses, which often report the detection of a positive finding, much more accurate. If you wish to include these types of phrases however, you can. This function is part of the parameters you can switch on and off for the textPrep function.</p>
+</div>
+<div id="d--term-mapping" class="section level4">
+<h4 class="hasAnchor">
+<a href="#d--term-mapping" class="anchor"></a>d. <strong>Term mapping</strong>
+</h4>
+<p>The next step is to perform term mapping. This means that variations of a term are all mapped to a single common term. For example ‘RFA’ and ‘HALO’ may be both mapped to ‘Radiofrequency ablation’. This is performed using the using the <strong>DictionaryInPlaceReplace</strong> function. This function looks through all of the lexicons included in this package to perform this. The lexicons are all manually created and consist of key-value pairs which therefore map a key 9which is the term variant) to a value (which is the standardised term that should be used).</p>
+</div>
+<div id="e--segregating-the-data" class="section level4">
+<h4 class="hasAnchor">
+<a href="#e--segregating-the-data" class="anchor"></a>e. <strong>Segregating the data</strong>
+</h4>
+<p>Finally the text is ready to separate into columns. The basic <strong>Extractor</strong> function will take your data and the list of terms you have supplied that act as the column boundaries, the separate your data accordingly. There are a couple of options here. If you think the headers for your text vary a little bit, then you can change the parameter in the textPrep function to use an alternatiuve Extractor, called <strong>Extractor2</strong> that can deal with this. It can be worth experimenting with your data to find out which is the better segregator. The Extractor (or Extractor2) is a very useful function. Different hospitals will use different software with different headings for endoscopic reports. The Extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in-built datasets as part of the package. A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe.</p>
+<p><br><br><br></p>
+<p>Here we use an example dataset (which has not had separate columns selected already) as the input:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PathDataFrameFinalColon2&lt;-PathDataFrameFinalColon
+<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(PathDataFrameFinalColon2)&lt;-<span class="st">"PathReportWhole"</span>
+<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(PathDataFrameFinalColon2,<span class="dv">1</span>))</code></pre></div>
 <table class="table">
 <colgroup><col width="44%"></colgroup>
 <thead><tr class="header">
@@ -161,10 +201,15 @@
 <p><br></p>
 <p>We can then define the list of delimiters that will split this text into separate columns, title the columns according to the delimiters and return a dataframe. each column simply contains the text between the delimiters that the user has defined. These columns are then ready for the more refined cleaning provided by subesquent functions.</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(EndoMineR)
+mywords&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
 <span class="st">"Date received:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,
 <span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>)
-PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(PathDataFrameFinalColon2,<span class="st">"PathReportWhole"</span>,mywords)</code></pre></div>
+
+PathDataFrameFinalColon3&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(PathDataFrameFinalColon2<span class="op">$</span>PathReportWhole,mywords)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#PathDataFrameFinalColon3&lt;-head(PathDataFrameFinalColon3[2:10],1)</span>
+pander<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/pander/topics/panderOptions">panderOptions</a></span>(<span class="st">'table.split.table'</span>, <span class="ot">Inf</span>)
+<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(PathDataFrameFinalColon3[,<span class="dv">1</span><span class="op">:</span><span class="dv">9</span>],<span class="dv">1</span>))</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="7%">
@@ -174,8 +219,8 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 <col width="6%">
 <col width="15%">
 <col width="15%">
-<col width="14%">
-<col width="14%">
+<col width="15%">
+<col width="15%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">HospitalNumber</th>
@@ -189,494 +234,109 @@ PathDataFrameFinalColon2&lt;-<span class="kw"><a href="../reference/Extractor.ht
 <th align="center">Diagnosis</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td align="center">H2890235</td>
+<td align="center">: H2890235</td>
 <td align="center">al-Bilal, Widdad</td>
 <td align="center">1922-05-04</td>
-<td align="center">Dr Mondragon, Amber</td>
+<td align="center">Dr. Mondragon, Amber</td>
 <td align="center">2002-11-10</td>
-<td align="center">Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’|</td>
+<td align="center">Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen. Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’|</td>
 <td align="center">1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm</td>
-<td align="center">The appearances are of a hyperplastic polyp ,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3 ,Completeness of excision is uncertain as the base is not clearly visualised ,There is no ulceration ,Kikuchi level: sm2</td>
-<td align="center">Colon, biopsy - Normal ,- Focal granulomatous inflammation, non-necrotising ,Duodenum, biopsy - within normal histological limits ,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia ,- Hyperplastic polyp ,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia ,- Mild chronic inflammation within the oesophageal mucosa ,Sigmoid colon biopsies:- normal mucosa ,Sigmoid polyp excision:- tubular adenoma</td>
+<td align="center">The appearances are of a hyperplastic polyp.,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3.,Completeness of excision is uncertain as the base is not clearly visualised.,There is no ulceration.,Kikuchi level: sm2.</td>
+<td align="center">Colon, biopsy - Normal.,- Focal granulomatous inflammation, non-necrotising.,Duodenum, biopsy - within normal histological limits.,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia.,- Hyperplastic polyp .,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia.,- Mild chronic inflammation within the oesophageal mucosa.,Sigmoid colon biopsies:- normal mucosa.,Sigmoid polyp excision:- tubular adenoma.</td>
 </tr></tbody>
 </table>
+<p>The Extractor function is embedded within textPrep so you may never have to use it directly, but you will always have to submit a list of delimiters so that textPrep can use the Extractor to do its segregation:</p>
+<p><strong>textPrep</strong> takes the optional parameters NegEx (which tells the textPrep to remove negative phrases like ‘There is no pathology here’ from the text) and the Extractor parameter which tells the textPrep function to either use the regular Extractor when you know the subheadings are always in the same order, or Extractor2 when you think some of the subtitles might be missing.</p>
+<p>There will always be a certain amount of data cleaning that only the end user can do before data can be extracted. There is some cleaning that is common to many endoscopy reports and so functions have been provided for this. An abvious function is the cleaning of the endoscopist’s name. This is done with the function <strong>EndoscEndoscopist</strong>. This removes titles and tidies up the names so that there aren’t duplicate names (eg “Dr. Sebastian Zeki” and “Sebastian Zeki”). This is applied to any endoscopy column where the Endoscopist name has been isolated into its own column.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(Myendo<span class="op">$</span>Endoscopist[<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>])</code></pre></div>
+<pre><code>## [1] "Kekich,Annabelle"       "Sullivan,Shelby"       
+## [3] "Avitia Ramirez,Alondra" "Greimann,Phoua"        
+## [5] "Avitia Ramirez,Alondra"</code></pre>
 </div>
-<div id="endoscopic-cleaning" class="section level2">
+</div>
+<div id="data-linkage" class="section level2">
 <h2 class="hasAnchor">
-<a href="#endoscopic-cleaning" class="anchor"></a>Endoscopic cleaning</h2>
-<p>Once the extraction has been done into separate columns, various cleaning functions can be used for indivisual columns. This is illustrated in the figure below. Any one column does not have to be present in the final dataframe once extraction has happened. The functions are defined according to the most likely outputted columns from extraction from a typical dataset. If endoscopy reports are being extracted then the functions concentrate on these.</p>
-<p><br></p>
-<p><img src="img/EndoMineR_EndoscopyClean.png" style="display: block; margin: auto;"></p>
-<p><br></p>
-<div id="endoscopist-cleaning" class="section level3">
-<h3 class="hasAnchor">
-<a href="#endoscopist-cleaning" class="anchor"></a>Endoscopist cleaning</h3>
-<p>For example if the Endoscopist name has been pulled out, the EndoscEndoscopist function can be used which returns the submitted data frame with the Endoscopist column cleaned up.</p>
-<p><br></p>
-<p>The endoscopist column might initially look like this (as the last column in this dataframe)</p>
-<p><br></p>
-<table class="table">
-<colgroup>
-<col width="15%">
-<col width="20%">
-<col width="21%">
-<col width="16%">
-<col width="26%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">PatientName</th>
-<th align="center">GeneralPractitioner</th>
-<th align="center">Dateofprocedure</th>
-<th align="center">Endoscopist</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">Jargon, Victoria</td>
-<td align="center">Dr Martin, Marche</td>
-<td align="center">2009-11-11</td>
-<td align="center">Dr Sullivan, Shelby</td>
-</tr>
-<tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">Powell, Destiny</td>
-<td align="center">Dr al-Safi, Lutfiyya</td>
-<td align="center">2008-06-15</td>
-<td align="center">Dr Kekich, Annabelle</td>
-</tr>
-<tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">Martinez-Santos, Ana</td>
-<td align="center">Dr Rogers, Monica</td>
-<td align="center">2007-10-27</td>
-<td align="center">Dr Sullivan, Shelby</td>
-</tr>
-<tr class="even">
-<td align="center">G1449886</td>
-<td align="center">Lopez, Maria</td>
-<td align="center">Dr Heilman, Lisa</td>
-<td align="center">2002-03-17</td>
-<td align="center">Dr Avitia-Ramirez, Alondra</td>
-</tr>
-<tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">al-Rahimi, Rif’a</td>
-<td align="center">Dr Krumland, Lisa</td>
-<td align="center">2011-12-05</td>
-<td align="center">Dr Greimann, Phoua</td>
-</tr>
-<tr class="even">
-<td align="center">I8031481</td>
-<td align="center">Forrest, Dazheea</td>
-<td align="center">Dr Millman, Arianna</td>
-<td align="center">2014-09-19</td>
-<td align="center">Dr Avitia-Ramirez, Alondra</td>
-</tr>
-<tr class="odd">
-<td align="center">W2120051</td>
-<td align="center">Naperola, Breanna</td>
-<td align="center">Dr Vigil, Lidia</td>
-<td align="center">2002-05-28</td>
-<td align="center">Dr Martinez, Maegen</td>
-</tr>
-<tr class="even">
-<td align="center">O7163832</td>
-<td align="center">Zuni, Shannon</td>
-<td align="center">Dr Merced, Essence</td>
-<td align="center">2009-09-19</td>
-<td align="center">Dr Anderson, Alana</td>
-</tr>
-<tr class="odd">
-<td align="center">P6620949</td>
-<td align="center">Gomez Barron, Erin</td>
-<td align="center">Dr Ursery, Dezire</td>
-<td align="center">2003-10-02</td>
-<td align="center">Dr Anderson, Alana</td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-<td align="center">Hamm, Shebra</td>
-<td align="center">Dr Bauman, Caitlin</td>
-<td align="center">2016-11-22</td>
-<td align="center">Dr Ives, Rashiah</td>
-</tr>
-</tbody>
-</table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo2&lt;-<span class="kw"><a href="../reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>)</code></pre></div>
-<p>This function performs the cleaning of common things found in the text that may cause confusion such as getting rid of the titles ahead of the Endoscopist’s name, getting rid of whitespace etc. This is important to prevent double outputs for the same Endoscopist because of, for example, the lack and presence of a ‘.’ after Dr amongst other variations. The result is as follows:</p>
-<p><br></p>
-<table class="table">
-<colgroup>
-<col width="15%">
-<col width="21%">
-<col width="22%">
-<col width="16%">
-<col width="23%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">PatientName</th>
-<th align="center">GeneralPractitioner</th>
-<th align="center">Dateofprocedure</th>
-<th align="center">Endoscopist</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">Jargon, Victoria</td>
-<td align="center">Dr Martin, Marche</td>
-<td align="center">2009-11-11</td>
-<td align="center">Sullivan, Shelby</td>
-</tr>
-<tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">Powell, Destiny</td>
-<td align="center">Dr al-Safi, Lutfiyya</td>
-<td align="center">2008-06-15</td>
-<td align="center">Kekich, Annabelle</td>
-</tr>
-<tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">Martinez-Santos, Ana</td>
-<td align="center">Dr Rogers, Monica</td>
-<td align="center">2007-10-27</td>
-<td align="center">Sullivan, Shelby</td>
-</tr>
-<tr class="even">
-<td align="center">G1449886</td>
-<td align="center">Lopez, Maria</td>
-<td align="center">Dr Heilman, Lisa</td>
-<td align="center">2002-03-17</td>
-<td align="center">Avitia-Ramirez, Alondra</td>
-</tr>
-<tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">al-Rahimi, Rif’a</td>
-<td align="center">Dr Krumland, Lisa</td>
-<td align="center">2011-12-05</td>
-<td align="center">Greimann, Phoua</td>
-</tr>
-<tr class="even">
-<td align="center">I8031481</td>
-<td align="center">Forrest, Dazheea</td>
-<td align="center">Dr Millman, Arianna</td>
-<td align="center">2014-09-19</td>
-<td align="center">Avitia-Ramirez, Alondra</td>
-</tr>
-<tr class="odd">
-<td align="center">W2120051</td>
-<td align="center">Naperola, Breanna</td>
-<td align="center">Dr Vigil, Lidia</td>
-<td align="center">2002-05-28</td>
-<td align="center">Martinez, Maegen</td>
-</tr>
-<tr class="even">
-<td align="center">O7163832</td>
-<td align="center">Zuni, Shannon</td>
-<td align="center">Dr Merced, Essence</td>
-<td align="center">2009-09-19</td>
-<td align="center">Anderson, Alana</td>
-</tr>
-<tr class="odd">
-<td align="center">P6620949</td>
-<td align="center">Gomez Barron, Erin</td>
-<td align="center">Dr Ursery, Dezire</td>
-<td align="center">2003-10-02</td>
-<td align="center">Anderson, Alana</td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-<td align="center">Hamm, Shebra</td>
-<td align="center">Dr Bauman, Caitlin</td>
-<td align="center">2016-11-22</td>
-<td align="center">Ives, Rashiah</td>
-</tr>
-</tbody>
-</table>
-<p><br></p>
+<a href="#data-linkage" class="anchor"></a><strong>2. Data linkage</strong>
+</h2>
+<p>Endoscopy data may be linked with other types of data. The most common associated dataset is pathology data from biopsies etc taken at endoscopy. This pathology data should be processed in exactly the same way as the endoscopy data- namely with textPrep (with or without EndoPaste).</p>
+<p>The resulting pathology dataset should then be merged with the endoscopy dataset using <strong>Endomerge</strong> which will merge all rows with the same hospital number and do a fuzzy match (up to 7 days after the endoscopy) with pathology so the right endoscopy event is associated with the right pathology report.An example of merging the included datasets Mypath and Myendo is given here:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,Mypath,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>)</code></pre></div>
 </div>
-<div id="medication-cleaning" class="section level3">
-<h3 class="hasAnchor">
-<a href="#medication-cleaning" class="anchor"></a>Medication cleaning</h3>
+<div id="deriving-new-data-from-what-you-have" class="section level2">
+<h2 class="hasAnchor">
+<a href="#deriving-new-data-from-what-you-have" class="anchor"></a><strong>3. Deriving new data from what you have</strong>
+</h2>
+<p>Once the text has been separated in to the columns of your choosing you are ready to see what we can extract. Functions are provided to allow quite complex extractions at both a general level and also for specific diseases.</p>
+<p>The extraction of medication type and dose is important for lots of analyses in endoscopy. This is provided with the function <strong>EndoscMeds</strong>. The function will take the column that you specify and then output a dataframe. You will need to re-bind this output with the original dataframe for further analyses. This is shown below</p>
+<div id="i-medication" class="section level4">
+<h4 class="hasAnchor">
+<a href="#i-medication" class="anchor"></a><strong>i) Medication</strong>
+</h4>
 <p>The EndoscMeds currently extracts Fentanyl, Pethidine, Midazolam and Propofol doses into a separate column and reformats them as numeric columns so further calculations can be done.</p>
-<p>Several other similar clean up functions are available for Endoscopy as follows. We will extract from the Raw endoscopy data first:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mywords&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Hospital:"</span>,<span class="st">"Hospital Number:"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"General Practitioner:"</span>,<span class="st">"Date of procedure:"</span>,<span class="st">"Endoscopist:"</span>,<span class="st">"Second Endoscopist"</span>,
-           <span class="st">"Medications:"</span>,<span class="st">"Instrument:"</span>,<span class="st">"Extent of Exam:"</span>,<span class="st">"Indications:"</span>,<span class="st">"Procedure Performed:"</span>,
-<span class="st">"Findings:"</span>,<span class="st">"Diagnosis:"</span>)
-TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(TheOGDReportFinal,<span class="st">"OGDReportWhole"</span>,mywords)</code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">TheOGDReportFinal2df&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(TheOGDReportFinal2[<span class="st">"HospitalNumber"</span>],TheOGDReportFinal2[<span class="st">"Instrument"</span>],TheOGDReportFinal2[<span class="st">"Indications"</span>],TheOGDReportFinal2[<span class="st">"Medications"</span>],TheOGDReportFinal2[<span class="st">"ProcedurePerformed"</span>])
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(TheOGDReportFinal2df,<span class="dv">10</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MyendoMeds&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(Myendo<span class="op">$</span>Medications), Myendo)
+<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(MyendoMeds[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>],<span class="dv">5</span>))</code></pre></div>
 <table class="table">
 <colgroup>
-<col width="15%">
-<col width="11%">
-<col width="27%">
-<col width="27%">
-<col width="18%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">Instrument</th>
-<th align="center">Indications</th>
-<th align="center">Medications</th>
-<th align="center">ProcedurePerformed</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">FG5</td>
-<td align="center">Follow-up ULCER HEALING</td>
-<td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">FG6</td>
-<td align="center">Weight Loss</td>
-<td align="center">Fentanyl 125mcg Midazolam 7mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">FG2</td>
-<td align="center">Follow-up ULCER HEALING</td>
-<td align="center">Fentanyl 125mcg Midazolam 6mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="even">
-<td align="center">G1449886</td>
-<td align="center">FG1</td>
-<td align="center">Other-</td>
-<td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">FG2</td>
-<td align="center">Previous OGD ? 8 months ago</td>
-<td align="center">Fentanyl 75mcg Midazolam 6mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="even">
-<td align="center">I8031481</td>
-<td align="center">FG6</td>
-<td align="center">Surveillance-Barrett’s</td>
-<td align="center">Fentanyl 150mcg Midazolam 3mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="odd">
-<td align="center">W2120051</td>
-<td align="center">FG5</td>
-<td align="center">Dyspepsia</td>
-<td align="center">Fentanyl 125mcg Midazolam 5mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="even">
-<td align="center">O7163832</td>
-<td align="center">FG2</td>
-<td align="center">Oesophagus- Dysplasia</td>
-<td align="center">Fentanyl 75mcg Midazolam 3mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="odd">
-<td align="center">P6620949</td>
-<td align="center">FG4</td>
-<td align="center">Oesophagus- Dysplasia</td>
-<td align="center">Fentanyl 25mcg Midazolam 1mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-<td align="center">FG7</td>
-<td align="center">Therapeutic- Dilatation</td>
-<td align="center">Fentanyl 150mcg Midazolam 1mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-</tr>
-</tbody>
-</table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(TheOGDReportFinal2df,<span class="st">'Medications'</span>)</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="12%">
+<col width="43%">
 <col width="9%">
-<col width="21%">
-<col width="21%">
-<col width="14%">
-<col width="4%">
-<col width="5%">
-<col width="4%">
-<col width="4%">
+<col width="11%">
+<col width="11%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">Instrument</th>
-<th align="center">Indications</th>
-<th align="center">Medications</th>
-<th align="center">ProcedurePerformed</th>
+<th align="center">MedColumn</th>
 <th align="center">Fent</th>
 <th align="center">Midaz</th>
 <th align="center">Peth</th>
-<th align="center">Prop</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">FG5</td>
-<td align="center">Follow-up ULCER HEALING</td>
 <td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">5</td>
+<td align="center">NA</td>
 <td align="center">6</td>
-<td align="center">5</td>
-<td align="center">5</td>
+<td align="center">NA</td>
 </tr>
 <tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">FG6</td>
-<td align="center">Weight Loss</td>
 <td align="center">Fentanyl 125mcg Midazolam 7mg</td>
-<td align="center">Gastroscopy (OGD)</td>
 <td align="center">125</td>
 <td align="center">7</td>
-<td align="center">125</td>
-<td align="center">125</td>
+<td align="center">NA</td>
 </tr>
 <tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">FG2</td>
-<td align="center">Follow-up ULCER HEALING</td>
 <td align="center">Fentanyl 125mcg Midazolam 6mg</td>
-<td align="center">Gastroscopy (OGD)</td>
 <td align="center">125</td>
 <td align="center">6</td>
-<td align="center">125</td>
-<td align="center">125</td>
+<td align="center">NA</td>
 </tr>
 <tr class="even">
-<td align="center">G1449886</td>
-<td align="center">FG1</td>
-<td align="center">Other-</td>
 <td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">5</td>
+<td align="center">NA</td>
 <td align="center">2</td>
-<td align="center">5</td>
-<td align="center">5</td>
+<td align="center">NA</td>
 </tr>
 <tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">FG2</td>
-<td align="center">Previous OGD ? 8 months ago</td>
 <td align="center">Fentanyl 75mcg Midazolam 6mg</td>
-<td align="center">Gastroscopy (OGD)</td>
 <td align="center">75</td>
 <td align="center">6</td>
-<td align="center">75</td>
-<td align="center">75</td>
-</tr>
-<tr class="even">
-<td align="center">I8031481</td>
-<td align="center">FG6</td>
-<td align="center">Surveillance-Barrett’s</td>
-<td align="center">Fentanyl 150mcg Midazolam 3mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">150</td>
-<td align="center">3</td>
-<td align="center">150</td>
-<td align="center">150</td>
-</tr>
-<tr class="odd">
-<td align="center">W2120051</td>
-<td align="center">FG5</td>
-<td align="center">Dyspepsia</td>
-<td align="center">Fentanyl 125mcg Midazolam 5mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">125</td>
-<td align="center">5</td>
-<td align="center">125</td>
-<td align="center">125</td>
-</tr>
-<tr class="even">
-<td align="center">O7163832</td>
-<td align="center">FG2</td>
-<td align="center">Oesophagus- Dysplasia</td>
-<td align="center">Fentanyl 75mcg Midazolam 3mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">75</td>
-<td align="center">3</td>
-<td align="center">75</td>
-<td align="center">75</td>
-</tr>
-<tr class="odd">
-<td align="center">P6620949</td>
-<td align="center">FG4</td>
-<td align="center">Oesophagus- Dysplasia</td>
-<td align="center">Fentanyl 25mcg Midazolam 1mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">25</td>
-<td align="center">1</td>
-<td align="center">25</td>
-<td align="center">25</td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-<td align="center">FG7</td>
-<td align="center">Therapeutic- Dilatation</td>
-<td align="center">Fentanyl 150mcg Midazolam 1mg</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">150</td>
-<td align="center">1</td>
-<td align="center">150</td>
-<td align="center">150</td>
+<td align="center">NA</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="instrumentindications-and-procedure-type-cleaning" class="section level3">
-<h3 class="hasAnchor">
-<a href="#instrumentindications-and-procedure-type-cleaning" class="anchor"></a>Instrument,Indications and Procedure type cleaning</h3>
-<p>EndoscInstrument,EndoscIndications and EndoscProcPerformed all perform similar cleaning functions with the endoscope number, the indication for the investigation and the actual procedure performed respectively. Future iterations will try to make these cleaning functions more generic and applicable to a wider number of use cases.</p>
+<div id="ii-endosccopy-event-extraction" class="section level4">
+<h4 class="hasAnchor">
+<a href="#ii-endosccopy-event-extraction" class="anchor"></a><strong>ii) Endosccopy Event extraction</strong>
+</h4>
+<p>The <strong>EndoscopyEvent</strong> function will extract any event that has been performed at the endoscopy and dump it in a new column. It does this by looking in pairs of sentences and therefore wraps around a more basic function called <strong>EndoscopyPairs_TwoSentence</strong>. This allows us to get the site that the event (usually a therapy) happened on. A example sentence might be ‘There was a bleeding gastric ulcer. A clip was applied to it’ We can only extract stomach:clip by reference to the two sentences.</p>
 </div>
-</div>
-<div id="histological-cleaning" class="section level2">
-<h2 class="hasAnchor">
-<a href="#histological-cleaning" class="anchor"></a>Histological cleaning</h2>
-<p>The cleaning functions for histology are a little more difficult as Histology reports often have a greater degree of free text reporting. In general, each histology report can be divided into the Macroscopic description of a specimen which itself is comprised of how many specimens there are for each sample sent (a sample can be a pot which includes several specimens) and how big each specimen is. The report will often give a detailed description of what is actually seen and then provide an overall diagnosis.</p>
-<p><br></p>
-<p><img src="img/EndoMineR_HistopExtrapol.png" style="display: block; margin: auto;"></p>
-<p><br></p>
-<div id="basic-histology-cleaning" class="section level3">
-<h3 class="hasAnchor">
-<a href="#basic-histology-cleaning" class="anchor"></a>Basic Histology Cleaning</h3>
-<p>The histology cleaning functions are based around this. For example, the HistolDx cleans the Histology text if present.</p>
-<p><br> The original input example can be seen here:</p>
-<pre><code>## [1] "  Two biopsies consist of small bowel mucosa and are within normal histological limits\n\n"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
-## [2] "  modified giemsa stain\n,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease\n,The nuclei are hyperchromatic,\n,There is no granulomatous inflammation\n,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying\n,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation\n,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation\n\n"</code></pre>
-<p>And once the function is run the result is here:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw"><a href="../reference/HistolDx.html">HistolDx</a></span>(Mypath,<span class="st">'Histology'</span>)</code></pre></div>
-<pre><code>## NULL</code></pre>
-<p><br></p>
-</div>
-<div id="extraction-of-diagnosis" class="section level3">
-<h3 class="hasAnchor">
-<a href="#extraction-of-diagnosis" class="anchor"></a>Extraction of Diagnosis</h3>
-<p>Some pathology reports also provide an overall impression or a list of diagnoses interpreted from the description of the pathological text. This can also be extracted. The diagnoses may also included the absence of features and a function is provided to both clean up the Diagnosis column as well as exclude negative diagnoses. If a diagnosis column is present the function can be run as follows:</p>
-<pre><code>## [1] "  Distal transverse colon polyp excision:- tubular adenoma, low grade dysplasia\n,Ileo-caecal valve, biopsies:\n,Stomach antrum biopsies:- normal mucosa\n,- Up to 34 eosinophils per high power field,Stomach, biopsy - Mild chronic inflammation\n"                                                                                                                                                                                
-## [2] "  Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Raised intra-epithelial lymphocytes ,Duodenum, biopsies - within normal histological limits\n,B GI biopsy - DISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2\n,Oesophagus, biopsies : - Minimal chronic inflammation,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:- 2 x papillomas\n,Duodenum biopsies:- normal\n"</code></pre>
-<p><br></p>
-<p>with the following result:</p>
-<p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">t&lt;-<span class="kw"><a href="../reference/HistolDx.html">HistolDx</a></span>(Mypath,<span class="st">'Diagnosis'</span>)</code></pre></div>
-<pre><code>## [1] "  Distal transverse colon polyp excision:\ntubular adenoma, low grade dysplasia\n,\nUp to 34 eosinophils per high power field,Stomach, biopsy \nMild chronic inflammation\n"                                                                                           
-## [2] "B GI biopsy \nDISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2\n,Oesophagus, biopsies : \nMinimal chronic inflammation,Sigmoid colon, polypectomy: \nTubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:\n2 x papillomas\n,Duodenum biopsies:\nnormal\n"</code></pre>
-</div>
-<div id="extraction-of-elements-from-the-macroscopic-description" class="section level3">
-<h3 class="hasAnchor">
-<a href="#extraction-of-elements-from-the-macroscopic-description" class="anchor"></a>Extraction of elements from the Macroscopic Description</h3>
-<p>Because the information from the Macroscopic Description is based around numbers, a further function has been provided called HistolNumOfBx to extract the number of biopsies taken.</p>
+<div id="iii-histology-biopsy-number-extraction" class="section level4">
+<h4 class="hasAnchor">
+<a href="#iii-histology-biopsy-number-extraction" class="anchor"></a><strong>iii) Histology biopsy number extraction</strong>
+</h4>
+<p>There is also a lot of information we can extract into a separate column from the histopathology information. We can derive the number of biopsies taken (usually specified in the macroscopic description of a sample) using the function <strong>HistolNumbOfBx</strong>.</p>
 <p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is. For example, if the report usually says:</p>
 <p><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sg&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Mypath<span class="op">$</span>HospitalNumber,Mypath<span class="op">$</span>PatientName,Mypath<span class="op">$</span>Macroscopicdescription)
+<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(sg,<span class="dv">5</span>))</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="30%">
@@ -719,17 +379,19 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 <p><br></p>
 <p>Based on this, the word that limits the number you are interested in is ‘specimen’ so the function and it’s output is:</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(Mypath,<span class="st">'Macroscopicdescription'</span>,<span class="st">'specimen'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath<span class="op">$</span>NumbOfBx&lt;-<span class="kw"><a href="../reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(Mypath<span class="op">$</span>Macroscopicdescription,<span class="st">'specimen'</span>)
+sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Mypath<span class="op">$</span>HospitalNumber,Mypath<span class="op">$</span>PatientName,Mypath<span class="op">$</span>NumbOfBx)
+<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(sh,<span class="dv">5</span>))</code></pre></div>
 <table class="table">
 <colgroup>
-<col width="26%">
+<col width="33%">
 <col width="31%">
-<col width="16%">
+<col width="23%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">v.HospitalNumber</th>
-<th align="center">v.PatientName</th>
-<th align="center">v.NumbOfBx</th>
+<th align="center">Mypath.HospitalNumber</th>
+<th align="center">Mypath.PatientName</th>
+<th align="center">Mypath.NumbOfBx</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -760,147 +422,64 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
 </tbody>
 </table>
 </div>
-<div id="extraction-of-specific-disease-entities" class="section level3">
-<h3 class="hasAnchor">
-<a href="#extraction-of-specific-disease-entities" class="anchor"></a>Extraction of Specific Disease Entities</h3>
-<p>The user may want to extract specific diseases from a histology dataset. This can be done using the function HistolExtrapolDx which simply takes the Diagnosis column and looks up the presence or absence of certain diseases. The function has been hard coded to look for dysplasia, cancer or GIST but will also take user defined words. These will have to be in the form of a regular expression or can be left as an empty string as in the examples <br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Mypath[<span class="st">"HospitalNumber"</span>],Mypath[<span class="st">"Diagnosis"</span>])</code></pre></div>
+<div id="iv-histology-biopsy-size-extraction" class="section level4">
+<h4 class="hasAnchor">
+<a href="#iv-histology-biopsy-size-extraction" class="anchor"></a><strong>iv) Histology biopsy size extraction</strong>
+</h4>
+<p>We might also be interested in the size of the biopsy taken. A further function called <strong>HistolBxSize</strong> is provided for this. This is also derived from the macroscopic description of the specimen</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath<span class="op">$</span>BxSize&lt;-<span class="kw"><a href="../reference/HistolBxSize.html">HistolBxSize</a></span>(Mypath<span class="op">$</span>Macroscopicdescription)
+sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Mypath<span class="op">$</span>HospitalNumber,Mypath<span class="op">$</span>PatientName,Mypath<span class="op">$</span>BxSize)
+<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(sh,<span class="dv">5</span>))</code></pre></div>
 <table class="table">
 <colgroup>
-<col width="23%">
-<col width="44%">
+<col width="33%">
+<col width="31%">
+<col width="20%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">Diagnosis</th>
+<th align="center">Mypath.HospitalNumber</th>
+<th align="center">Mypath.PatientName</th>
+<th align="center">Mypath.BxSize</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="center">J6044658</td>
-<td align="center">Distal transverse colon polyp excision:- tubular adenoma, low grade dysplasia ,Ileo-caecal valve, biopsies: ,Stomach antrum biopsies:- normal mucosa ,- Up to 34 eosinophils per high power field,Stomach, biopsy - Mild chronic inflammation</td>
+<td align="center">Jargon, Victoria</td>
+<td align="center">6</td>
 </tr>
 <tr class="even">
 <td align="center">Y6417773</td>
-<td align="center">Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Raised intra-epithelial lymphocytes ,Duodenum, biopsies - within normal histological limits ,B GI biopsy - DISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2 ,Oesophagus, biopsies : - Minimal chronic inflammation,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:- 2 x papillomas ,Duodenum biopsies:- normal</td>
+<td align="center">Powell, Destiny</td>
+<td align="center">64</td>
 </tr>
 <tr class="odd">
 <td align="center">B6072011</td>
-<td align="center">- Background Barrett ‘s oesophagus,Sigmoid colon, biopsy - Adenocarcinoma ,- Gastric metaplasia,Oesophagus 36cm ’papilloma’ biopsy:- normal squamous mucosa ,- Chronic active inflammation,Oesophagus, biopsy - Barrett ’s oesophagus with moderate chronic inflammation ,- Minimal chronic inflammation</td>
+<td align="center">Martinez-Santos, Ana</td>
+<td align="center">20</td>
 </tr>
 <tr class="even">
 <td align="center">G1449886</td>
-<td align="center">Stomach, biopsy - Mild chronic inflammation and reactive changes ,- Normal,- note: biopsies put into the wrong pots ,Oesophagus, biopsy - Poorly differentiated tumour ,Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Mild chronic inflammation and oedema,-Inflammatory fibroid polyp,- within normal histological limits,- Negative for HLO</td>
+<td align="center">Lopez, Maria</td>
+<td align="center">20</td>
 </tr>
 <tr class="odd">
 <td align="center">V1607560</td>
-<td align="center">Nodule GOJ, biopsies:- acute and chronic inflammation with Helicobacter ,Stomach, biopsy -Mild acute and chronic inflammation ,Oesophagus polyps biopsies:- 2 x papillomas ,- &lt;1 mm from lateral margin,Duodenum biopsies:- patchy increase in IELs ,Duodenum, biopsy - Normal</td>
-</tr>
-<tr class="even">
-<td align="center">I8031481</td>
-<td align="center">Duodenum and stomach, polyp biopsies - Consistent with hamartomatous polyps ,Gastric oesophageal junction, biopsies : - Chronic inflammation,Stomach, biopsy - Mild chronic inflammation ,- Gastric HER2 negative,- Minimal chronic inflammation,Oesophagus, biopsy - Acute inflammation in presumed proximal biopsies only ,Gastro-osophageal junction, biopsy - Squamocolumnar mucosa ,Descending colon biopsies:- normal mucosa ,- Within normalhistological limits,The biopsies of gastric oesophageal junction type squamo-columnar mucosa show mild chronic</td>
-</tr>
-<tr class="odd">
-<td align="center">W2120051</td>
-<td align="center">- Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal ,Ileum and colon biopsies:- normal mucosa ,Oesophagus, EMR 43P - Barrett ’s oesophagus without intestinal metaplasia ,Sigmoid colon, biopsy - Adenocarcinoma ,- Chronic active inflammation,Duodenum biopsies:- normal mucosa ,- Low grade dysplasia</td>
-</tr>
-<tr class="even">
-<td align="center">O7163832</td>
-<td align="center">- possible eosinophilic oesophagitis,- Mild chronic gastritis,A -E) Stomach, polyps, biopsies: ,- Mild chronic inflammation and oedema,- Focal mild chronic inflammation,- Gastric HER2 negative,Ileum and colon biopsies:- normal mucosa ,Adjacent mucosa, biopsy - Normal small bowel mucosa</td>
-</tr>
-<tr class="odd">
-<td align="center">P6620949</td>
-<td align="center">- Chronic active gastritis,Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,Oesophaguas biopsies:- normal mucosa ,- Acute inflammatory exudate,Right and left colon, biopsies: - Within normal histological limits</td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-<td align="center">Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,- tubular adenoma, low grade dysplasia x 1 ,- Tubular adenoma,- Tubular adenoma,Sigmoid colon, polyp biopsy - Hyperplastic polyp ,Stomach, biopsy - Reactive gastritis and intestinal metaplasia ,- Chronic inflammation,- Mild chronic inflammation</td>
+<td align="center">al-Rahimi, Rif’a</td>
+<td align="center">4</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath3&lt;-<span class="kw"><a href="../reference/HistolExtrapolDx.html">HistolExtrapolDx</a></span>(Mypath3,<span class="st">"Diagnosis"</span>,<span class="st">""</span>)</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="23%">
-<col width="45%">
-<col width="22%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">Diagnosis</th>
-<th align="center">Extracted</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">Distal transverse colon polyp excision:- tubular adenoma, low grade dysplasia ,Ileo-caecal valve, biopsies: ,Stomach antrum biopsies:- normal mucosa ,- Up to 34 eosinophils per high power field,Stomach, biopsy - Mild chronic inflammation</td>
-<td align="center">dyspla</td>
-</tr>
-<tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Raised intra-epithelial lymphocytes ,Duodenum, biopsies - within normal histological limits ,B GI biopsy - DISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2 ,Oesophagus, biopsies : - Minimal chronic inflammation,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:- 2 x papillomas ,Duodenum biopsies:- normal</td>
-<td align="center">dyspla, dyspla</td>
-</tr>
-<tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">- Background Barrett ‘s oesophagus,Sigmoid colon, biopsy - Adenocarcinoma ,- Gastric metaplasia,Oesophagus 36cm ’papilloma’ biopsy:- normal squamous mucosa ,- Chronic active inflammation,Oesophagus, biopsy - Barrett ’s oesophagus with moderate chronic inflammation ,- Minimal chronic inflammation</td>
-<td align="center">carcin</td>
-</tr>
-<tr class="even">
-<td align="center">G1449886</td>
-<td align="center">Stomach, biopsy - Mild chronic inflammation and reactive changes ,- Normal,- note: biopsies put into the wrong pots ,Oesophagus, biopsy - Poorly differentiated tumour ,Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Mild chronic inflammation and oedema,-Inflammatory fibroid polyp,- within normal histological limits,- Negative for HLO</td>
-<td align="center">tumour, dyspla</td>
-</tr>
-<tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">Nodule GOJ, biopsies:- acute and chronic inflammation with Helicobacter ,Stomach, biopsy -Mild acute and chronic inflammation ,Oesophagus polyps biopsies:- 2 x papillomas ,- &lt;1 mm from lateral margin,Duodenum biopsies:- patchy increase in IELs ,Duodenum, biopsy - Normal</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="center">I8031481</td>
-<td align="center">Duodenum and stomach, polyp biopsies - Consistent with hamartomatous polyps ,Gastric oesophageal junction, biopsies : - Chronic inflammation,Stomach, biopsy - Mild chronic inflammation ,- Gastric HER2 negative,- Minimal chronic inflammation,Oesophagus, biopsy - Acute inflammation in presumed proximal biopsies only ,Gastro-osophageal junction, biopsy - Squamocolumnar mucosa ,Descending colon biopsies:- normal mucosa ,- Within normalhistological limits,The biopsies of gastric oesophageal junction type squamo-columnar mucosa show mild chronic</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center">W2120051</td>
-<td align="center">- Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal ,Ileum and colon biopsies:- normal mucosa ,Oesophagus, EMR 43P - Barrett ’s oesophagus without intestinal metaplasia ,Sigmoid colon, biopsy - Adenocarcinoma ,- Chronic active inflammation,Duodenum biopsies:- normal mucosa ,- Low grade dysplasia</td>
-<td align="center">carcin, dyspla</td>
-</tr>
-<tr class="even">
-<td align="center">O7163832</td>
-<td align="center">- possible eosinophilic oesophagitis,- Mild chronic gastritis,A -E) Stomach, polyps, biopsies: ,- Mild chronic inflammation and oedema,- Focal mild chronic inflammation,- Gastric HER2 negative,Ileum and colon biopsies:- normal mucosa ,Adjacent mucosa, biopsy - Normal small bowel mucosa</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center">P6620949</td>
-<td align="center">- Chronic active gastritis,Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,Oesophaguas biopsies:- normal mucosa ,- Acute inflammatory exudate,Right and left colon, biopsies: - Within normal histological limits</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-<td align="center">Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis ,- tubular adenoma, low grade dysplasia x 1 ,- Tubular adenoma,- Tubular adenoma,Sigmoid colon, polyp biopsy - Hyperplastic polyp ,Stomach, biopsy - Reactive gastritis and intestinal metaplasia ,- Chronic inflammation,- Mild chronic inflammation</td>
-<td align="center">dyspla</td>
-</tr>
-</tbody>
-</table>
-<p>Other less useful functions include but which may be useful in certain hospitals and certain situations in</p>
-<ol style="list-style-type: decimal">
-<li>HistolAccessionNumber which extracts Accession Number data from the report where one is present.The Accession number relates to the actual specimen number as ascribed by the pathology service.</li>
-</ol>
-<p><br><br></p>
 </div>
+<div id="v-histology-type-and-site-extraction" class="section level4">
+<h4 class="hasAnchor">
+<a href="#v-histology-type-and-site-extraction" class="anchor"></a><strong>v) Histology type and site extraction</strong>
+</h4>
+<p>A final function is also provided called <strong>HistolTypeAndSite</strong>. This is particularly useful when trying to find out which biopsies came from which site. The output is provided as a site:specimen type pair. An alternative output is also provided which groups locations (eg the gastro-oesophageal junction is seen as part of the oesophagus).</p>
+<p>What is described above are the building blocks for starting a more complex analysis of the Endoscopic and Pathological data.</p>
+<p>Generic analyses, such as figuring out surveillance intervals, can be determined using the appropriate functions in the Analysis module.</p>
+<p>The dataset can also be fed in to more complex functions as are described in the Barrett’s, Inflammatory Bowel Diseaes (IBD) or Polyp modules.</p>
+<p>The package also provides generic data visualisation tools to assess Patient flow, amonst other visualisations.</p>
 </div>
-<div id="removal-of-negatives" class="section level2">
-<h2 class="hasAnchor">
-<a href="#removal-of-negatives" class="anchor"></a>Removal of negatives</h2>
-<p>In addition, if there is a need to remove all sentences that give negative diagnoses (eg “There is no evidence of…”) so that false positive diagnoses are not made during the analysis stage, a further function can be applied called NegativeRemove. It can be applied as a stand alone function but is also implemented within the HistolDx function which extracts and cleans the diagnosis from the Histology text to provide a Simplified Diagnosis column.</p>
-<p><br> The original input example can be seen here</p>
-<pre><code>## [1] "  - Negative for helicobacter,- Intestinal metaplasia ,Oesophagus biopsies:- normal\n,Ileum and colon biopsies:- normal mucosa\n,Oesophagus, EMR 43P - Barrett 's oesophagus without intestinal metaplasia\n,Sigmoid colon, biopsy - Adenocarcinoma\n,- Chronic active inflammation,Duodenum biopsies:- normal mucosa\n,- Low grade dysplasia"</code></pre>
-<p>If we apply the function NegativeRemove we see this changes to:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MypathNegRem&lt;-<span class="kw"><a href="../reference/NegativeRemove.html">NegativeRemove</a></span>(Mypath,<span class="st">"Diagnosis"</span>)</code></pre></div>
-<pre><code>## [1] ",Ileum and colon biopsies:- normal mucosa\n,Oesophagus, EMR 43P - Barrett 's oesophagus without intestinal metaplasia\n,Sigmoid colon, biopsy - Adenocarcinoma\n,- Chronic active inflammation,Duodenum biopsies:- normal mucosa\n,- Low grade dysplasia"                                                                                   
-## [2] ",Adjacent mucosa, biopsy - Normal small bowel mucosa\n"                                                                                                                                                                                                                                                                                     
-## [3] "  - Chronic active gastritis,Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis\n,- Acute inflammatory exudate,Right and left colon, biopsies: - "                                                                                                                                                              
-## [4] "  Stomach, biopsy - Chronic, moderately active Helicobacter associated gastritis\n,- tubular adenoma, low grade dysplasia x 1\n,- Tubular adenoma,- Tubular adenoma,Sigmoid colon, polyp biopsy - Hyperplastic polyp\n,Stomach, biopsy - Reactive gastritis and intestinal metaplasia\n,- Chronic inflammation,- Mild chronic inflammation "</code></pre>
 </div>
   </div>
 
@@ -909,12 +488,11 @@ TheOGDReportFinal2&lt;-<span class="kw"><a href="../reference/Extractor.html">Ex
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#aims-of-endominer">Aims of EndoMineR</a></li>
-      <li><a href="#how-is-the-package-divided">How is the package divided?</a></li>
-      <li><a href="#the-extractor-function">The extractor function</a></li>
-      <li><a href="#endoscopic-cleaning">Endoscopic cleaning</a></li>
-      <li><a href="#histological-cleaning">Histological cleaning</a></li>
-      <li><a href="#removal-of-negatives">Removal of negatives</a></li>
+<li><a href="#aims-of-endominer"><strong>Aims of EndoMineR</strong></a></li>
+      <li><a href="#how-is-the-package-divided"><strong>How is the package divided?</strong></a></li>
+      <li><a href="#extraction-and-cleaning"><strong>1. Extraction and cleaning</strong></a></li>
+      <li><a href="#data-linkage"><strong>2. Data linkage</strong></a></li>
+      <li><a href="#deriving-new-data-from-what-you-have"><strong>3. Deriving new data from what you have</strong></a></li>
       </ul>
 </div>
       </div>

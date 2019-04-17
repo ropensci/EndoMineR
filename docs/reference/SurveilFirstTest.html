@@ -34,7 +34,8 @@
   
 <meta property="og:title" content="Extracts the first test only per patient — SurveilFirstTest" />
 
-<meta property="og:description" content="Extracts the first test only per patient" />
+<meta property="og:description" content="Extracts the first test only per patient and returns a new dataframe listing the
+patientID and the first test done" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -65,7 +66,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -94,7 +95,10 @@
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -153,7 +157,8 @@
 
     <div class="ref-description">
     
-    <p>Extracts the first test only per patient</p>
+    <p>Extracts the first test only per patient and returns a new dataframe listing the
+patientID and the first test done</p>
     
     </div>
 
@@ -178,8 +183,10 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>dd</span><span class='kw'>&lt;-</span><span class='fu'>SurveilFirstTest</span>(<span class='no'>Myendo</span>,<span class='st'>'HospitalNumber'</span>,
-<span class='st'>'Dateofprocedure'</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>dd</span> <span class='kw'>&lt;-</span> <span class='fu'>SurveilFirstTest</span>(
+  <span class='no'>Myendo</span>, <span class='st'>"HospitalNumber"</span>,
+  <span class='st'>"Dateofprocedure"</span>
+)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

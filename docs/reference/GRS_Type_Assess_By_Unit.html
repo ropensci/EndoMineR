@@ -36,7 +36,7 @@
 
 <meta property="og:description" content="This extracts the polyps types from the data
 (for colonoscopy and flexible sigmoidosscopy data)
-and output the adenoma,adenocarcinoma and
+and outputs the adenoma,adenocarcinoma and
 hyperplastic detection rate by endoscopist as well
 as overall number of colonoscopies.
 This will be extended to other GRS outputs in the future." />
@@ -70,7 +70,7 @@ This will be extended to other GRS outputs in the future." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -99,7 +99,10 @@ This will be extended to other GRS outputs in the future." />
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -152,7 +155,7 @@ This will be extended to other GRS outputs in the future." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create GRS metrics by endoscopist (X-ref with pathology)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/EndoMineR.R'><code>R/EndoMineR.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Module_Polyps.R'><code>R/Module_Polyps.R</code></a></small>
     <div class="hidden name"><code>GRS_Type_Assess_By_Unit.Rd</code></div>
     </div>
 
@@ -160,7 +163,7 @@ This will be extended to other GRS outputs in the future." />
     
     <p>This extracts the polyps types from the data
 (for colonoscopy and flexible sigmoidosscopy data)
-and output the adenoma,adenocarcinoma and
+and outputs the adenoma,adenocarcinoma and
 hyperplastic detection rate by endoscopist as well
 as overall number of colonoscopies.
 This will be extended to other GRS outputs in the future.</p>
@@ -197,33 +200,10 @@ This will be extended to other GRS outputs in the future.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Firstly merge histology and endoscopy datasets for the colon:</span>
-
-<span class='no'>MypathColon</span><span class='kw'>&lt;-</span><span class='no'>PathDataFrameFinalColon</span>
-<span class='no'>MyendoColon</span> <span class='kw'>&lt;-</span> <span class='no'>ColonFinal</span>
-<span class='no'>MyendoColon</span>$<span class='no'>OGDReportWhole</span> <span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/grep'>gsub</a></span>(<span class='st'>"2nd Endoscopist:"</span>,<span class='st'>"Second endoscopist:"</span>,
-<span class='no'>MyendoColon</span>$<span class='no'>OGDReportWhole</span>)
-<span class='no'>EndoscTree</span> <span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Hospital Number:"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"General Practitioner:"</span>,
-       <span class='st'>"Date of procedure:"</span>,<span class='st'>"Endoscopist:"</span>,<span class='st'>"Second endoscopist:"</span>,<span class='st'>"Medications"</span>,
-       <span class='st'>"Instrument"</span>,<span class='st'>"Extent of Exam:"</span>,<span class='st'>"Indications:"</span>,<span class='st'>"Procedure Performed:"</span>,
-       <span class='st'>"Findings:"</span>,<span class='st'>"Endoscopic Diagnosis:"</span>)
-<span class='no'>MyendoColon</span><span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>MyendoColon</span>,<span class='st'>"OGDReportWhole"</span>,<span class='no'>EndoscTree</span>)
-<span class='no'>Histoltree</span> <span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(
-    <span class='st'>"Hospital Number:"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"DOB:"</span>,<span class='st'>"General Practitioner:"</span>,
-    <span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details"</span>,<span class='st'>"Nature of specimen"</span>,<span class='st'>"Macroscopic description:"</span>,<span class='st'>"Histology"</span>,
-    <span class='st'>"Diagnosis"</span>)
-
-<span class='no'>MypathColon</span> <span class='kw'>&lt;-</span><span class='fu'><a href='Extractor.html'>Extractor</a></span>(<span class='no'>MypathColon</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>Histoltree</span>)
-
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>MypathColon</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>MypathColon</span>) <span class='kw'>==</span> <span class='st'>'Datereceived'</span>] <span class='kw'>&lt;-</span> <span class='st'>'Dateofprocedure'</span>
-<span class='no'>MypathColon</span>$<span class='no'>Dateofprocedure</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/as.Date'>as.Date</a></span>(<span class='no'>MypathColon</span>$<span class='no'>Dateofprocedure</span>)
-<span class='no'>vColon</span> <span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>MypathColon</span>, <span class='st'>"Dateofprocedure"</span>,<span class='st'>"HospitalNumber"</span>,
-                    <span class='no'>MyendoColon</span>, <span class='st'>"Dateofprocedure"</span>,<span class='st'>"HospitalNumber"</span>)
-<span class='no'>nn</span><span class='kw'>&lt;-</span><span class='fu'>GRS_Type_Assess_By_Unit</span>(<span class='no'>vColon</span>,<span class='st'>'ProcedurePerformed'</span>,
-<span class='st'>'Endoscopist'</span>,<span class='st'>'Diagnosis'</span>,<span class='st'>'Histology'</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>vColon</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>MypathColon</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>MyendoColon</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>nn</span> <span class='kw'>&lt;-</span> <span class='fu'>GRS_Type_Assess_By_Unit</span>(
+  <span class='no'>vColon</span>, <span class='st'>"ProcedurePerformed"</span>,
+  <span class='st'>"Endoscopist"</span>, <span class='st'>"Diagnosis"</span>, <span class='st'>"Histology"</span>
+)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

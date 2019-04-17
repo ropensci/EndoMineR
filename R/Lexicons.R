@@ -5,8 +5,7 @@
 #' This standardizes terms to describe the pathology tissue type being examined
 #' @keywords Pathology type
 #' @export
-#' @examples
-#' # No examples as just returns a list
+
 HistolType <- function() {
 
   # First standardise the terms
@@ -40,8 +39,7 @@ HistolType <- function() {
 #'
 #' @keywords Location
 #' @export
-#' @examples
-#' # No example needed
+
 LocationList <- function() {
   All <- append(LocationListLower(), LocationListUpper())
   All <- append(All, LocationListUniversal())
@@ -63,8 +61,7 @@ LocationList <- function() {
 #'
 #' @keywords Location
 #' @export
-#' @examples
-#' # No example needed
+
 LocationListUpper <- function() {
   upper <- list(
     "duodenum|d2|D2|duodenal" = "Duodenum",
@@ -95,8 +92,7 @@ LocationListUpper <- function() {
 #'
 #' @keywords Location
 #' @export
-#' @examples
-#' # No example needed
+
 LocationListUniversal <- function() {
   universal <- list("Anastomosis" = "Ascending ")
   return(universal)
@@ -115,8 +111,7 @@ LocationListUniversal <- function() {
 #'
 #' @keywords Location
 #' @export
-#' @examples
-#' # No example needed
+
 LocationListLower <- function() {
   lower <- list(
     "asce |ascending|(ascend[^a-z])|( colon r )|(r colon)|(asc )|(right colon)" = "Ascending ",
@@ -155,8 +150,7 @@ LocationListLower <- function() {
 #'
 #' @keywords RFA
 #' @export
-#' @examples
-#' # No example needed
+
 RFACath <- function() {
   tofind <-
     paste(
@@ -182,7 +176,7 @@ RFACath <- function() {
 #' @examples
 #' # unique(unlist(EventList(), use.names = FALSE))
 #' @export
-#'
+
 EventList <- function() {
   Event <- list(
     "radiofrequency ablation" = "RFA",
@@ -215,8 +209,7 @@ EventList <- function() {
 #' automated OPCS-4 coding.
 #' @keywords Event extraction
 #' @export
-#' @examples
-#' # unique(unlist(EventList(), use.names = FALSE))
+
 BiopsyIndex <- function() {
   BiopsyIndexList <- list(
     "ileum:biopsy" = "C11",
@@ -263,8 +256,7 @@ BiopsyIndex <- function() {
 #' using the browser.
 #' @keywords Event extraction
 #' @export
-#' @examples
-#' # unique(unlist(EventList(), use.names = FALSE))
+
 GISymptomsList <- function() {
   Symptoms <- list(
     "abdomen pain" = "abdomen pain",
@@ -688,8 +680,7 @@ GISymptomsList <- function() {
 #' This function converts words to numbers.
 #' @keywords Event extraction
 #' @export
-#' @examples
-#' # unique(unlist(EventList(), use.names = FALSE))
+
 WordsToNumbers <- function() {
   NumberConv <- list(
     "[Oo]ne " = "1",

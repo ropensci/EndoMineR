@@ -13,8 +13,5 @@ This does not include EMR as this is
 extracted from the pathology so is part of pathology type. It is used for
 automated OPCS-4 coding.
 }
-\examples{
-# unique(unlist(EventList(), use.names = FALSE))
-}
 \keyword{Event}
 \keyword{extraction}

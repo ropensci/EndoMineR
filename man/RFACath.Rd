@@ -9,7 +9,4 @@ RFACath()
 \description{
 The takes a list of catheters used in radiofrequency ablation.
 }
-\examples{
-# No example needed
-}
 \keyword{RFA}

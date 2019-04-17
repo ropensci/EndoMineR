@@ -19,6 +19,8 @@ navbar:
           href: articles/Analysis.html
         - text: "Barrett's"
           href: articles/Barretts.html
+        - text: "Lower GI Polyps"
+          href: articles/Polyps.html
         - text: "Data"
           href: articles/Data.html
 
@@ -33,4 +35,5 @@ navbar:
       href: http://www.gastroenterologybook.com/
     - icon:  fas fa-stethoscope
       href: https://www.nhs.uk/profiles/consultant/6029157
+      
       

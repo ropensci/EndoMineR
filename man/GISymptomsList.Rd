@@ -13,8 +13,5 @@ or mapping. They have been derived from a manual
 list with synonyms derived from the UMLS Methatharus
 using the browser.
 }
-\examples{
-# unique(unlist(EventList(), use.names = FALSE))
-}
 \keyword{Event}
 \keyword{extraction}

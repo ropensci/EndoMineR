@@ -35,7 +35,10 @@
 <meta property="og:title" content="Barrett's number of biopsies — BarrettsBxQual" />
 
 <meta property="og:description" content="This function gets the biopsies taken per endoscopy and compares to the
-Prague score for that endoscopy." />
+Prague score for that endoscopy.Endoscopists should be taking a certain
+number of biopsies given the length of a Barrett's segment so it
+should be straightforward to detect a shortfall in the number
+of biopsies being taken." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -66,7 +69,7 @@ Prague score for that endoscopy." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -95,7 +98,10 @@ Prague score for that endoscopy." />
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -148,14 +154,17 @@ Prague score for that endoscopy." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Barrett's number of biopsies</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/BarrettsFunctions.R'><code>R/BarrettsFunctions.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Module_Barretts.R'><code>R/Module_Barretts.R</code></a></small>
     <div class="hidden name"><code>BarrettsBxQual.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>This function gets the biopsies taken per endoscopy and compares to the
-Prague score for that endoscopy.</p>
+Prague score for that endoscopy.Endoscopists should be taking a certain
+number of biopsies given the length of a Barrett's segment so it
+should be straightforward to detect a shortfall in the number
+of biopsies being taken.</p>
     
     </div>
 
@@ -187,30 +196,32 @@ Prague score for that endoscopy.</p>
     <pre class="examples"><div class='input'><span class='co'># Firstly relevant columns are extrapolated from the</span>
 <span class='co'># Mypath demo dataset. These functions are all part of Histology data</span>
 <span class='co'># cleaning as part of the package.</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolDx.html'>HistolDx</a></span>(<span class='no'>Mypath</span>,<span class='st'>'Diagnosis'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolExtrapolDx.html'>HistolExtrapolDx</a></span>(<span class='no'>v</span>,<span class='st'>'Diagnosis'</span>,<span class='st'>""</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>,<span class='st'>'specimen'</span>)
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>v</span>,<span class='st'>'Macroscopicdescription'</span>)
+<span class='no'>Mypath</span>$<span class='no'>NumBx</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>Mypath</span>$<span class='no'>Macroscopicdescription</span>, <span class='st'>"specimen"</span>)
+<span class='no'>Mypath</span>$<span class='no'>BxSize</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>Mypath</span>$<span class='no'>Macroscopicdescription</span>)
+
 <span class='co'># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
 <span class='co'># according to date and Hospital number</span>
-<span class='no'>v</span><span class='kw'>&lt;-</span><span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(<span class='no'>Myendo</span>,<span class='st'>'Dateofprocedure'</span>,<span class='st'>'HospitalNumber'</span>,<span class='no'>v</span>,<span class='st'>'Dateofprocedure'</span>,
-<span class='st'>'HospitalNumber'</span>)
+<span class='no'>v</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='Endomerge2.html'>Endomerge2</a></span>(
+  <span class='no'>Myendo</span>, <span class='st'>"Dateofprocedure"</span>, <span class='st'>"HospitalNumber"</span>, <span class='no'>Mypath</span>, <span class='st'>"Dateofprocedure"</span>,
+  <span class='st'>"HospitalNumber"</span>
+)
+
 <span class='co'># The function relies on the other Barrett's functions being run as well:</span>
-<span class='no'>b1</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PragueScore.html'>Barretts_PragueScore</a></span>(<span class='no'>v</span>,<span class='st'>'Findings'</span>)
-<span class='no'>b2</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_PathStage.html'>Barretts_PathStage</a></span>(<span class='no'>b1</span>,<span class='st'>'Histology'</span>)
-<span class='no'>b3</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_EventType.html'>Barretts_EventType</a></span>(<span class='no'>b2</span>,<span class='st'>'Histology'</span>,<span class='st'>'ProcedurePerformed'</span>,
-<span class='st'>'Indications'</span>,<span class='st'>'Findings'</span>)
+<span class='no'>b1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='Barretts_PragueScore.html'>Barretts_PragueScore</a></span>(<span class='no'>v</span>, <span class='st'>"Findings"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: argument is not an atomic vector; coercing</span></div><div class='input'><span class='no'>b1</span>$<span class='no'>PathStage</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='Barretts_PathStage.html'>Barretts_PathStage</a></span>(<span class='no'>b1</span>, <span class='st'>"Histology"</span>)
+
 <span class='co'># The follow-up group depends on the histology and the Prague score for a</span>
 <span class='co'># patient so it takes the processed Barrett's data and then looks in the</span>
 <span class='co'># Findings column for permutations of the Prague score.</span>
-<span class='no'>b4</span><span class='kw'>&lt;-</span><span class='fu'><a href='Barretts_FUType.html'>Barretts_FUType</a></span>(<span class='no'>b3</span>,<span class='st'>'Findings'</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>b4</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>b4</span>) <span class='kw'>==</span> <span class='st'>'pHospitalNum'</span>] <span class='kw'>&lt;-</span> <span class='st'>'HospitalNumber'</span>
+<span class='no'>b1</span>$<span class='no'>FU_Type</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='Barretts_FUType.html'>Barretts_FUType</a></span>(<span class='no'>b1</span>, <span class='st'>"CStage"</span>, <span class='st'>"MStage"</span>, <span class='st'>"PathStage"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='input'>
+
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>b1</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colnames'>colnames</a></span>(<span class='no'>b1</span>) <span class='kw'>==</span> <span class='st'>"pHospitalNum"</span>] <span class='kw'>&lt;-</span> <span class='st'>"HospitalNumber"</span>
 <span class='co'># The number of average number of biopsies is then calculated and</span>
 <span class='co'># compared to the average Prague C score so that those who are taking</span>
 <span class='co'># too few biopsies can be determined</span>
-<span class='no'>hh</span><span class='kw'>&lt;-</span><span class='fu'>BarrettsBxQual</span>(<span class='no'>b4</span>,<span class='st'>'Date.x'</span>,<span class='st'>'HospitalNumber'</span>,
-                                     <span class='st'>'Endoscopist'</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>v</span>)</div></pre>
+<span class='no'>hh</span> <span class='kw'>&lt;-</span> <span class='fu'>BarrettsBxQual</span>(
+  <span class='no'>b1</span>, <span class='st'>"Date.x"</span>, <span class='st'>"HospitalNumber"</span>,
+  <span class='st'>"Endoscopist"</span>
+)</div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='output co'>#&gt; <span class='warning'>Warning: NAs introduced by coercion</span></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>v</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

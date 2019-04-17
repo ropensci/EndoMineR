@@ -9,8 +9,5 @@ WordsToNumbers()
 \description{
 This function converts words to numbers.
 }
-\examples{
-# unique(unlist(EventList(), use.names = FALSE))
-}
 \keyword{Event}
 \keyword{extraction}

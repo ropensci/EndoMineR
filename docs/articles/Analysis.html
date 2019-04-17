@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -60,7 +60,10 @@
       <a href="../articles/Analysis.html">Analysis</a>
     </li>
     <li>
-      <a href="../articles/Barretts.html">Barrett's</a>
+      <a href="../articles/Polyps.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Barretts.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -114,7 +117,7 @@
       <h1>Analysis</h1>
                         <h4 class="author">Sebastian Zeki</h4>
             
-            <h4 class="date">December 01, 2018</h4>
+            <h4 class="date">April 17, 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ropensci/EndoMineR/blob/master/vignettes/Analysis.Rmd"><code>vignettes/Analysis.Rmd</code></a></small>
       <div class="hidden name"><code>Analysis.Rmd</code></div>
@@ -123,84 +126,52 @@
 
     
     
-<p>The analysis functions are split according to the cornerstone questions in day to day gastroenterological practice. These cornerstone questions are expanded upon in the Principles section. In brief they include Surveillance and patient tracking, Endoscopic and Pathology quality and patient flow questions.</p>
+<p>An important design principle of EndoMineR was that it should address the important categories of questions we all have in gastroenterology, and endoscopy in particular. These questions roughly fall into the following: surveillance, quality and also patient flow.</p>
 <div id="surveillance-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#surveillance-functions" class="anchor"></a>Surveillance functions</h2>
-<p>Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test and the difference in timing between each test, always grouped by patient. As all these functions are simply looking at the date of the test they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. How the data is organised is explained in the Principles section but essentially the details of this are all hidden in the function.</p>
-<p><br></p>
+<p>I often want to know how good our surveillance programmes are. How good are we at making sure patients come back in a timely way for their endoscopy after a polyp removal?</p>
 <p><img src="img/EndoMineR_Surveillance.svg" style="display: block; margin: auto;"></p>
-<p><br></p>
-<p>The basic surveillance functions are simple but are the most often used. SurveilTimeByRow will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. SurveilLastToNow will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy. SurveilLastTest simply extracts the last and first test respectively for each patient.</p>
+<p>Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test (of the same type) and the difference in timing between each test, always grouped by patient.</p>
+<p>As all these functions are simply looking at the date of the test, they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps.</p>
+<p>The basic surveillance functions are simple but are the most often used. <strong>SurveilTimeByRow</strong> will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. <strong>SurveilLastToNow</strong> will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.</p>
+<p><strong>SurveilLastTest</strong> simply extracts the last and first test respectively for each patient.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em1&lt;-<span class="kw"><a href="../reference/SurveilTimeByRow.html">SurveilTimeByRow</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
 <span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(em1[<span class="dv">2</span>],em1[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(em1)]),<span class="dv">5</span>))</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="23%">
-<col width="15%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">diffDate</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">A1648588</td>
-<td align="center">-521 days</td>
-</tr>
-<tr class="even">
-<td align="center">A1648588</td>
-<td align="center">-170 days</td>
-</tr>
-<tr class="odd">
-<td align="center">A1648588</td>
-<td align="center">-400 days</td>
-</tr>
-<tr class="even">
-<td align="center">A1648588</td>
-<td align="center">-161 days</td>
-</tr>
-<tr class="odd">
-<td align="center">A1648588</td>
-<td align="center">-510 days</td>
-</tr>
-</tbody>
-</table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em2&lt;-<span class="kw"><a href="../reference/SurveilLastToNow.html">SurveilLastToNow</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(em2[<span class="dv">2</span>],em2[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(em2)]),<span class="dv">5</span>))</code></pre></div>
-<table class="table">
-<colgroup>
 <col width="23%">
-<col width="15%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">HospitalNumber</th>
-<th align="center">diffDate</th>
+<th align="center">TimeSinceLast</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1077 days</td>
+<td align="center">1214 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">1077 days</td>
+<td align="center">1214 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1077 days</td>
+<td align="center">1214 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">1077 days</td>
+<td align="center">1214 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1077 days</td>
+<td align="center">1214 days</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLastTest</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
+em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLastTest</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
 <span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(em3[<span class="dv">2</span>],em3[<span class="dv">5</span>]),<span class="dv">5</span>))</code></pre></div>
 <table class="table">
 <colgroup>
@@ -268,80 +239,70 @@
 </tr>
 </tbody>
 </table>
-<p>Of course we also want to know how many tests have been done over a time period and this is provided by two functions</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em5&lt;-<span class="kw"><a href="../reference/SurveilCapacity.html">SurveilCapacity</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>)</code></pre></div>
+<p>Of course we may also want to know how many tests have been done over a time period and this is provided by the function <strong>HowManyTests</strong></p>
+<p>This function will return the number of tests by day, month and year so they can be easily graphed according to what you want.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/HowManyOverTime.html">HowManyOverTime</a></span>(Myendo,<span class="st">'Indications'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Surv'</span>)
+<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(how),<span class="dv">5</span>))</code></pre></div>
 <table class="table">
 <colgroup>
+<col width="8%">
 <col width="9%">
 <col width="11%">
-<col width="5%">
+<col width="9%">
+<col width="9%">
+<col width="16%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">year</th>
+<th align="center">day</th>
+<th align="center">week</th>
 <th align="center">month</th>
-<th align="center">n</th>
+<th align="center">year</th>
+<th align="center">freq</th>
+<th align="center">MonthYear</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="center">25</td>
+<td align="center">4</td>
+<td align="center">1</td>
 <td align="center">2001</td>
-<td align="center">01</td>
-<td align="center">9</td>
+<td align="center">1</td>
+<td align="center">2001-01-01</td>
 </tr>
 <tr class="even">
+<td align="center">27</td>
+<td align="center">4</td>
+<td align="center">1</td>
 <td align="center">2001</td>
-<td align="center">02</td>
-<td align="center">8</td>
+<td align="center">1</td>
+<td align="center">2001-01-01</td>
 </tr>
 <tr class="odd">
-<td align="center">2001</td>
-<td align="center">03</td>
-<td align="center">15</td>
-</tr>
-<tr class="even">
-<td align="center">2001</td>
-<td align="center">04</td>
-<td align="center">6</td>
-</tr>
-<tr class="odd">
-<td align="center">2001</td>
-<td align="center">05</td>
-<td align="center">10</td>
-</tr>
-<tr class="even">
-<td align="center">2001</td>
-<td align="center">06</td>
+<td align="center">23</td>
 <td align="center">12</td>
+<td align="center">3</td>
+<td align="center">2001</td>
+<td align="center">1</td>
+<td align="center">2001-03-01</td>
+</tr>
+<tr class="even">
+<td align="center">11</td>
+<td align="center">15</td>
+<td align="center">4</td>
+<td align="center">2001</td>
+<td align="center">1</td>
+<td align="center">2001-04-01</td>
+</tr>
+<tr class="odd">
+<td align="center">20</td>
+<td align="center">16</td>
+<td align="center">4</td>
+<td align="center">2001</td>
+<td align="center">1</td>
+<td align="center">2001-04-01</td>
 </tr>
 </tbody>
 </table>
-<p>This function will return the number of tests by month. The more detailed function is:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/HowManyTests.html">HowManyTests</a></span>(Myendo,<span class="st">'Indications'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Surv'</span>)
-how[<span class="dv">1</span>]</code></pre></div>
-<pre><code>## $Myplot</code></pre>
-<p><img src="Analysis_files/figure-html/exampleHowManyTests-1.png" width="700"></p>
-<p>This will provide the number of tests by month and year as a table as well as a ggplot. It returns a list containing both the ggplot and a dataframe so this can be accessed with how[1] and how[2]</p>
-</div>
-<div id="patient-flow-functions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#patient-flow-functions" class="anchor"></a>Patient flow functions</h2>
-<div id="sankey-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#sankey-plots" class="anchor"></a>Sankey plots</h3>
-<p>We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. For example, if we have a dataset with events such as ‘radiofrequency ablation’ and ‘endoscopic mucosal resection’ or ‘nothing’ we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type (“EMR”,“RFA”,“nothing” in this case)</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/SurveySankey.html">SurveySankey</a></span>(Myendo,<span class="st">"ProcPerformed"</span>)</code></pre></div>
-<p><br></p>
-<p><img src="img/EndoMineR_Sankey.svg" width="100%" style="display: block; margin: auto;"></p>
-<p><br></p>
-</div>
-<div id="circos-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#circos-plots" class="anchor"></a>Circos plots</h3>
-<p>We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flow&lt;-<span class="kw"><a href="../reference/PatientFlow_CircosPlots.html">PatientFlow_CircosPlots</a></span>(v,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,<span class="st">"ProcedurePerformed"</span>)</code></pre></div>
-<p><br></p>
-<p><img src="img/EndoMineR_Circos.svg" width="60%" style="display: block; margin: auto;"></p>
-<p><br></p>
-</div>
 </div>
 <div id="assessment-of-quality-functions" class="section level2">
 <h2 class="hasAnchor">
@@ -397,29 +358,13 @@ how[<span class="dv">1</span>]</code></pre></div>
 </tbody>
 </table>
 <p><br></p>
-<p>In this example we are looking for the words Barrett’s and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscope report</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">myNotableWords &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"arrett"</span>, <span class="st">"oeliac"</span>)
-tt&lt;-<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></span>(Myendo,<span class="st">'Findings'</span>,myNotableWords)</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="12%">
-<col width="12%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">X2</th>
-<th align="center">Prop</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">arrett</td>
-<td align="center">18.45</td>
-</tr>
-<tr class="even">
-<td align="center">oeliac</td>
-<td align="center">6.2</td>
-</tr>
-</tbody>
-</table>
+<p>In this example we are looking for the words Barrett’s and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscopy report:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tm)
+myNotableWords &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"barrett"</span>, <span class="st">"coeliac"</span>)
+<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></span>(Myendo,<span class="st">'Findings'</span>,myNotableWords)</code></pre></div>
+<pre><code>##        X2  Prop
+## 1 barrett 18.05
+## 2 coeliac  6.20</code></pre>
 <p><br></p>
 <p>So we can see that the terms are present in the minority of reports across endoscopists, so perhaps we can look into this further..</p>
 <p><br></p>
@@ -431,375 +376,90 @@ tt&lt;-<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></s
 <h4 class="hasAnchor">
 <a href="#sedation-usage" class="anchor"></a>Sedation Usage</h4>
 <p>Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Myendo&lt;-<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(Myendo,<span class="st">'Medications'</span>)
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Myendo<span class="op">$</span>HospitalNumber,Myendo<span class="op">$</span>Fent,Myendo<span class="op">$</span>Midaz),<span class="dv">10</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
+<span class="co">#We have to attach the output of EndoscMeds to the original dataframe</span>
+MyendoNew&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(Myendo<span class="op">$</span>Medications),Myendo)
+<span class="co">#Average Fentanyl use by endoscopist:</span>
+Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(MyendoNew,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)
+<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(MyendoNew<span class="op">$</span>Endoscopist,MyendoNew<span class="op">$</span>Fent),<span class="dv">10</span>))</code></pre></div>
 <table class="table">
 <colgroup>
-<col width="33%">
-<col width="19%">
-<col width="19%">
+<col width="41%">
+<col width="22%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">Myendo.HospitalNumber</th>
-<th align="center">Myendo.Fent</th>
-<th align="center">Myendo.Midaz</th>
+<th align="center">MyendoNew.Endoscopist</th>
+<th align="center">MyendoNew.Fent</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">5</td>
-<td align="center">6</td>
+<td align="center">Dr Sullivan, Shelby</td>
+<td align="center">NA</td>
 </tr>
 <tr class="even">
-<td align="center">Y6417773</td>
+<td align="center">Dr Kekich, Annabelle</td>
 <td align="center">125</td>
-<td align="center">7</td>
 </tr>
 <tr class="odd">
-<td align="center">B6072011</td>
+<td align="center">Dr Sullivan, Shelby</td>
 <td align="center">125</td>
-<td align="center">6</td>
 </tr>
 <tr class="even">
-<td align="center">G1449886</td>
-<td align="center">5</td>
-<td align="center">2</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+<td align="center">NA</td>
 </tr>
 <tr class="odd">
-<td align="center">V1607560</td>
+<td align="center">Dr Greimann, Phoua</td>
 <td align="center">75</td>
-<td align="center">6</td>
 </tr>
 <tr class="even">
-<td align="center">I8031481</td>
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
 <td align="center">150</td>
-<td align="center">3</td>
 </tr>
 <tr class="odd">
-<td align="center">W2120051</td>
+<td align="center">Dr Martinez, Maegen</td>
 <td align="center">125</td>
-<td align="center">5</td>
 </tr>
 <tr class="even">
-<td align="center">O7163832</td>
+<td align="center">Dr Anderson, Alana</td>
 <td align="center">75</td>
-<td align="center">3</td>
 </tr>
 <tr class="odd">
-<td align="center">P6620949</td>
+<td align="center">Dr Anderson, Alana</td>
 <td align="center">25</td>
-<td align="center">1</td>
 </tr>
 <tr class="even">
-<td align="center">L4378217</td>
+<td align="center">Dr Ives, Rashiah</td>
 <td align="center">150</td>
-<td align="center">1</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(Myendo,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)</code></pre></div>
-<p><img src="Analysis_files/figure-html/exampleEndoscChopperMeds-1.png" width="700"></p>
-<p><br></p>
+<p><br><br></p>
 <p><br></p>
 </div>
 </div>
-<div id="pathology-detection-quality" class="section level3">
+</div>
+<div id="patient-flow-functions" class="section level2">
+<h2 class="hasAnchor">
+<a href="#patient-flow-functions" class="anchor"></a>Patient flow functions</h2>
+<div id="sankey-plots" class="section level3">
 <h3 class="hasAnchor">
-<a href="#pathology-detection-quality" class="anchor"></a>Pathology Detection Quality</h3>
-<div id="polyp-and-sample-location" class="section level4">
-<h4 class="hasAnchor">
-<a href="#polyp-and-sample-location" class="anchor"></a>Polyp and sample location</h4>
+<a href="#sankey-plots" class="anchor"></a>Sankey plots</h3>
+<p>We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint.</p>
+<p>For example, if we have a dataset with events such as ‘radiofrequency ablation’ and ‘endoscopic mucosal resection’ or ‘nothing’ we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type (“EMR”,“RFA”,“nothing” in this case)</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#how&lt;-SurveySankey(Myendo,"ProcedurePerformed")</span></code></pre></div>
 <p><br></p>
-<p>Although not strictly a measure of endoscopic quality, the location of polyps (as well as any sample location) can also be determined. This is particularly for lower GI endoscopy and can help determine whether, for example, the number of right sided polyps is lower than it should be for certain endoscopists.</p>
-<p>To do this firstly the free text needs to be standardised. This is provided through the function TermStandardLocation which provides a standard correction for a number of typos and alternative spellings in histology. This also attempts to extract the sample location into a separate column</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f&lt;-<span class="kw"><a href="../reference/TermStandardLocation.html">TermStandardLocation</a></span>(Mypath,<span class="st">'Histology'</span>)
-
-<span class="co">#Just some column selection</span>
-fgg&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(f[(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(f)<span class="op">-</span><span class="dv">1</span>)],f[(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(f))])
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(fgg,<span class="dv">10</span>))</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="45%">
-<col width="45%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">SampleLocation</th>
-<th align="center">AllSampleLocator</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">two biopsies consist of small bowel mucosa and are within normal histological limits</td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="center">modified giemsa stain ,these are biopsies of Stomach mucosa ,there is no evidence of coeliac disease ,the nuclei are hyperchromatic, ,there is no granulomatous inflammation ,the appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying ,these are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation ,these biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation</td>
-<td align="center">Stomach</td>
-</tr>
-<tr class="odd">
-<td align="center">the Sigmoid polyp is a tubular adenoma with moderate dysplasia ,inflammation, Stomach metaplasia, dysplasia or neoplasia is seen,patchy fibrosis and myxoid areas and contains numerous eosinophils, as well as scattered ,these biopsies of non-specialised Stomach-type mucosa showed minimal chronic, focally active ,lymphovascular invasion not identified ,into submucosa for less than mm</td>
-<td align="center">Sigmoid,Stomach,Stomach</td>
-</tr>
-<tr class="even">
-<td align="center">there is mild chronic inflammation ,no intestinal metaplasia, dysplasia or malignancy is seen</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center">no helicobacter-like organisms are seen,no columnar mucosa is included,the biopsies of Oesophagus squamous mucosa show mild chronic inflammation with basal ,nature of specimen as stated on request form = ‘Ascending colon, Descending’,nogiardia organisms or granulomas are ,of moderately differentiated adenocarcinoma,raised intra-epithelial lymphocytes up to per enterocytes</td>
-<td align="center">Oesophagus,Ascending,Descending</td>
-</tr>
-<tr class="even">
-<td align="center">for pt tumours ,two pieces of tissue, the larger measuring mm and the smaller, ,there is a mild increase in intra-epithelial lymphocytes, upto ,the sections show a single biopsy of Oesophagus type squamous epithelium with a ,the biopsies of non-specialised and specialised Stomach mucosa show mild chronic inflammation</td>
-<td align="center">Oesophagus,Stomach</td>
-</tr>
-<tr class="odd">
-<td align="center">hyalinised thick collagen bundles with few interspersed spindle cells,clearly seen there appears to be subtotal villous atrophy,within these limitations, the d biopsies show patchy mild ,these biopsies of non-specialised Stomach-type mucosa show a mild chronic, inactivegastritis</td>
-<td align="center">Stomach</td>
-</tr>
-<tr class="even">
-<td align="center">the biopsies from the gastro-Oesophagus junction show squamo-columnar mucosa, some of ,there is no evidence of ,shows elongation of crypts, oedema, mildchronic inflammation and congestion,these biopsies of non-specialised Stomach mucosa show mild chronic inflammation ,submucosa is not included,are no features of eosinophilic oesophagitis ,no acute inflammation is seen ,there are occasional neutrophils ,the appearances are those of Duodenum ulcer</td>
-<td align="center">Oesophagus,Stomach,Duodenum</td>
-</tr>
-<tr class="odd">
-<td align="center">contains a moderate neutrophil infiltrate and there are foci of cryptitis,moderate acute and chronic inflammation ,there is no intestinal metaplasia or glandular ,the two biopsies on the strip show squamous epithelium with a dense neutrophil ,two pieces of tissue, the larger measuring mm and the smaller, ,the biopsies of Oesophagus squamous mucosa show minimal chronic inflammation with mild ,unequivocal intramucosal adenocarcinoma and no deeper invasion is seen</td>
-<td align="center">Oesophagus</td>
-</tr>
-<tr class="even">
-<td align="center">the sections show small bowel mucosa with a normal crypt to villous ratio and no increase in ,no parasites are seen,in the Transverse Colon sub-mucosa there ,cell hyperplasia</td>
-<td align="center">Transverse,Colon</td>
-</tr>
-</tbody>
-</table>
-<p>Once this is done, a column called SampleLocation is appended to the existing dataset. This will attempt to state the location of all samples whether they are resections/ biopsies or polyps. If polyps specifically need to be located then the PolypLocator function can be used (after the TermStandardLocation function).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">fgg&lt;-<span class="kw"><a href="../reference/PolypLocator.html">PolypLocator</a></span>(fgg,<span class="st">'SampleLocation'</span>) 
-
-<span class="co">#Just some column selection</span>
-fg&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(fgg[(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(fgg)<span class="op">-</span><span class="dv">2</span>)],fgg[(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(fgg)<span class="op">-</span><span class="dv">1</span>)],fgg[(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(fgg))])
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(fg,<span class="dv">3</span>))</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="45%">
-<col width="35%">
-<col width="19%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">SampleLocation</th>
-<th align="center">AllSampleLocator</th>
-<th align="center">PolypLocator</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">two biopsies consist of small bowel mucosa and are within normal histological limits</td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="center">modified giemsa stain ,these are biopsies of Stomach mucosa ,there is no evidence of coeliac disease ,the nuclei are hyperchromatic, ,there is no granulomatous inflammation ,the appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying ,these are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation ,these biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation</td>
-<td align="center">Stomach</td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center">the Sigmoid polyp is a tubular adenoma with moderate dysplasia ,inflammation, Stomach metaplasia, dysplasia or neoplasia is seen,patchy fibrosis and myxoid areas and contains numerous eosinophils, as well as scattered ,these biopsies of non-specialised Stomach-type mucosa showed minimal chronic, focally active ,lymphovascular invasion not identified ,into submucosa for less than mm</td>
-<td align="center">Sigmoid,Stomach,Stomach</td>
-<td align="center">Sigmoid</td>
-</tr>
-</tbody>
-</table>
-<p>A further difficult area is the assessment of endoscopic quality by looking at the pathology processed from an endoscopy. This package is excellent at dealing with this kind of question because of its ability to merge the datasets together:</p>
-<p>A particularly well developed area to look at is that of the Global Rating Scale for assessing the quality of colonoscopy. One of the metrics- the adenoma detection rate assesses the number of colonoscopies where at least one adenoma was detected.</p>
-<p>One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS requirement for the ADR as well as providing further metrics alongside</p>
+<p><img src="img/EndoMineR_Sankey.svg" width="100%" style="display: block; margin: auto;"></p>
+<p><br></p>
 </div>
-<div id="adenoma-detection-rates" class="section level4">
-<h4 class="hasAnchor">
-<a href="#adenoma-detection-rates" class="anchor"></a>Adenoma Detection Rates</h4>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Import the endoscopy and pathology datasets for colonoscopy</span>
- MypathColon&lt;-PathDataFrameFinalColon
- MyendoColon &lt;-<span class="st"> </span>ColonFinal
- <span class="co">#Rename the columns so that numbers do not lead the column titles</span>
- MyendoColon<span class="op">$</span>OGDReportWhole &lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">"2nd Endoscopist:"</span>,<span class="st">"Second endoscopist:"</span>,
- MyendoColon<span class="op">$</span>OGDReportWhole)
- <span class="co">#Extract the columns needed from endoscopy</span>
- EndoscTree &lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Hospital Number:"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"General Practitioner:"</span>,
-        <span class="st">"Date of procedure:"</span>,<span class="st">"Endoscopist:"</span>,<span class="st">"Second endoscopist:"</span>,<span class="st">"Medications"</span>,
-        <span class="st">"Instrument"</span>,<span class="st">"Extent of Exam:"</span>,<span class="st">"Indications:"</span>,<span class="st">"Procedure Performed:"</span>,
-        <span class="st">"Findings:"</span>,<span class="st">"Endoscopic Diagnosis:"</span>)
- MyendoColon&lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(MyendoColon,<span class="st">"OGDReportWhole"</span>,EndoscTree)
- <span class="co">#Extract the columns needed from Histology</span>
- Histoltree &lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(
-     <span class="st">"Hospital Number:"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
-     <span class="st">"Date received:"</span>,<span class="st">"Clinical Details"</span>,<span class="st">"Nature of specimen"</span>,<span class="st">"Macroscopic description:"</span>,<span class="st">"Histology"</span>,
-     <span class="st">"Diagnosis"</span>)
-<span class="co">#Tidy up to allow merge</span>
- MypathColon &lt;-<span class="kw"><a href="../reference/Extractor.html">Extractor</a></span>(MypathColon,<span class="st">"PathReportWhole"</span>,Histoltree)
- <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(MypathColon)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(MypathColon) <span class="op">==</span><span class="st"> 'Datereceived'</span>] &lt;-<span class="st"> 'Dateofprocedure'</span>
- MypathColon<span class="op">$</span>Dateofprocedure &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/as.Date">as.Date</a></span>(MypathColon<span class="op">$</span>Dateofprocedure)
- <span class="co">#Do the merge</span>
- vColon &lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(MypathColon, <span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,
-                     MyendoColon, <span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
-
- 
- <span class="co">#Use the function</span>
-GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html">GRS_Type_Assess_By_Unit</a></span>(vColon,<span class="st">'ProcedurePerformed'</span>,<span class="st">'Endoscopist'</span>,<span class="st">'Diagnosis'</span>,<span class="st">'Histology'</span>)</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="13%">
-<col width="6%">
-<col width="6%">
-<col width="7%">
-<col width="9%">
-<col width="7%">
-<col width="9%">
-<col width="10%">
-<col width="5%">
-<col width="10%">
-<col width="13%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">Endoscopist</th>
-<th align="center">NumAdenomas</th>
-<th align="center">NumColons.x</th>
-<th align="center">PropAdenomas</th>
-<th align="center">NumHyperplastics</th>
-<th align="center">Colons.Count.</th>
-<th align="center">PropHyperplastic</th>
-<th align="center">NumAdenocarcinomas</th>
-<th align="center">NumColons</th>
-<th align="center">PropAdenocarcinomas</th>
-<th align="center">HyperplasticToAdenomaRatio</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">Dr al-Huda, Ummu Kulthoom</td>
-<td align="center">3</td>
-<td align="center">204</td>
-<td align="center">1.471</td>
-<td align="center">2</td>
-<td align="center">204</td>
-<td align="center">0.9804</td>
-<td align="center">NA</td>
-<td align="center">204</td>
-<td align="center">NA</td>
-<td align="center">1.5</td>
-</tr>
-<tr class="even">
-<td align="center">Dr al-Saade, Waajida</td>
-<td align="center">2</td>
-<td align="center">215</td>
-<td align="center">0.9302</td>
-<td align="center">NA</td>
-<td align="center">215</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-<td align="center">215</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
-</tr>
-<tr class="odd">
-<td align="center">Dr Confer, Mouneek</td>
-<td align="center">6</td>
-<td align="center">216</td>
-<td align="center">2.778</td>
-<td align="center">3</td>
-<td align="center">216</td>
-<td align="center">1.389</td>
-<td align="center">NA</td>
-<td align="center">216</td>
-<td align="center">NA</td>
-<td align="center">2</td>
-</tr>
-<tr class="even">
-<td align="center">Dr Gebregzabheir, Kiara</td>
-<td align="center">4</td>
-<td align="center">190</td>
-<td align="center">2.105</td>
-<td align="center">3</td>
-<td align="center">190</td>
-<td align="center">1.579</td>
-<td align="center">NA</td>
-<td align="center">190</td>
-<td align="center">NA</td>
-<td align="center">1.333</td>
-</tr>
-<tr class="odd">
-<td align="center">Dr Hasling, Emily</td>
-<td align="center">6</td>
-<td align="center">218</td>
-<td align="center">2.752</td>
-<td align="center">5</td>
-<td align="center">218</td>
-<td align="center">2.294</td>
-<td align="center">NA</td>
-<td align="center">218</td>
-<td align="center">NA</td>
-<td align="center">1.2</td>
-</tr>
-<tr class="even">
-<td align="center">Dr Monroe, Danjai</td>
-<td align="center">7</td>
-<td align="center">230</td>
-<td align="center">3.043</td>
-<td align="center">2</td>
-<td align="center">230</td>
-<td align="center">0.8696</td>
-<td align="center">NA</td>
-<td align="center">230</td>
-<td align="center">NA</td>
-<td align="center">3.5</td>
-</tr>
-<tr class="odd">
-<td align="center">Dr Phillips, Harlie</td>
-<td align="center">6</td>
-<td align="center">233</td>
-<td align="center">2.575</td>
-<td align="center">3</td>
-<td align="center">233</td>
-<td align="center">1.288</td>
-<td align="center">NA</td>
-<td align="center">233</td>
-<td align="center">NA</td>
-<td align="center">2</td>
-</tr>
-<tr class="even">
-<td align="center">Dr Rahat, Janisa</td>
-<td align="center">1</td>
-<td align="center">217</td>
-<td align="center">0.4608</td>
-<td align="center">2</td>
-<td align="center">217</td>
-<td align="center">0.9217</td>
-<td align="center">NA</td>
-<td align="center">217</td>
-<td align="center">NA</td>
-<td align="center">0.5</td>
-</tr>
-<tr class="odd">
-<td align="center">Dr Rubio, Jessica</td>
-<td align="center">2</td>
-<td align="center">180</td>
-<td align="center">1.111</td>
-<td align="center">2</td>
-<td align="center">180</td>
-<td align="center">1.111</td>
-<td align="center">NA</td>
-<td align="center">180</td>
-<td align="center">NA</td>
-<td align="center">1</td>
-</tr>
-<tr class="even">
-<td align="center">Dr Steinbach, Lindsey</td>
-<td align="center">6</td>
-<td align="center">191</td>
-<td align="center">3.141</td>
-<td align="center">3</td>
-<td align="center">191</td>
-<td align="center">1.571</td>
-<td align="center">NA</td>
-<td align="center">191</td>
-<td align="center">NA</td>
-<td align="center">2</td>
-</tr>
-</tbody>
-</table>
-</div>
+<div id="circos-plots" class="section level3">
+<h3 class="hasAnchor">
+<a href="#circos-plots" class="anchor"></a>Circos plots</h3>
+<p>We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#flow&lt;-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")</span></code></pre></div>
+<p><br></p>
+<p><img src="img/EndoMineR_Circos.svg" width="60%" style="display: block; margin: auto;"></p>
+<p><br></p>
 </div>
 </div>
   </div>
@@ -810,8 +470,8 @@ GRSTable&lt;-<span class="kw"><a href="../reference/GRS_Type_Assess_By_Unit.html
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#surveillance-functions">Surveillance functions</a></li>
-      <li><a href="#patient-flow-functions">Patient flow functions</a></li>
       <li><a href="#assessment-of-quality-functions">Assessment of quality functions</a></li>
+      <li><a href="#patient-flow-functions">Patient flow functions</a></li>
       </ul>
 </div>
       </div>
