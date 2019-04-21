@@ -13,6 +13,7 @@ library(EndoMineR)
   fluidPage(tabsetPanel(type = "tabs",
                         
   tabPanel("Endoscopy Dataset", verbatimTextOutput("summary"),
+           textInput("caption", "Caption", "Data Summary"),
            actionButton("textPrep",label = "textPrep"),
            actionButton("EndoscEndoscopist",label = "EndoscEndoscopist"),
            actionButton("EndoscMeds",label = "EndoscMeds"),
@@ -21,6 +22,7 @@ library(EndoMineR)
   ),
   
   tabPanel("Pathology Dataset", tableOutput("table"),
+           textInput("captionpath", "Caption", "Data Summary"),
            actionButton("textPrepPath",label = "textPrepPath"),
            actionButton("NumBx",label = "NumBx"),
            actionButton("BxSize",label = "BxSize"),
@@ -28,7 +30,8 @@ library(EndoMineR)
            DT::dataTableOutput("pathTable")
   ),
   tabPanel("Merged Dataset", tableOutput("table2"),
-           actionButton("Endomerge2",label = "Endomerge2")
+           actionButton("Endomerge2",label = "Endomerge2"),
+           DT::dataTableOutput("mergedTable")
   ),
   tabPanel("General Extrapolation", tableOutput("table3"),
            actionButton("Extrapolation1",label = "Extrapolation1"),
@@ -42,11 +45,11 @@ library(EndoMineR)
            actionButton("Analysis3",label = "Analysis3"),
            actionButton("Analysis4",label = "Analysis4")
   ),
-  tabPanel("Data Visualisation", tableOutput("table5"),
-           actionButton("DataViz1",label = "DataViz1"),
-           actionButton("DataViz2",label = "DataViz2"),
-           actionButton("DataViz3",label = "DataViz3"),
-           actionButton("DataViz4",label = "DataViz4")
+  tabPanel("Barrett's", tableOutput("table5"),
+           actionButton("PragueScore",label = "PragueScore"),
+           actionButton("PathStage",label = "PathStage"),
+           actionButton("FollowUpType",label = "FollowUpType"),
+           actionButton("AllTheFunctions",label = "DataViz4")
   )
   )
 )

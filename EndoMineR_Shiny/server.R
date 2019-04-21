@@ -5,14 +5,16 @@ library(EndoMineR)
 
 RV <- reactiveValues(data = TheOGDReportFinal)
 RV2 <- reactiveValues(data = PathDataFrameFinal)
+RV3 <- reactiveValues(data = data.frame())
+
 
 server <- function(input, output) {
  
 #Do the extraction  
-  mywordsOGD<-c("hospital number:","patient name:","general practitioner","date of procedure:",
-             "endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:",
-             "indications:", "procedure performed:","findings:","diagnosis:")
-  
+  # mywordsOGD<-c("hospital number:","patient name:","general practitioner","date of procedure:",
+  #            "endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:",
+  #            "indications:", "procedure performed:","findings:","diagnosis:")
+
   mywordsPath<-c("hospital number:","patient name:","dob:","general practitioner:",
                    "date received:","nature of specimen:","macroscopic description:" ,"diagnosis:")
   
@@ -23,6 +25,9 @@ server <- function(input, output) {
   output$pathTable = DT::renderDT({
     RV2$data
   })
+  output$mergedTable = DT::renderDT({
+    RV3$data
+  })
 
   
   
@@ -32,6 +37,10 @@ server <- function(input, output) {
   ###########Endoscopy buttons############  
   #Prepare the text for endoscopy
   observeEvent(input$textPrep,{
+
+    
+    mywordsOGD<-input$caption
+    mywordsOGD<-unlist(strsplit(mywordsOGD,","))
     RV$data<-textPrep(RV$data$OGDReportWhole,mywordsOGD,NegEx="TRUE",Extractor="1")
   },ignoreInit = TRUE)
   
@@ -57,6 +66,8 @@ server <- function(input, output) {
   
   ########### Pathology buttons############  
   observeEvent(input$textPrepPath,{
+    mywordsPath<-input$captionpath
+    mywordsPath<-unlist(strsplit(mywordsPath,","))
     RV2$data<-textPrep(RV2$data$PathReportWhole,mywordsPath,NegEx="TRUE",Extractor="1")
   },ignoreInit = TRUE)
   
@@ -76,7 +87,14 @@ server <- function(input, output) {
   },ignoreInit = TRUE)
   
   observeEvent(input$Endomerge2,{
-    RV$data<-Endomerge2(RV$data,"dateofprocedure","hospitalnumber",RV$data,"datereceived","hospitalnumber")
+    RV3$data<-Endomerge2(RV$data,"dateofprocedure","hospitalnumber",RV2$data,"datereceived","hospitalnumber")
   },ignoreInit = TRUE)
+  
+  
+  ########### Barrett's buttons############  
+#   observeEvent(input$PragueScore,{
+#     RV3$data$PragueScore<-Barretts_PragueScore(RV3$data, "findings", "Original.y")
+#  },ignoreInit = TRUE)
+   
   
 }
