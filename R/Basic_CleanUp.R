@@ -657,14 +657,13 @@ EndoPaste<-function(x){
 #' @examples #Firstly we extract histology from the raw report
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions and then extracts the type of tissue 
-#' Mypath$Tissue<-ExtrapolatefromDictionary(Mypath$Histology,HistolType())
+#' Mypath$Tissue<-suppressMessages(ExtrapolatefromDictionary(Mypath$Histology,HistolType()))
 #' rm(MypathExtraction)
 
 
 
 
 ExtrapolatefromDictionary<-function(inputString,list){
-  #suppressMessages()
   #lower case the input string
   inputString<-tolower(inputString)
   
