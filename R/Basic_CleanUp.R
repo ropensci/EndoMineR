@@ -661,10 +661,7 @@ EndoPaste<-function(x){
 #' rm(MypathExtraction)
 
 
-
-
 ExtrapolatefromDictionary<-function(inputString,list){
-  suppressMessages()
   #lower case the input string
   inputString<-tolower(inputString)
   
