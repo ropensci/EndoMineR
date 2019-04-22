@@ -664,7 +664,7 @@ EndoPaste<-function(x){
 
 
 ExtrapolatefromDictionary<-function(inputString,list){
-  suppressMessages()
+  #suppressMessages()
   #lower case the input string
   inputString<-tolower(inputString)
   
