@@ -46,12 +46,38 @@ read_chunk(here("inst","TemplateProject","munge", "D_DataClean2.R"))
 ```{r dataClean2,echo=FALSE}
 ```
 
-
 ### Extract number of biopsies, biopsy size, biopsy location and medications from the text
 ```{r echo=FALSE}
 read_chunk(here("inst","TemplateProject","munge", "E_DataExtrapolate.R"))
 ```
 
 ```{r dataExtrapolate,echo=FALSE}
+
+```
+
+### Extract endoscopy events
+```{r echo=FALSE}
+read_chunk(here("inst","TemplateProject","munge", "F_DataExtrapolate2.R"))
+```
+
+```{r dataExtrapolate2,echo=FALSE}
+
+```
+
+### Extract some generic analyses
+```{r echo=FALSE}
+read_chunk(here("inst","TemplateProject","munge", "G_Analysis_Generic.R"))
+```
+
+```{r dataGeneric,echo=FALSE}
+
+```
+
+### Extract some disease specific analyses
+```{r echo=FALSE}
+read_chunk(here("inst","TemplateProject","munge", "G_Analysis_Generic.R"))
+```
+
+```{r dataGeneric,echo=FALSE}
 
 ```
