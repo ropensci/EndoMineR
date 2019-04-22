@@ -268,7 +268,7 @@ HistolTypeAndSite <- function(inputString1, inputString2, procedureString) {
 
   output <- unlist(output)
 
-  biopsyIndexresults <- ExtrapolatefromDictionary(output, BiopsyIndex())
+  biopsyIndexresults <- suppressMessages(ExtrapolatefromDictionary(output, BiopsyIndex()))
 
   output <- list(HistolTypeAndSite = output, BiopsyIndex = biopsyIndexresults)
   return(output)
