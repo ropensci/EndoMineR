@@ -113,7 +113,7 @@ EndoBasicGraph(kk, "endoscopist", "avg")
 
 #### Consort ####
 ## @knitr dataDiagrammeR
-library(DiagrammeR)
+
 nodes <- create_node_df(n=9, 
                         nodes=c("TheOGDReportFinal", "PathDataFrameFinal", "MyOGD","MyPath","FinalDataset","FinalDatasetBarr","LastTestsDone","FirstTestsDone","ff"),
                         label=c(stringr::str_wrap(paste0("TheOGDReportFinal: ",nrow(TheOGDReportFinal)),5),
@@ -154,7 +154,7 @@ render_graph(g)
 ##### CodeDepends ####
 ## @knitr codeDepends
 
-library(CodeDepends)
+
 sc = readScript(here("inst","TemplateProject","munge", "PreProcessing.R"))
 g = makeVariableGraph( info =getInputs(sc))
 require(Rgraphviz)

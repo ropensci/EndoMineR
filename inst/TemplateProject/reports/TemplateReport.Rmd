@@ -56,12 +56,13 @@ Including the study design term in the title or abstract when a standard study d
 
 
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, warning = FALSE, message = FALSE,include=FALSE}
+knitr::opts_chunk$set(results = 'asis', echo = FALSE, comment = FALSE,  warning = FALSE, message = FALSE, fig.align = 'center')
 library(knitr)
 library(here)
 library(EndoMineR)
-
+library(DiagrammeR)
+library(CodeDepends)
 ```
 
 ### Introduction
