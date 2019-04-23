@@ -348,6 +348,8 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' 
 #' # Now lets look at the fentanly use per Endoscopist:
 #' kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+#' #EndoBasicGraph(MyendoNew, "Endoscopist", "Fent") #run this
+#' #if you want to see the graph
 #' rm(Myendo)
 MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
   group <- rlang::sym(Column)
