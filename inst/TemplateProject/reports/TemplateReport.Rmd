@@ -1,0 +1,322 @@
+---
+title: "Template Script"
+author: "Sebastian Zeki"
+date: "20/11/2018"
+output: html_document
+
+---
+
+
+To create this report within a project start by creating a project with library('ProjectTemplate'). This will create the skeleton project structure. Using 'usethis' or 'rrtools' may also help if you want to create collaborative projects using github as it should set up the github project for you.
+you can then drop this markdwon script in the project and use the chunk structure here to run your scripts
+
+### Title and abstract
+
+**Study Design**
+
+Remember to use **PICO**
+
+**1.Patient population**
+
+In patients being investigated for GORD with a negative pH impedance study 
+
+**2.Intervention**
+
+who go on to have a BRAVO study
+
+**3.Comparison**
+
+Is there a significant increase between the two tests
+
+**4.Outcome**
+
+in the patients who have GORD
+
+**5. Further**
+
+What can predict a BRAVO positive, pH impedance negative investigation to support a Straight-to-BRAVO test?
+
+
+
+**Diagnosis** a) In patients being investigated for GORD with a negative impedance study for GORD who go on to have a BRAVO study, what proportion have a positive BRAVO for GORD condition
+
+
+**$\color{red}{\text{A.Indicate the study’s design with a commonly used term in the title or the abstract}}$.**
+
+**Example 1**
+
+Title: ‘An observational study with long-term follow-up of canine cognitive dysfunction: Clinical characteristics, survival
+and risk factors’ (Fast et al., 2013).
+
+Example 2
+Title: ‘Case-control study of risk factors associated with Brucella melitensis on goat farms in Peninsular Malaysia’ (Bamaiyi et al., 2014).
+
+**Explanation **
+Including the study design term in the title or abstract when a standard study design is used, or at least identifying that a study is observational, allows the reader to easily identify the design and helps to ensure that articles are correctly indexed in electronic databases (Benson and Hartz, 2000). In STROBE, item 1a only requests that a common study design term be used. However, in veterinary research, not all observational studies are easily categorized into cohort, case–control, or cross-sectional study designs. Therefore, we recommend including that the study was observational and, if possible, the study design or important design characteristics, for example longitudinal, in the title.
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(here)
+library(EndoMineR)
+
+```
+
+### Introduction
+
+**$\color{red}{\text{B.Introductory sentence 1: Define the disease condition}}$.**
+
+**eg** Aperistaltic oesophagus is a term that covers all conditions where achalasia is absent and there is no peristaltic activity
+
+**$\color{red}{\text{C.Introductory sentence 2: The overview of the disease condition}}$.**
+
+**eg** Aperistaltic oesophagus remains a difficult condition to treat with no specific and effective treatments
+
+**$\color{red}{\text{D.Introductory sentence 3: The problem being addressed}}$.**
+
+**eg** The number of non-achalasia aperistaltic oesophagus patients is unknown.
+
+**eg** Although often isolated from outpatients in veterinary clinics, there is concern that MRSP follows a veterinary-hospital associated epidemiology
+
+### Aim
+
+
+**eg** The aim of the study was to assess the number of patients with aperistaltic oesophagus without achalasia and ascertain their demographics
+
+
+### Methods
+
+
+**$\color{red}{\text{E.Define the Dates}}$.**
+
+Get the dates from the minimum of the VisitDate column `r 1+1 `
+
+**$\color{red}{\text{F.Define the Location}}$.**
+Standard sentence here about GSTT
+The results of high resolution studies performed in patients with cough as part of the presenting complaint to the gastroenterology service at Guy's and St Thomas' NHS Trust were examined retrospectively between June 2008 and January 2018. 
+
+**$\color{red}{\text{F.Define the Eligibility}}$.**
+All patients selected were adults over the age of 18. Ethics was approved (IRAS number) and by the local ethics board.
+
+**$\color{red}{\text{F.Define the Exclusion}}$.**
+Patients with incomplete data sets were exluded from the study. Where x was not available fromt the report, the raw file was located and manually analysed
+
+**$\color{red}{\text{G.Define the Sampling}}$.**
+
+Patients were selected according to Chicago Classification v3. Patients symptoms were selected from self reporting at impedance if this was done at the same time as high resolution manometry. If this was not the case then the symptoms were extracted either from the final report summarising the patient's condition and physiological diagnosis, or from the clinicians details when ordering the investigation.
+
+**$\color{red}{\text{H.Define the data cleaning methodology methods}}$.**
+
+This involves how the relevant columns were accordionised (eg categorising the patients/and how subgroups were formed).
+
+
+### Import the data
+```{r dataImport,echo=FALSE}
+load(file=here("data", "TheOGDReportFinal.rda"))
+load(file=here("data", "PathDataFrameFinal.rda"))
+```
+
+
+```{r echo=FALSE}
+read_chunk(here("inst","TemplateProject","munge", "PreProcessing.R"))
+```
+
+### Pre-process both the pathology and the endoscopy text:
+```{r dataClean,echo=FALSE}
+```
+
+### Merge endoscopy and pathology text
+```{r dataMerge,echo=FALSE}
+```
+
+### Clean the endoscopist and instrument columns
+```{r dataClean2,echo=FALSE}
+```
+
+### Extract number of biopsies, biopsy size, biopsy location and medications from the text
+```{r dataExtrapolate,echo=FALSE}
+```
+
+### Extract endoscopy events
+```{r dataExtrapolate2,echo=FALSE}
+```
+
+### Extract some generic analyses
+```{r dataAnalysis_DisSpecific,echo=FALSE}
+```
+
+### Extract some disease specific analyses
+```{r dataAnalysis_Generic,echo=FALSE}
+```
+
+### Show the Consort diagram
+```{r dataDiagrammeR,echo=FALSE}
+```
+
+### Show the CodeDepends
+```{r codeDepends,echo=FALSE}
+```
+
+## Results
+
+**$\color{red}{\text{I.Define the Statistical methods}}$.**
+
+**eg** Clinical isolates of MRSP cases (n = 150) and methicillin-susceptible S. pseudintermedius (MSSP) controls (n = 133) and their corresponding host signalment and medical data covering the six months prior to staphylococcal isolation were analysed by multivariable logistic regression.
+
+The identity of all MRSP isolates was confirmed through demonstration of S. intermedius-group specific nuc and mecA.
+
+**$\color{red}{\text{I.Describe demographics}}$.**
+The mean age was 57.3 ± 17 years, and 62.3% of the subjects were male. 
+The age-adjusted incidence rates were 13.8 (non-lobar) and 4.9 (lobar) per 100,000 person-years.
+**$\color{red}{\text{J.Then describe level one results}}$.**
+
+**$\color{red}{\text{K.Then describe subset results}}$.**
+
+**eg** In the final model, cats (compared to dogs, OR 18.5, 95% CI 1.8–188.0, P = 0.01), animals that had been
+hospitalised (OR 104.4, 95% CI 21.3–511.6, P < 0.001), or visited veterinary clinics more frequently (>10 visits
+OR 7.3, 95% CI 1.0–52.6, P = 0.049) and those that had received topical ear medication (OR 5.1, 95% CI 1.8–
+14.9, P = 0.003) or glucocorticoids (OR 22.5, 95% CI 7.0–72.6, P < 0.001) were at higher risk of MRSP infection,
+whereas S. pseudintermedius isolates from ears were more likely to belong to the MSSP group (OR 0.09, 95%
+CI 0.03–0.34, P < 0.001).
+
+**Choose your statistical analysis**
+
+
+
+## Discussion
+
+**$\color{red}{\text{L.Sentence 1: To be decided}}$.**
+
+**$\color{red}{\text{M.Sentence 2: To be decided}}$.**
+
+**$\color{red}{\text{N.Sentence 3: To be decided}}$.**
+**eg** These results indicate an association of MRSP infection with veterinary clinic/hospital
+settings and possibly with chronic skin disease.
+
+
+
+
+## Limitations
+**$\color{red}{\text{O.Sentence 1: To be decided}}$.**
+**eg** There was an unexpected lack of association between MRSP and antimicrobial therapy; this requires further investigation .(Lehner et al., 2014).
+
+
+
+
+##Full abstract examples 
+
+Methicillin-resistant Staphylococcus pseudintermedius (MRSP) has emerged as a highly drug-resistant small animal
+veterinary pathogen. Although often isolated from outpatients in veterinary clinics, there is concern that
+MRSP follows a veterinary-hospital associated epidemiology. This study’s objective was to identify risk factors for
+MRSP infections in dogs and cats in Germany. Clinical isolates of MRSP cases (n = 150) and methicillin-susceptible
+S. pseudintermedius (MSSP) controls (n = 133) and their corresponding host signalment and medical data
+covering the six months prior to staphylococcal isolation were analysed by multivariable logistic regression. The
+identity of all MRSP isolates was confirmed through demonstration of S. intermedius-group specific nuc and
+mecA. In the final model, cats (compared to dogs, OR 18.5, 95% CI 1.8–188.0, P = 0.01), animals that had been
+hospitalised (OR 104.4, 95% CI 21.3–511.6, P < 0.001), or visited veterinary clinics more frequently (>10 visits
+OR 7.3, 95% CI 1.0–52.6, P = 0.049) and those that had received topical ear medication (OR 5.1, 95% CI 1.8–
+14.9, P = 0.003) or glucocorticoids (OR 22.5, 95% CI 7.0–72.6, P < 0.001) were at higher risk of MRSP infection,
+whereas S. pseudintermedius isolates from ears were more likely to belong to the MSSP group (OR 0.09, 95%
+CI 0.03–0.34, P < 0.001). These results indicate an association of MRSP infection with veterinary clinic/hospital
+settings and possibly with chronic skin disease. There was an unexpected lack of association between MRSP and antimicrobial therapy; this requires further investigation .(Lehner et al., 2014).
+
+##Explanation
+The abstract provides key information that enables readers to understand the key aspects of the study and decide
+whether to read the article. In STROBE, item 1b recommended that authors provide an informative and balanced
+summary of what experiments were done, what results were found and the implications of the findings in the abstract.
+In STROBE-Vet, this item was modified to provide more guidance on the key components that should be addressed.
+The study design should be stated; however, if the study does not correspond to a named study design such as case–
+control, cross-sectional and cohort study, then the author should describe the key elements of the study design such
+as incident versus prevalent cases, and whether or not the selection was based on outcome status (Pearce, 2012). The
+abstract should succinctly describe the study objectives, including the primary objective and primary outcome, the
+exposure(s) of interest, relevant population information such as species and the purpose (or uses) of the animals,
+the study location and dates, and the number of study units. In addition, including the organizational level at
+which the outcome was measured (e.g. herd, pen or individual) is recommended. The presented results should
+include summary outcome measures (e.g. frequency or appropriate descriptor of central tendency such as mean or
+median) and, if relevant, a clear description of the association direction along with accompanying association measures
+(e.g. odds ratio) and measures of precision (e.g. 95% confidence interval) rather than P-value alone. We discourage
+stating that an exposure is or is not significantly associated with an outcome without appropriate statistical
+measures. Finally, because many veterinary observational studies evaluate multiple potential risk factors, the abstract
+should provide the number of exposure–outcome associations tested to alert the end-user to potential type I error in
+the study. When multiple outcomes are observed, provide the reader with a rationale for the outcomes presented in
+the abstract, for example only statistically significant results or the outcome of the primary hypothesis is presented.
+
+
+
+
+
+
+##Other examples of good abstracts:
+
+ Lymphoma in patients treated with anti-TNF: results of the 3-year prospective French RATIO registry
+ X Mariette1, F Tubach2, H Bagheri3, M Bardet4, J M Berthelot5, P Gaudin6, D Heresbach7, A Martin8, T
+ Schaeverbeke9, D Salmon10, M Lemann11, O Hermine12, M Raphael13, P Ravaud2
+ 
+ Author affiliations
+ 
+ Abstract
+ 
+ **Objective:** To describe cases of lymphoma associated with anti-TNF therapy, identify risk factors,
+ estimate the incidence and compare the risks for different anti-TNF agents.
+
+ **Methods:** A national prospective registry was designed (Research Axed on Tolerance of bIOtherapies; RATIO)
+ to collect all cases of lymphoma in French patients receiving anti-TNF therapy from 2004 to 2006, whatever
+ the indication. A case–control analysis was conducted including two controls treated with anti-TNF per case
+ and an incidence study of lymphoma with the French population was used as the reference.
+
+ **Results:** 38 cases of lymphoma, 31 non-Hodgkin’s lymphoma (NHL) (26 B cell and five T cell), five Hodgkin’s
+ lymphoma (HL) and two Hodgkin’s-like lymphoma were collected. Epstein–Barr virus was detected in both of two
+ Hodgkin’s-like lymphoma, three of five HL and one NHL. Patients receiving adalimumab or infliximab had a higher
+ risk than those treated with etanercept: standardised incidence ratio (SIR) 4.1 (2.3–7.1) and 3.6 (2.3–5.6)
+ versus 0.9 (0.4–1.8). The exposure to adalimumab or infliximab versus etanercept was an independent risk factor
+ for lymphoma in the case–control study: odds ratio 4.7 (1.3–17.7) and 4.1 (1.4–12.5), respectively. The sex and
+ age-adjusted incidence rate of lymphoma was 42.1 per 100 000 patient-years. The SIR was 2.4 (95% CI 1.7 to 3.2).
+
+ **Conclusion:** The two to threefold increased risk of lymphoma in patients receiving anti-TNF therapy is similar
+ to that expected for such patients with severe inflammatory diseases. Some lymphomas associated with
+ immunosuppression may occur, and the risk of lymphoma is higher with monoclonal-antibody therapy than with
+ soluble-receptor therapy.
+
+
+ http://dx.doi.org/10.1136/ard.2009.117762
+
+
+ Most studies investigating the association between psoriasis and cardiovascular disease
+ have shown a significant relationship. This comparison study investigated the association
+ between psoriasis and prevalent use of cardiovascular drugs. Drug exposure data for 1998 to
+ 2006 were extracted from the Dutch PHARMO-Record Linkage System database. Psoriasis patients were
+ selected using an algorithm of hospitalization and drug dispensing records specific for psoriasis and
+ matched with controls for gender, age and time-period. From the records of 2.5 million Dutch residents,
+ 9,804 (0.4%) psoriasis patients and 15,288 (0.6%) controls were selected. Psoriasis patients used
+ significantly more anti-hypertensives, anti-coagulant and anti-platelet agents, digoxin, nitrates,
+ lipid-lowering and anti-diabetic drugs than the reference population during a 5-year period observation.
+ In a multiple linear regression model adjusting for the number of unique drugs used, psoriasis was no longer
+ significantly associated with any of these drug classes. Psoriasis patients used more cardiovascular-related
+ drugs, but surveillance bias appears to affect this association considerably.
+
+
+
+
+
+
+ **Background:** The incidence of intracerebral haemorrhage (ICH) in Hispanics is high,
+ especially of non-lobar ICH. Our aim was to ascertain prospectively the incidence of
+ first-ever spontaneous ICH (SICH) stratified by localisation in a Hispanic-Mestizo
+ population of the north of Chile. Methods: Between July 2000 and June 2002 all possible
+ cases of ICH were ascertained from multiple overlapping sources. The cases were allocated
+ according to localisation. Those with vascular malformations or non-identifiable localisations
+ were excluded. Results: We identified a total of 69 cases of first-ever ICH. Of these, 64 (92.7%)
+ had SICH, of which we allocated 58 cases (84%) to non-lobar or lobar localisation. The mean age
+ was 57.3 ± 17 years, and 62.3% of the subjects were male. The age-adjusted incidence rates were 13.8
+ (non-lobar) and 4.9 (lobar) per 100,000 person-years. Non-lobar SICH was more frequent in young
+ males and lobar SICH in older women. The non-lobar-to-lobar ratio was similar to previous findings
+ in Hispanics. Hypertension was more frequent in non-lobar SICH and in diabetes, heavy drinking and
+ antithrombotic use in lobar SICH, but in none significantly. There was no association between
+ localisation and prognosis. Conclusions: The incidence of non-lobar SICH was high, but lower than
+ in most non-white populations. This lower incidence could be due to a lower population prevalence of
+ risk factors, a higher socioeconomic level in this population, or chance.
+
+
+
