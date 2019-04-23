@@ -23,6 +23,8 @@ knitr::opts_chunk$set(
 ```
 
 
+This package has undergone a major revision to make it much more user friendly. THe documentation has been updated to reflect this. I am always happy to hear of any feedback, positive and negative so I can continue to improve this package.
+
 ## **Aims of EndoMineR**
 
 The goal of EndoMineR is to extract as much information as possible from free or semi-structured endoscopy reports and their associated pathology specimens. 
@@ -101,19 +103,19 @@ The dataframe can be obtained from myReadyDataset[1] and the delimiters from myR
 
 Once the data is ready you can use the textPrep function. This function is really a wrapper for a number of different functions that work on your data. 
 
-####a. **Dusting the data** 
+#### **a) Dusting the data** 
 Firstly the data is cleaned up so that extra newlines, spaces, unnecessary punctuation etc is dealt with. Although you dont need to know the details of this, if you want to look under the hood you can see that this is part of the ColumnCleanUp function.
 
-####b. **Spell checking** 
+#### **b) Spell checking** 
 The textPrep also implements a spell checker (the **spellCheck** function). This really checks the spelling of gastroenterology terms that are present in the in-built lexcicons. So if for example the report contains the terms 'Radiafrequency ablashion' then this will be corrected using Radiofrequency ablation. This is one function that acts to standardise the text in the report so that downstream analyses can be robust. 
 
-####c. **Negative phrase removal** 
+#### **c) Negative phrase removal** 
 The text is then passed along to the **NegativeRemove** function. This will remove any phrases that contain negative sentences indicating a non-positive finding. For example it would remove 'There is no evidence of dysplasia here'. This makes text extraction analyses, which often report the detection of a positive finding, much more accurate. If you wish to include these types of phrases however, you can. This function is part of the parameters you can switch on and off for the textPrep function.
 
-####d. **Term mapping** 
+#### **d) Term mapping** 
 The next step is to perform term mapping. This means that variations of a term are all mapped to a single common term. For example 'RFA' and 'HALO' may be both mapped to 'Radiofrequency ablation'. This is performed using the using the **DictionaryInPlaceReplace** function. This function looks through all of the lexicons included in this package to perform this. The lexicons are all manually created and consist of key-value pairs which therefore map a key 9which is the term variant) to a value (which is the standardised term that should be used).
 
-####e. **Segregating the data** 
+#### **e) Segregating the data** 
   Finally the text is ready to separate into columns. The basic **Extractor** function will take your data and the list of terms you have supplied that act as the column boundaries, the separate your data accordingly. There are a couple of options here. If you think the headers for your text vary a little bit, then you can change the parameter in the textPrep function to use an alternatiuve Extractor, called **Extractor2** that can deal with this. It can be worth experimenting with your data to find out which is the better segregator.
   The Extractor (or Extractor2) is a very useful function. Different hospitals will use different software with different headings for endoscopic reports. The Extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in-built datasets as part of the package. 
   A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe. 
@@ -196,7 +198,7 @@ The extraction of medication type and dose is important for lots of analyses in 
 
 
 
-#### **i) Medication**
+#### **a) Medication**
 
 
 The EndoscMeds currently extracts Fentanyl, Pethidine, Midazolam and Propofol doses into a separate column and reformats them as numeric columns so further calculations can be done. 
@@ -208,12 +210,12 @@ pander(head(MyendoMeds[1:4],5))
 
 ```
 
-#### **ii) Endosccopy Event extraction**
+#### **b) Endosccopy Event extraction**
 
 The **EndoscopyEvent** function will extract any event that has been performed at the endoscopy and dump it in a new column. It does this by looking in pairs of sentences and therefore wraps around a more basic function called **EndoscopyPairs_TwoSentence**. This allows us to get the site that the event (usually a therapy) happened on. A example sentence might be 'There was a bleeding gastric ulcer. A clip was applied to it' We can only extract stomach:clip by reference to the two sentences.
 
 
-#### **iii) Histology biopsy number extraction**
+#### **c) Histology biopsy number extraction**
 
 There is also a lot of information we can extract into a separate column from the histopathology information.
 We can derive the number of biopsies taken (usually specified in the macroscopic description of a sample) using the function **HistolNumbOfBx**. 
@@ -242,7 +244,7 @@ pander(head(sh,5))
 
 
 
-#### **iv) Histology biopsy size extraction**
+#### **d) Histology biopsy size extraction**
 
 We might also be interested in the size of the biopsy taken. A further function called **HistolBxSize** is provided for this. This is also derived from the macroscopic description of the specimen
 
@@ -252,7 +254,7 @@ sh<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$BxSize)
 pander(head(sh,5))
 ```
 
-#### **v) Histology type and site extraction**
+#### **e) Histology type and site extraction**
 A final function is also provided called **HistolTypeAndSite**. This is particularly useful when trying to find out which biopsies came from which site. 
 The output is provided as a site:specimen type pair. An alternative output is also provided which groups locations (eg the gastro-oesophageal junction is seen as part of the oesophagus). 
 

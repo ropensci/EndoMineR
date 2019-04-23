@@ -66,6 +66,8 @@ knitr::opts_chunk$set(results = 'asis', echo = FALSE, comment = FALSE,  warning 
 library(knitr)
 library(here)
 library(EndoMineR)
+library(DiagrammeR)
+library(CodeDepends)
 ```
 
 <!--
