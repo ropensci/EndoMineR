@@ -4,6 +4,10 @@
 ## @knitr dataImport
 
 
+
+
+
+
 ##### Clean ####
 ## @knitr dataClean
 #Prepare the text for OGD
@@ -18,9 +22,17 @@ MyPath<-textPrep(PathDataFrameFinal$PathReportWhole,mywordsPath,NegEx="TRUE",Ext
 
 
 
+
+
+
+
 ##### Merge ####
 ## @knitr dataMerge 
 FinalDataset<-Endomerge2(MyOGD,"dateofprocedure","hospitalnumber",MyPath,"datereceived","hospitalnumber")
+
+
+
+
 
 
 
@@ -28,6 +40,10 @@ FinalDataset<-Endomerge2(MyOGD,"dateofprocedure","hospitalnumber",MyPath,"datere
 ## @knitr dataClean2
 FinalDataset$endoscopist<-EndoscEndoscopist(FinalDataset$endoscopist)
 FinalDataset$instrument<-EndoscInstrument(FinalDataset$instrument)
+
+
+
+
 
 
 
@@ -44,9 +60,16 @@ FinalDataset<-cbind(FinalDataset,HistolTypeAndSiteToJoin)
 
 
 
+
+
+
 ##### Extrapolate2 ####
 ## @knitr dataExtrapolate2
 FinalDataset$EndoscopyEvent<-EndoscopyEvent(FinalDataset,"findings","procedureperformed","macroscopicdescription","Original.x")
+
+
+
+
 
 
 
@@ -61,6 +84,13 @@ FinalDatasetBarr$Paris<-BarrettsParisEMR(FinalDatasetBarr$procedureperformed,Fin
 
 
 
+
+
+
+
+
+
+
 ##### Analysis Generic ####
 ## @knitr dataAnalysis_Generic
 FinalDatasetBarr<-SurveilTimeByRow(FinalDataset,'pHospitalNum','Date.x')
@@ -72,6 +102,14 @@ ff<-HowManyOverTime(FinalDataset,'indications','Date.x','.*')
 
 kk<-MetricByEndoscopist(FinalDataset,'endoscopist','Fent')
 EndoBasicGraph(kk, "endoscopist", "avg")
+
+
+
+
+
+
+
+
 
 #### Consort ####
 ## @knitr dataDiagrammeR
@@ -103,6 +141,12 @@ g <- create_graph(nodes_df=nodes,
     value = c("dot", "TB", "false"),
     attr_type = c("graph", "graph", "graph"))
 render_graph(g)
+
+
+
+
+
+
 
 
 
