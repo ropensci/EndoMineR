@@ -17,6 +17,7 @@ vignette: >
 ```{r setup, include=FALSE}
 library(pander)
 library(EndoMineR)
+library(here)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -234,7 +235,6 @@ We might also be interested in the size of the biopsy taken. A further function 
 ```{r exampleHistolBxSize1, echo = TRUE}
 Mypath$BxSize<-HistolBxSize(Mypath$Macroscopicdescription)
 sh<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$BxSize)
-pander(head(sh,5))
 ```
 
 ```{r exampleHistolBxSize1tbl, echo = FALSE}
@@ -246,11 +246,12 @@ pander(head(sh,5))
 A final function is also provided called **HistolTypeAndSite**. This is particularly useful when trying to find out which biopsies came from which site. 
 The output is provided as a site:specimen type pair. An alternative output is also provided which groups locations (eg the gastro-oesophageal junction is seen as part of the oesophagus). 
 
+##**And this is just the beginning...**
 
 What is described above are the building blocks for starting a more complex analysis of the Endoscopic and Pathological data. 
 
 Generic analyses, such as figuring out surveillance intervals, can be determined using the appropriate functions in the Analysis module.
 
-The dataset can also be fed in to more complex functions as are described in the Barrett's, Inflammatory Bowel Diseaes (IBD) or Polyp modules.
+The dataset can also be fed in to more complex functions as are described in the Barrett's and Polyp modules
 
-The package also provides generic data visualisation tools to assess Patient flow, amonst other visualisations.
+The package also provides generic data visualisation tools to assess Patient flow, amonst other visualisations. All of these can be found in the associated vignettes.
