@@ -29,6 +29,8 @@ MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
 
 # Now lets look at the fentanly use per Endoscopist:
 kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+#EndoBasicGraph(MyendoNew, "Endoscopist", "Fent") #run this
+#if you want to see the graph
 rm(Myendo)
 }
 \keyword{Endoscopist}

@@ -22,7 +22,7 @@ with the extracted terms as opposed to changing it in place
 #Firstly we extract histology from the raw report
 # The function then standardises the histology terms through a series of
 # regular expressions and then extracts the type of tissue 
-Mypath$Tissue<-ExtrapolatefromDictionary(Mypath$Histology,HistolType())
+Mypath$Tissue<-suppressWarnings(suppressMessages(ExtrapolatefromDictionary(Mypath$Histology,HistolType())))
 rm(MypathExtraction)
 }
 \keyword{Withdrawal}
