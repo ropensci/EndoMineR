@@ -45,9 +45,9 @@ Having made sure the text is prepared (using the **textPrep** function) and merg
 
 ```{r exampleGRS}
   data(vColon)
- nn<-GRS_Type_Assess_By_Unit(
-   vColon, "ProcedurePerformed",
-   "Endoscopist", "Diagnosis", "Histology")
+  nn<-GRS_Type_Assess_By_Unit(
+  vColon, "ProcedurePerformed",
+  "Endoscopist", "Diagnosis", "Histology")
 ```
 
 ```{r exampleGRStbl,echo=FALSE}
