@@ -19,8 +19,7 @@ medication into fentanyl and midazolam numeric doses for use.
 It should be used after the textPrep function.
 }
 \examples{
-MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
-
+MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
 }
 \keyword{Endoscopy}
 \keyword{medications}

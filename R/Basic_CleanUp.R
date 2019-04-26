@@ -201,7 +201,6 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
   }
   
 
-
     #Last minute clean up:
     names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
   
@@ -658,10 +657,9 @@ EndoPaste<-function(x){
 #' @examples #Firstly we extract histology from the raw report
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions and then extracts the type of tissue 
-#' Mypath$Tissue<-ExtrapolatefromDictionary(Mypath$Histology,HistolType())
+
+#' Mypath$Tissue<-suppressWarnings(suppressMessages(ExtrapolatefromDictionary(Mypath$Histology,HistolType())))
 #' rm(MypathExtraction)
-
-
 
 
 ExtrapolatefromDictionary<-function(inputString,list){

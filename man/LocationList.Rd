@@ -11,7 +11,4 @@ The is a list of standard locations at endoscopy. It used for the site of biopsi
 and potentially in functions looking at the site of a 
 therapeutic event. It just returns the list in the function.
 }
-\examples{
-#No example needed
-}
 \keyword{Location}

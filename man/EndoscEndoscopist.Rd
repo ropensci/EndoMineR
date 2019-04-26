@@ -20,7 +20,7 @@ It gets rid of common entries that are not needed.
 It should be used after the textPrep function
 }
 \examples{
-Myendo$Endoscopist<-EndoscEndoscopist(Myendo$Endoscopist)
+Myendo$Endoscopist <- EndoscEndoscopist(Myendo$Endoscopist)
 }
 \keyword{Endoscopist}
 \keyword{extraction}

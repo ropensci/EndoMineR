@@ -36,10 +36,7 @@
 
 <meta property="og:description" content="This does a general clean up of whitespace,
 semi-colons,full stops at the start
-of lines and converts end sentence full stops to new lines.
-It should be used after the Extractor.
-It is used for columns where there is a lot of free text to extract. It
-really extracts and standardises the sentences." />
+of lines and converts end sentence full stops to new lines." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -70,7 +67,7 @@ really extracts and standardises the sentences." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -100,6 +97,9 @@ really extracts and standardises the sentences." />
     </li>
     <li>
       <a href="../articles/Barretts.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Polyps.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -152,7 +152,7 @@ really extracts and standardises the sentences." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Tidies up messy columns</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/CleanUp.R'><code>R/CleanUp.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_CleanUp.R'><code>R/Basic_CleanUp.R</code></a></small>
     <div class="hidden name"><code>ColumnCleanUp.Rd</code></div>
     </div>
 
@@ -160,37 +160,36 @@ really extracts and standardises the sentences." />
     
     <p>This does a general clean up of whitespace,
 semi-colons,full stops at the start
-of lines and converts end sentence full stops to new lines.
-It should be used after the Extractor.
-It is used for columns where there is a lot of free text to extract. It
-really extracts and standardises the sentences.</p>
+of lines and converts end sentence full stops to new lines.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>ColumnCleanUp</span>(<span class='no'>dataframe</span>, <span class='no'>Column</span>)</pre>
+    <pre class="usage"><span class='fu'>ColumnCleanUp</span>(<span class='no'>vector</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataframe</th>
-      <td><p>dataframe with column of interest</p></td>
-    </tr>
-    <tr>
-      <th>Column</th>
+      <th>vector</th>
       <td><p>column of interest</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>This returns a character vector</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>ii</span><span class='kw'>&lt;-</span><span class='fu'>ColumnCleanUp</span>(<span class='no'>Myendo</span>,<span class='st'>"Findings"</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>ii</span><span class='kw'>&lt;-</span><span class='fu'>ColumnCleanUp</span>(<span class='no'>Myendo</span>$<span class='no'>Findings</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

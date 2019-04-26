@@ -19,7 +19,7 @@ theme_Publication(base_size = 14, base_family = "Helvetica")
 #'
 }
 \examples{
-#None needed
+# None needed
 }
 \keyword{ggplot}
 \keyword{themes}

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -61,6 +61,9 @@
     </li>
     <li>
       <a href="../articles/Barretts.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Polyps.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -114,7 +117,7 @@
       <h1>Barrett’s Oesophagus</h1>
                         <h4 class="author">Sebastian Zeki</h4>
             
-            <h4 class="date">December 01, 2018</h4>
+            <h4 class="date">April 17, 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ropensci/EndoMineR/blob/master/vignettes/Barretts.Rmd"><code>vignettes/Barretts.Rmd</code></a></small>
       <div class="hidden name"><code>Barretts.Rmd</code></div>
@@ -126,8 +129,7 @@
 <div id="specific-diseases---barretts-oesophagus" class="section level2">
 <h2 class="hasAnchor">
 <a href="#specific-diseases---barretts-oesophagus" class="anchor"></a>Specific diseases - Barrett’s oesophagus</h2>
-<p>The functions above really act as building blocks for the further, more complex analyses we can do for specific Endoscopic-pathological disease sets</p>
-<p>One particular disease is the premalignant oesophageal condition Barrett’s oesophagus. This is characterised by the growth of cells (called columnar lined epithelium) in the oesophagus. These cells usually occupy the lower part of the oesophagus as a continuous sheet from the top of the stomach to varying lengths up the oesophagus. This condition requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score- explained below) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 UK guidelines, means the presence or absence of intestinal metaplasia). This can be seen in the image below (from Fitzgerald RC, et al. Gut 2013;0:1–36. <a href="doi:10.1136/gutjnl-2013-305372" class="uri">doi:10.1136/gutjnl-2013-305372</a>)</p>
+<p>One particular disease that lends itself well to analytics, particularly as it is part of a surveillance programme, is the premalignant oesophageal condition Barrett’s oesophagus. This is characterised by the growth of cells (called columnar lined epithelium) in the oesophagus. These cells usually occupy the lower part of the oesophagus as a continuous sheet from the top of the stomach to varying lengths up the oesophagus. This condition requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score- explained below) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 UK guidelines, means the presence or absence of intestinal metaplasia). This can be seen in the image below (from Fitzgerald RC, et al. Gut 2013;0:1–36. <a href="doi:10.1136/gutjnl-2013-305372" class="uri">doi:10.1136/gutjnl-2013-305372</a>)</p>
 <p><br></p>
 <p><img src="img/BarrettsGuide.png" style="display: block; margin: auto;"></p>
 <p><br></p>
@@ -142,64 +144,64 @@
 <a href="#prague-score" class="anchor"></a>Prague score</h3>
 <p>Firstly we need to extract the length of the Barrett’s segment. This is known as the Prague score and is made up of the length from the top of the gastric folds (just below the gastro-oesophageal junction) to the top of the circumferential extent of the Barrett’s segment (C). In addition the maximal extent is from the top of the gastric folds to the top of the tongues of Barrett’s segment (M). This gives an overall score such as C1M2.</p>
 <p>After filtering for endoscopic indication (eg “Surveillance-Barrett’s”- this is stored in the ‘Indication’ column in our data set) the aim of the following function is to extract a C and M stage (Prague score) for Barrett’s samples. This is done using a regular expression where C and M stages are explicitly mentioned in the free text. Specifically it extracts the Prague score. This is usually mentoned in the ‘Findings’ column in our dataset but obviously the user can define which column should be searched.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Barretts_PragueScore.html">Barretts_PragueScore</a></span>(Myendo,<span class="st">'Findings'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Barretts_PragueScore.html">Barretts_PragueScore</a></span>(Myendo,<span class="st">'Findings'</span>,<span class="st">'OGDReportWhole'</span>)</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="7%">
-<col width="28%">
-<col width="18%">
-<col width="29%">
-<col width="7%">
-<col width="7%">
+<col width="16%">
+<col width="26%">
+<col width="12%">
+<col width="26%">
+<col width="11%">
 </colgroup>
 <thead><tr class="header">
 <th align="center"> </th>
-<th align="center">Indications</th>
 <th align="center">ProcedurePerformed</th>
 <th align="center">Findings</th>
 <th align="center">CStage</th>
+<th align="center">mytext</th>
 <th align="center">MStage</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="center"><strong>23</strong></td>
-<td align="center">Weight Loss</td>
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">STOMACH: diffuse gastritis with angiodysplasia and punctate bleeding site on greater curve mid body - no obvious ulcer- antrum scar ?,OESOPHAGUS: Barrett’s osophagus C3M5 34-39cm ,He also has erosive gastritis in the fundus ,STOMACH: non-erosive gastritis from mid-body to antrum, CLO test: negative ,STOMACH: numerous fundic glands looking polyps at body and fundus with size ranging from 2 mm to 10 mm ,Otherwise entirely normal study ,Scope easily passed through A lesion underwent EMR</td>
 <td align="center">3</td>
+<td align="center">STOMACH: diffuse gastritis with angiodysplasia and punctate bleeding site on greater curve mid body - no obvious ulcer- antrum scar ?,OESOPHAGUS: Barrett’s osophagus C3M5 34-39cm, ,He also has erosive gastritis in the fundus, ,STOMACH: non-erosive gastritis from mid-body to antrum, CLO test: negative, ,STOMACH: numerous fundic glands looking polyps at body and fundus with size ranging from 2 mm to 10 mm, ,Otherwise entirely normal study, ,Scope easily passed through, , A lesion underwent EMR</td>
 <td align="center">5</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>24</strong></td>
-<td align="center">Haematemesis or Melaena/Blood PR</td>
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">Top of gastrisc folds:43cm ,No inlet patch ,Biopsies taken from distal, mid and proximal third ,STOMACH: Normal ,Hiatus Hernia- Small ,Oesophagus normal with no hiatus hernia or oesophagitis ,D2 biopsies taken in view of weight loss ,STOMACH: gastritis in antrum - CLO test: negative ,Nodules between 38 anc 34cm, Paris Type IIa annd covered 75% of the circumference of the oesophagus</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
+<td align="center">34</td>
+<td align="center">Top of gastrisc folds:43cm, ,No inlet patch, ,Biopsies taken from distal, mid and proximal third, ,STOMACH: Normal, ,Hiatus Hernia- Small, ,Oesophagus normal with no hiatus hernia or oesophagitis, ,D2 biopsies taken in view of weight loss, ,STOMACH: gastritis in antrum - CLO test: negative, ,Nodules between 38 anc 34cm, Paris Type IIa annd covered 75% of the circumference of the oesophagus, ,</td>
+<td align="center">34</td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>25</strong></td>
-<td align="center">Dyspepsia</td>
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">No varices anywhere in the upper GI tract/ no PHG ,OESOPHAGUS: Barrett’s oesophagus C0 M1 ,No blood or sign of recent bleeding</td>
 <td align="center">0</td>
+<td align="center">No varices anywhere in the upper GI tract/ no PHG, ,OESOPHAGUS: Barrett’s oesophagus C0 M1, ,No blood or sign of recent bleeding, ,</td>
 <td align="center">1</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>26</strong></td>
-<td align="center">Small Bowel Biopsy</td>
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">There is a duodenal diverticulum, just after the D1/D2 flexure but there is no inflammation, ulceration or erosions ,Biopsies from D2 and stomach ,Biopsies from D2 and stomach ,Several erosions/small ulcers in inflammed antrum ,Hiatus hernia ,The antrum looks spared ,Stomach - mild gastritis CLO - negative ,D1 inspected carefully and no othe abnormalities seen</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
+<td align="center">Insufficient</td>
+<td align="center">There is a duodenal diverticulum, just after the D1/D2 flexure but there is no inflammation, ulceration or erosions, ,Biopsies from D2 and stomach, ,Biopsies from D2 and stomach, ,Several erosions/small ulcers in inflammed antrum, ,Hiatus hernia, ,The antrum looks spared, ,Stomach - mild gastritis CLO - negative, ,D1 inspected carefully and no othe abnormalities seen, ,</td>
+<td align="center">Insufficient</td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>27</strong></td>
-<td align="center">Follow-up ULCER HEALING</td>
 <td align="center">Gastroscopy (OGD)</td>
 <td align="center">GOJ at 40cm with small sliding hiatus hernia ,Forrest Ulcer classification: IIc ,Gastritis and duodenitis A lesion underwent EMR</td>
-<td align="center">NA</td>
-<td align="center">NA</td>
+<td align="center">Insufficient</td>
+<td align="center">GOJ at 40cm with small sliding hiatus hernia, ,Forrest Ulcer classification: IIc, ,Gastritis and duodenitis, , A lesion underwent EMR</td>
+<td align="center">Insufficient</td>
 </tr>
 </tbody>
 </table>
@@ -207,693 +209,153 @@
 <div id="worst-pathological-stage" class="section level3">
 <h3 class="hasAnchor">
 <a href="#worst-pathological-stage" class="anchor"></a>Worst pathological stage</h3>
-<p>We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using ‘degradation’ so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. It looks per report not per biopsy (it is more common for histopathology reports to contain the worst overall grade rather than individual biopsy grades). Specfically it extracts the histopathology worst grade.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
-<span class="co"># according to date and Hospital number</span>
-b&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,Mypath,<span class="st">'Dateofprocedure'</span>,
-<span class="st">'HospitalNumber'</span>)
-
-<span class="co">#Picking out only the Barrett's related endoscopies</span>
-b&lt;-b[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">grepl</a></span>(<span class="st">"Surv"</span>,b<span class="op">$</span>Indications),]
-
-b&lt;-<span class="kw"><a href="../reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(b,<span class="st">'Histology'</span>)</code></pre></div>
+<p>We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using ‘degradation’ so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on.</p>
+<p>It looks per report not per biopsy (it is more common for histopathology reports to contain the worst overall grade rather than individual biopsy grades).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath<span class="op">$</span>b &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(Mypath, <span class="st">"Histology"</span>)</code></pre></div>
 <table class="table">
 <colgroup>
-<col width="9%">
-<col width="23%">
-<col width="19%">
-<col width="29%">
-<col width="8%">
-<col width="9%">
+<col width="6%">
+<col width="22%">
+<col width="22%">
+<col width="22%">
+<col width="22%">
+<col width="4%">
 </colgroup>
 <thead><tr class="header">
 <th align="center"> </th>
-<th align="center">Indications</th>
-<th align="center">ProcedurePerformed</th>
-<th align="center">Findings</th>
-<th align="center">Days</th>
-<th align="center">IMorNoIM</th>
+<th align="center">ClinicalDetails</th>
+<th align="center">Macroscopicdescription</th>
+<th align="center">Histology</th>
+<th align="center">Diagnosis</th>
+<th align="center">b</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center"><strong>327</strong></td>
-<td align="center">Surveillance-Barrett’s</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">Normal upper GI endoscopy to the Angularis ,D2 biopsies taken in view of weight loss ,Modalities used to achieve haemostasis:</td>
-<td align="center">0 days</td>
+<td align="center"><strong>2</strong></td>
+<td align="center">Quadrantic biopsies were taken at ,OGD - only 3cm sliding hiatus 7 specimen Nature of specimen: Nature of specimen as stated on pot = ‘RECTAL POLYPS X3’,Nature of specimen as stated on pot = ‘fundus polyps x4’,Nature of specimen as stated on request form = ‘DUODENAL BX’,Nature of specimen as stated on pot = ‘Papilloma at 36 cm oesophagus’,a) Nature of specimen as stated on request form = ‘D2 bx x 2’ ,Nature of specimen as stated on pot = ‘Oesophagus 26 cm’</td>
+<td align="center">4 specimens collected the largest measuring 4 x 4 x 4 mm and the smallest 5 x 3 x 1 mm</td>
+<td align="center">modified giemsa stain ,These are biopsies of gastric mucosa ,There is no evidence of coeliac disease ,The nuclei are hyperchromatic, ,There is no granulomatous inflammation ,The appearances are in keeping with a reactive/chemical gastritis,features including basal layer hyperplasia and reactive nucelar changes with underlying ,These are two biopsies of squamous epithelium within normal limits,fibromuscularisation of the lamina propria and mild chronic inflammation ,These biopsies of columnar mucosa show focal acute inflammation, moderate chronic inflammation</td>
+<td align="center">Rectum, polyp biopsy: - Tubular adenoma with mild dysplasia,- Raised intra-epithelial lymphocytes ,Duodenum, biopsies - within normal histological limits ,B GI biopsy - DISTAL OESOPHAGUS X2, MID OESO X3, PROX OESO X2 ,Oesophagus, biopsies : - Minimal chronic inflammation,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia,Oesophagus polyps biopsies:- 2 x papillomas ,Duodenum biopsies:- normal</td>
 <td align="center">No_IM</td>
 </tr>
 <tr class="even">
-<td align="center"><strong>346</strong></td>
-<td align="center">Surveillance-Barrett’s</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">D1 - ulcer healing A lesion underwent EMR</td>
-<td align="center">0 days</td>
-<td align="center">No_IM</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>355</strong></td>
-<td align="center">Surveillance-Barrett’s</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">G: no Fundal varices ,Small oesophageal diverticulu at 20cms and florid candida ,There seemed to be two loops</td>
-<td align="center">0 days</td>
-<td align="center">No_IM</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>372</strong></td>
-<td align="center">Surveillance-Barrett’s</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">STOMACH: Gastritis- Mild No ulceration seen ,Stomach and duodenum normal ,Normal upper GI endoscopy</td>
-<td align="center">0 days</td>
+<td align="center"><strong>3</strong></td>
+<td align="center">Transverse colonic polyp resected ,Duodenal biopsies to exclude coeliac/parasites ,OGD + colon normal 2 specimen Nature of specimen: Nature of specimen as stated on pot = ‘AntralOesBx’,Nature of specimen as stated on request form = ‘Oesophagus x4 at 37 ,Nature of specimen as stated on request form = ’OESOPHAGEAL <span class="citation">@38CMX4</span>’,Nature of specimen as stated on request form = ‘Gastroduodenal anastomosis bx x4’ ,Nature of specimen as stated on request form = ‘Oesophagus 32 cm’</td>
+<td align="center">9 specimens collected the largest measuring 2 x 5 x 2 mm and the smallest 1 x 1 x 4 mm</td>
+<td align="center">The sigmoid polyp is a pedunculated tubular adenoma with moderate dysplasia ,inflammation, gastric metaplasia, dysplasia or neoplasia is seen,patchy fibrosis and myxoid areas and contains numerous eosinophils, as well as scattered ,These biopsies of non-specialised gastric-type mucosa showed minimal chronic, focally active ,Lymphovascular invasion: Not identified ,into submucosa for less than 1 mm</td>
+<td align="center">- Background Barrett ‘s oesophagus,Sigmoid colon, biopsy - Adenocarcinoma ,- Gastric metaplasia,Oesophagus 36cm ’papilloma’ biopsy:- normal squamous mucosa ,- Chronic active inflammation,Oesophagus, biopsy - Barrett ’s oesophagus with moderate chronic inflammation ,- Minimal chronic inflammation</td>
 <td align="center">No_IM</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div id="therapeutic-events" class="section level3">
-<h3 class="hasAnchor">
-<a href="#therapeutic-events" class="anchor"></a>Therapeutic events</h3>
-<p>We also need to process any endoscopies where an event other than surveillance happened (unless filtered specifically for surveillance). This function extracts the Event- usually a therapeutic event, from the text eg endoscopic mucosal resection, radiofrequency ablation etc. It does not currently include stricture dilatation. At the moment the event is extracted from the endoscopy only but for specimen extraction eg endoscopic mucosal resection future iterations may also examine the pathology data as it is likely to describe the presence of EMR more robustly.</p>
-<p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
-
-<span class="co">#Pick out the therapeutic procedures:</span>
-b&lt;-v[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">grepl</a></span>(<span class="st">"Therap"</span>,v<span class="op">$</span>Indications),]
-b&lt;-<span class="kw"><a href="../reference/Barretts_EventType.html">Barretts_EventType</a></span>(b,<span class="st">'Histology'</span>, <span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="9%">
-<col width="24%">
-<col width="19%">
-<col width="30%">
-<col width="8%">
-<col width="8%">
-</colgroup>
-<thead><tr class="header">
-<th align="center"> </th>
-<th align="center">Indications</th>
-<th align="center">ProcedurePerformed</th>
-<th align="center">Findings</th>
-<th align="center">Days</th>
-<th align="center">EVENT</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center"><strong>204</strong></td>
-<td align="center">Therapeutic- RFA</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">2 biopsies from D2 ,OESOPHAGUS: Varices- 3 columns grade 2</td>
-<td align="center">0 days</td>
-<td align="center">RFA</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>208</strong></td>
-<td align="center">Therapeutic- Dilatation</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">No active bleeding/no visible vessel seen ,Micronodular gastritis in the antrum ,No fresh or altered blood in stomach ,STOMACH: previous bypass surgery in 1997 - both loops look normal</td>
-<td align="center">0 days</td>
-<td align="center">nothing</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>213</strong></td>
-<td align="center">Therapeutic- Dilatation</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">Stomach and duodenum normal ,Biopsies showed no evidence of H ,STOMACH: hiatus hernia</td>
-<td align="center">0 days</td>
-<td align="center">nothing</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>218</strong></td>
-<td align="center">Therapeutic- RFA</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">EMR scar unchanged ,Oesophageal biopsies taken from three levels as requested ,Oesophagus normal; SCJ at 40 cm; no oesophagitis, hiatus hernia or dilatation ,Known GOJ adeno-Ca ,Total of 6 ablations ,On treatment dose LMWH for bilateral PE and portal vein thrombosis ,STOMACH: streaks of erythematous mucosa at distal body/proximal antrum ,OESOPHAGUS: Normal to GOJ at 40 cm ,Stomach and duodenum: normal with no mucosal lesion ,Oesophageal mucosae very friable and inflamed</td>
-<td align="center">0 days</td>
-<td align="center">RFA</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>221</strong></td>
-<td align="center">Therapeutic- Dilatation</td>
-<td align="center">Gastroscopy (OGD)</td>
-<td align="center">DUODENUM: not entered ,Normal oesophagus; SCJ at 40 cm widely patent with 20 mm balloon fitting loosely; both limbs of jejunum entered for 20 cm HALO 90 done with good effect</td>
-<td align="center">0 days</td>
-<td align="center">RFA</td>
-</tr>
-</tbody>
-</table>
-<p>So far we have extracted the worst pathological stage per sample as well as the length of the Barrett’s segment where available. We have also extracted any therapeutic events that have occurred. These separate columns are the building blocks for further analyses.</p>
-<p><br></p>
 </div>
 <div id="follow-up-groups" class="section level3">
 <h3 class="hasAnchor">
 <a href="#follow-up-groups" class="anchor"></a>Follow-up groups</h3>
-<p>Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett’s segment length and therefore their follow-up timing, may fluctuate over time) can be determined. The follow-up timing, as eplained in the the original guideline flowchart above, depends on the length of the Barrett’s segment and the presence of intestinal metaplasia (a type of columnar lined epithelium). If abnormal cells (dysplasia) are present the there is a different follow-up regime which we won’t concern ourselves with at the moment. The timing of follow-up is done with the function Barretts_FUType. This relies on the previous functions called Barretts_PathStage and Barretts_EventType and Barretts_PragueScore having been run. The Barretts_FUType function will tell you which follow up Rule the patient should be on so that the timing of the next endoscopy can be determined.</p>
+<p>Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett’s segment length and therefore their follow-up timing, may fluctuate over time) can be determined.</p>
+<p>The follow-up timing, as explained in the the original guideline flowchart above, depends on the length of the Barrett’s segment and the presence of intestinal metaplasia (a type of columnar lined epithelium). If abnormal cells (dysplasia) are present the there is a different follow-up regime which we won’t concern ourselves with at the moment.</p>
+<p>The timing of follow-up is done with the function <strong>Barretts_FUType.</strong> This relies on the previous functions called <strong>Barretts_PathStage</strong> and <strong>Barretts_PragueScore</strong> having been run. The Barretts_FUType function will tell you which follow up Rule the patient should be on so that the timing of the next endoscopy can be determined. As these functions usually go together a wrapper function called <strong>BarrettAll</strong> is also provided.</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
-b&lt;-<span class="kw"><a href="../reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(v,<span class="st">'Histology'</span>)
-b1&lt;-<span class="kw"><a href="../reference/Barretts_PragueScore.html">Barretts_PragueScore</a></span>(b,<span class="st">'Findings'</span>)
-b2&lt;-<span class="kw"><a href="../reference/Barretts_EventType.html">Barretts_EventType</a></span>(b1,<span class="st">'Histology'</span>,<span class="st">'ProcedurePerformed'</span>,<span class="st">'OGDReportWhole'</span>,<span class="st">'Findings'</span>)
-b3&lt;-<span class="kw"><a href="../reference/Barretts_FUType.html">Barretts_FUType</a></span>(b2,<span class="st">'Findings'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Create the merged dataset</span>
+
+v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
+<span class="co">#Find the worst pathological grade for that endoscopy</span>
+v<span class="op">$</span>IMorNoIM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(v, <span class="st">"Histology"</span>)
+<span class="co">#Find the Prague score for that endoscopy</span>
+b1&lt;-<span class="kw"><a href="../reference/Barretts_PragueScore.html">Barretts_PragueScore</a></span>(v, <span class="st">"Findings"</span>, <span class="st">"OGDReportWhole"</span>)
+<span class="co">#Get the follow-up type for that endoscopy</span>
+b1<span class="op">$</span>FU_Type&lt;-<span class="kw"><a href="../reference/Barretts_FUType.html">Barretts_FUType</a></span>(b1,<span class="st">"CStage"</span>,<span class="st">"MStage"</span>,<span class="st">"IMorNoIM"</span>)</code></pre></div>
 <table class="table">
 <colgroup>
-<col width="12%">
+<col width="9%">
 <col width="15%">
-<col width="12%">
-<col width="12%">
-<col width="13%">
-<col width="13%">
+<col width="15%">
+<col width="34%">
+<col width="15%">
+<col width="9%">
 </colgroup>
 <thead><tr class="header">
 <th align="center"> </th>
 <th align="center">IMorNoIM</th>
 <th align="center">CStage</th>
+<th align="center">mytext</th>
 <th align="center">MStage</th>
-<th align="center">EVENT</th>
-<th align="center">FU_Group</th>
+<th align="center">FU_Type</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="center"><strong>23</strong></td>
-<td align="center">No_IM</td>
-<td align="center">NA</td>
-<td align="center">2</td>
-<td align="center">RFA</td>
-<td align="center">Rule1</td>
+<td align="center">Insufficient</td>
+<td align="center">Insufficient</td>
+<td align="center">Oesophagus- Candida in proximal oesophagus, ,Flumazenil given, ,OESOPHAGUS: Two 0, ,Just distal to the anasomosis, inferior wall and anterior wall there were two ulcers with hematin deposits, ,No evidence of reflux oesophagitis, ,No inlet patch, ,STOMACH: PHG mild to moderate, ,Sha has a 2cm, ,They are mostly well covered, with red signs on one varix only, ,Some squamous papillomas in the distal oesophagus, , Therapeutic- RFA</td>
+<td align="center">Insufficient</td>
+<td align="center">NoRules</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>24</strong></td>
 <td align="center">No_IM</td>
 <td align="center">3</td>
+<td align="center">STOMACH: diffuse gastritis with angiodysplasia and punctate bleeding site on greater curve mid body - no obvious ulcer- antrum scar ?,OESOPHAGUS: Barrett’s osophagus C3M5 34-39cm, ,He also has erosive gastritis in the fundus, ,STOMACH: non-erosive gastritis from mid-body to antrum, CLO test: negative, ,STOMACH: numerous fundic glands looking polyps at body and fundus with size ranging from 2 mm to 10 mm, ,Otherwise entirely normal study, ,Scope easily passed through, , A lesion underwent EMR</td>
 <td align="center">5</td>
-<td align="center">nothing</td>
-<td align="center">Rule3</td>
+<td align="center">NoRules</td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>25</strong></td>
 <td align="center">IM</td>
-<td align="center">NA</td>
-<td align="center">0</td>
-<td align="center">nothing</td>
-<td align="center">Rule2</td>
+<td align="center">34</td>
+<td align="center">Top of gastrisc folds:43cm, ,No inlet patch, ,Biopsies taken from distal, mid and proximal third, ,STOMACH: Normal, ,Hiatus Hernia- Small, ,Oesophagus normal with no hiatus hernia or oesophagitis, ,D2 biopsies taken in view of weight loss, ,STOMACH: gastritis in antrum - CLO test: negative, ,Nodules between 38 anc 34cm, Paris Type IIa annd covered 75% of the circumference of the oesophagus, ,</td>
+<td align="center">34</td>
+<td align="center">NoRules</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>26</strong></td>
 <td align="center">No_IM</td>
 <td align="center">0</td>
+<td align="center">No varices anywhere in the upper GI tract/ no PHG, ,OESOPHAGUS: Barrett’s oesophagus C0 M1, ,No blood or sign of recent bleeding, ,</td>
 <td align="center">1</td>
-<td align="center">nothing</td>
 <td align="center">Rule1</td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>27</strong></td>
-<td align="center">No_IM</td>
-<td align="center">NA</td>
-<td align="center">0</td>
-<td align="center">nothing</td>
-<td align="center">Rule1</td>
+<td align="center">Insufficient</td>
+<td align="center">Insufficient</td>
+<td align="center">There is a duodenal diverticulum, just after the D1/D2 flexure but there is no inflammation, ulceration or erosions, ,Biopsies from D2 and stomach, ,Biopsies from D2 and stomach, ,Several erosions/small ulcers in inflammed antrum, ,Hiatus hernia, ,The antrum looks spared, ,Stomach - mild gastritis CLO - negative, ,D1 inspected carefully and no othe abnormalities seen, ,</td>
+<td align="center">Insufficient</td>
+<td align="center">NoRules</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="running-all-the-barretts-functions" class="section level3">
-<h3 class="hasAnchor">
-<a href="#running-all-the-barretts-functions" class="anchor"></a>Running all the Barrett’s functions:</h3>
-<p>It is sometimes useful to run all the Barrett’s functions rather than one by one. This is provided by the function BarrettsAll which is a parent function for Barretts_PathStage, Barretts_EventType, Barretts_FUType. It relies on the columns being named in a standardised way but not all the columns need to be present- if they are not present the BarrettsAll function will just skip them.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="co"># The histology is then merged with the Endoscopy dataset. The merge occurs</span>
- <span class="co"># according to date and Hospital number</span>
- v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,Mypath,<span class="st">'Dateofprocedure'</span>,
- <span class="st">'HospitalNumber'</span>)
- <span class="co">#The function relies on the other Barrett's functions being run as well:</span>
- b3&lt;-<span class="kw"><a href="../reference/BarrettsAll.html">BarrettsAll</a></span>(v)</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="12%">
-<col width="15%">
-<col width="12%">
-<col width="12%">
-<col width="15%">
-<col width="15%">
-</colgroup>
-<thead><tr class="header">
-<th align="center"> </th>
-<th align="center">IMorNoIM</th>
-<th align="center">CStage</th>
-<th align="center">MStage</th>
-<th align="center">FU_Group</th>
-<th align="center">EVENT</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center"><strong>23</strong></td>
-<td align="center">No_IM</td>
-<td align="center">NA</td>
-<td align="center">2</td>
-<td align="center">Rule1</td>
-<td align="center">RFA</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>24</strong></td>
-<td align="center">No_IM</td>
-<td align="center">3</td>
-<td align="center">5</td>
-<td align="center">Rule3</td>
-<td align="center">nothing</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>25</strong></td>
-<td align="center">IM</td>
-<td align="center">NA</td>
-<td align="center">0</td>
-<td align="center">Rule2</td>
-<td align="center">nothing</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>26</strong></td>
-<td align="center">No_IM</td>
-<td align="center">0</td>
-<td align="center">1</td>
-<td align="center">Rule1</td>
-<td align="center">nothing</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>27</strong></td>
-<td align="center">No_IM</td>
-<td align="center">NA</td>
-<td align="center">0</td>
-<td align="center">Rule1</td>
-<td align="center">nothing</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="assessment-of-barretts-therapeutics" class="section level2">
-<h2 class="hasAnchor">
-<a href="#assessment-of-barretts-therapeutics" class="anchor"></a>Assessment of Barrett’s therapeutics</h2>
-<p>Barrett’s patients also undergo therapeutic procedures and there are various metrics to analyse the performance of the therapy by endoscopist, as well which catheters are being used etc. To start with we can do simple things like plotting all the pathological grades of the EMRs.This should only be run after all the Barretts functions (as explained above- all contained within BarrettsAll) so that the column event is present in the dataframe.</p>
-<p>The therapeutic functions are fairly self-explanatory. The function to determine the post EMR grade is BarrettsEMRGrades with correlation with the endoscopists Paris classification (a standardised method to describe lesions in the upper GI tract) provided for with the function. Using the dataset extracted from the code chunk above:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># As long as the code int he chunk above has been run then all that needs to be done is:</span>
-<span class="kw"><a href="../reference/BarrettsEMRGrades.html">BarrettsEMRGrades</a></span>(b3)</code></pre></div>
-<p><img src="Barretts_files/figure-html/exampleBarretts_LesionRecognitionEMR2-1.png" width="672"></p>
-<p><br></p>
-<p>In order to determine the basic number of EMR, RFA and APC a function called BarrettsBasicNumbers is provided which outputs a geom_line plot with the information on it.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsBasicNumbers.html">BarrettsBasicNumbers</a></span>(b3,<span class="st">"Date.x"</span>)</code></pre></div>
-<pre><code>## $ProcNumbers
-## # A tibble: 43 x 3
-## # Groups:   EVENT [3]
-##    EVENT  year     n
-##    &lt;chr&gt; &lt;dbl&gt; &lt;int&gt;
-##  1 APC    2001     7
-##  2 APC    2002     8
-##  3 APC    2003     7
-##  4 APC    2004     8
-##  5 APC    2005     5
-##  6 APC    2006    10
-##  7 APC    2007    11
-##  8 APC    2008     8
-##  9 APC    2009     7
-## 10 APC    2010     3
-## # ... with 33 more rows
-## 
-## $ProcNumbersPlot</code></pre>
-<p><img src="Barretts_files/figure-html/exampleBarrettsBasicNumbers-1.png" width="700"></p>
-<p><br></p>
-<p>To assess the number of different catheter types used (for renumeration purposes for example) the following function BarrettssRFACath can be used. Because the use of a catheter may be part of the ProcedurePerformed column or in the free text of Findings, more than one column can be searched in.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettssRFACath.html">BarrettssRFACath</a></span>(b3,<span class="st">"ProcedurePerformed"</span>,<span class="st">"Findings"</span>)</code></pre></div>
-<p><img src="Barretts_files/figure-html/exampleBarrettsTherapeuticsRFA_ByCatheter-1.png" width="672"></p>
-<p><br></p>
-<p>One of the most important aspects of therapeutics is the assessment of outcome which is defined as clearance of intestinal metaplasia (CRIM), usually on at least two endoscopies. As most patients undergoing Barrett’s ablation will require radiofrequency ablation after the initial endoscopic mucosal resection, we can define CRIM as being an endoscopy where the therapeutic procedure is listed as ‘nothing’ in the EVENT column (this will only work if the Barrett’s pre-processing functions have been used) after a course of RFA or EMR</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ds&lt;-<span class="kw"><a href="../reference/Barretts_CRIM.html">Barretts_CRIM</a></span>(b3,<span class="st">'pHospitalNum'</span>,<span class="st">"EVENT"</span>)
-ds2&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(ds<span class="op">$</span>pHospitalNum,ds<span class="op">$</span>ind)</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="25%">
-<col width="11%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">ds.pHospitalNum</th>
-<th align="center">ds.ind</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">A1648588</td>
-<td align="center">TRUE</td>
-</tr>
-<tr class="even">
-<td align="center">A1648588</td>
-<td align="center">FALSE</td>
-</tr>
-<tr class="odd">
-<td align="center">A1648588</td>
-<td align="center">TRUE</td>
-</tr>
-<tr class="even">
-<td align="center">A1648588</td>
-<td align="center">FALSE</td>
-</tr>
-<tr class="odd">
-<td align="center">A1648588</td>
-<td align="center">TRUE</td>
-</tr>
-<tr class="even">
-<td align="center">A1648588</td>
-<td align="center">FALSE</td>
-</tr>
-<tr class="odd">
-<td align="center">A3962018</td>
-<td align="center">TRUE</td>
-</tr>
-<tr class="even">
-<td align="center">A3962018</td>
-<td align="center">FALSE</td>
-</tr>
-<tr class="odd">
-<td align="center">A3962018</td>
-<td align="center">TRUE</td>
-</tr>
-<tr class="even">
-<td align="center">A3962018</td>
-<td align="center">FALSE</td>
-</tr>
-</tbody>
-</table>
-<p><br></p>
 </div>
 <div id="quality-assessment-in-barretts-surveillance" class="section level2">
 <h2 class="hasAnchor">
 <a href="#quality-assessment-in-barretts-surveillance" class="anchor"></a>Quality assessment in Barrett’s surveillance</h2>
-<div id="quality-of-documentation-for-barretts-surveillance-endoscopies" class="section level3">
-<h3 class="hasAnchor">
-<a href="#quality-of-documentation-for-barretts-surveillance-endoscopies" class="anchor"></a>Quality of documentation for Barrett’s surveillance endoscopies</h3>
-<p>We can also assess the documentation used in Barrett’s endoscopies. Documentation quality is a cornerstone of endoscopic quality as listed in the EndoMineR principles and also in the <a href="https://sebastiz.github.io/EndoMineR/articles/Analysis.html">Analysis</a> tutorial There are standards associated with the endoscopies that all endoscopists should adhere to. This function therefore assesses the Barrett’s documentation. This notes how many reports contain the mandatory report fields as specified in the BSG standards on Barrett’s endoscopic reporting. This should be run after the Barretts_Prague as assessment of the Prague score is a part of this assessment:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsDocumentQual.html">BarrettsDocumentQual</a></span>(b3,<span class="st">"Findings"</span>)</code></pre></div>
-<p><img src="Barretts_files/figure-html/exampleBarrettsQuality_AnalysisDocumentation-1.png" width="700"></p>
-<p><br></p>
-</div>
+<p>Many of the aspects of generic quality monitoring apply to Barrett’s as well. For example, you may want to make sure that the endoscopy reports adhere to guidance about what should be in an endoscopy report. This can be assessed using the generic function <strong>ListLookUp</strong></p>
 <div id="quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="section level3">
 <h3 class="hasAnchor">
 <a href="#quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="anchor"></a>Quality of perfomance of Barrett’s surveillance endoscopies as just by tissue sampling</h3>
-<p>One of the essential requirements to demonstrate adequate sampling of Barrett’s oesophagus during endoscopy is that the endoscopist should adhere to the ‘Seattle protocol’ for biopsies which is to take 4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett’s samples is pre-requisite. The Number of biopsies and their size should also be extracted using the histopathology functions.</p>
+<p>Some things are specific to Barrett’s oesophagus however. One of the essential requirements to demonstrate adequate sampling of Barrett’s oesophagus during endoscopy is that the endoscopist should adhere to the ‘Seattle protocol’ for biopsies which is to take 4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett’s samples is pre-requisite. The Number of biopsies and their size should also be extracted using the histopathology functions.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="co"># The number of average number of biopsies is then calculated and</span>
  <span class="co"># compared to the average Prague C score so that those who are taking</span>
  <span class="co"># too few biopsies can be determined</span>
-b4&lt;-<span class="kw"><a href="../reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(b3,<span class="st">'Macroscopicdescription'</span>,<span class="st">'specimen'</span>)
-b4&lt;-<span class="kw"><a href="../reference/HistolBxSize.html">HistolBxSize</a></span>(b4,<span class="st">'Macroscopicdescription'</span>)
-<span class="kw"><a href="../reference/BarrettsBxQual.html">BarrettsBxQual</a></span>(b4,<span class="st">'Date.x'</span>,<span class="st">'HospitalNumber'</span>,
-                                      <span class="st">'Endoscopist'</span>)</code></pre></div>
-<pre><code>## $BxShortfallPre
-##                        Endoscopist    MeanDiff
-## 1    Dr\n al-Arif, Ummu Kulthoom\n -12.8888889
-## 2           Dr\n Anderson, Alana\n  -1.8500000
-## 3   Dr\n Avitia-Ramirez, Alondra\n  -6.3181818
-## 4           Dr\n Greimann, Phoua\n  -2.7222222
-## 5             Dr\n Ives, Rashiah\n  -8.5416667
-## 6         Dr\n Kekich, Annabelle\n  -0.8333333
-## 7     Dr\n Kola-Kehinde, Karisma\n   0.7619048
-## 8          Dr\n Martinez, Maegen\n -11.9090909
-## 9            Dr\n Moreno, Lauren\n  -0.3478261
-## 10         Dr\n Sullivan, Shelby\n  -9.8333333
-## 
-## $t</code></pre>
-<p><img src="Barretts_files/figure-html/exampleBarrettsQuality_AnalysisBiopsyNumber-1.png" width="672"></p>
+<span class="co">#Lets just use the Surveillance endoscopies:</span>
+b1&lt;-b1[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">grepl</a></span>(<span class="st">"[Ss]urv"</span>,b1<span class="op">$</span>Indications),]
+b1<span class="op">$</span>NumBx&lt;-<span class="kw"><a href="../reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(b1<span class="op">$</span>Macroscopicdescription,<span class="st">'specimen'</span>)
+b1<span class="op">$</span>BxSize &lt;-<span class="st"> </span><span class="kw"><a href="../reference/HistolBxSize.html">HistolBxSize</a></span>(b1<span class="op">$</span>Macroscopicdescription)
+<span class="kw"><a href="../reference/BarrettsBxQual.html">BarrettsBxQual</a></span>(b1,<span class="st">'Date.x'</span>,<span class="st">'HospitalNumber'</span>,
+                                    <span class="st">'Endoscopist'</span>)</code></pre></div>
+<pre><code>##                       Endoscopist    MeanDiff
+## 1   Dr\n al-Arif, Ummu Kulthoom\n -5696297.67
+## 2  Dr\n Avitia-Ramirez, Alondra\n        2.00
+## 3          Dr\n Greimann, Phoua\n        2.00
+## 4            Dr\n Ives, Rashiah\n       -0.67
+## 5        Dr\n Kekich, Annabelle\n       -4.00
+## 6    Dr\n Kola-Kehinde, Karisma\n -5579167.00
+## 7         Dr\n Martinez, Maegen\n        3.00
+## 8           Dr\n Moreno, Lauren\n       -1.00
+## 9         Dr\n Sullivan, Shelby\n        1.50</code></pre>
 <p><br></p>
-<p>This function will again return a list with a ggplot showing the shortfall per endoscopist as well as a table with the same values.</p>
-</div>
-<div id="quality-of-perfomance-of-barretts-surveillance-endoscopies" class="section level3">
-<h3 class="hasAnchor">
-<a href="#quality-of-perfomance-of-barretts-surveillance-endoscopies" class="anchor"></a>Quality of perfomance of Barrett’s surveillance endoscopies</h3>
-<p>As we discovered with some of the generic functions above, one way to determine quality of endoscopy is to assess the pathology of specimens taken at surveillance per year. This function outputs a plot which determines the the overall number of pathologies (low/high grade dysplasia and cancer) for patients on surveillance.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/BarrettsPathDetectQual.html">BarrettsPathDetectQual</a></span>(b3,<span class="st">'Myplot'</span>)</code></pre></div>
-<p><img src="Barretts_files/figure-html/exampleBarrettsSurveillance_PathDetection-1.png" width="672"></p>
-<p><br></p>
-<p>This function provides a plot with absolute numbers of pathology detected. This of course doesn’t tell us the per endoscopist rate so a further function is provided which looks specifically at the detection of dysplasia by endoscopist as a function of the number of surveillance endoscopies done by that endoscopist. The output is provided as a table of proportions per endoscopist. This is called the dysplasia detection rate and gives you a good idea of how robustly an endoscopist is examining a segment of Barrett’s mucosa.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bDDR&lt;-<span class="kw"><a href="../reference/BarrettsDDRQual.html">BarrettsDDRQual</a></span>(b3,<span class="st">'Endoscopist'</span>,<span class="st">'IMorNoIM'</span>)</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="38%">
-<col width="12%">
-<col width="11%">
-<col width="12%">
-<col width="11%">
-<col width="12%">
-</colgroup>
-<thead><tr class="header">
-<th align="center"> </th>
-<th align="center">HGD</th>
-<th align="center">IM</th>
-<th align="center">LGD</th>
-<th align="center">No_IM</th>
-<th align="center">T1a</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center"><strong>Dr al-Arif, Ummu Kulthoom</strong></td>
-<td align="center">0.007109</td>
-<td align="center">0.02085</td>
-<td align="center">0.004739</td>
-<td align="center">0.07773</td>
-<td align="center">0.001896</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>Dr Anderson, Alana</strong></td>
-<td align="center">0.006161</td>
-<td align="center">0.02133</td>
-<td align="center">0.003791</td>
-<td align="center">0.07251</td>
-<td align="center">0.00237</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>Dr Avitia-Ramirez, Alondra</strong></td>
-<td align="center">0.006161</td>
-<td align="center">0.02085</td>
-<td align="center">0.005213</td>
-<td align="center">0.06161</td>
-<td align="center">0.001422</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>Dr Greimann, Phoua</strong></td>
-<td align="center">0.004739</td>
-<td align="center">0.01659</td>
-<td align="center">0.003791</td>
-<td align="center">0.06351</td>
-<td align="center">0.0004739</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>Dr Ives, Rashiah</strong></td>
-<td align="center">0.005687</td>
-<td align="center">0.02322</td>
-<td align="center">0.003791</td>
-<td align="center">0.06872</td>
-<td align="center">0.0009479</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>Dr Kekich, Annabelle</strong></td>
-<td align="center">0.005213</td>
-<td align="center">0.01801</td>
-<td align="center">0.00237</td>
-<td align="center">0.06493</td>
-<td align="center">0</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>Dr Kola-Kehinde, Karisma</strong></td>
-<td align="center">0.007583</td>
-<td align="center">0.01611</td>
-<td align="center">0.007583</td>
-<td align="center">0.0654</td>
-<td align="center">0.0009479</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>Dr Martinez, Maegen</strong></td>
-<td align="center">0.009005</td>
-<td align="center">0.01896</td>
-<td align="center">0.004265</td>
-<td align="center">0.06635</td>
-<td align="center">0.0004739</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>Dr Moreno, Lauren</strong></td>
-<td align="center">0.007109</td>
-<td align="center">0.01801</td>
-<td align="center">0.01043</td>
-<td align="center">0.07441</td>
-<td align="center">0.0004739</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>Dr Sullivan, Shelby</strong></td>
-<td align="center">0.009479</td>
-<td align="center">0.02133</td>
-<td align="center">0.006635</td>
-<td align="center">0.05924</td>
-<td align="center">0.0004739</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div id="surveillance-enrollment-and-lost-to-follow-ups" class="section level2">
-<h2 class="hasAnchor">
-<a href="#surveillance-enrollment-and-lost-to-follow-ups" class="anchor"></a>Surveillance enrollment and lost to follow-ups</h2>
-<div id="enrollment-rates-to-surveillance-programme" class="section level3">
-<h3 class="hasAnchor">
-<a href="#enrollment-rates-to-surveillance-programme" class="anchor"></a>Enrollment rates to surveillance programme</h3>
-<p>We can determine how many patients who underwent endoscopy for reasons that was not Barrett’s surveillance, and in whom Barrett’s oesophagus was found, have had further follow-up endoscopies ie what the enrollment to surveillance rate is in those who weren’t known to have Barrett’s when their endoscopy was performed.</p>
-<p>This function graphs the patients who were not on surveillance programmes and sees how many then had an endoscopy. This should be run after the Barretts_Prague and Barretts_PathStage.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Enroll&lt;-<span class="kw"><a href="../reference/BarrettsSurveil.html">BarrettsSurveil</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Indications'</span>)
-MyEnroll&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Enroll[<span class="st">"HospitalNumber"</span>],Enroll[<span class="st">"Years"</span>])</code></pre></div>
-<table class="table">
-<colgroup>
-<col width="23%">
-<col width="23%">
-</colgroup>
-<thead><tr class="header">
-<th align="center">HospitalNumber</th>
-<th align="center">Years</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">C2789586</td>
-<td align="center">3.027473 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">D9082891</td>
-<td align="center">3.502747 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">E7461659</td>
-<td align="center">3.596154 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">G4762980</td>
-<td align="center">3.395604 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">G8210675</td>
-<td align="center">3.107143 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">H7489214</td>
-<td align="center">3.131868 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">J1337672</td>
-<td align="center">5.706044 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">K8099671</td>
-<td align="center">3.351648 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">M5148114</td>
-<td align="center">4.469780 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">M8823141</td>
-<td align="center">3.019231 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">P2080807</td>
-<td align="center">4.013736 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">P4425100</td>
-<td align="center">3.002747 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">Q4907331</td>
-<td align="center">3.148352 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">Q7176341</td>
-<td align="center">4.519231 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">Q7729897</td>
-<td align="center">4.384615 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">R3882435</td>
-<td align="center">4.057692 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">S1951882</td>
-<td align="center">4.054945 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">S6740918</td>
-<td align="center">3.390110 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">T9453315</td>
-<td align="center">3.206044 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">U5156770</td>
-<td align="center">3.159341 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">W2120051</td>
-<td align="center">3.942308 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">W7335845</td>
-<td align="center">3.137363 weeks</td>
-</tr>
-<tr class="odd">
-<td align="center">Y7228898</td>
-<td align="center">3.461538 weeks</td>
-</tr>
-<tr class="even">
-<td align="center">Z9871480</td>
-<td align="center">3.291209 weeks</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="patients-undergoing-surveillance" class="section level3">
-<h3 class="hasAnchor">
-<a href="#patients-undergoing-surveillance" class="anchor"></a>Patients undergoing surveillance</h3>
-<p>Perhaps we are also interested in how many patients fall under each follow-up category so we can plan how many Barrett’s surveillance endoscopies we are going to have to do over a certain time period The function to do this gets the unique patient ID’s for each patient, for each rule. It lists the unique PatientIDs associated with a rule (‘Rule1’,‘Rule2’,‘Rule3’,‘NoRules’). This allows us to determine how many patients will need follow up at specific time intervals. This should be run after the Barretts_Prague, Barretts_PathStage and Barretts_FUType. The following example shows the inidividual patients who are currently under a Rule1 follow up.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
-b4&lt;-<span class="kw"><a href="../reference/BarrettsAll.html">BarrettsAll</a></span>(v)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(b4)[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">colnames</a></span>(b4) <span class="op">==</span><span class="st"> 'pHospitalNum'</span>] &lt;-<span class="st"> 'HospitalNumber'</span>
-Rule&lt;-<span class="kw"><a href="../reference/BarrettsSurveil_HospNum.html">BarrettsSurveil_HospNum</a></span>(b4,<span class="st">'Rule1'</span>,<span class="st">'HospitalNumber'</span>)</code></pre></div>
-<table class="table">
-<colgroup><col width="13%"></colgroup>
-<thead><tr class="header">
-<th align="center">x</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="center">J6044658</td>
-</tr>
-<tr class="even">
-<td align="center">Y6417773</td>
-</tr>
-<tr class="odd">
-<td align="center">B6072011</td>
-</tr>
-<tr class="even">
-<td align="center">G1449886</td>
-</tr>
-<tr class="odd">
-<td align="center">O7163832</td>
-</tr>
-<tr class="even">
-<td align="center">L4378217</td>
-</tr>
-<tr class="odd">
-<td align="center">K2657390</td>
-</tr>
-<tr class="even">
-<td align="center">N4378127</td>
-</tr>
-<tr class="odd">
-<td align="center">R8004923</td>
-</tr>
-<tr class="even">
-<td align="center">M5148114</td>
-</tr>
-</tbody>
-</table>
+<p>This function will again return a dataframe with the number of biopsies taken that is outside of the number that should have been taken for a certain Prague score.</p>
 </div>
 </div>
   </div>
@@ -905,9 +367,7 @@ Rule&lt;-<span class="kw"><a href="../reference/BarrettsSurveil_HospNum.html">Ba
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#specific-diseases---barretts-oesophagus">Specific diseases - Barrett’s oesophagus</a></li>
       <li><a href="#pre-processing-barretts-samples">Pre-processing Barrett’s samples</a></li>
-      <li><a href="#assessment-of-barretts-therapeutics">Assessment of Barrett’s therapeutics</a></li>
       <li><a href="#quality-assessment-in-barretts-surveillance">Quality assessment in Barrett’s surveillance</a></li>
-      <li><a href="#surveillance-enrollment-and-lost-to-follow-ups">Surveillance enrollment and lost to follow-ups</a></li>
       </ul>
 </div>
       </div>

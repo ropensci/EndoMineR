@@ -68,7 +68,7 @@ in row duplication." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -98,6 +98,9 @@ in row duplication." />
     </li>
     <li>
       <a href="../articles/Barretts.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Polyps.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -150,7 +153,7 @@ in row duplication." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Determine the largest biopsy size from the histology report</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/CleanUp.R'><code>R/CleanUp.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_EndoPathExtractors.R'><code>R/Basic_EndoPathExtractors.R</code></a></small>
     <div class="hidden name"><code>HistolBxSize.Rd</code></div>
     </div>
 
@@ -163,15 +166,11 @@ in row duplication.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>HistolBxSize</span>(<span class='no'>dataframe</span>, <span class='no'>MacroColumn</span>)</pre>
+    <pre class="usage"><span class='fu'>HistolBxSize</span>(<span class='no'>MacroColumn</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>dataframe</th>
-      <td><p>dataframe</p></td>
-    </tr>
     <tr>
       <th>MacroColumn</th>
       <td><p>Macdescrip</p></td>
@@ -184,7 +183,7 @@ in row duplication.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>rr</span><span class='kw'>&lt;-</span><span class='fu'>HistolBxSize</span>(<span class='no'>Mypath</span>,<span class='st'>'Macroscopicdescription'</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>rr</span> <span class='kw'>&lt;-</span> <span class='fu'>HistolBxSize</span>(<span class='no'>Mypath</span>$<span class='no'>Macroscopicdescription</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

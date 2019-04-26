@@ -26,28 +26,34 @@ of biopsies being taken.
 # Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
-Mypath$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
-Mypath$BxSize<-HistolBxSize(Mypath$Macroscopicdescription)
+Mypath$NumBx <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
+Mypath$BxSize <- HistolBxSize(Mypath$Macroscopicdescription)
 
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',Mypath,'Dateofprocedure',
-'HospitalNumber')
+v <- Endomerge2(
+  Myendo, "Dateofprocedure", "HospitalNumber", Mypath, "Dateofprocedure",
+  "HospitalNumber"
+)
 
 # The function relies on the other Barrett's functions being run as well:
-b1<-Barretts_PragueScore(v,'Findings')
-b1$PathStage<-Barretts_PathStage(b1,'Histology')
+b1 <- Barretts_PragueScore(v, "Findings")
+b1$PathStage <- Barretts_PathStage(b1, "Histology")
+
 # The follow-up group depends on the histology and the Prague score for a
 # patient so it takes the processed Barrett's data and then looks in the
 # Findings column for permutations of the Prague score.
-b1$FU_Type<-Barretts_FUType(b1,"CStage","MStage","PathStage")
-colnames(b1)[colnames(b1) == 'pHospitalNum'] <- 'HospitalNumber'
+b1$FU_Type <- Barretts_FUType(b1, "CStage", "MStage", "PathStage")
 
+
+colnames(b1)[colnames(b1) == "pHospitalNum"] <- "HospitalNumber"
 # The number of average number of biopsies is then calculated and
 # compared to the average Prague C score so that those who are taking
 # too few biopsies can be determined
-hh<-BarrettsBxQual(b1,'Date.x','HospitalNumber',
-                                     'Endoscopist')
+hh <- BarrettsBxQual(
+  b1, "Date.x", "HospitalNumber",
+  "Endoscopist"
+)
 rm(v)
 }
 \keyword{Does}

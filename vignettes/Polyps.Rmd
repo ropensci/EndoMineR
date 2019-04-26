@@ -1,0 +1,62 @@
+---
+title: "Analysis"
+author: "Sebastian Zeki"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  rmarkdown::html_document:
+    theme: lumen
+    toc: true
+    toc_depth: 5
+    css: style.css
+vignette: >
+  %\VignetteIndexEntry{EndoMineR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(pander)
+library(EndoMineR)
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set( warning=FALSE, message=FALSE)
+```
+
+
+##**Pathology Detection Quality**
+
+<br>
+
+###**Polyp and sample location**
+
+<br>
+
+A difficult area is the assessment of endoscopic quality by looking at the pathology processed from an endoscopy. This package is excellent at dealing with this kind of question because of its ability to merge the datasets together:
+
+A particularly well developed area to look at is that of the [Global Rating Scale](http://www.healthcareimprovementscotland.org/our_work/governance_and_assurance/endoscopy_accreditation/grs_reports.aspx) for assessing the quality of colonoscopy. One of the metrics- the adenoma detection rate assesses the number of colonoscopies where at least one adenoma was detected.
+
+One function is provided to produce a table that gives the number of adenomas, adenocarcinomas and hyperplastic polyps (also as a ration to adenomas) by endoscopist therefore immediately fulfilling the GRS requirement for the ADR as well as providing further metrics alongside.
+
+Having made sure the text is prepared (using the **textPrep** function) and merged with Pathology reports (which have also been textPrep'd) we can go straight ahead and use the function **GRS_Type_Assess_By_Unit** on one of our example datasets called vColon (the format of the dataset can be seen in the Data vignette. Here we will use the columns "ProcedurePerformed","Endoscopist", "Diagnosis" and  "Histology" to calculate the adenoma detection rate, as well as the rate of detection of adenocarcinoma, high grade dysplasia, low grade dysplasia, serrated adenomas and hyperplastic adenomas.
+
+
+```{r exampleGRS}
+  data(vColon)
+  nn<-GRS_Type_Assess_By_Unit(
+  vColon, "ProcedurePerformed",
+  "Endoscopist", "Diagnosis", "Histology")
+```
+
+```{r exampleGRStbl,echo=FALSE}
+   pander(nn)
+```
+
+<br>
+ 
+This of course can then be graphed using the pre-formatted function **EndoBasicGraph** 
+```{r exampleGRSGraph,warning=FALSE,message=FALSE}
+EndoBasicGraph(nn, "Endoscopist", "Adenocarcinoma")
+```

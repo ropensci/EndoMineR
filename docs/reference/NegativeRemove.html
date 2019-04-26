@@ -34,14 +34,11 @@
   
 <meta property="og:title" content="Removes negative and normal sentences — NegativeRemove" />
 
-<meta property="og:description" content="Extraction of the Negative sentences so that normal findings can be
+<meta property="og:description" content="Extraction of the negative sentences so that normal findings can be
 removed and not counted when searching for true diseases. eg remove
-No evidence of candidal infection so it doesn't get included if
-looking for candidal infections.
-It should be used after the Extractor and the optional
-NewLines has been used. It can be used as part of the other functions
-or as a way of providing a 'positive diagnosis only' type output (see
-HistolDx)" />
+'No evidence of candidal infection' so it doesn't get included if
+looking for candidal infections. It is used by default as part of
+the textPrep function but can be turned off as an optional parameter" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -72,7 +69,7 @@ HistolDx)" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -102,6 +99,9 @@ HistolDx)" />
     </li>
     <li>
       <a href="../articles/Barretts.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Polyps.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -154,42 +154,39 @@ HistolDx)" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Removes negative and normal sentences</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/CleanUp.R'><code>R/CleanUp.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_CleanUp.R'><code>R/Basic_CleanUp.R</code></a></small>
     <div class="hidden name"><code>NegativeRemove.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Extraction of the Negative sentences so that normal findings can be
+    <p>Extraction of the negative sentences so that normal findings can be
 removed and not counted when searching for true diseases. eg remove
-No evidence of candidal infection so it doesn't get included if
-looking for candidal infections.
-It should be used after the Extractor and the optional
-NewLines has been used. It can be used as part of the other functions
-or as a way of providing a 'positive diagnosis only' type output (see
-HistolDx)</p>
+'No evidence of candidal infection' so it doesn't get included if
+looking for candidal infections. It is used by default as part of
+the textPrep function but can be turned off as an optional parameter</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>NegativeRemove</span>(<span class='no'>dataframe</span>, <span class='no'>Column</span>)</pre>
+    <pre class="usage"><span class='fu'>NegativeRemove</span>(<span class='no'>inputText</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataframe</th>
-      <td><p>dataframe with column of interest</p></td>
-    </tr>
-    <tr>
-      <th>Column</th>
+      <th>inputText</th>
       <td><p>column of interest</p></td>
     </tr>
     </table>
     
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>This returns a column within a dataframe. THis should be changed to a 
+character vector eventually</p>
+    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Build a character vector and then</span>
-<span class='co'># incorporate into a dataframe</span>
+    <pre class="examples"><div class='input'><span class='co'># Build a character vector and then incorporate into a dataframe</span>
 <span class='no'>anexample</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"There is no evidence of polyp here"</span>,
 <span class='st'>"Although the prep was poor,there was no adenoma found"</span>,
 <span class='st'>"The colon was basically inflammed, but no polyp was seen"</span>,
@@ -199,13 +196,15 @@ HistolDx)</p>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>anexample</span>)<span class='kw'>&lt;-</span><span class='st'>"Thecol"</span>
 <span class='co'># Run the function on the dataframe and it should get rid of sentences (and</span>
 <span class='co'># parts of sentences) with negative parts in them.</span>
-<span class='no'>hh</span><span class='kw'>&lt;-</span><span class='fu'>NegativeRemove</span>(<span class='no'>anexample</span>,<span class='st'>"Thecol"</span>)</div></pre>
+<span class='no'>hh</span><span class='kw'>&lt;-</span><span class='fu'>NegativeRemove</span>(<span class='no'>anexample</span>$<span class='no'>Thecol</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-            
+      
+      <li><a href="#value">Value</a></li>
+      
       <li><a href="#examples">Examples</a></li>
     </ul>
 

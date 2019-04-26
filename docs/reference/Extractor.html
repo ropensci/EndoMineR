@@ -35,9 +35,9 @@
 <meta property="og:title" content="Extracts the columns from the raw report — Extractor" />
 
 <meta property="og:description" content="This is the main extractor for the Endoscopy and Histology report.
-This depends on the user creating a list of words or characters that
-act as the words that should be split against. The list is then fed to the
-Extractor in a loop so that it acts as the beginning and the end of the
+This relies on the user creating a list of words representing the
+subheadings. The list is then fed to the
+Extractor so that it acts as the beginning and the end of the
 regex used to split the text. Whatever has been specified in the list
 is used as a column header. Column headers don't tolerate special characters
 like : or ? and / and don't allow numbers as the start character so these
@@ -72,7 +72,7 @@ have to be dealt with in the text before processing" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -102,6 +102,9 @@ have to be dealt with in the text before processing" />
     </li>
     <li>
       <a href="../articles/Barretts.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Polyps.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -154,16 +157,16 @@ have to be dealt with in the text before processing" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Extracts the columns from the raw report</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/CleanUp.R'><code>R/CleanUp.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_CleanUp.R'><code>R/Basic_CleanUp.R</code></a></small>
     <div class="hidden name"><code>Extractor.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
     <p>This is the main extractor for the Endoscopy and Histology report.
-This depends on the user creating a list of words or characters that
-act as the words that should be split against. The list is then fed to the
-Extractor in a loop so that it acts as the beginning and the end of the
+This relies on the user creating a list of words representing the
+subheadings. The list is then fed to the
+Extractor so that it acts as the beginning and the end of the
 regex used to split the text. Whatever has been specified in the list
 is used as a column header. Column headers don't tolerate special characters
 like : or ? and / and don't allow numbers as the start character so these
@@ -171,17 +174,13 @@ have to be dealt with in the text before processing</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>Extractor</span>(<span class='no'>dataframeIn</span>, <span class='no'>Column</span>, <span class='no'>delim</span>)</pre>
+    <pre class="usage"><span class='fu'>Extractor</span>(<span class='no'>inputString</span>, <span class='no'>delim</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>dataframeIn</th>
-      <td><p>the dataframe</p></td>
-    </tr>
-    <tr>
-      <th>Column</th>
+      <th>inputString</th>
       <td><p>the column to extract from</p></td>
     </tr>
     <tr>
@@ -200,7 +199,7 @@ extract against</p></td>
 <span class='no'>mywords</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"Hospital Number"</span>,<span class='st'>"Patient Name:"</span>,<span class='st'>"DOB:"</span>,<span class='st'>"General Practitioner:"</span>,
 <span class='st'>"Date received:"</span>,<span class='st'>"Clinical Details:"</span>,<span class='st'>"Macroscopic description:"</span>,
 <span class='st'>"Histology:"</span>,<span class='st'>"Diagnosis:"</span>)
-<span class='no'>Mypath2</span><span class='kw'>&lt;-</span><span class='fu'>Extractor</span>(<span class='no'>PathDataFrameFinal</span>,<span class='st'>"PathReportWhole"</span>,<span class='no'>mywords</span>)</div></pre>
+<span class='no'>Mypath2</span><span class='kw'>&lt;-</span><span class='fu'>Extractor</span>(<span class='no'>PathDataFrameFinal</span>$<span class='no'>PathReportWhole</span>,<span class='no'>mywords</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -21,6 +21,6 @@ Note this is possibly going to be deprecated in the next version
 as the endoscope coding used here is not widely used.
 }
 \examples{
-Myendo$Instrument<-EndoscInstrument(Myendo$Instrument)
+Myendo$Instrument <- EndoscInstrument(Myendo$Instrument)
 }
 \keyword{Instrument}

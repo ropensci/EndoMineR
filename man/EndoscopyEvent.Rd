@@ -29,7 +29,7 @@ added to the event.
 }
 \examples{
 # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings",
-#"ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
+# "ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 }
 \keyword{Find}
 \keyword{and}

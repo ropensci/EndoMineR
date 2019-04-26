@@ -34,7 +34,8 @@
   
 <meta property="og:title" content="Extract the time difference between each test in days — SurveilTimeByRow" />
 
-<meta property="og:description" content="This determines the time difference between each test for a patient in days." />
+<meta property="og:description" content="This determines the time difference between each test for a patient in days
+It returns the time since the first and the last study as a new dataframe." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -65,7 +66,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -95,6 +96,9 @@
     </li>
     <li>
       <a href="../articles/Barretts.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Polyps.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -153,7 +157,8 @@
 
     <div class="ref-description">
     
-    <p>This determines the time difference between each test for a patient in days.</p>
+    <p>This determines the time difference between each test for a patient in days
+It returns the time since the first and the last study as a new dataframe.</p>
     
     </div>
 
@@ -178,8 +183,10 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>aa</span><span class='kw'>&lt;-</span><span class='fu'>SurveilTimeByRow</span>(<span class='no'>Myendo</span>,<span class='st'>'HospitalNumber'</span>,
-<span class='st'>'Dateofprocedure'</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>aa</span> <span class='kw'>&lt;-</span> <span class='fu'>SurveilTimeByRow</span>(
+  <span class='no'>Myendo</span>, <span class='st'>"HospitalNumber"</span>,
+  <span class='st'>"Dateofprocedure"</span>
+)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

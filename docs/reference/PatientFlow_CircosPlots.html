@@ -66,7 +66,7 @@ type of procedure to another using circos plots." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EndoMineR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0.9000</span>
       </span>
     </div>
 
@@ -96,6 +96,9 @@ type of procedure to another using circos plots." />
     </li>
     <li>
       <a href="../articles/Barretts.html">Barrett's</a>
+    </li>
+    <li>
+      <a href="../articles/Polyps.html">Lower GI Polyps</a>
     </li>
     <li>
       <a href="../articles/Data.html">Data</a>
@@ -148,7 +151,7 @@ type of procedure to another using circos plots." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Create a Circos plot for patient flow</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/EndoMineR.R'><code>R/EndoMineR.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Graphics.R'><code>R/Graphics.R</code></a></small>
     <div class="hidden name"><code>PatientFlow_CircosPlots.Rd</code></div>
     </div>
 
@@ -191,23 +194,25 @@ any dscription of a procedure you desire)</p></td>
 <span class='co'># overview of how patients flow from one state to another than the</span>
 <span class='co'># SurveySankey function</span>
 <span class='co'># Build a list of procedures</span>
-<span class='no'>Event</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>x1</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- Dilatation"</span>,
-<span class='kw'>x2</span> <span class='kw'>=</span> <span class='st'>"Other-"</span>, <span class='kw'>x3</span> <span class='kw'>=</span> <span class='st'>"Surveillance"</span>,
-<span class='kw'>x4</span> <span class='kw'>=</span> <span class='st'>"APC"</span>, <span class='kw'>x5</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- RFA TTS"</span>,
-<span class='kw'>x5</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- RFA 90"</span>,
-<span class='kw'>x6</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- EMR"</span>, <span class='kw'>x7</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- RFA 360"</span>)
-<span class='no'>EndoEvent</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>replicate</a></span>(<span class='fl'>2000</span>,<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sample'>sample</a></span>(<span class='no'>Event</span>,<span class='fl'>1</span>, <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>))
+<span class='no'>Event</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(
+  <span class='kw'>x1</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- Dilatation"</span>,
+  <span class='kw'>x2</span> <span class='kw'>=</span> <span class='st'>"Other-"</span>, <span class='kw'>x3</span> <span class='kw'>=</span> <span class='st'>"Surveillance"</span>,
+  <span class='kw'>x4</span> <span class='kw'>=</span> <span class='st'>"APC"</span>, <span class='kw'>x5</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- RFA TTS"</span>,
+  <span class='kw'>x5</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- RFA 90"</span>,
+  <span class='kw'>x6</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- EMR"</span>, <span class='kw'>x7</span> <span class='kw'>=</span> <span class='st'>"Therapeutic- RFA 360"</span>
+)
+<span class='no'>EndoEvent</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/lapply'>replicate</a></span>(<span class='fl'>2000</span>, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/sample'>sample</a></span>(<span class='no'>Event</span>, <span class='fl'>1</span>, <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>))
 <span class='co'># Merge the list with the Myendo dataframe</span>
-<span class='no'>fff</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>(<span class='no'>EndoEvent</span>)
-<span class='no'>fff</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='no'>fff</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>fff</span>)<span class='kw'>&lt;-</span><span class='st'>"col1"</span>
-<span class='no'>Myendo</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='no'>fff</span>$<span class='no'>col1</span>,<span class='no'>Myendo</span>)
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>) <span class='kw'>==</span> <span class='st'>'HospitalNumber'</span>] <span class='kw'>&lt;-</span> <span class='st'>'PatientID'</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>) <span class='kw'>==</span> <span class='st'>'fff$col1'</span>] <span class='kw'>&lt;-</span> <span class='st'>'EndoEvent'</span>
+<span class='no'>fff</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/unlist'>unlist</a></span>(<span class='no'>EndoEvent</span>)
+<span class='no'>fff</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='no'>fff</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>fff</span>) <span class='kw'>&lt;-</span> <span class='st'>"col1"</span>
+<span class='no'>Myendo</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>cbind</a></span>(<span class='no'>fff</span>$<span class='no'>col1</span>, <span class='no'>Myendo</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>) <span class='kw'>==</span> <span class='st'>"HospitalNumber"</span>] <span class='kw'>&lt;-</span> <span class='st'>"PatientID"</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>)[<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/names'>names</a></span>(<span class='no'>Myendo</span>) <span class='kw'>==</span> <span class='st'>"fff$col1"</span>] <span class='kw'>&lt;-</span> <span class='st'>"EndoEvent"</span>
 <span class='co'># Myendo$EndoEvent&lt;-as.character(Myendo$EndoEvent)</span>
 <span class='co'># Run the function using the procedure information (the date of the</span>
 <span class='co'># procedure, the Event type and the individual patient IDs)</span>
-<span class='no'>hh</span><span class='kw'>&lt;-</span><span class='fu'>PatientFlow_CircosPlots</span>(<span class='no'>Myendo</span>,<span class='st'>"Dateofprocedure"</span>,<span class='st'>"PatientID"</span>,<span class='st'>"EndoEvent"</span>)</div><div class='output co'>#&gt; <span class='message'>Using n as value column: use value.var to override.</span></div><div class='output co'>#&gt; <span class='message'>Aggregation function missing: defaulting to length</span></div><div class='img'><img src='PatientFlow_CircosPlots-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>Myendo</span>)
+<span class='no'>hh</span> <span class='kw'>&lt;-</span> <span class='fu'>PatientFlow_CircosPlots</span>(<span class='no'>Myendo</span>, <span class='st'>"Dateofprocedure"</span>, <span class='st'>"PatientID"</span>, <span class='st'>"EndoEvent"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Factor `origin` contains implicit NA, consider using `forcats::fct_explicit_na`</span></div><div class='output co'>#&gt; <span class='message'>Using n as value column: use value.var to override.</span></div><div class='output co'>#&gt; <span class='message'>Aggregation function missing: defaulting to length</span></div><div class='img'><img src='PatientFlow_CircosPlots-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>Myendo</span>)
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rm'>rm</a></span>(<span class='no'>EndoEvent</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
