@@ -1,0 +1,70 @@
+---
+title: "TemplatePresentation"
+author: "Sebastian Zeki"
+date: "4/23/2019"
+output: ioslides_presentation
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(results = 'asis', echo = FALSE, comment = FALSE,  warning = FALSE, message = FALSE, fig.align = 'center')
+library(knitr)
+library(here)
+library(EndoMineR)
+library(DiagrammeR)
+library(CodeDepends)
+```
+
+## R Markdown
+
+This is an R Markdown presentation. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document.
+
+## Import the data
+```{r dataImport,echo=FALSE}
+load(file=here("data", "TheOGDReportFinal.rda"))
+load(file=here("data", "PathDataFrameFinal.rda"))
+```
+
+
+```{r echo=FALSE}
+read_chunk(here("inst","TemplateProject","munge", "PreProcessing.R"))
+```
+
+## Pre-process both the pathology and the endoscopy text:
+```{r dataClean,echo=FALSE}
+```
+
+## Merge endoscopy and pathology text
+```{r dataMerge,echo=FALSE}
+```
+
+## Clean the endoscopist and instrument columns
+```{r dataClean2,echo=FALSE}
+```
+
+## Extract number of biopsies, biopsy size, biopsy location and medications from the text
+```{r dataExtrapolate,echo=FALSE}
+```
+
+## Extract endoscopy events
+```{r dataExtrapolate2,echo=FALSE}
+```
+
+## Extract some generic analyses
+```{r dataAnalysis_DisSpecific,echo=FALSE}
+```
+
+## Extract some disease specific analyses
+```{r dataAnalysis_Generic,echo=FALSE}
+```
+
+## Show the Consort diagram
+```{r dataDiagrammeR,echo=FALSE}
+```
+
+## Show the CodeDepends
+```{r codeDepends,echo=FALSE}
+```
+

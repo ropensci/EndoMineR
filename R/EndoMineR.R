@@ -1,6 +1,6 @@
 
 
-if (getRversion() >= "2.15.1")
+if (getRversion() >= "2.15.1") {
   utils::globalVariables(
     c(
       ".SD",
@@ -42,6 +42,7 @@ if (getRversion() >= "2.15.1")
       "Original.y"
     )
   )
+}
 
 ######## Surveillance functions ######
 
@@ -58,21 +59,25 @@ if (getRversion() >= "2.15.1")
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples aa<-SurveilTimeByRow(Myendo,'HospitalNumber',
-#' 'Dateofprocedure')
-
+#' @examples
+#' aa <- SurveilTimeByRow(
+#'   Myendo, "HospitalNumber",
+#'   "Dateofprocedure"
+#' )
 SurveilTimeByRow <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- rlang::sym(HospNum_Id)
     Endo_ResultPerformeda <- sym(Endo_ResultPerformed)
-    ret<-dataframe %>% arrange(!!HospNum_Ida,!!Endo_ResultPerformeda) %>%
+    ret <- dataframe %>%
+      arrange(!!HospNum_Ida, !!Endo_ResultPerformeda) %>%
       group_by(!!HospNum_Ida) %>%
       mutate(TimeToNext = difftime(as.Date(!!Endo_ResultPerformeda), lead(as.Date(
         !!Endo_ResultPerformeda
       ), 1), units = "days")) %>%
       mutate(TimeSinceLast = difftime(Sys.Date(), dplyr::last(!!Endo_ResultPerformeda),
-                                      units = "days"))
-    dataframe<-data.frame(ret)
+        units = "days"
+      ))
+    dataframe <- data.frame(ret)
     return(dataframe)
   }
 
@@ -90,18 +95,17 @@ SurveilTimeByRow <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples cc<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
-
-
-
+#' @examples
+#' cc <- SurveilLastTest(Myendo, "HospitalNumber", "Dateofprocedure")
 SurveilLastTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- rlang::sym(HospNum_Id)
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
-    ret<-dataframe %>% group_by(!!HospNum_Ida) %>%
+    ret <- dataframe %>%
+      group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == dplyr::n())
-    dataframe<-data.frame(ret)
+    dataframe <- data.frame(ret)
     return(dataframe)
   }
 
@@ -118,18 +122,20 @@ SurveilLastTest <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
-#' @examples dd<-SurveilFirstTest(Myendo,'HospitalNumber',
-#' 'Dateofprocedure')
-
-
+#' @examples
+#' dd <- SurveilFirstTest(
+#'   Myendo, "HospitalNumber",
+#'   "Dateofprocedure"
+#' )
 SurveilFirstTest <-
   function(dataframe, HospNum_Id, Endo_ResultPerformed) {
     HospNum_Ida <- rlang::sym(HospNum_Id)
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
-    ret<-dataframe %>% group_by(!!HospNum_Ida) %>%
+    ret <- dataframe %>%
+      group_by(!!HospNum_Ida) %>%
       arrange(!!Endo_ResultPerformeda) %>%
       filter(row_number() == 1)
-    dataframe<-data.frame(ret)
+    dataframe <- data.frame(ret)
     return(dataframe)
   }
 
@@ -150,47 +156,50 @@ SurveilFirstTest <-
 #' @importFrom dplyr group_by slice mutate lead
 #' @importFrom rlang sym
 #' @export
-#' @examples # Firstly relevant columns are extrapolated from the
+#' @examples
+#' # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-Mypath
-#' v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
-#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
+#' v <- Mypath
+#' v$NumBx <- HistolNumbOfBx(v$Macroscopicdescription, "specimen")
+#' v$BxSize <- HistolBxSize(v$Macroscopicdescription)
 #' 
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
+#' v <- Endomerge2(
+#'   Myendo, "Dateofprocedure", "HospitalNumber", v, "Dateofprocedure",
+#'   "HospitalNumber"
+#' )
 #' 
 #' # The function relies on the other Barrett's functions being run as well:
-#' b1<-Barretts_PragueScore(v,'Findings')
-#' b1$IMorNoIM<-Barretts_PathStage(b1,'Histology')
-#' colnames(b1)[colnames(b1) == 'pHospitalNum'] <- 'HospitalNumber'
+#' b1 <- Barretts_PragueScore(v, "Findings")
+#' b1$IMorNoIM <- Barretts_PathStage(b1, "Histology")
+#' colnames(b1)[colnames(b1) == "pHospitalNum"] <- "HospitalNumber"
 #' 
-#' # The function groups the procedures by patient and gives 
+#' # The function groups the procedures by patient and gives
 #' # all the procedures between
-#' # the indicatorEvent amd the procedure just after the endpoint. 
-
-#' # Eg if the start is RFA and the 
-#' # endpoint is biopsies then it will give all RFA procedures and 
+#' # the indicatorEvent amd the procedure just after the endpoint.
+#' # Eg if the start is RFA and the
+#' # endpoint is biopsies then it will give all RFA procedures and
 #' # the first biopsy procedure
-
-#'
-#' b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed",
-#' "Macroscopicdescription","Histology")
-#' nn<-TimeToStatus(b1,'HospitalNumber',"EndoscopyEvent","rfa","dilat")
+#' 
+#' b1$EndoscopyEvent <- EndoscopyEvent(
+#'   b1, "Findings", "ProcedurePerformed",
+#'   "Macroscopicdescription", "Histology"
+#' )
+#' nn <- TimeToStatus(b1, "HospitalNumber", "EndoscopyEvent", "rfa", "dilat")
 #' rm(v)
-
-TimeToStatus <- function(dataframe, HospNum, EVENT,indicatorEvent,endEvent) {
+TimeToStatus <- function(dataframe, HospNum, EVENT, indicatorEvent, endEvent) {
   dataframe <- data.frame(dataframe)
   HospNuma <- rlang::sym(HospNum)
   EVENTa <- rlang::sym(EVENT)
   startAndEnd <-
-    dataframe %>% group_by(!!HospNuma) %>%
-    mutate(ind = grepl(indicatorEvent, !!EVENTa,ignore.case=TRUE,perl=TRUE) &
-             grepl(endEvent, !!EVENTa,ignore.case=TRUE,perl=TRUE)) %>%
+    dataframe %>%
+    group_by(!!HospNuma) %>%
+    mutate(ind = grepl(indicatorEvent, !!EVENTa, ignore.case = TRUE, perl = TRUE) &
+      grepl(endEvent, !!EVENTa, ignore.case = TRUE, perl = TRUE)) %>%
     slice(sort(c(which(ind), which(ind) + 1)))
-  startAndEnd<-data.frame(startAndEnd)
+  startAndEnd <- data.frame(startAndEnd)
   return(startAndEnd)
 }
 
@@ -220,42 +229,43 @@ TimeToStatus <- function(dataframe, HospNum, EVENT,indicatorEvent,endEvent) {
 #' @importFrom ggplot2 geom_smooth geom_line geom_point scale_x_date theme_bw
 #' @keywords Tests number
 #' @export
-#' @examples # This takes the dataframe MyEndo (part of the package examples) and looks in
+#' @examples
+#' # This takes the dataframe MyEndo (part of the package examples) and looks in
 #' # the column which holds the test indication (in this example it is called
 #' # 'Indication' The date of the procedure column(which can be date format or
 #' # POSIX format) is also necessary.  Finally the string which indicates the text
 #' # indication needs to be inpoutted. In this case we are looking for all endoscopies done
 #' # where the indication is surveillance (so searching on 'Surv' will do fine).
-#' #If you want all the tests then put '.*' instead of Surv
-#' rm(list=ls(all=TRUE))
-#' ff<-HowManyOverTime(Myendo,'Indications','Dateofprocedure','.*')
-
-
+#' # If you want all the tests then put '.*' instead of Surv
+#' rm(list = ls(all = TRUE))
+#' ff <- HowManyOverTime(Myendo, "Indications", "Dateofprocedure", ".*")
 HowManyOverTime <-
   function(dataframe,
-           Indication,
-           Endo_ResultPerformed,
-           StringToSearch) {
-    
+             Indication,
+             Endo_ResultPerformed,
+             StringToSearch) {
     Endo_ResultPerformeda <- rlang::sym(Endo_ResultPerformed)
-    
+
     TestNumbers <-
-      dataframe %>% filter(
-        str_detect(dataframe[, Indication], StringToSearch)) %>%
-      arrange(as.Date(!!Endo_ResultPerformeda)) %>% group_by(
+      dataframe %>%
+      filter(
+        str_detect(dataframe[, Indication], StringToSearch)
+      ) %>%
+      arrange(as.Date(!!Endo_ResultPerformeda)) %>%
+      group_by(
         day = day(as.Date(!!Endo_ResultPerformeda)),
         week = week(as.Date(!!Endo_ResultPerformeda)),
         month = month(as.Date(!!Endo_ResultPerformeda)),
         year = year(as.Date(!!Endo_ResultPerformeda))
       ) %>%
       summarise(Number = dplyr::n())
-    
+
     names(TestNumbers) <- c("day", "week", "month", "year", "freq")
     TestNumbers$MonthYear <-
       paste("01_", TestNumbers$month, "_", TestNumbers$year, sep = "")
-    
+
     TestNumbers$MonthYear <- dmy(TestNumbers$MonthYear)
-    TestNumbers<-data.frame(TestNumbers)%>% arrange(year,month,week,day)
+    TestNumbers <- data.frame(TestNumbers) %>% arrange(year, month, week, day)
     return(TestNumbers)
   }
 
@@ -280,14 +290,14 @@ HowManyOverTime <-
 #' @import tm
 #' @keywords Lookup
 #' @export
-#' @examples #The function relies on defined a list of
+#' @examples
+#' # The function relies on defined a list of
 #' # words you are interested in and then choosing the column you are
 #' # interested in looking in for these words. This can be for histopathology
 #' # free text columns or endoscopic. In this example it is for endoscopic
 #' # columns
-#' myNotableWords<-c('arrett','oeliac')
-#' jj<-ListLookup(Myendo,'Findings',myNotableWords)
-
+#' myNotableWords <- c("arrett", "oeliac")
+#' jj <- ListLookup(Myendo, "Findings", myNotableWords)
 ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
   jeopCorpus <- Corpus(VectorSource(theframe[, EndoReportColumn]))
   # Get the frequency table of terms being used over all the reports
@@ -298,11 +308,11 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
   d <- data.frame(word = names(v), freq = v)
   d$word <- as.character(d$word)
   d$Prop <- (d$freq / nrow(theframe)) * 100
-  
+
   # group all the words containing stems as per myNotableWords
   d <-
     vapply(myNotableWords, function(x)
-      sum(d$Prop[grepl(x, d$word)]),numeric(1))
+      sum(d$Prop[grepl(x, d$word)]), numeric(1))
   d <- data.frame(X2 = names(d), Prop = as.vector(d))
   return(d)
 }
@@ -327,6 +337,7 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' @importFrom rlang sym
 #' @keywords Endoscopist
 #' @export
+
 #' @examples #The function gives a table with any numeric
 #' # metric by endoscopist
 #' # In this example we tabulate medication by
@@ -337,18 +348,20 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' 
 #' # Now lets look at the fentanly use per Endoscopist:
 #' kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+#' #EndoBasicGraph(MyendoNew, "Endoscopist", "Fent") #run this
+#' #if you want to see the graph
 #' rm(Myendo)
-
-
 MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
   group <- rlang::sym(Column)
   variable <- rlang::sym(EndoscopistColumn)
-  
+
   NumBxPlot <-
-    dataframe %>% tidyr::drop_na(!!variable) %>% group_by(!!group) %>%
+    dataframe %>%
+    tidyr::drop_na(!!variable) %>%
+    group_by(!!group) %>%
     summarise(avg = mean(!!variable))
-  
-  NumBxPlot<-data.frame(NumBxPlot,stringsAsFactors = FALSE)
+
+  NumBxPlot <- data.frame(NumBxPlot, stringsAsFactors = FALSE)
   return(NumBxPlot)
 }
 
@@ -367,41 +380,34 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 #' @importFrom rlang sym
 #' @keywords Endoscopist
 #' @export
-#' @examples #The function plots any numeric metric by endoscopist
+#' @examples
+#' # The function plots any numeric metric by endoscopist
 #' # Mypath demo dataset. These functions are all part of Histology data
 #' # cleaning as part of the package.
-#' v<-Mypath
-#' v$NumBx<-HistolNumbOfBx(Mypath$Macroscopicdescription,'specimen')
-#' v$BxSize<-HistolBxSize(v$Macroscopicdescription)
+#' v <- Mypath
+#' v$NumBx <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
+#' v$BxSize <- HistolBxSize(v$Macroscopicdescription)
 #' # The histology is then merged with the Endoscopy dataset. The merge occurs
 #' # according to date and Hospital number
-#' v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-#' 'HospitalNumber')
-#' #The function relies on the other Barrett's functions being run as well:
-#' v$IMorNoIM<-Barretts_PathStage(v,'Histology')
-#' colnames(v)[colnames(v) == 'pHospitalNum'] <- 'HospitalNumber'
+#' v <- Endomerge2(
+#'   Myendo, "Dateofprocedure", "HospitalNumber", v, "Dateofprocedure",
+#'   "HospitalNumber"
+#' )
+#' # The function relies on the other Barrett's functions being run as well:
+#' v$IMorNoIM <- Barretts_PathStage(v, "Histology")
+#' colnames(v)[colnames(v) == "pHospitalNum"] <- "HospitalNumber"
 #' # The function takes the column with the extracted worst grade of
 #' # histopathology and returns the proportion of each finding (ie
 #' # proportion with low grade dysplasia, high grade etc.) for each
 #' # endoscopist
-#' kk<-CategoricalByEndoscopist(v$IMorNoIM,v$Endoscopist)
+#' kk <- CategoricalByEndoscopist(v$IMorNoIM, v$Endoscopist)
 #' rm(Myendo)
-
-
-
 CategoricalByEndoscopist <- function(ProportionColumn, EndoscopistColumn) {
- 
+
   # Need to include indefinite for dysplasia
-  PropByEndo <- prop.table(table(EndoscopistColumn,
-                            ProportionColumn))
+  PropByEndo <- prop.table(table(
+    EndoscopistColumn,
+    ProportionColumn
+  ))
   return(PropByEndo)
 }
-
-
-
-
-
-
-
-
-

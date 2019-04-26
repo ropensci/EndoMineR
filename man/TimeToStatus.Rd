@@ -28,30 +28,34 @@ for dysplasia?
 # Firstly relevant columns are extrapolated from the
 # Mypath demo dataset. These functions are all part of Histology data
 # cleaning as part of the package.
-v<-Mypath
-v$NumBx<-HistolNumbOfBx(v$Macroscopicdescription,'specimen')
-v$BxSize<-HistolBxSize(v$Macroscopicdescription)
+v <- Mypath
+v$NumBx <- HistolNumbOfBx(v$Macroscopicdescription, "specimen")
+v$BxSize <- HistolBxSize(v$Macroscopicdescription)
 
 # The histology is then merged with the Endoscopy dataset. The merge occurs
 # according to date and Hospital number
-v<-Endomerge2(Myendo,'Dateofprocedure','HospitalNumber',v,'Dateofprocedure',
-'HospitalNumber')
+v <- Endomerge2(
+  Myendo, "Dateofprocedure", "HospitalNumber", v, "Dateofprocedure",
+  "HospitalNumber"
+)
 
 # The function relies on the other Barrett's functions being run as well:
-b1<-Barretts_PragueScore(v,'Findings')
-b1$IMorNoIM<-Barretts_PathStage(b1,'Histology')
-colnames(b1)[colnames(b1) == 'pHospitalNum'] <- 'HospitalNumber'
+b1 <- Barretts_PragueScore(v, "Findings")
+b1$IMorNoIM <- Barretts_PathStage(b1, "Histology")
+colnames(b1)[colnames(b1) == "pHospitalNum"] <- "HospitalNumber"
 
-# The function groups the procedures by patient and gives 
+# The function groups the procedures by patient and gives
 # all the procedures between
-# the indicatorEvent amd the procedure just after the endpoint. 
-# Eg if the start is RFA and the 
-# endpoint is biopsies then it will give all RFA procedures and 
+# the indicatorEvent amd the procedure just after the endpoint.
+# Eg if the start is RFA and the
+# endpoint is biopsies then it will give all RFA procedures and
 # the first biopsy procedure
 
-b1$EndoscopyEvent<-EndoscopyEvent(b1,"Findings","ProcedurePerformed",
-"Macroscopicdescription","Histology")
-nn<-TimeToStatus(b1,'HospitalNumber',"EndoscopyEvent","rfa","dilat")
+b1$EndoscopyEvent <- EndoscopyEvent(
+  b1, "Findings", "ProcedurePerformed",
+  "Macroscopicdescription", "Histology"
+)
+nn <- TimeToStatus(b1, "HospitalNumber", "EndoscopyEvent", "rfa", "dilat")
 rm(v)
 }
 \keyword{ourcome}

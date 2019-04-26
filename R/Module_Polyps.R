@@ -16,29 +16,29 @@
 #' @importFrom dplyr group_by_ do full_join
 #' @keywords Withdrawal
 #' @export
-#' @examples nn<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed',
-#' 'Endoscopist','Diagnosis','Histology')
-
-
-
+#' @examples
+#' nn <- GRS_Type_Assess_By_Unit(
+#'   vColon, "ProcedurePerformed",
+#'   "Endoscopist", "Diagnosis", "Histology"
+#' )
 GRS_Type_Assess_By_Unit <-
   function(dataframe,
-           ProcPerformed,
-           Endo_Endoscopist,
-           Dx,
-           Histol) {
+             ProcPerformed,
+             Endo_Endoscopist,
+             Dx,
+             Histol) {
     dataframe <- data.frame(dataframe)
-    dataframe <- dataframe[grepl("Colonoscopy", dataframe[, ProcPerformed]),]
-    
-    #Function should get proportions of a procedure that result in a finding:
-    
-    Adenoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma=(sum(grepl("[Aa]denoma", Original.y))/dplyr::n())*100)
-    Adenocarcinoma<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma=(sum(grepl(".*denoca.*", Original.y))/dplyr::n())*100)
-    HGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD=(sum(grepl(".*[Hh]igh [Gg]rade.*", Original.y))/dplyr::n())*100)
-    LGD<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD=(sum(grepl(".*[Ll]ow [Gg]rade.*", Original.y))/dplyr::n())*100)
-    Serrated<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated=(sum(grepl(".*[Ss]errated.*", Original.y))/dplyr::n())*100)
-    Hyperplastic<-dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic=(sum(grepl(".*yperplastic.*", Original.y))/dplyr::n())*100)
-    
+    dataframe <- dataframe[grepl("Colonoscopy", dataframe[, ProcPerformed]), ]
+
+    # Function should get proportions of a procedure that result in a finding:
+
+    Adenoma <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma = (sum(grepl("[Aa]denoma", Original.y)) / dplyr::n()) * 100)
+    Adenocarcinoma <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma = (sum(grepl(".*denoca.*", Original.y)) / dplyr::n()) * 100)
+    HGD <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD = (sum(grepl(".*[Hh]igh [Gg]rade.*", Original.y)) / dplyr::n()) * 100)
+    LGD <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD = (sum(grepl(".*[Ll]ow [Gg]rade.*", Original.y)) / dplyr::n()) * 100)
+    Serrated <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated = (sum(grepl(".*[Ss]errated.*", Original.y)) / dplyr::n()) * 100)
+    Hyperplastic <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic = (sum(grepl(".*yperplastic.*", Original.y)) / dplyr::n()) * 100)
+
     FinalTable <-
       full_join(Adenoma, Adenocarcinoma, by = Endo_Endoscopist)
     FinalTable <-
@@ -49,8 +49,8 @@ GRS_Type_Assess_By_Unit <-
       full_join(FinalTable, Serrated, by = Endo_Endoscopist)
     FinalTable <-
       full_join(FinalTable, Hyperplastic, by = Endo_Endoscopist)
-    
+
     # Need to add the total colonoscopy count in here
-    FinalTable<-data.frame(FinalTable)
+    FinalTable <- data.frame(FinalTable)
     return(FinalTable)
   }

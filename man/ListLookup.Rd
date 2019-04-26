@@ -22,12 +22,12 @@ have those words. Then find what proportion of the reports
 have those terms.
 }
 \examples{
-#The function relies on defined a list of
+# The function relies on defined a list of
 # words you are interested in and then choosing the column you are
 # interested in looking in for these words. This can be for histopathology
 # free text columns or endoscopic. In this example it is for endoscopic
 # columns
-myNotableWords<-c('arrett','oeliac')
-jj<-ListLookup(Myendo,'Findings',myNotableWords)
+myNotableWords <- c("arrett", "oeliac")
+jj <- ListLookup(Myendo, "Findings", myNotableWords)
 }
 \keyword{Lookup}

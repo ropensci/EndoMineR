@@ -20,7 +20,7 @@ the free text
 Specfically it extracts the Prague score
 }
 \examples{
-#The example takes the endoscopy demo dataset and searches the
+# The example takes the endoscopy demo dataset and searches the
 # Findings column (which contains endoscopy free text about the
 # procedure itself). It then extracts the Prague score if relevant. I
 # find it easiest to use this on a Barrett's subset of data rather than
@@ -28,7 +28,7 @@ Specfically it extracts the Prague score
 # too
 
 
-aa<-Barretts_PragueScore(Myendo,'Findings','OGDReportWhole')
+aa <- Barretts_PragueScore(Myendo, "Findings", "OGDReportWhole")
 }
 \keyword{Prague}
 \keyword{score}

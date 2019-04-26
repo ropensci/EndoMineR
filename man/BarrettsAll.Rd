@@ -28,7 +28,7 @@ the follow up function. The output is a dataframe with all the original data as
 well as the new columns that have been created.
 }
 \examples{
-Barretts_df<-BarrettsAll(Myendo,'Findings','OGDReportWhole',Mypath,'Histology')
+Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
 }
 \keyword{Does}
 \keyword{data}

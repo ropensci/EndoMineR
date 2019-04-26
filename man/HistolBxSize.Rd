@@ -19,7 +19,7 @@ in row duplication.
 This is usually from the Macroscopic description column.
 }
 \examples{
-rr<-HistolBxSize(Mypath$Macroscopicdescription)
+rr <- HistolBxSize(Mypath$Macroscopicdescription)
 }
 \keyword{biopsy}
 \keyword{size}

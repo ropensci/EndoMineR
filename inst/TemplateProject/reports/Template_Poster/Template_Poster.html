@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="generator" content="pandoc" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="author" content="S.Zeki1" />
+    
+    <title>Using posterdown to create a poster about gastroenterological things</title>
+
+        <script src="Template_Poster_files/htmlwidgets-1.3/htmlwidgets.js"></script>
+    <script src="Template_Poster_files/viz-0.3/viz.js"></script>
+    <link href="Template_Poster_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+    <script src="Template_Poster_files/grViz-binding-1.0.0/grViz.js"></script>
+    <script src="Template_Poster_files/kePrint-0.0.1/kePrint.js"></script>
+    
+    
+    
+
+    
+    <style>
+      @page {
+          size: 45in 38in;
+          margin: 0;
+          padding: 0;
+      }
+      body {
+        margin: 0;
+        font-size: 35px;
+        width: 45in;
+        height: 38in;
+        padding: 0;
+        text-align: justify;
+        font-family: Palatino;
+        background-color: <h1 id="ffffff">ffffff</h1>;
+      }
+      .title_container {
+        width: 100%;
+        height: 15%;
+        overflow: hidden;
+        background-color: <h1 id="section">008080</h1>;
+        border: 1cm solid <h1 id="b4545">0b4545</h1>;
+      }
+      .logo_left {
+        float: left;
+        width: 10%;
+        height: 100%;
+        background-color: <h1 id="section">008080</h1>;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .logo_right {
+        float: right;
+        width: 10%;
+        height: 100%;
+        background-color: <h1 id="section">008080</h1>;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .poster_title {
+        text-align: center;
+        position: relative;
+        float: left;
+        width: 80%;
+        height: 100%;
+        color: <h1 id="ffffff">ffffff</h1>;
+        top: 50%;
+        transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+      }
+      #title {
+        font-family: Helvetica;
+            }
+      /* unvisited link */
+      a:link {
+        color: <h1 id="b4545">0b4545</h1>;
+      }
+
+      /* visited link */
+      a:visited {
+        color: <h1 id="b4545">0b4545</h1>;
+      }
+
+      /* mouse over link */
+      a:hover {
+        color: <h1 id="b4545">0b4545</h1>;
+      }
+
+      /* selected link */
+      a:active {
+        color: <h1 id="b4545">0b4545</h1>;
+      }
+      .poster_body {
+        -webkit-column-count: 4; /* Chrome, Safari, Opera */
+        -moz-column-count: 4; /* Firefox */
+        column-count: 4;
+        -webkit-column-fill: auto;
+        -moz-column-fill: auto;
+        column-fill: auto;
+        -webkit-column-rule-width: 1mm;
+        -moz-column-rule-width: 1mm;
+        column-rule-width: 1mm;
+        -webkit-column-rule-style: dashed;
+        -moz-column-rule-style: dashed;
+        column-rule-style: dashed;
+        -webkit-column-rule-color: <h1 id="section">008080</h1>;
+        -moz-column-rule-color: <h1 id="section">008080</h1>;
+        column-rule-color: <h1 id="section">008080</h1>;
+        width: 100%;
+        height: 85%;
+        padding-left: 1cm;
+        padding-right: 1cm;
+        padding-bottom: 1cm;
+        padding-top: 1cm;
+        color: <h1 id="section">000000</h1>;
+      }
+      .poster_title h1 {
+        font-size: 75pt;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        padding-top: 1cm;
+        padding-bottom: 0;
+      }
+      .poster_title h3 {
+        color: <h1 id="b4545">0b4545</h1>;
+        font-size: 50pt;
+        margin: 0;
+        padding: 0;
+        padding-top: 1cm;
+        padding-bottom: 0.5cm;
+        border: 0;
+      }
+      .poster_title h5 {
+        color: <h1 id="ffffff">FFFFFF</h1>;
+        font-size: ;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        padding-top: 1cm;
+      }
+      img {
+        margin-top: 2cm;
+        margin-bottom: 0;
+      }
+      .poster_body h1 {
+        text-align: center;
+        color: <h1 id="ffffff">ffffff</h1>;
+        font-size: 50pt;
+        border: 2mm solid <h1 id="b4545">0b4545</h1>;
+        background-color: <h1 id="b4545">0b4545</h1>;
+        border-radius: 4mm 0mm;
+        margin-top: 2mm;
+        margin-bottom: 2mm;
+        padding-top: 5mm;
+        padding-bottom: 5mm;
+      }
+      .poster_body h2 {
+        color: <h1 id="b4545">0b4545</h1>;
+        font-size: 40pt;
+        padding-left: 4mm;
+      }
+      .span h1 {
+        text-align: center;
+        color: #ffffff;
+        font-size: 50pt;
+        border: 2mm solid yellow;
+        background-color: yellow;
+        border-radius: 4mm 0mm;
+        margin-top: 5mm;
+        margin-bottom: 5mm;
+        padding-top: 5mm;
+        padding-bottom: 5mm;
+        width: 100%
+      }
+      .span {
+        background-color: red;
+        width: 200%;
+        position:relative;
+      }
+      /* center align leaflet map,
+      from https://stackoverflow.com/questions/52112119/center-leaflet-in-a-rmarkdown-document */
+      .html-widget {
+        margin: auto;
+        position: sticky;
+        margin-top: 2cm;
+        margin-bottom: 2cm;
+      }
+      .leaflet.html-widget.html-widget-static-bound.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom {
+        position: sticky;
+        width: 100%;
+      }
+      pre.sourceCode.r {
+        background-color: #dddddd40;
+        border-radius: 4mm;
+        padding: 4mm;
+        width: 75%;
+        /* align-items: center; */
+        margin: auto;
+        padding-left: 2cm;
+      }
+      code.sourceCode.r{
+        background-color: transparent;
+        font-size: 20pt;
+        border-radius: 2mm;
+      }
+      .caption {
+        font-size: 25pt;
+      }
+      .table caption {
+        font-size: 25pt;
+        padding-bottom: 3mm;
+
+      }
+      code {
+        font-size: 25pt;
+        font-family: monospace;
+        background-color: #00808024;
+        color: #0b4545;
+        padding: 1.2mm;
+        border-radius: 2mm;
+      }
+      table {
+        font-size: 40px;
+        margin: auto;
+        border-top: 3px solid #666;
+        border-bottom: 3px solid #666;
+      }
+      table thead th {
+        border-bottom: 3px solid #ddd;
+      }
+      td {
+        padding: 8px;
+      }
+      th {
+        padding: 15px;
+      }
+      caption {
+        margin-bottom: 10px;
+      }
+      .poster_body p {
+        margin-right: 4mm;
+        margin-left: 4mm;
+        margin-top: 6mm;
+        margin-bottom: 10mm;
+      }
+      .poster_body ol {
+        margin-right: 4mm;
+        margin-left: 4mm;
+      }
+      #ul {
+        margin-right: 4mm;
+        margin-left: 4mm;
+      }
+      .references p {
+        font-size: 20pt;
+      }
+    </style>
+
+  </head>
+  <body>
+
+
+<div class="title_container">
+  <!-- Left Logo  -->
+  <div class="logo_left">
+    <img src= 'Figures/GSTTLogo.PNG' style="width: 80%">
+  </div>
+  <!-- Poster Title -->
+  <div class= "poster_title">
+    <h1 id="title">Using posterdown to create a poster about gastroenterological things</h1>
+    <h3 id="author">S.Zeki<sup>1</sup></h3>
+    <h5 id="affiliation"><sup>1</sup>Department of Gastroenterology, St Thomas’ Hospital, London SE1 7EH</h5>
+
+  </div>
+  <!-- Right Logo  -->
+    <div class="logo_right">
+          <img src="Figures/GSTTLogo.PNG" style="width: 80%">
+  </div>
+</div>
+
+<div class='poster_body'>
+<!--
+Bellow you will find typical RMarkdown syntax which should fill in the columns for the poster from top to bottom left to right. The more information you have the more will be filled. Please let me know if you have feedback at brentthorne18@gmail.com or at github.com/brentthorne/posterdown.
+ENJOY! XD
+-->
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>Patients with Barrett’s oesophagus (BE) undergo regular endoscopic surveillance with a view to earlier oesophageal adenocarcinoma detection. Quality monitoring of this programme relies on manual extraction which, given its laboriousness, is a significant hindrance to robust, large scale and reproducible quality monitoring.</p>
+<p>EndoMineR, an open source package written in R, has been developed specifically to automate the extraction of data from endoscopic and associated pathology reports<sup>1</sup>.It contains functions to clean, format and extract elements from free text and perform quality metrics for a range of conditions including in BE.</p>
+</div>
+<div id="aim" class="section level1">
+<h1><span class="header-section-number">2</span> Aim</h1>
+<p>We decided to assess the accuracy of the BE extraction algorithms within EndoMineR, for both endoscopic and pathological elements of BE using only pathology reports as input. This is the ‘worst case scenario’ input data. The functions being assessed were: 1. The extraction of a Prague score, 2. The extraction of the worst pathology grade, 3. The site of biopsied tissue, 4. The site and type of any therapy in the upper GI tract.</p>
+<div id="import-the-data" class="section level2">
+<h2><span class="header-section-number">2.1</span> Import the data</h2>
+</div>
+</div>
+<div id="methods" class="section level1">
+<h1><span class="header-section-number">3</span> Methods</h1>
+<p>160 patient episodes between x and ` with full text pathology data only were acquired from x departments in central London as a training set. Validation was performed on a further 100 pathology reports. The therapy algorithm was performed on a further 100 reports. You can even use the bibliography the same way <span class="citation">(Turner et al. 2014)</span>.</p>
+<div class="figure" style="text-align: center">
+<img src="Template_Poster_files/figure-html/dataAnalysis_Generic-1.png" alt="Metric of one thing versus another" width="100%" />
+<p class="caption">
+(#fig:dataAnalysis_Generic)Metric of one thing versus another
+</p>
+</div>
+<div id="show-the-consort-diagram" class="section level2">
+<h2><span class="header-section-number">3.1</span> Show the Consort diagram</h2>
+<div class="figure" style="text-align: center"><span id="fig:dataDiagrammeR"></span>
+<div id="htmlwidget-3e87d9c2ec426552296a" style="width:100%;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3e87d9c2ec426552296a">{"x":{"diagram":"digraph {\n\ngraph [layout = \"dot\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\",\n       rankdir = \"TB\",\n       splines = \"false\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"TheOGDReportFinal:\n2000\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"2\" [label = \"PathDataFrameFinal:\n2000\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"3\" [label = \"MyOGD:\n2000\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"4\" [label = \"MyPath:\n2000\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"5\" [label = \"FinalDataset:\n2122\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"6\" [label = \"FinalDatasetBarr:\n2122\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"7\" [label = \"LastTestsDone:\n100\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"8\" [label = \"FirstTestsDone:\n100\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"9\" [label = \"ff:\n2000\", shape = \"rectangle\", fontsize = \"10\", fillcolor = \"#F0F8FF\", fontcolor = \"#000000\"] \n  \"1\"->\"3\" \n  \"2\"->\"4\" \n  \"3\"->\"5\" \n  \"4\"->\"5\" \n  \"5\"->\"6\" \n  \"6\"->\"7\" \n  \"6\"->\"8\" \n  \"6\"->\"9\" \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p class="caption">
+Figure 3.1: Consort diagram of included cases
+</p>
+</div>
+</div>
+<div id="show-the-codedepends" class="section level2">
+<h2><span class="header-section-number">3.2</span> Show the CodeDepends</h2>
+<div class="figure" style="text-align: center"><span id="fig:codeDepends"></span>
+<img src="Template_Poster_files/figure-html/codeDepends-1.png" alt="Demonstration of how the code is linked together" width="100%" />
+<p class="caption">
+Figure 3.2: Demonstration of how the code is linked together
+</p>
+</div>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+<span id="tab:mytable">Table 3.1: </span>Table caption.
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Sepal.Length
+</th>
+<th style="text-align:center;">
+Sepal.Width
+</th>
+<th style="text-align:center;">
+Petal.Length
+</th>
+<th style="text-align:center;">
+Petal.Width
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+5.1
+</td>
+<td style="text-align:center;">
+3.5
+</td>
+<td style="text-align:center;">
+1.4
+</td>
+<td style="text-align:center;">
+0.2
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+4.9
+</td>
+<td style="text-align:center;">
+3.0
+</td>
+<td style="text-align:center;">
+1.4
+</td>
+<td style="text-align:center;">
+0.2
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+4.7
+</td>
+<td style="text-align:center;">
+3.2
+</td>
+<td style="text-align:center;">
+1.3
+</td>
+<td style="text-align:center;">
+0.2
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+4.6
+</td>
+<td style="text-align:center;">
+3.1
+</td>
+<td style="text-align:center;">
+1.5
+</td>
+<td style="text-align:center;">
+0.2
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+5.0
+</td>
+<td style="text-align:center;">
+3.6
+</td>
+<td style="text-align:center;">
+1.4
+</td>
+<td style="text-align:center;">
+0.2
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Results</strong> Reports were written by x different pathologists. The readability index of all the text, using the Fleisch-Kincaid readability index was xindicating an average grammatical complexity. The results are displayed in Table 1.Sensitivity was excellent for all algorithms especially given the difficult input text. A reduction in specificity in the detection of worst pathology occurred because of dual reporting of colonoscopy and gastroscopy tissue which also affected the sensitivity of the Pathology Site detection. A variability in how intestinalisation was reported also affected the specicificity.</p>
+<p>Usually you want to have a nice table displaying some important results that you have calcualated. In posterdown this is as easy as using the <code>kable</code> table formatting you are probably use to as per typical <code>RMarkdown</code> formatting. I suggesting checking out the <code>kableExtra</code> package and its in depth documentation on customizing these tables found <a href="https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf">here</a> <span class="citation">(Zhu 2019)</span>. Hopfully I can make this with an inline refernce like, Table <a href="#tab:mytable">3.1</a>.</p>
+<p><strong>Conclusion</strong> 1. Reproducible extraction of BE parameters can be done from semi-structured text. 2. Further improvements using parts of speech tagging and term mapping will improve the results. 3. Such data extraction will allow for upstream automation of quality monitoring and governance and novel metrics in BE as well as other gastroenterological conditions.</p>
+<p><strong>References</strong> <font size="1"> 1. Zeki S, (2018). EndoMineR for the extraction of endoscopic and associated pathology data from medical reports. Journal of Open Source Software, 3(24), 701 </font></p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-turnerControlsWaterBalance2014">
+<p>Turner, Kevin W., Brent B. Wolfe, Thomas W. D. Edwards, Trevor C. Lantz, Roland I. Hall, and Guillaume Larocque. 2014. “Controls on Water Balance of Shallow Thermokarst Lakes and Their Relations with Catchment Characteristics: A Multi-Year, Landscape-Scale Assessment Based on Water Isotope Tracers and Remote Sensing in Old Crow Flats, Yukon (Canada).” <em>Global Change Biology</em> 20 (5): 1585–1603. doi:<a href="https://doi.org/10.1111/gcb.12465">10.1111/gcb.12465</a>.</p>
+</div>
+<div id="ref-kableExtra2019">
+<p>Zhu, Hao. 2019. <em>KableExtra: Construct Complex Table with ’Kable’ and Pipe Syntax</em>. <a href="https://CRAN.R-project.org/package=kableExtra" class="uri">https://CRAN.R-project.org/package=kableExtra</a>.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </body>
+</html>

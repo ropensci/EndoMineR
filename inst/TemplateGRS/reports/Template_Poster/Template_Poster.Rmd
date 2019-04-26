@@ -1,0 +1,167 @@
+---
+# PLEASE SEE THE README for in depth description github.com/brentthorne/posterdown
+#---POSTER SIZE & DEFAULT FONT---#
+poster_height: "38in" # height in inches of poster
+poster_width: "45in" # width in inches of poster
+font_family: "Palatino" # choose from typical html fonts (example: "Palatino")
+#---TITLE BOX OPTIONS---#
+#ESSENTIALS
+title: 'Using posterdown to create a poster about gastroenterological things'
+author: 
+  - 'S.Zeki^1^'
+affiliation: "^1^Department of Gastroenterology, St Thomas' Hospital, London SE1 7EH"
+
+#STYLE & FORMATTING
+titlebox_bgcol: "#008080"  #Colour of the Title Box background
+titlebox_bordercol: "#0b4545" #Colour of the title Box border.
+titlebox_shape: "" #ONLY posterdown_PDF
+titlebox_borderwidth: "1cm"
+titletext_fontfamily: Helvetica
+title_textcol: "#ffffff" #colour of title text
+author_textcol: "#0b4545" # Colour of author text
+affiliation_textcol: "#FFFFFF" # Colour of affiliation text
+title_textsize: "75pt"         # Poster title fontsize
+author_textsize: "50pt"       # Author list font size
+affiliation_textsize: "40pt"  # Affiliation font size
+
+
+#ADDING LOGOS
+logoleft_name: "Figures/GSTTLogo.PNG"
+logoright_name: "Figures/GSTTLogo.PNG"
+
+
+
+#---POSTER BODY OPTIONS---#
+body_bgcol: "#ffffff" #colour of the poster main background
+body_textsize: "35px"    # Size of the main poster body text
+body_textcol: "#000000" # Colour of main text in the body of poster
+column_numbers: 4 # Number of columns that the poster has
+column_margins: "0.5in" # Margin spacing for columns
+columnline_col: "#008080" #colour 
+columnline_width: "1mm" #width of line between each column
+columnline_style: dashed #style of the column line seperator.
+
+
+#SECTION TITLE STYLING
+sectitle_textcol: "#ffffff" # Colour of the poster section titles
+sectitle_bgcol: "#0b4545" # Colour of the section title box
+sectitle_bordercol: "#0b4545" # Colour of the border around the section title box.
+sectitle_borderwidth: "2mm" # Thicknes of the section title box border
+sectitle_boxshape: "4mm 0mm" # Changes the shape of the section title box.
+sectitle2_textcol: "#0b4545" # Color of 2nd level header text.
+#--OTHER--#
+link_col: "#0b4545" #colour of other links within the poster
+#--Standard Options--#
+output: 
+  posterdown::posterdown_html:
+    self_contained: false
+    pandoc_args: --mathjax
+    highlight: tango
+    number_sections: true
+bibliography: MyBib.bib
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(results = 'asis', echo = FALSE, comment = FALSE,  warning = FALSE, message = FALSE, fig.align = 'center')
+library(knitr)
+library(here)
+library(EndoMineR)
+library(DiagrammeR)
+library(CodeDepends)
+```
+
+<!--
+Bellow you will find typical RMarkdown syntax which should fill in the columns for the poster from top to bottom left to right. The more information you have the more will be filled. Please let me know if you have feedback at brentthorne18@gmail.com or at github.com/brentthorne/posterdown.
+ENJOY! XD
+-->
+
+# Introduction
+
+Patients with Barrett's oesophagus (BE) undergo regular endoscopic surveillance with a view to earlier oesophageal adenocarcinoma detection. Quality monitoring of this programme relies on manual extraction which, given its laboriousness, is a significant hindrance to robust, large scale and reproducible quality monitoring.
+
+EndoMineR, an open source package written in R, has been developed specifically to automate the extraction of data from endoscopic and associated pathology reports^1^.It contains functions to clean, format and extract elements from free text and perform quality metrics for a range of conditions including in BE. 
+
+# Aim 
+We decided to assess the accuracy of the BE extraction algorithms within EndoMineR, for both endoscopic and pathological elements of BE using only pathology reports as input. This is the 'worst case scenario' input data. The functions being assessed were: 1. The extraction of a Prague score, 2. The extraction of the worst pathology grade, 3. The site of biopsied tissue, 4. The site and type of any therapy in the upper GI tract.
+
+
+
+
+
+## Import the data
+```{r dataImport,echo=FALSE}
+load(file=here("data", "TheOGDReportFinal.rda"))
+load(file=here("data", "PathDataFrameFinal.rda"))
+```
+
+
+```{r echo=FALSE}
+read_chunk(here("inst","TemplateProject","munge", "PreProcessing.R"))
+```
+
+
+```{r dataClean,echo=FALSE}
+```
+
+
+```{r dataMerge,echo=FALSE}
+```
+
+
+```{r dataClean2,echo=FALSE}
+```
+
+
+```{r dataExtrapolate,echo=FALSE}
+```
+
+
+```{r dataExtrapolate2,echo=FALSE}
+```
+
+
+```{r dataAnalysis_DisSpecific}
+```
+
+# Methods 
+160 patient episodes between x and ` with full text pathology data only were acquired from x departments in central London as a training set. Validation was performed on a further 100 pathology reports. The therapy algorithm was performed on a further 100 reports.
+You can even use the bibliography the same way [@turnerControlsWaterBalance2014].
+
+
+```{r dataAnalysis_Generic,out.width="100%", cache=FALSE, fig.cap='Metric of one thing versus another', comment=FALSE}
+```
+
+
+## Show the Consort diagram
+```{r dataDiagrammeR,out.width="100%", cache=FALSE, fig.cap='Consort diagram of included cases', comment=FALSE}
+```
+
+## Show the CodeDepends
+```{r codeDepends,out.width="100%", cache=FALSE, fig.cap='Demonstration of how the code is linked together', comment=FALSE}
+```
+
+
+```{r, mytable, out.width='80%'}
+library(kableExtra)
+knitr::kable(iris[1:5, 1:4], caption = 'Table caption.',align = 'c',"html") %>% 
+  kable_styling(full_width = TRUE)
+```
+
+
+```{r, out.width='100%', fig.height=5, fig.cap='Using ggplot and patchwork to generate a layout of multiple plots in one figure. The iris dataset was used to generate (a) a line graph, (b) a scatterplot, and (c) a boxplot all together!'}
+
+```
+
+
+**Results** Reports were written by x different pathologists. The readability index of all the text, using the Fleisch-Kincaid readability index was xindicating an average grammatical complexity.  The results are displayed in Table 1.Sensitivity was excellent for all algorithms especially given the difficult input text. A reduction in specificity in the detection of worst pathology occurred because of dual reporting of colonoscopy and gastroscopy tissue which also affected the sensitivity of the Pathology Site detection. A variability in how intestinalisation was reported also affected the specicificity.
+
+Usually you want to have a nice table displaying some important results that you have calcualated. In posterdown this is as easy as using the `kable` table formatting you are probably use to as per typical `RMarkdown` formatting. I suggesting checking out the `kableExtra` package and its in depth documentation on customizing these tables found [here](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf) [@kableExtra2019]. Hopfully I can make this with an inline refernce like, Table \@ref(tab:mytable).
+
+
+**Conclusion** 1. Reproducible extraction of BE parameters can be done from semi-structured text. 2. Further improvements using parts of speech tagging and term mapping will improve the results. 3. Such data extraction will allow for upstream automation of quality monitoring and governance and novel metrics in BE as well as other gastroenterological conditions.
+
+**References**
+<font size="1"> 1. Zeki S, (2018). EndoMineR for the extraction of endoscopic and associated pathology data from medical reports. Journal of Open Source Software, 3(24), 701 </font>
+
+
+# References

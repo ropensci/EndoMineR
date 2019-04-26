@@ -14,7 +14,7 @@ scale_fill_Publication(...)
 #'
 }
 \examples{
-#None needed
+# None needed
 }
 \keyword{ggplot}
 \keyword{themes}
