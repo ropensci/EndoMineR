@@ -1,38 +1,23 @@
-#The idea of the package is that it creates a consort diagram using diagrammeR but all the dataframes are automatically filled.
 
-#' Number of tests done per month and year by indication
-#'
-#' Get an overall idea of how many endoscopies have been done for an indication
-#' by year and month. This is a more involved version of
-#' SurveilCapacity function. It takes string for
-#' the Indication for the test
-#'
-#' This returns a list which contains a plot (number of tests for that
-#' indication over time and a table with the same information broken down
-#' by month and year).
-#' @param dataframe dataframe
-#' @param Indication Indication column
-#' @param Endo_ResultPerformed column containing date the Endoscopy was
-#' performed
-#' @param StringToSearch The string in the Indication to search for
-#' @import EndoMineR
+
+#' The idea of the package is that it creates a consort diagram using 
+#' diagrammeR but all the dataframes are automatically filled with the dataframes
+#' in the script. The user just provides a pathname for the script
+#' @param pathName The string in the Indication to search for
 #' @importFrom here here
 #' @import DiagrammeR
 #' @importFrom magrittr '%>%'
-#' @importFrom stringr str_wrap
-#' @importFrom stringr str_extract
+#' @importFrom tidyr separate_rows
+#' @importFrom stringr str_wrap str_extract str_extract_all
 #' @keywords consort
 #' @export
 #' @examples
-#' pathName<-"/home/rstudio/EndoMineR_devSite/inst/TemplateGRS/munge/PreProcessing.R"
-#' sanity(pathNames)
+#' pathName<-paste0(here::here(),"/inst/TemplateProject/munge/PreProcessing.R")
+#' sanity(pathName)
 #' # This creates a consort diagram from any R script (not Rmd). It
-#' basically tells you how all the dataframes are related and how many
-#' rows each dataframe has so you can see if any data has been lost
-#' on the way.
-
-
-pathName<-paste0(here::here(),"/inst/TemplateGRS/munge/PreProcessing.R")
+#' # basically tells you how all the dataframes are related and how many
+#' # rows each dataframe has so you can see if any data has been lost
+#' # on the way.
 
 
 sanity<-function(pathName){
@@ -71,7 +56,7 @@ nodes <- create_node_df(n=nrow(mySizes),
 
 #### Construct the edges:
 
-my_data <- read.delim(path,stringsAsFactors = FALSE)
+my_data <- read.delim(pathName,stringsAsFactors = FALSE)
 names(my_data)<-"here"
 myattrib<-data.frame(my_data[grepl("<-",my_data$here),],stringsAsFactors = FALSE)
 names(myattrib)<-"here"
@@ -82,8 +67,8 @@ names(myattrib)<-"here"
 myattrib$here<-gsub("[0-9]+","",myattrib$here)
 
 #Create a colum with each side of the assignment operator:
-myattrib$left<-stringr::str_extract(myattrib$here,".*<-")
-myattrib$right<-stringr::str_extract(myattrib$here,"<-.*")
+myattrib$left<-str_extract(myattrib$here,".*<-")
+myattrib$right<-str_extract(myattrib$here,"<-.*")
 
 #Now lookup which dataframes are related to which.
 #Create a named list from this for the lookup:
