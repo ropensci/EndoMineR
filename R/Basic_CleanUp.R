@@ -109,7 +109,7 @@ if (getRversion() >= "2.15.1")
 #' @param inputText The relevant pathology text column
 #' @param delim the delimitors so the extractor can be used
 #' @param NegEx parameter to say whether the NegativeRemove function used.
-#' @param Extractor this states which Extractor you want to use. 1 is 
+#' @param Extract this states which Extractor you want to use. 1 is 
 #' Extractor 1 (for uniformly ordered headers), 2 is Extractor2 for
 #' text when headers are sometimes missing
 #' @importFrom stringi stri_split_boundaries
@@ -118,9 +118,9 @@ if (getRversion() >= "2.15.1")
 #' @examples mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extractor="1")
+#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extract="1")
 
-textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2')){
+textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extract=c('1','2')){
   
   #1. Flatten the text..
   inputText<-tolower(inputText)
@@ -172,14 +172,14 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
   
   
   #If the more complex Extractor is required:
-  if (missing(Extractor)||Extractor=="1")
+  if (missing(Extract)||Extract=="1")
   {
     MyCompleteFrame<-Extractor(as.character(standardisedTextOutput),tolower(delim))
   }
   
   
   #If the normal Extractor is required:
-  if (Extractor=="2")
+  if (Extract=="2")
   {
     
     #Convert the delimiters into a list and use it to initiate an empty data frame 
@@ -239,6 +239,10 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
 #' "Histology:","Diagnosis:")
 #' Mypath2<-Extractor(PathDataFrameFinal$PathReportWhole,mywords)
 #'
+#'
+#'pat <- sprintf("(%s)", paste(myWords, collapse = "|"))
+g <- gsub(pat, "\n\\1", paste0(PathDataFrameFinal$PathReportWhole, "\n"))
+m <- read.dcf(textConnection(g))
 
 
 
@@ -270,6 +274,33 @@ Extractor <- function(inputString, delim) {
   return(inputStringdf)
 }
 
+
+############################## Better extractor. May need some fine tuning to integrate into the textPrep as needs particular tag preparation ##############################
+data("TheOGDReportFinal")
+
+myWords<-c("Patient Name","Date of Birth","Hospital Number","Date of procedure","Endoscopist","Second Endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Visualization","Tolerance","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED",
+           "FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP")
+
+MyOGDDivertic$Endo_ResultText<-gsub("2nd Endoscopist","Second Endoscopist",MyOGDDivertic$Endo_ResultText)
+MyOGDDivertic$Endo_ResultText<-gsub("\n","",MyOGDDivertic$Endo_ResultText)
+
+names(myWords) <- myWords
+myWords <- gsub("(.*)","\\1: ",myWords)
+myWords<-as.list(myWords)
+
+inputString<-EndoMineR::DictionaryInPlaceReplace(MyOGDDivertic$Endo_ResultText,myWords)
+inputString<-gsub(": :",": ",inputString)
+inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
+inputString<-gsub("(","",inputString,fixed=TRUE)
+inputString<-gsub(")","",inputString,fixed=TRUE)
+inputString<-gsub("'","",inputString,fixed=TRUE)
+inputString<-gsub("Click to expand.Guys & St.Thomas NHS Foundation Trust.","",inputString,fixed=TRUE)
+
+pat <- sprintf("(%s)", paste(myWords, collapse = "|"))
+g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
+m <- read.dcf(textConnection(g))
+
+View(m)
 
 
 

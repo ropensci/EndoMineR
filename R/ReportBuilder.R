@@ -42,9 +42,9 @@ mySizes$Number<-rownames(mySizes)
 
 nodes <- create_node_df(n=nrow(mySizes),
                         nodes=mySizes$name,
+                        fontsize=5,
                         label=stringr::str_wrap(paste0(mySizes$name,":",mySizes$size),5),
-                        shape = "rectangle",
-                        fontsize=10)
+                        shape = "rectangle")
 
 
 
@@ -106,8 +106,6 @@ g <- create_graph(nodes_df=nodes,
     value = c("dot", "TB", "false"),
     attr_type = c("graph", "graph", "graph"))
 render_graph(g)
-
-return(g)
 
 }
 
