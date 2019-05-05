@@ -22,11 +22,11 @@ Imports:
         stringr,
         rlang,
         dplyr,
-        GGally,
-        udpipe,
         stringi,
         fuzzyjoin,
-        purrr
+        purrr,
+        DiagrammeR,
+        here
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
