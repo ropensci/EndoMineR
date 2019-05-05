@@ -109,38 +109,38 @@ EndoBasicGraph(kk, "endoscopist", "avg")
 
 
 
-
-
-#### Consort ####
-## @knitr dataDiagrammeR
-
-nodes <- create_node_df(n=9, 
-                        nodes=c("TheOGDReportFinal", "PathDataFrameFinal", "MyOGD","MyPath","FinalDataset","FinalDatasetBarr","LastTestsDone","FirstTestsDone","ff"),
-                        label=c(stringr::str_wrap(paste0("TheOGDReportFinal: ",nrow(TheOGDReportFinal)),5),
-                                stringr::str_wrap(paste0("PathDataFrameFinal: ",nrow(PathDataFrameFinal)),5), 
-                                stringr::str_wrap(paste0("MyOGD: ",nrow(MyOGD)),5),
-                                stringr::str_wrap(paste0("MyPath:",nrow(MyPath)),5),
-                                stringr::str_wrap(paste0("FinalDataset:",nrow(FinalDataset)),5),
-                                stringr::str_wrap(paste0("FinalDatasetBarr: ",nrow(FinalDatasetBarr)),5),
-                                stringr::str_wrap(paste0("LastTestsDone: ",nrow(LastTestsDone)),5),
-                                stringr::str_wrap(paste0("FirstTestsDone: ",nrow(FirstTestsDone)),5),
-                                stringr::str_wrap(paste0("ff: ",nrow(ff)),5)),
-                        shape = "rectangle",
-                        fontsize=10)
-
-edges <-
-  create_edge_df(
-    from = c(1,2,3,4,5,6,6,6),
-    to =   c(3,4,5,5,6,7,8,9))
-
-
-g <- create_graph(nodes_df=nodes, 
-                  edges_df=edges)%>%
-  add_global_graph_attrs(
-    attr = c("layout", "rankdir", "splines"),
-    value = c("dot", "TB", "false"),
-    attr_type = c("graph", "graph", "graph"))
-render_graph(g)
+# 
+# 
+# #### Consort ####
+# ## @knitr dataDiagrammeR
+# 
+# nodes <- create_node_df(n=9, 
+#                         nodes=c("TheOGDReportFinal", "PathDataFrameFinal", "MyOGD","MyPath","FinalDataset","FinalDatasetBarr","LastTestsDone","FirstTestsDone","ff"),
+#                         label=c(stringr::str_wrap(paste0("TheOGDReportFinal: ",nrow(TheOGDReportFinal)),5),
+#                                 stringr::str_wrap(paste0("PathDataFrameFinal: ",nrow(PathDataFrameFinal)),5), 
+#                                 stringr::str_wrap(paste0("MyOGD: ",nrow(MyOGD)),5),
+#                                 stringr::str_wrap(paste0("MyPath:",nrow(MyPath)),5),
+#                                 stringr::str_wrap(paste0("FinalDataset:",nrow(FinalDataset)),5),
+#                                 stringr::str_wrap(paste0("FinalDatasetBarr: ",nrow(FinalDatasetBarr)),5),
+#                                 stringr::str_wrap(paste0("LastTestsDone: ",nrow(LastTestsDone)),5),
+#                                 stringr::str_wrap(paste0("FirstTestsDone: ",nrow(FirstTestsDone)),5),
+#                                 stringr::str_wrap(paste0("ff: ",nrow(ff)),5)),
+#                         shape = "rectangle",
+#                         fontsize=10)
+# 
+# edges <-
+#   create_edge_df(
+#     from = c(1,2,3,4,5,6,6,6),
+#     to =   c(3,4,5,5,6,7,8,9))
+# 
+# 
+# g <- create_graph(nodes_df=nodes, 
+#                   edges_df=edges)%>%
+#   add_global_graph_attrs(
+#     attr = c("layout", "rankdir", "splines"),
+#     value = c("dot", "TB", "false"),
+#     attr_type = c("graph", "graph", "graph"))
+# render_graph(g)
 
 
 
@@ -155,11 +155,11 @@ render_graph(g)
 ## @knitr codeDepends
 
 
-sc = readScript(here("inst","TemplateProject","munge", "PreProcessing.R"))
-g = makeVariableGraph( info =getInputs(sc))
-require(Rgraphviz)
-edgemode(g) <- "directed"
-x <- layoutGraph(g, layoutType="neato")
-zz = layoutGraph(g)
-graph.par(list(nodes = list(fontsize = 25)))
-renderGraph(zz)
+# sc = readScript(here("inst","TemplateProject","munge", "PreProcessing.R"))
+# g = makeVariableGraph( info =getInputs(sc))
+# require(Rgraphviz)
+# edgemode(g) <- "directed"
+# x <- layoutGraph(g, layoutType="neato")
+# zz = layoutGraph(g)
+# graph.par(list(nodes = list(fontsize = 25)))
+# renderGraph(zz)
