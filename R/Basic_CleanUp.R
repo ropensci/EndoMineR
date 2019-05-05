@@ -109,18 +109,15 @@ if (getRversion() >= "2.15.1")
 #' @param inputText The relevant pathology text column
 #' @param delim the delimitors so the extractor can be used
 #' @param NegEx parameter to say whether the NegativeRemove function used.
-#' @param Extract this states which Extractor you want to use. 1 is 
-#' Extractor 1 (for uniformly ordered headers), 2 is Extractor2 for
-#' text when headers are sometimes missing
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a string vector.
 #' @examples mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extract="1")
+#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE")
 
-textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extract=c('1','2')){
+textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE')){
   
   #1. Flatten the text..
   inputText<-tolower(inputText)
@@ -144,7 +141,6 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extract=c('1','2')){
   
   
   #3.Remove all the negative phrases from the report if the parameter has been supplied
-  
   #Need to write here if the NegativeRemove has been ticked then should use it
   
   if (missing(NegEx)||NegEx=="TRUE")
@@ -152,13 +148,11 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extract=c('1','2')){
   inputText<-NegativeRemove(inputText)
   }
   
-  
   #4. Need to map the terms to the lexicons to make sure everything standardised.
   inputText<-DictionaryInPlaceReplace(inputText,LocationList())
   inputText<-DictionaryInPlaceReplace(inputText,EventList())
   inputText<-DictionaryInPlaceReplace(inputText,HistolType())
   
-
   #returns a lower case version
   inputText<-tolower(inputText)
   
@@ -168,39 +162,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extract=c('1','2')){
   standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
   standardisedTextOutput<-lapply(standardisedTextOutput, function(x) paste0(unlist(x),collapse="\n"))
   
-
-  
-  
-  #If the more complex Extractor is required:
-  if (missing(Extract)||Extract=="1")
-  {
     MyCompleteFrame<-Extractor(as.character(standardisedTextOutput),tolower(delim))
-  }
-  
-  
-  #If the normal Extractor is required:
-  if (Extract=="2")
-  {
-    
-    #Convert the delimiters into a list and use it to initiate an empty data frame 
-    #which also contains the original column:
-    #EndoscTree<-list(delim)
-    
-    easydf <- data.frame(matrix(ncol = length(delim),nrow=length(inputText)))
-    
-    #Make sure the delimiters are lower case as the text will be by now
-    delim<-tolower(delim)
-    #Name the new dataframe columns
-    #colnames(easydf)<-delim
-    easydf$inputText<-inputText
-    for(i in 1:(length(delim)-1)) {
-      MyCompleteFrame<-Extractor2(easydf,'inputText',as.character(delim[i]),
-                       as.character(delim[i+1]),as.character(delim[i]))
-    }
-    
-  }
-  
-
     #Last minute clean up:
     names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
   
@@ -238,136 +200,37 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extract=c('1','2')){
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
 #' Mypath2<-Extractor(PathDataFrameFinal$PathReportWhole,mywords)
-#'
-#'
-#'pat <- sprintf("(%s)", paste(myWords, collapse = "|"))
-g <- gsub(pat, "\n\\1", paste0(PathDataFrameFinal$PathReportWhole, "\n"))
-m <- read.dcf(textConnection(g))
-
-
 
 
 Extractor <- function(inputString, delim) {
-  
-  #Save inputString so can be merge back in as the origincal for later
-  inputStringForLater<- inputString
-  
-  #Create dataframe for tidyverse usage
-  inputStringdf <- data.frame(inputString,stringsAsFactors = FALSE)
-  
-  #Do the separation according to delimiters
-  inputStringdf <- inputStringdf %>%
-    tidyr::separate(inputString, into = c("added_name",delim),
-                    sep = paste(delim, collapse = "|"),
-                    extra = "drop", fill = "right")
-  
-  #Make sure columns names are correct
-  names(inputStringdf) <- gsub(".", "", names(inputStringdf), fixed = TRUE)
-  
-  #Get rid of the errant first column 
-  inputStringdf <- inputStringdf [,-1]
-  
-  #Add the original column back in so have the original reference
-  inputStringdf$Original<- inputString
-  inputStringdf <-data.frame(inputStringdf,stringsAsFactors = FALSE)
-  names(inputStringdf)<-gsub(".","",names(inputStringdf),fixed=TRUE)
-  return(inputStringdf)
-}
+#Create a named list of words
+delim <- gsub(":","",delim)
+names(delim) <- delim
+#Add a : to the tags 
 
+delim <- gsub("(.*)","\\1: ",delim)
+delim<-as.list(delim)
+inputString<-gsub(":","",inputString)
+#Do the find and replace to place the tags in the input text
+inputString<-EndoMineR::DictionaryInPlaceReplace(inputString,delim)
 
-############################## Better extractor. May need some fine tuning to integrate into the textPrep as needs particular tag preparation ##############################
-data("TheOGDReportFinal")
-
-myWords<-c("Patient Name","Date of Birth","Hospital Number","Date of procedure","Endoscopist","Second Endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Visualization","Tolerance","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED",
-           "FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP")
-
-MyOGDDivertic$Endo_ResultText<-gsub("2nd Endoscopist","Second Endoscopist",MyOGDDivertic$Endo_ResultText)
-MyOGDDivertic$Endo_ResultText<-gsub("\n","",MyOGDDivertic$Endo_ResultText)
-
-names(myWords) <- myWords
-myWords <- gsub("(.*)","\\1: ",myWords)
-myWords<-as.list(myWords)
-
-inputString<-EndoMineR::DictionaryInPlaceReplace(MyOGDDivertic$Endo_ResultText,myWords)
+#Do a bit more cleaning to make it into a dcf file:
 inputString<-gsub(": :",": ",inputString)
 inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
 inputString<-gsub("(","",inputString,fixed=TRUE)
+inputString<-gsub("\n","",inputString,fixed=TRUE)
 inputString<-gsub(")","",inputString,fixed=TRUE)
 inputString<-gsub("'","",inputString,fixed=TRUE)
-inputString<-gsub("Click to expand.Guys & St.Thomas NHS Foundation Trust.","",inputString,fixed=TRUE)
+inputString<-gsub("^","Start:",inputString)
+inputString<-gsub("::",":",inputString,fixed=TRUE)
 
-pat <- sprintf("(%s)", paste(myWords, collapse = "|"))
+#Create the dcf file
+pat <- sprintf("(%s)", paste(delim, collapse = "|"))
 g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
 m <- read.dcf(textConnection(g))
 
-View(m)
-
-
-
-
-#' Extractor2
-#'
-#' This is the alternative extractor for the Endoscopy and Histology report.
-#' This performs essentially the same process as the main extractor but is useful when the
-#' semi-structured text is organised in a non-standard way ie the delimiting 
-#' text is not always in the same order.
-#' As per the main Extractor, This function relies on the user creating a list 
-#' of words or characters that act as the words that should be split against. 
-#' The list is then fed to the
-#' Extractor2 in a loop so that it acts as the beginning and the end of the
-#' regex used to split the text. Whatever has been specified in the list
-#' is used as a column header. Column headers don't tolerate special characters
-#' like : or ? and / and don't allow numbers as the start character so these
-#' have to be dealt with in the text before processing
-#'
-#' @param x the dataframe
-#' @param y the column to extract from
-#' @param stra the start of the boundary to extract
-#' @param strb the end of the boundary to extract
-#' @param t the column name to create
-#' @importFrom stringr str_extract
-#' @keywords Extraction
-#' @export
-#' @examples v<-TheOGDReportFinal
-#' Myendo<-TheOGDReportFinal
-#' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
-#' Myendo$OGDReportWhole)
-#' 
-#' EndoscTree<-list('Hospital Number:','Patient Name:','General Practitioner:',
-#' 'Date of procedure:','Endoscopist:','Second Endoscopist:','Medications',
-#' 'Instrument','Extent of Exam:','Indications:','Procedure Performed:',
-#' 'Findings:','Endoscopic Diagnosis:')
-#' 
-#' for(i in 1:(length(EndoscTree)-1)) {
-#'  Myendo<-Extractor2(Myendo,'OGDReportWhole',as.character(EndoscTree[i]),
-#'  as.character(EndoscTree[i+1]),as.character(EndoscTree[i]))
-#' }
-#' res<-Myendo
-
-
-Extractor2 <- function(x, y, stra, strb, t) {
-  
-  t <- gsub("[^[:alnum:],]", " ", t)
-  
-  t <- gsub(" ", "", t, fixed = TRUE)
-  
-  x[, t] <- stringr::str_extract(x[, y], stringr::regex(paste(stra,
-                                                              "(.*)", strb, sep = ""), dotall = TRUE))
-  x[, t] <- gsub("\\\\.*", "", x[, t])
-  
-  names(x[, t]) <- gsub(".", "", names(x[, t]), fixed = TRUE)
-  x[, t] <- gsub("       ", "", x[, t])
-  x[, t] <- gsub(stra, "", x[, t], fixed = TRUE)
-  if (strb != "") {
-    x[, t] <- gsub(strb, "", x[, t], fixed = TRUE)
-  }
-  x[, t] <- gsub("       ", "", x[, t])
-  x[, t]<- ColumnCleanUp(x[, t])
-  
-  
-  return(x)
+return(m)
 }
-
 
 
 #' Dictionary In Place Replace
@@ -540,17 +403,10 @@ NegativeRemove <- function(inputText) {
     perl = TRUE,
     ignore.case = TRUE
   )
-  # Unanswered prompt lines
-  inputText <- gsub(".*:(\\.|\n)\\R*",
-                              "",
-                    inputText,
-                              perl = TRUE,
-                              ignore.case = TRUE)
-  
-  
+
   # Time related phrases eg post and previous
   inputText <- gsub(" (post|previous|prior)[^a-z].+?[A-Za-z]{3}",
-                              " TIME_REPLACED",
+                              " TIME_REPLACED-",
                     inputText,
                               perl = TRUE,
                               ignore.case = TRUE)
