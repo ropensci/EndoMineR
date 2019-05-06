@@ -228,7 +228,7 @@ inputString<-gsub("::",":",inputString,fixed=TRUE)
 pat <- sprintf("(%s)", paste(delim, collapse = "|"))
 g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
 m <- read.dcf(textConnection(g))
-
+m<-data.frame(m,stringsAsFactors = FALSE)
 return(m)
 }
 
