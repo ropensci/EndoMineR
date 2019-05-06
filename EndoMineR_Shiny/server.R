@@ -1,6 +1,8 @@
 
 library(shiny)
 library(EndoMineR)
+library(stringr)
+library(stringi)
 # Define server logic required to draw a histogram
 
 RV <- reactiveValues(data = TheOGDReportFinal)
@@ -11,9 +13,8 @@ RV3 <- reactiveValues(data = data.frame())
 server <- function(input, output) {
  
 #Do the extraction  
-  # mywordsOGD<-c("hospital number:","patient name:","general practitioner","date of procedure:",
-  #            "endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:",
-  #            "indications:", "procedure performed:","findings:","diagnosis:")
+  # mywordsOGD<-c("hospital number:","patient name:","general practitioner","date of procedure:","endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:","endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:","indications:", "procedure performed:","findings:","diagnosis:")
+
 
   mywordsPath<-c("hospital number:","patient name:","dob:","general practitioner:",
                    "date received:","nature of specimen:","macroscopic description:" ,"diagnosis:")
@@ -41,7 +42,7 @@ server <- function(input, output) {
     
     mywordsOGD<-input$caption
     mywordsOGD<-unlist(strsplit(mywordsOGD,","))
-    RV$data<-textPrep(RV$data$OGDReportWhole,mywordsOGD,NegEx="TRUE",Extractor="1")
+    RV$data<-textPrep(RV$data$OGDReportWhole,mywordsOGD,NegEx="TRUE")
   },ignoreInit = TRUE)
   
   #Extract the endoscopist
@@ -68,7 +69,7 @@ server <- function(input, output) {
   observeEvent(input$textPrepPath,{
     mywordsPath<-input$captionpath
     mywordsPath<-unlist(strsplit(mywordsPath,","))
-    RV2$data<-textPrep(RV2$data$PathReportWhole,mywordsPath,NegEx="TRUE",Extractor="1")
+    RV2$data<-textPrep(RV2$data$PathReportWhole,mywordsPath,NegEx="TRUE")
   },ignoreInit = TRUE)
   
   #Extract the endoscopist
