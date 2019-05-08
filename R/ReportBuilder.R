@@ -65,6 +65,9 @@ myattrib<-data.frame(myattrib[!grepl("#",myattrib$here),],stringsAsFactors = FAL
 names(myattrib)<-"here"
 #Get rid of all numbers so that they dont get confused:
 myattrib$here<-gsub("[0-9]+","",myattrib$here)
+#And get rid of brackets as seems to confuse things too
+myattrib$here<-gsub("\\(","_",myattrib$here)
+myattrib$here<-gsub("\\)","_",myattrib$here)
 
 #Create a colum with each side of the assignment operator:
 myattrib$left<-str_extract(myattrib$here,".*<-")
@@ -72,27 +75,38 @@ myattrib$right<-str_extract(myattrib$here,"<-.*")
 
 #Now lookup which dataframes are related to which.
 #Create a named list from this for the lookup:
+mySizes$Number<-paste0(mySizes$Number,",")
 numberReplaceList<-split(mySizes$Number,paste0(mySizes$name,"[^a-zA-Z]"))
+
 myattrib$left<-DictionaryInPlaceReplace(myattrib$left,numberReplaceList)
 myattrib$right<-DictionaryInPlaceReplace(myattrib$right,numberReplaceList)
 
 #Get into numbers only
-myattrib$leftNum<-str_extract_all(myattrib$left,"[0-9]")
-myattrib$rightNum<-str_extract_all(myattrib$right,"[0-9]")
+myattrib$leftNum<-str_extract_all(myattrib$left,"[0-9]+")
+myattrib$rightNum<-str_extract_all(myattrib$right,"[0-9]+")
 myattrib<-separate_rows(myattrib, rightNum, convert = TRUE)
+myattrib<-separate_rows(myattrib, leftNum, convert = TRUE)
 
-myattrib$leftNum<-as.integer(str_extract(myattrib$leftNum,"[1-9]"))
-myattrib$rightNum<-as.integer(str_extract(myattrib$rightNum,"[1-9]"))
+myattrib$leftNum<-as.integer(str_extract(myattrib$leftNum,"[0-9]+"))
+myattrib$rightNum<-as.integer(str_extract(myattrib$rightNum,"[0-9]+"))
+
+myattrib<-myattrib[grepl("[0-9]+",myattrib$leftNum),]
+myattrib<-myattrib[grepl("[0-9]+",myattrib$rightNum),]
 
 #Only select columns which have both a left and right:
 myattrib<-myattrib[!is.na(myattrib$leftNum),]
 myattrib<-myattrib[!is.na(myattrib$rightNum),]
 
+myattrib<-myattrib[myattrib$leftNum>0,]
+myattrib<-myattrib[myattrib$rightNum>0,]
+
 #Remove any row that refers to itself
 myattrib<-myattrib[myattrib$leftNum!=myattrib$rightNum,]
-
-
-#Now contruct the edges:
+myattrib<-data.frame(myattrib$leftNum,myattrib$rightNum,stringsAsFactors = FALSE)
+myattrib<-unique(myattrib)
+names(myattrib)<-c("leftNum","rightNum")
+  
+  #Now contruct the edges:
 edges <-
   create_edge_df(
     from = myattrib$rightNum,
