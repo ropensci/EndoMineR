@@ -1,0 +1,4 @@
+name: Abstract Generator
+description: >
+   This creates a template for the generation of abstracts from the upper GI pysiology data
+create_dir: FALSE
