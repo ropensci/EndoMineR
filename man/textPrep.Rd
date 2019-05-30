@@ -4,8 +4,7 @@
 \alias{textPrep}
 \title{textPrep function}
 \usage{
-textPrep(inputText, delim, NegEx = c("TRUE", "FALSE"),
-  Extractor = c("1", "2"))
+textPrep(inputText, delim, NegEx = c("TRUE", "FALSE"))
 }
 \arguments{
 \item{inputText}{The relevant pathology text column}
@@ -13,10 +12,6 @@ textPrep(inputText, delim, NegEx = c("TRUE", "FALSE"),
 \item{delim}{the delimitors so the extractor can be used}
 
 \item{NegEx}{parameter to say whether the NegativeRemove function used.}
-
-\item{Extractor}{this states which Extractor you want to use. 1 is 
-Extractor 1 (for uniformly ordered headers), 2 is Extractor2 for
-text when headers are sometimes missing}
 }
 \value{
 This returns a string vector.
@@ -36,7 +31,7 @@ are removed.
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE",Extractor="1")
+CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE")
 }
 \keyword{cleaning}
 \keyword{text}

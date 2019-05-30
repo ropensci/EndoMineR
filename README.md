@@ -2,6 +2,8 @@
 [![Build Status](https://travis-ci.org/sebastiz/EndoMineR.svg?branch=master)](https://travis-ci.org/sebastiz/EndoMineR) [![ropensci](https://badges.ropensci.org/153_status.svg)](https://github.com/ropensci/onboarding/issues/153) [![Coverage status](https://codecov.io/gh/sebastiz/EndoMineR/branch/master/graph/badge.svg)](https://codecov.io/github/sebastiz/EndoMineR?branch=master)
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+This package has undergone a major revision to make it much more user friendly. THe documentation has been updated to reflect this. I am always happy to hear of any feedback, positive and negative so I can continue to improve this package.
+
 **Aims of EndoMineR**
 ---------------------
 
@@ -122,6 +124,12 @@ mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Histology:","Diagnosis:")
 
 PathDataFrameFinalColon3<-Extractor(PathDataFrameFinalColon2$PathReportWhole,mywords)
+```
+
+``` r
+#PathDataFrameFinalColon3<-head(PathDataFrameFinalColon3[2:10],1)
+pander::panderOptions('table.split.table', Inf)
+pander(head(PathDataFrameFinalColon3[,1:9],1))
 ```
 
 <table style="width:100%;">
@@ -265,6 +273,11 @@ In order to extract the numbers, the limit of what has to be extracted has to be
 
 <br>
 
+``` r
+sg<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$Macroscopicdescription)
+pander(head(sg,5))
+```
+
 <table>
 <colgroup>
 <col width="30%" />
@@ -364,6 +377,12 @@ pander(head(sh,5))
 #### **iv) Histology biopsy size extraction**
 
 We might also be interested in the size of the biopsy taken. A further function called **HistolBxSize** is provided for this. This is also derived from the macroscopic description of the specimen
+
+``` r
+Mypath$BxSize<-HistolBxSize(Mypath$Macroscopicdescription)
+sh<-data.frame(Mypath$HospitalNumber,Mypath$PatientName,Mypath$BxSize)
+pander(head(sh,5))
+```
 
 <table style="width:86%;">
 <colgroup>

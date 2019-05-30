@@ -10,7 +10,7 @@ output: html_document
 To create this report within a project start by creating a project with library('ProjectTemplate'). This will create the skeleton project structure. Using 'usethis' or 'rrtools' may also help if you want to create collaborative projects using github as it should set up the github project for you.
 you can then drop this markdwon script in the project and use the chunk structure here to run your scripts
 
-## Title and abstract
+### Title and abstract
 
 **Study Design**
 
@@ -18,11 +18,11 @@ Remember to use **PICO**
 
 **1.Patient population**
 
-#In patients being investigated for GORD with a negative pH impedance study 
+In patients being investigated for GORD with a negative pH impedance study 
 
 **2.Intervention**
 
-#who go on to have a BRAVO study
+who go on to have a BRAVO study
 
 **3.Comparison**
 
@@ -55,18 +55,17 @@ Title: ‘Case-control study of risk factors associated with Brucella melitensis
 Including the study design term in the title or abstract when a standard study design is used, or at least identifying that a study is observational, allows the reader to easily identify the design and helps to ensure that articles are correctly indexed in electronic databases (Benson and Hartz, 2000). In STROBE, item 1a only requests that a common study design term be used. However, in veterinary research, not all observational studies are easily categorized into cohort, case–control, or cross-sectional study designs. Therefore, we recommend including that the study was observational and, if possible, the study design or important design characteristics, for example longitudinal, in the title.
 
 
----
-title: "Template for STROBE presentation at conference abstracts"
-author: "Sebastian Zeki"
-date: "04/09/2018"
-output: html_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, warning = FALSE, message = FALSE,include=FALSE}
+knitr::opts_chunk$set(results = 'asis', echo = FALSE, comment = FALSE,  warning = FALSE, message = FALSE, fig.align = 'center')
+library(knitr)
+library(here)
+library(EndoMineR)
+library(DiagrammeR)
+library(CodeDepends)
 ```
 
-## Introduction
+### Introduction
 
 **$\color{red}{\text{B.Introductory sentence 1: Define the disease condition}}$.**
 
@@ -82,23 +81,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **eg** Although often isolated from outpatients in veterinary clinics, there is concern that MRSP follows a veterinary-hospital associated epidemiology
 
-
-```{r Introduction}
-
-```
-
-## Aim
+### Aim
 
 
 **eg** The aim of the study was to assess the number of patients with aperistaltic oesophagus without achalasia and ascertain their demographics
 
 
-```{r Aim}
-```
-
-
-
-## Methods
+### Methods
 
 
 **$\color{red}{\text{E.Define the Dates}}$.**
@@ -124,21 +113,12 @@ Patients were selected according to Chicago Classification v3. Patients symptoms
 This involves how the relevant columns were accordionised (eg categorising the patients/and how subgroups were formed).
 
 
-
-```{r Acquisition}
-library(EndoMineR)
-library(tidyverse)
-
-
-
-######################################### Data acquisiton######################################### 
-#Just from TheOGDReportFinal
-#Data sources
-data(TheOGDReportFinal)
-data(PathDataFrameFinal)
-
+### Import the data
+```{r dataImport,echo=FALSE}
+load(file=here("data", "TheOGDReportFinal.rda"))
+load(file=here("data", "PathDataFrameFinal.rda"))
 ```
-  
+
   
   
   
@@ -158,166 +138,49 @@ MyOGD<-textPrep(TheOGDReportFinal$OGDReportWhole,mywordsOGD,NegEx="TRUE",Extract
 mywordsPath<-c("hospital number:","patient name:","dob:","general practitioner:","date received:","nature of specimen:","macroscopic description:" ,"diagnosis:")
 MyPath<-textPrep(PathDataFrameFinal$PathReportWhole,mywordsPath,NegEx="TRUE",Extractor="1")
 
-
 ```
 
-
-
-
-
-
-```{r Merge}
-#########################################  Data merging ######################################### 
-#Now merge the two
-FinalDataset<-Endomerge2(MyOGD,"dateofprocedure","hospitalnumber",MyPath,"datereceived","hospitalnumber")
-
-
-
+```{r echo=FALSE}
+read_chunk(here("inst","TemplateProject","munge", "PreProcessing.R"))
 ```
 
-
-
-
-
-```{r Clean}
-
-#########################################  Data cleaning ######################################### 
-
-
-#Now all the cleaning functions. Firstly endoscopy
-FinalDataset$endoscopist<-EndoscEndoscopist(FinalDataset$endoscopist)
-#Clean the meds (need to bind to the existing dataframe)
-FinalDataset<-cbind(EndoscMeds(FinalDataset$medications),FinalDataset)
-FinalDataset$instrument<-EndoscInstrument(FinalDataset$instrument)
-
-
+### Pre-process both the pathology and the endoscopy text:
+```{r dataClean,echo=FALSE}
 ```
 
-
-
-
-
-
-
-
-```{r Extrapolate1- calculated and keyword}
-######################################### Data accordionisation######################################### 
-#Now extrapolation with histology
-FinalDataset$NumBx<-HistolNumbOfBx(FinalDataset$macroscopicdescription,'specimen')
-FinalDataset$BxSize<-HistolBxSize(FinalDataset$macroscopicdescription)
- HistolTypeAndSiteToJoin<-HistolTypeAndSite(FinalDataset$procedureperformed,FinalDataset$macroscopicdescription,FinalDataset$Original.x)
-FinalDataset<-cbind(FinalDataset,HistolTypeAndSiteToJoin)
-
-#This one needs some attention- why is there a discrepancy between the dataset and the number of rows? Something wrong with the unlisting here.
-#Probably needs a paste collapse first- maybe even as part of the function itself
+### Merge endoscopy and pathology text
+```{r dataMerge,echo=FALSE}
 ```
 
-
-
-
-
-
-
-```{r Extrapolate2- colocation}
-#Colocation extrapolation
-#FinalDataset$EndoscopyEvent<-unlist(EntityPairs_TwoSentence(FinalDataset$findings,LocationList(),EventList()))
-FinalDataset$EndoscopyEvent<-EndoscopyEvent(FinalDataset,"findings","procedureperformed","macroscopicdescription","Original.x")
-
+### Clean the endoscopist and instrument columns
+```{r dataClean2,echo=FALSE}
 ```
 
-```{r Disease1-Barretts}
-######################################### Disease specific functions ######################################### 
-
-FinalDatasetBarr<-Barretts_PragueScore(FinalDataset,'findings','Original.x')
-FinalDatasetBarr$IMorNoIM<-Barretts_PathStage(FinalDatasetBarr,"Original.x")
-FinalDatasetBarr$FUType<-Barretts_FUType(FinalDatasetBarr,"CStage","MStage","IMorNoIM")
-FinalDatasetBarr$Paris<-BarrettsParisEMR(FinalDatasetBarr$procedureperformed,FinalDatasetBarr$findings)
-BarrettsBxQual2<-BarrettsBxQual(FinalDatasetBarr,'Date.x','pHospitalNum','endoscopist')
-
-######################################### Data forking (filtering and subsetting) #########################
-#Now frame the question you are interested in and develop subsets
+### Extract number of biopsies, biopsy size, biopsy location and medications from the text
+```{r dataExtrapolate,echo=FALSE}
 ```
 
-```{r Generic Analyses}
-FinalDatasetBarr<-SurveilTimeByRow(FinalDatasetBarr,'pHospitalNum','Date.x')
-
-#Gives you all the last tests done:
-LastTestsDone<-SurveilLastTest(FinalDatasetBarr,'pHospitalNum','Date.x')
-FirstTestsDone<-SurveilFirstTest(FinalDatasetBarr,'pHospitalNum','Date.x')
-
-#Need to sort this one out
-ff<-HowManyOverTime(FinalDatasetBarr,'indications','Date.x','.*')
-
+### Extract endoscopy events
+```{r dataExtrapolate2,echo=FALSE}
 ```
 
-
-```{r DataAnalysis}
-
-
-
-
-
+### Extract some generic analyses
+```{r dataAnalysis_DisSpecific,echo=FALSE}
 ```
 
-```{r DataViz}
-
-
-
-
+### Extract some disease specific analyses
+```{r dataAnalysis_Generic,echo=FALSE}
 ```
 
-```{r VarDiagram}
-#### Documenting the sets 
-library(CodeDepends)
-nodes <- create_node_df(n=10, 
-                        nodes=c("TheOGDReportFinal", "PathDataFrameFinal", "MyOGD","MyPath","FinalDataset","FinalDatasetBarr","BarrettsBxQual2","LastTestsDone","FirstTestsDone","ff"),
-                        label=c(stringr::str_wrap(paste0("TheOGDReportFinal: ",nrow(TheOGDReportFinal)),5),
-                                stringr::str_wrap(paste0("PathDataFrameFinal: ",nrow(PathDataFrameFinal)),5), 
-                                stringr::str_wrap(paste0("MyOGD: ",nrow(MyOGD)),5),
-                                stringr::str_wrap(paste0("MyPath:",nrow(MyPath)),5),
-                                stringr::str_wrap(paste0("FinalDataset:",nrow(FinalDataset)),5),
-                                stringr::str_wrap(paste0("FinalDatasetBarr: ",nrow(FinalDatasetBarr)),5),
-                                stringr::str_wrap(paste0("BarrettsBxQual2: ",nrow(BarrettsBxQual2)),5),
-                                stringr::str_wrap(paste0("LastTestsDone: ",nrow(LastTestsDone)),5),
-                                stringr::str_wrap(paste0("FirstTestsDone: ",nrow(FirstTestsDone)),5),
-                                stringr::str_wrap(paste0("ff: ",nrow(ff)),5)),
-                        shape = "rectangle",
-                        fontsize=10)
-
-edges <-
-  create_edge_df(
-    from = c(1,2,3,4,5,6,6,6,6),
-    to =   c(3,4,5,5,6,7,8,9,10))
-
-
-g <- create_graph(nodes_df=nodes, 
-                  edges_df=edges)%>%
-   add_global_graph_attrs(
-      attr = c("layout", "rankdir", "splines"),
-      value = c("dot", "TB", "false"),
-      attr_type = c("graph", "graph", "graph"))
-render_graph(g)
-
+### Show the Consort diagram
+```{r dataDiagrammeR,echo=FALSE}
 ```
 
-```{r CodeGraph}
-####Documenting the code: 
-
-library(CodeDepends)
-sc = readScript("/home/rstudio/EndoMineR_devSite/inst/TemplateProject/reports/TemplateScript.Rmd")
-g = makeVariableGraph( info =getInputs(sc))
-gif(require(Rgraphviz))
-  edgemode(g) <- "directed"
-x <- layoutGraph(g, layoutType="neato")
-zz = layoutGraph(g)
-graph.par(list(nodes = list(fontsize = 25)))
-renderGraph(zz)
-
-
+### Show the CodeDepends
+```{r codeDepends,echo=FALSE}
 ```
 
 ## Results
-
 
 **$\color{red}{\text{I.Define the Statistical methods}}$.**
 
@@ -342,13 +205,6 @@ CI 0.03–0.34, P < 0.001).
 **Choose your statistical analysis**
 
 
-```{r Results}
-######################################### Data analysis######################################### 
-
-
-
-
-```
 
 ## Discussion
 
@@ -361,15 +217,12 @@ CI 0.03–0.34, P < 0.001).
 settings and possibly with chronic skin disease.
 
 
-```{r Discussion}
-```
+
 
 ## Limitations
 **$\color{red}{\text{O.Sentence 1: To be decided}}$.**
 **eg** There was an unexpected lack of association between MRSP and antimicrobial therapy; this requires further investigation .(Lehner et al., 2014).
 
-```{r Limitations}
-```
 
 
 
