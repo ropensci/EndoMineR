@@ -46,9 +46,6 @@ nodes <- create_node_df(n=nrow(mySizes),
                         label=stringr::str_wrap(paste0(mySizes$name,":",mySizes$size),5),
                         shape = "rectangle")
 
-
-
-
 #4. Then extract all lines that have a any dataframe mentioned on both side of a '<-' as that gives the directionality of the edges.
 #Extract the arrows.
 #read the text of the script in too for the arrow extraction.
