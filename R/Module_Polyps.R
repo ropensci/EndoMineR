@@ -32,12 +32,12 @@ GRS_Type_Assess_By_Unit <-
 
     # Function should get proportions of a procedure that result in a finding:
 
-    Adenoma <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma = (sum(grepl("[Aa]denoma", Original.y)) / dplyr::n()) * 100)
-    Adenocarcinoma <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma = (sum(grepl(".*denoca.*", Original.y)) / dplyr::n()) * 100)
-    HGD <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD = (sum(grepl(".*[Hh]igh [Gg]rade.*", Original.y)) / dplyr::n()) * 100)
-    LGD <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD = (sum(grepl(".*[Ll]ow [Gg]rade.*", Original.y)) / dplyr::n()) * 100)
-    Serrated <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated = (sum(grepl(".*[Ss]errated.*", Original.y)) / dplyr::n()) * 100)
-    Hyperplastic <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic = (sum(grepl(".*yperplastic.*", Original.y)) / dplyr::n()) * 100)
+    Adenoma <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenoma = (sum(grepl("[Aa]denoma", Histol)) / dplyr::n()) * 100)
+    Adenocarcinoma <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Adenocarcinoma = (sum(grepl(".*denoca.*", Histol)) / dplyr::n()) * 100)
+    HGD <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(HGD = (sum(grepl(".*[Hh]igh [Gg]rade.*", Histol)) / dplyr::n()) * 100)
+    LGD <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(LGD = (sum(grepl(".*[Ll]ow [Gg]rade.*", Histol)) / dplyr::n()) * 100)
+    Serrated <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Serrated = (sum(grepl(".*[Ss]errated.*", Histol)) / dplyr::n()) * 100)
+    Hyperplastic <- dataframe %>% group_by_(Endo_Endoscopist) %>% summarise(Hyperplastic = (sum(grepl(".*yperplastic.*", Histol)) / dplyr::n()) * 100)
 
     FinalTable <-
       full_join(Adenoma, Adenocarcinoma, by = Endo_Endoscopist)
