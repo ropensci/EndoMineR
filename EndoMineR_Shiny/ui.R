@@ -33,23 +33,21 @@ library(EndoMineR)
            actionButton("Endomerge2",label = "Endomerge2"),
            DT::dataTableOutput("mergedTable")
   ),
-  tabPanel("General Extrapolation", tableOutput("table3"),
-           actionButton("Extrapolation1",label = "Extrapolation1"),
-           actionButton("Extrapolation2",label = "Extrapolation2"),
-           actionButton("Extrapolation3",label = "Extrapolation3"),
-           actionButton("Extrapolation4",label = "Extrapolation4")
+  tabPanel("Barrett's", tableOutput("table5"),
+           actionButton("PragueScore",label = "PragueScore"),
+           actionButton("PathStage",label = "PathStage"),
+           actionButton("FollowUpType",label = "FollowUpType"),
+           actionButton("AllTheFunctions",label = "DataViz4")
+  ),
+  tabPanel("Polyps", tableOutput("table3"),
+           actionButton("GRS",label = "GRS"),
+           DT::dataTableOutput("polypTable")
   ),
   tabPanel("General Analysis", tableOutput("table4"),
            actionButton("Analysis1",label = "Analysis1"),
            actionButton("Analysis2",label = "Analysis2"),
            actionButton("Analysis3",label = "Analysis3"),
            actionButton("Analysis4",label = "Analysis4")
-  ),
-  tabPanel("Barrett's", tableOutput("table5"),
-           actionButton("PragueScore",label = "PragueScore"),
-           actionButton("PathStage",label = "PathStage"),
-           actionButton("FollowUpType",label = "FollowUpType"),
-           actionButton("AllTheFunctions",label = "DataViz4")
   )
   )
 )

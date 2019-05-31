@@ -8,6 +8,14 @@ library(stringi)
 RV <- reactiveValues(data = TheOGDReportFinal)
 RV2 <- reactiveValues(data = PathDataFrameFinal)
 RV3 <- reactiveValues(data = data.frame())
+RV4 <- reactiveValues(data = data.frame())
+RV5 <- reactiveValues(data = data.frame())
+RV6 <- reactiveValues(data = data.frame())
+RV7 <- reactiveValues(data = data.frame())
+RV8 <- reactiveValues(data = data.frame())
+RV9 <- reactiveValues(data = data.frame())
+RV10 <- reactiveValues(data = data.frame())
+
 
 
 server <- function(input, output) {
@@ -28,6 +36,9 @@ server <- function(input, output) {
   })
   output$mergedTable = DT::renderDT({
     RV3$data
+  })
+  output$polypTable = DT::renderDT({
+    RV4$data
   })
 
   
@@ -82,10 +93,10 @@ server <- function(input, output) {
     RV2$data$BxSize<-HistolBxSize(RV2$data$macroscopicdescription)
   },ignoreInit = TRUE)
   
-  #Extract the instrument
-  observeEvent(input$EndoscInstrument,{
-    RV$data$instrument<-EndoscInstrument(RV$data$instrument)
-  },ignoreInit = TRUE)
+
+  
+  ########### EndoMerge buttons############  
+  
   
   observeEvent(input$Endomerge2,{
     RV3$data<-Endomerge2(RV$data,"dateofprocedure","hospitalnumber",RV2$data,"datereceived","hospitalnumber")
@@ -93,9 +104,30 @@ server <- function(input, output) {
   
   
   ########### Barrett's buttons############  
-#   observeEvent(input$PragueScore,{
-#     RV3$data$PragueScore<-Barretts_PragueScore(RV3$data, "findings", "Original.y")
-#  },ignoreInit = TRUE)
-   
+   observeEvent(input$PragueScore,{
+     RV3$data<-Barretts_PragueScore(RV3$data, "findings", "findings")
+  },ignoreInit = TRUE)
+  
+  observeEvent(input$PathStage,{
+    RV3$data$IMorNoIM<-Barretts_PathStage(RV3$data, "diagnosis")
+  },ignoreInit = TRUE)
+  
+  observeEvent(input$FollowUpType,{
+    RV3$data$FU_Type<-Barretts_FUType(RV3$data, "CStage", "MStage", "IMorNoIM")
+  },ignoreInit = TRUE)
+  
+  observeEvent(input$DataViz4,{
+    RV3$data$IMorNoIM<-BarrettsAll(RV3$data, "findings","findings",RV3$data,"diagnosis","diagnosis")
+  },ignoreInit = TRUE)
+
+  
+  ########### Polyp buttons############     
+  nn <- GRS_Type_Assess_By_Unit(vColon, "ProcedurePerformed","Endoscopist", "Diagnosis", "Histology")
+  
+  observeEvent(input$GRS,{
+    RV4$data<-GRS_Type_Assess_By_Unit(RV3$data, "procedureperformed","endoscopist", "diagnosis", "diagnosis")
+  },ignoreInit = TRUE)
+  
   
 }
+
