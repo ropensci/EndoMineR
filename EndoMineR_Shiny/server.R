@@ -27,26 +27,43 @@ server <- function(input, output) {
   mywordsPath<-c("hospital number:","patient name:","dob:","general practitioner:",
                    "date received:","nature of specimen:","macroscopic description:" ,"diagnosis:")
   
+  
+  ############# The tables ###################
   #Split up the dataframe with textPrep
   output$endotable = DT::renderDT({
     RV$data
-  })
+  },options = list(scrollX = TRUE))
   output$pathTable = DT::renderDT({
     RV2$data
-  })
+  },options = list(scrollX = TRUE))
+  
   output$mergedTable = DT::renderDT({
     RV3$data
-  })
+  },selection = list(target = 'column'),options = list(scrollX = TRUE))
+
   output$polypTable = DT::renderDT({
     RV4$data
+  },options = list(scrollX = TRUE))
+  
+  #To do- the selection of columns only gives the index back not the name of the column
+  output$metricTable = DT::renderDT({
+    RV5$data
+  },options = list(scrollX = TRUE))
+  
+  output$plot <- renderPlot({
+    cols <- as.numeric(input$mergedTable_columns_selected)
+    selectedCol<-colnames(RV3$data)[cols]
+    #RV5$data<-MetricByEndoscopist(RV3$data,'endoscopist',selectedCol)
+    EndoBasicGraph(RV3$data, "endoscopist", selectedCol)
   })
 
   
   
   
+  ############# The function events ###################
   
   
-  ###########Endoscopy buttons############  
+  ########### Endoscopy events ############  
   #Prepare the text for endoscopy
   observeEvent(input$textPrep,{
 
@@ -76,7 +93,7 @@ server <- function(input, output) {
   
   
   
-  ########### Pathology buttons############  
+  ########### Pathology events ############  
   observeEvent(input$textPrepPath,{
     mywordsPath<-input$captionpath
     mywordsPath<-unlist(strsplit(mywordsPath,","))
@@ -95,7 +112,7 @@ server <- function(input, output) {
   
 
   
-  ########### EndoMerge buttons############  
+  ########### EndoMerge events ############  
   
   
   observeEvent(input$Endomerge2,{
@@ -103,7 +120,7 @@ server <- function(input, output) {
   },ignoreInit = TRUE)
   
   
-  ########### Barrett's buttons############  
+  ########### Barrett's events ############  
    observeEvent(input$PragueScore,{
      RV3$data<-Barretts_PragueScore(RV3$data, "findings", "findings")
   },ignoreInit = TRUE)
@@ -121,13 +138,20 @@ server <- function(input, output) {
   },ignoreInit = TRUE)
 
   
-  ########### Polyp buttons############     
-  nn <- GRS_Type_Assess_By_Unit(vColon, "ProcedurePerformed","Endoscopist", "Diagnosis", "Histology")
-  
+  ########### Polyp events ############     
+
   observeEvent(input$GRS,{
     RV4$data<-GRS_Type_Assess_By_Unit(RV3$data, "procedureperformed","endoscopist", "diagnosis", "diagnosis")
   },ignoreInit = TRUE)
   
+  ########### Graphic events ############   
+  
+  #
+  observeEvent(input$MetricByEndoscopist,{
+     cols <- as.numeric(input$mergedTable_columns_selected)
+     selectedCol<-colnames(RV3$data)[cols]
+     RV5$data<-MetricByEndoscopist(RV3$data,'endoscopist',selectedCol)
+  },ignoreInit = TRUE)
   
 }
 

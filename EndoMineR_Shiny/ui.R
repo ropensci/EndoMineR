@@ -9,8 +9,64 @@
 
 library(shiny)
 library(EndoMineR)
+library(shinydashboard)
+library(shinydashboardPlus)
 
-  fluidPage(tabsetPanel(type = "tabs",
+
+dashboardPagePlus(
+  dashboardHeaderPlus(title = 'EndoMineR',
+                      fixed = TRUE,
+                      enable_rightsidebar = TRUE,
+                      dropdownMenu(
+                        type = "tasks",
+                        badgeStatus = "danger",
+                        taskItem(value = 20, color = "aqua", "Refactor code"),
+                        taskItem(value = 40, color = "green", "Design new layout"),
+                        taskItem(value = 60, color = "yellow", "Another task"),
+                        taskItem(value = 80, color = "red", "Write documentation")
+                      )),
+  dashboardSidebar(box(
+    width = NULL,
+    title = "Links and Tutorials",
+    status = NULL,
+    appButton(
+      url = "https://ropensci.github.io/EndoMineR/articles/EndoMineRPrinciples.html",
+      label = "Tutorials for under the hood", 
+      icon = "fa fa-users", 
+      enable_badge = TRUE, 
+      badgeColor = "purple", 
+      badgeLabel = 891
+    ),
+    appButton(
+      label = "Gastro data science", 
+      icon = "fas fa-info-circle", 
+      enable_badge = FALSE, 
+      badgeColor = NULL, 
+      badgeLabel = NULL
+    ),
+    appButton(
+      label = "Likes", 
+      icon = "fa fa-heart-o", 
+      enable_badge = TRUE, 
+      badgeColor = "red", 
+      badgeLabel = 3
+    ),
+    socialButton(
+      url = "https://twitter.com/GastroDS",
+      type = "twitter"
+    ),
+    socialButton(
+      url = "http://github.com/sebastiz",
+      type = "github"
+    )
+  )
+  ),
+  dashboardBody(
+  
+
+    
+    
+  tabsetPanel(type = "tabs",
                         
   tabPanel("Endoscopy Dataset", verbatimTextOutput("summary"),
            textInput("caption", "Caption", "Data Summary"),
@@ -31,23 +87,28 @@ library(EndoMineR)
   ),
   tabPanel("Merged Dataset", tableOutput("table2"),
            actionButton("Endomerge2",label = "Endomerge2"),
-           DT::dataTableOutput("mergedTable")
+           actionButton("MetricByEndoscopist",label = "MetricByEndoscopist"),
+           actionButton("CategoricalByEndoscopist",label = "CategoricalByEndoscopist"),
+           actionButton("HowManyOverTime",label = "HowManyOverTime"),
+           DT::dataTableOutput("mergedTable"),
+           verbatimTextOutput('foo'),
+           DT::dataTableOutput("metricTable"),
+           plotOutput("plot")
   ),
   tabPanel("Barrett's", tableOutput("table5"),
            actionButton("PragueScore",label = "PragueScore"),
            actionButton("PathStage",label = "PathStage"),
            actionButton("FollowUpType",label = "FollowUpType"),
-           actionButton("AllTheFunctions",label = "DataViz4")
+           actionButton("AllTheFunctions",label = "AllTheFunctions"),
+           actionButton("SurveillanceTime",label = "SurveillanceTime"),
+           actionButton("SurveillanceLastTest",label = "SurveillanceLastTest"),
+           actionButton("SurveillanceFirstTest",label = "SurveillanceFirstTest")
   ),
   tabPanel("Polyps", tableOutput("table3"),
            actionButton("GRS",label = "GRS"),
            DT::dataTableOutput("polypTable")
-  ),
-  tabPanel("General Analysis", tableOutput("table4"),
-           actionButton("Analysis1",label = "Analysis1"),
-           actionButton("Analysis2",label = "Analysis2"),
-           actionButton("Analysis3",label = "Analysis3"),
-           actionButton("Analysis4",label = "Analysis4")
   )
+  )
+
   )
 )
