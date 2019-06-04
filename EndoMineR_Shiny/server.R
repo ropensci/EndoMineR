@@ -3,10 +3,11 @@ library(shiny)
 library(EndoMineR)
 library(stringr)
 library(stringi)
+library(readxl)
 # Define server logic required to draw a histogram
 
-RV <- reactiveValues(data = TheOGDReportFinal)
-RV2 <- reactiveValues(data = PathDataFrameFinal)
+RV <- reactiveValues(data = data.frame())
+RV2 <- reactiveValues(data = data.frame())
 RV3 <- reactiveValues(data = data.frame())
 RV4 <- reactiveValues(data = data.frame())
 RV5 <- reactiveValues(data = data.frame())
@@ -20,26 +21,52 @@ RV10 <- reactiveValues(data = data.frame())
 
 server <- function(input, output) {
  
-#Do the extraction  
-  # mywordsOGD<-c("hospital number:","patient name:","general practitioner","date of procedure:","endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:","endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:","indications:", "procedure performed:","findings:","diagnosis:")
-
-
-  mywordsPath<-c("hospital number:","patient name:","dob:","general practitioner:",
-                   "date received:","nature of specimen:","macroscopic description:" ,"diagnosis:")
+  observe({
+    inFile_endoscopy <- input$endoscopy
+    if (!is.null(inFile_endoscopy)) {   
+      dataFile <- read_excel(inFile_endoscopy$datapath, sheet=1)
+      dat <- data.frame(EndoPaste(dataFile)[1], stringsAsFactors=FALSE)
+      RV$data<-dat
+      
+    }
+  })
+  
+  observe({
+    inFile_path <- input$pathology
+    if (!is.null(inFile_path)) {   
+      dataFile <- read_excel(inFile_path$datapath, sheet=1)
+      dat <- data.frame(EndoPaste(dataFile)[1], stringsAsFactors=FALSE)
+      RV2$data<-dat
+      
+    }
+  })
+  
+  observe({
+    inFile_merged <- input$merged
+    if (!is.null(inFile_merged)) {   
+      dataFile <- read_excel(inFile_merged$datapath, sheet=1)
+      dat <- data.frame(EndoPaste(dataFile)[1], stringsAsFactors=FALSE)
+      RV3$data<-dat
+      
+    }
+  })
+  
+  
   
   
   ############# The tables ###################
   #Split up the dataframe with textPrep
   output$endotable = DT::renderDT({
     RV$data
-  },options = list(scrollX = TRUE))
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
+  
   output$pathTable = DT::renderDT({
     RV2$data
-  },options = list(scrollX = TRUE))
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
   
   output$mergedTable = DT::renderDT({
     RV3$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE))
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
 
   output$polypTable = DT::renderDT({
     RV4$data
@@ -66,11 +93,10 @@ server <- function(input, output) {
   ########### Endoscopy events ############  
   #Prepare the text for endoscopy
   observeEvent(input$textPrep,{
-
-    
     mywordsOGD<-input$caption
     mywordsOGD<-unlist(strsplit(mywordsOGD,","))
-    RV$data<-textPrep(RV$data$OGDReportWhole,mywordsOGD,NegEx="TRUE")
+    RV$data<-textPrep(RV$data[,1],mywordsOGD,NegEx="TRUE")
+   
   },ignoreInit = TRUE)
   
   #Extract the endoscopist
@@ -146,7 +172,7 @@ server <- function(input, output) {
   
   ########### Graphic events ############   
   
-  #
+  
   observeEvent(input$MetricByEndoscopist,{
      cols <- as.numeric(input$mergedTable_columns_selected)
      selectedCol<-colnames(RV3$data)[cols]
