@@ -4,9 +4,12 @@ library(EndoMineR)
 library(stringr)
 library(stringi)
 library(readxl)
+library(DT)
+
 # Define server logic required to draw a histogram
 
 RV <- reactiveValues(data = data.frame())
+
 RV2 <- reactiveValues(data = data.frame())
 RV3 <- reactiveValues(data = data.frame())
 RV4 <- reactiveValues(data = data.frame())
@@ -47,7 +50,6 @@ server <- function(input, output) {
       dataFile <- read_excel(inFile_merged$datapath, sheet=1)
       dat <- data.frame(EndoPaste(dataFile)[1], stringsAsFactors=FALSE)
       RV3$data<-dat
-      
     }
   })
   
@@ -57,8 +59,37 @@ server <- function(input, output) {
   ############# The tables ###################
   #Split up the dataframe with textPrep
   output$endotable = DT::renderDT({
-    RV$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
+    if (!is.null(RV$data)) {  
+      
+      RV$data[["Select"]]<-paste0('<input type="checkbox" name="row_selected" value="Row',1:nrow(RV$data),'"><br>')
+    
+      RV$data[["Actions"]]<-
+      paste0('
+             <div class="btn-group" role="group" aria-label="Basic example">
+             <button type="button" class="btn btn-secondary delete" id=delete_',1:nrow(RV$data),'>Delete</button>
+             </div>
+             ')
+    }
+    
+    
+ datatable(RV$data,escape=F, extensions = "Select", selection = "none",callback = JS("table.on('click', 'tbody td', function(){",
+                                                                                     "  // if the column is already selected, deselect it:",
+                                                                                     "  if(table.column(this, {selected: true}).length){",
+                                                                                     "    table.column(this).deselect();",
+                                                                                     "  // otherwise, select the column unless there's the class 'notselectable':",
+                                                                                     "  } else if(!$(this).hasClass('notselectable')){",
+                                                                                     "    table.column(this).select();",
+                                                                                     "  }",
+                                                                                     "});"),
+           options = list(scrollX = TRUE,
+                          pageLength = 5,
+                          columnDefs = list(
+                            list(className = "notselectable", targets = c(-1,-2))
+                          ),
+                          select = "api"))
+  
+    
+  })
   
   output$pathTable = DT::renderDT({
     RV2$data
@@ -113,17 +144,51 @@ server <- function(input, output) {
   observeEvent(input$EndoscInstrument,{
     RV$data$instrument<-EndoscInstrument(RV$data$instrument)
   },ignoreInit = TRUE)
+  
+  ########### Generic events ############ 
+  #Standardise the date
+  observeEvent(input$DateStandardiserEndo,{
+   
+    RV$data[,as.numeric(input$endotable_columns_selected)]<-str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
+                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})")
+  },ignoreInit = TRUE)
+  
+  
+  #Standardise the date
+  observeEvent(input$DateStandardiserEPath,{
+    RV2$data[,as.numeric(input$pathTable_columns_selected)]<-str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
+                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})")
+  },ignoreInit = TRUE)
+  
+  observeEvent(input$Del_row_head,{
+    row_to_del=as.numeric(gsub("Row","",input$checked_rows))
+    
+    RV$data=RV$data[-row_to_del]}
+  )
+  
+  
+  observeEvent(input$lastClick,
+               {
+                 if (input$lastClickId%like%"delete")
+                 {
+                   row_to_del=as.numeric(gsub("delete_","",input$lastClickId))
+                   RV$data=RV$data[-row_to_del]
+                 }
+                 else if (input$lastClickId%like%"modify")
+                 {
+                   showModal(modal_modify)
+                 }
+               }
+  )
+  
 
-  
-  
-  
   
   
   ########### Pathology events ############  
   observeEvent(input$textPrepPath,{
-    mywordsPath<-input$captionpath
+    mywordsPath<-input$captionPath
     mywordsPath<-unlist(strsplit(mywordsPath,","))
-    RV2$data<-textPrep(RV2$data$PathReportWhole,mywordsPath,NegEx="TRUE")
+    RV2$data<-textPrep(RV2$data[,1],mywordsPath,NegEx="TRUE")
   },ignoreInit = TRUE)
   
   #Extract the endoscopist
@@ -140,10 +205,17 @@ server <- function(input, output) {
   
   ########### EndoMerge events ############  
   
-  
   observeEvent(input$Endomerge2,{
-    RV3$data<-Endomerge2(RV$data,"dateofprocedure","hospitalnumber",RV2$data,"datereceived","hospitalnumber")
+    #Merge the patientID column and date from each table. Make sure that the patient ID is chosen first;
+    browser()
+    RV3$data<-Endomerge2(RV$data,
+                         colnames(RV$data[as.numeric(input$endotable_columns_selected[1])]),
+                         colnames(RV$data[as.numeric(input$endotable_columns_selected[2])]),
+                         RV2$data,
+                         colnames(RV2$data[as.numeric(input$pathTable_columns_selected[1])]),
+                         colnames(RV2$data[as.numeric(input$pathTable_columns_selected[2])]))
   },ignoreInit = TRUE)
+
   
   
   ########### Barrett's events ############  
