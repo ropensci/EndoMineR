@@ -11,13 +11,42 @@ library(shiny)
 library(EndoMineR)
 library(shinydashboard)
 library(shinydashboardPlus)
+library(shinythemes)
 
+fluidPage(theme=shinytheme("spacelab"),
+ # box(width=12,
+      h3(strong("Endoscopy labelled Image Picker"),align="center"),
+      hr(),
+   # column(6,offset = 6,
+             HTML('<div class="btn-group" role="group" aria-label="Basic example">'),
+             actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
+             HTML('</div>'),
+     # ),
+      
+      #column(12,dataTableOutput("Main_table")),
+      tags$script(HTML('$(document).on("click", "input", function () {
+                       var checkboxes = document.getElementsByName("row_selected");
+                       var checkboxesChecked = [];
+                       for (var i=0; i<checkboxes.length; i++) {
+                       if (checkboxes[i].checked) {
+                       checkboxesChecked.push(checkboxes[i].value);
+                       }
+                       }
+                       Shiny.onInputChange("checked_rows",checkboxesChecked);
+                       })')),
+      tags$script("$(document).on('click', '#Main_table button', function () {
+                  Shiny.onInputChange('lastClickId',this.id);
+                  Shiny.onInputChange('lastClick', Math.random())
+                  });"),
+
+  #),
 
 dashboardPage(
   
   dashboardHeader(title = 'EndoMineR'),
  
   dashboardSidebar(
+  
     
     sidebarMenu(
         menuItem("Dashboard"),
@@ -45,15 +74,17 @@ dashboardPage(
                                actionButton("EndoscEndoscopist",label = "EndoscEndoscopist"),
                                actionButton("EndoscMeds",label = "EndoscMeds"),
                                actionButton("EndoscInstrument",label = "EndoscInstrument"),
+                               actionButton("DateStandardiserEndo",label = "DateStandardiserEndo"),
                                DT::dataTableOutput("endotable")),
                bsCollapsePanel("Pathology Data", "Upload data to get the pathology dataset", style = "info",
-                               textInput("caption", "Caption", "Data Summary"),
+                               textInput("captionPath", "Caption", "Data Summary"),
                                actionButton("textPrepPath",label = "textPrepPath"),
                                actionButton("NumBx",label = "NumBx"),
                                actionButton("BxSize",label = "BxSize"),
+                               actionButton("DateStandardiserEPath",label = "DateStandardiserEPath"),
                                DT::dataTableOutput("pathTable")),
                bsCollapsePanel("Merged Data", "Upload data to get the Merged dataset", style = "info",
-                               textInput("caption", "Caption", "Data Summary"),
+                               textInput("captionMerge", "Caption", "Data Summary"),
                                actionButton("Endomerge2",label = "Endomerge2"),
                                actionButton("MergeWithImages",label = "MergeWithImages"),
                                actionButton("CategoricalByEndoscopist",label = "CategoricalByEndoscopist"),
@@ -75,4 +106,5 @@ dashboardPage(
                     )
     )
   )
+)
 )
