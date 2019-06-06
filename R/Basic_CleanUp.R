@@ -711,6 +711,70 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
   return(text)
 }
 
+#' MyImgLibrary
+#'
+#' This is used to pick and clean endoscopic images from html exports so they can be prepared
+#' before being linked to pathology and endoscopy reports
+#' @keywords Image extraction
+#' @param file The html report to extract (the html will have all the images references in it)
+#' @param delim The phrase that separates individual endoscopies
+#' @param location The folder containing the actual images
+#' @importFrom stringr str_extract 
+#' @importFrom lubridate parse_date_time
+#' @importFrom tidyr separate_rows
+#' @export
+#' @examples # MyImgLibrary("S:/Gastroenterology/Seb/R/Data/Barretts/Images Captured with Proc Data Audit_Findings1.html",
+#' #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
+
+MyImgLibrary<-function(file,delim,location){
+  htmlCode = readLines(file)
+  
+  #Collapse all the html together
+  mergedhtml<-paste(htmlCode, sep="", collapse="")
+  
+  #Split according to Procedure Performed which separates each record
+  df<-strsplit(mergedhtml, delim, fixed = FALSE, perl = FALSE, useBytes = FALSE)
+  df<-as.data.frame(df)
+  colnames(df)<-c("df")
+  
+  
+  #Extract and format dates properly
+  df$Endo_ResultEntered<-str_extract(df$df,"(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})")
+  #Get them all as dates:
+  df$Endo_ResultEntered<-parse_date_time(df$Endo_ResultEntered, orders = c("dmy", "ymd"))
+  
+  #Extract the patient ID:
+  df$PatientID<-str_extract(df$df,"(?<=>)[A-Z0-9]{4,}(?=<)")
+  
+  #Extract the images with the folder name which needs to be kept (but is relative in html so no need to strip it off)
+  df$img<-stringr::str_extract(df$df,"img src.*?(jpg|png|gif|bmp)")
+  
+  #Need to replace the with the current path here
+  #df$img<-gsub("img src=\"Images Captured with Proc Data Audit.files/","",df$img)
+  df$df<-NULL
+  
+  ####################################################################################
+  ####################################################################################
+  ####################################################################################
+  ####################################################################################
+  ####################################################################################
+  
+  #Now collapse the table so all image files for a procedure in one row only:
+  mergeddf<-as.data.frame(as.data.table(df)[, toString(img), by = list(Endo_ResultEntered,PatientID)])
+  
+  #Split the comma separated img list into a list within the data frame so you should then be able to iterate over it:
+  mergeddf<-separate_rows(mergeddf,V1,sep=",")
+  mergeddf$V1<-gsub("img src=\"","",mergeddf$V1)
+  mergeddf$V1<-trimws(mergeddf$V1)
+  mergeddf$url<-lapply(mergeddf$V1,function(x) paste0("<img src=",location,x,"'>"))
+  mergeddf$V1<-NULL
+  mergeddf$url<-gsub("=","=\'",mergeddf$url)
+  
+  #For pandoc
+  mergeddf$url<-sapply(mergeddf$url,pandoc.image.return)
+  return(mergeddf)
+}
+
 
 
 
