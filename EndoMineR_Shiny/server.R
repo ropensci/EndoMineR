@@ -5,6 +5,8 @@ library(stringr)
 library(stringi)
 library(readxl)
 library(DT)
+library(shinyFiles)
+library(lubridate)
 
 # Define server logic required to draw a histogram
 
@@ -58,46 +60,69 @@ server <- function(input, output) {
   
   ############# The tables ###################
   #Split up the dataframe with textPrep
+  
+  
   output$endotable = DT::renderDT({
-    if (!is.null(RV$data)) {  
+    RV$data
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,scrollY = "200px",pageLength = 5))
+  
+  
+  
+  output$mergedTable = DT::renderDT({
+    if (!is.null(RV3$data)) {  
       
-      RV$data[["Select"]]<-paste0('<input type="checkbox" name="row_selected" value="Row',1:nrow(RV$data),'"><br>')
+      RV3$data[["Select"]]<-paste0('<input type="checkbox" name="row_selected" value="Row',1:nrow(RV3$data),'"><br>')
     
-      RV$data[["Actions"]]<-
+      RV3$data[["Actions"]]<-
       paste0('
              <div class="btn-group" role="group" aria-label="Basic example">
-             <button type="button" class="btn btn-secondary delete" id=delete_',1:nrow(RV$data),'>Delete</button>
+             <button type="button" class="btn btn-secondary delete" id=delete_',1:nrow(RV3$data),'>Delete</button>
              </div>
              ')
     }
     
     
- datatable(RV$data,escape=F, extensions = "Select", selection = "none",callback = JS("table.on('click', 'tbody td', function(){",
-                                                                                     "  // if the column is already selected, deselect it:",
-                                                                                     "  if(table.column(this, {selected: true}).length){",
-                                                                                     "    table.column(this).deselect();",
-                                                                                     "  // otherwise, select the column unless there's the class 'notselectable':",
-                                                                                     "  } else if(!$(this).hasClass('notselectable')){",
-                                                                                     "    table.column(this).select();",
-                                                                                     "  }",
-                                                                                     "});"),
-           options = list(scrollX = TRUE,
-                          pageLength = 5,
-                          columnDefs = list(
-                            list(className = "notselectable", targets = c(-1,-2))
-                          ),
-                          select = "api"))
+ datatable(RV3$data,escape=F, extensions = "Select", selection = "none",callback = JS( "var ncols = table.columns().count();",
+                                                                                      "var tbl = table.table().node();",
+                                                                                      "var tblID = $(tbl).closest('.datatables').attr('id');",
+                                                                                      "table.on('click', 'tbody td', function(){",
+                                                                                      "  // if the column is selected, deselect it:",
+                                                                                      "  if(table.column(this, {selected: true}).length){",
+                                                                                      "    table.column(this).deselect();",
+                                                                                      "  // otherwise, select the column unless it's among the last two columns:",
+                                                                                      "  } else if([ncols-1, ncols-2].indexOf(table.column(this).index()) === -1){",
+                                                                                      "    table.column(this).select();",
+                                                                                      "  }",
+                                                                                      "  // send selected columns to Shiny",
+                                                                                      "  var indexes = table.columns({selected:true}).indexes();",
+                                                                                      "  var indices = Array(indexes.length);",
+                                                                                      "  for(var i = 0; i < indices.length; ++i){",
+                                                                                      "    indices[i] = indexes[i];",
+                                                                                      "  }",
+                                                                                      "  Shiny.setInputValue(tblID + '_columns_selected', indices);",
+                                                                                     " var checkboxes = document.getElementsByName('row_selected');",
+                                                                                    "  var checkboxesChecked = [];",
+                                                                                     " for (var i=0; i<checkboxes.length; i++) {",
+                                                                                    "    if (checkboxes[i].checked) {",
+                                                                                       "   checkboxesChecked.push(checkboxes[i].value);",
+                                                                                    "    }",
+                                                                                   "   }",
+                                                                                     " Shiny.onInputChange('checked_rows',checkboxesChecked);",
+                                                                                      "});"),
+           options = list(
+             scrollX = TRUE,
+             scrollY = "200px",
+             pageLength = 5,
+             select = "api"))
   
     
   })
   
   output$pathTable = DT::renderDT({
     RV2$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,scrollY = "200px",pageLength = 5))
   
-  output$mergedTable = DT::renderDT({
-    RV3$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
+
 
   output$polypTable = DT::renderDT({
     RV4$data
@@ -149,30 +174,50 @@ server <- function(input, output) {
   #Standardise the date
   observeEvent(input$DateStandardiserEndo,{
    
-    RV$data[,as.numeric(input$endotable_columns_selected)]<-str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
-                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})")
+    RV$data[,as.numeric(input$endotable_columns_selected)]<-parse_date_time(str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
+                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
+                                                                        orders = c("dmy", "ymd"))
   },ignoreInit = TRUE)
-  
   
   #Standardise the date
   observeEvent(input$DateStandardiserEPath,{
-    RV2$data[,as.numeric(input$pathTable_columns_selected)]<-str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
-                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})")
+    #browser()
+    RV2$data[,as.numeric(input$pathTable_columns_selected)]<-parse_date_time(str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
+                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
+                                                                        orders = c("dmy", "ymd"))
   },ignoreInit = TRUE)
+  
+  
+  
   
   observeEvent(input$Del_row_head,{
     row_to_del=as.numeric(gsub("Row","",input$checked_rows))
-    
-    RV$data=RV$data[-row_to_del]}
+    RV3$data=RV3$data[-row_to_del,]}
   )
   
   
+  observeEvent(input$MergeImages,{
+    browser()
+    input$captionDelim
+    file_selected<-parseFilePaths(volumes, input$Btn_GetFile)
+    folder_selected<-parseDirPath(volumes, input$folder)
+    
+    MyImgLibrary(file_selected$datapath,
+                input$captionDelim,folder_selected)
+    
+    }
+  )
+  
+  
+
+  
+#Delete rows with the delete picker
   observeEvent(input$lastClick,
                {
                  if (input$lastClickId%like%"delete")
                  {
                    row_to_del=as.numeric(gsub("delete_","",input$lastClickId))
-                   RV$data=RV$data[-row_to_del]
+                   RV3$data=RV3$data[-row_to_del,]
                  }
                  else if (input$lastClickId%like%"modify")
                  {
@@ -183,6 +228,40 @@ server <- function(input, output) {
   
 
   
+  
+  volumes = getVolumes()
+  
+  #Show the file
+  observe({  
+    shinyFileChoose(input, "Btn_GetFile", roots = volumes)
+    if(!is.null(input$Btn_GetFile)){
+      file_selected<-parseFilePaths(volumes, input$Btn_GetFile)
+      output$txt_file <- renderText(as.character(file_selected$datapath))
+    }
+  })
+  
+  
+  #Get the file
+  
+  #file_selected<-parseFilePaths(volumes, input$Btn_GetFile)
+  #as.character(file_selected$datapath)
+  
+  
+  #Get the folder
+  
+  #parseDirPath(volumes, dir())
+  
+  observe({  
+    shinyDirChoose(input, 'folder', roots=volumes)
+    if(!is.null(input$folder)){
+      
+      dir <- reactive(input$folder)
+      output$folder_file <- renderText({parseDirPath(volumes, input$folder)})
+      
+      #output$folder_file <- renderText(as.character(folder_selected$datapath))
+    }
+  })
+
   
   ########### Pathology events ############  
   observeEvent(input$textPrepPath,{
@@ -207,7 +286,10 @@ server <- function(input, output) {
   
   observeEvent(input$Endomerge2,{
     #Merge the patientID column and date from each table. Make sure that the patient ID is chosen first;
-    browser()
+    #browser()
+    #Need to fix this to understand when it is selecting the number. I think the user needs to 
+    #convert to date and then select columns (date first) at one sitting with the datatable
+    
     RV3$data<-Endomerge2(RV$data,
                          colnames(RV$data[as.numeric(input$endotable_columns_selected[1])]),
                          colnames(RV$data[as.numeric(input$endotable_columns_selected[2])]),
