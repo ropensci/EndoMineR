@@ -12,6 +12,7 @@ library(EndoMineR)
 library(shinydashboard)
 library(shinydashboardPlus)
 library(shinythemes)
+library(shinyFiles)
 
 fluidPage(theme=shinytheme("spacelab"),
  # box(width=12,
@@ -87,6 +88,17 @@ dashboardPage(
                                textInput("captionMerge", "Caption", "Data Summary"),
                                actionButton("Endomerge2",label = "Endomerge2"),
                                actionButton("MergeWithImages",label = "MergeWithImages"),
+                               bsModal("modalExample", "Data Table", "MergeWithImages", size = "large",
+                                       shinyFilesButton("Btn_GetFile", "Choose a file" ,
+                                                        title = "Please select a file:", multiple = FALSE,
+                                                        buttonType = "default", class = NULL),
+                                       textOutput("txt_file"),    
+                                       textInput("captionDelim", "Which word separates the procedures", "delimiting word"),
+                                       textInput("captionImgFolder", "Get the Image folder", "Get the Image folder"),
+                                       shinyDirButton('folder', 'Folder select', 'Please select a folder', FALSE),
+                                       textOutput("folder_file"),    
+                                       actionButton("MergeImages",label = "Merge the images with your dataset")),
+                               
                                actionButton("CategoricalByEndoscopist",label = "CategoricalByEndoscopist"),
                                actionButton("HowManyOverTime",label = "HowManyOverTime"),
                                DT::dataTableOutput("mergedTable")))
