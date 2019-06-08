@@ -744,7 +744,7 @@ MyImgLibrary<-function(file,delim,location){
   df$Endo_ResultEntered<-parse_date_time(df$Endo_ResultEntered, orders = c("dmy", "ymd"))
   
   #Extract the patient ID:
-  df$PatientID<-str_extract(df$df,"(?<=>)[A-Z0-9]{4,}(?=<)")
+  df$PatientID<-str_extract(df$df,"[A-Z0-9]{1,}[0-9]{3,}[A-Z0-9]{1}")
   
   #Extract the images with the folder name which needs to be kept (but is relative in html so no need to strip it off)
   df$img<-stringr::str_extract(df$df,"img src.*?(jpg|png|gif|bmp)")
@@ -767,6 +767,7 @@ MyImgLibrary<-function(file,delim,location){
   mergeddf$V1<-gsub("img src=\"","",mergeddf$V1)
   mergeddf$V1<-trimws(mergeddf$V1)
   mergeddf$url<-lapply(mergeddf$V1,function(x) paste0("<img src=",location,x,"'>"))
+  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.][a-z]+$")
   mergeddf$V1<-NULL
   mergeddf$url<-gsub("=","=\'",mergeddf$url)
   
