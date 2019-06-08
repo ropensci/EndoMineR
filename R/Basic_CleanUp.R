@@ -722,6 +722,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' @importFrom stringr str_extract 
 #' @importFrom lubridate parse_date_time
 #' @importFrom tidyr separate_rows
+#' @importFrom pander pandoc.image.return
 #' @export
 #' @examples # MyImgLibrary("S:/Gastroenterology/Seb/R/Data/Barretts/Images Captured with Proc Data Audit_Findings1.html",
 #' #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
