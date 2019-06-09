@@ -143,11 +143,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE')){
   #3.Remove all the negative phrases from the report if the parameter has been supplied
   #Need to write here if the NegativeRemove has been ticked then should use it
   
-  if (missing(NegEx)||NegEx=="TRUE")
-    {
-  inputText<-NegativeRemove(inputText)
-  }
-  
+
   #4. Need to map the terms to the lexicons to make sure everything standardised.
   inputText<-DictionaryInPlaceReplace(inputText,LocationList())
   inputText<-DictionaryInPlaceReplace(inputText,EventList())
@@ -160,6 +156,13 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE')){
   #Will also need to add the Extractor output to the dataframe.
   
   standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
+  
+  if (missing(NegEx)||NegEx=="TRUE")
+  {
+    standardisedTextOutput<-lapply(standardisedTextOutput, function(x) NegativeRemove(x))
+  }
+  
+  
   standardisedTextOutput<-lapply(standardisedTextOutput, function(x) paste0(unlist(x),collapse="\n"))
   
     MyCompleteFrame<-Extractor(as.character(standardisedTextOutput),tolower(delim))
