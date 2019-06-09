@@ -202,8 +202,10 @@ server <- function(input, output) {
     file_selected<-parseFilePaths(volumes, input$Btn_GetFile)
     folder_selected<-parseDirPath(volumes, input$folder)
     
-    MyImgLibrary(file_selected$datapath,
+    Imgdf<-MyImgLibrary(file_selected$datapath,
                 input$captionDelim,folder_selected)
+    #Now merge the Imgdf with RV3$data and make this RV$data so it can be displayed
+    
     
     }
   )

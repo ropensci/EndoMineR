@@ -98,7 +98,6 @@ dashboardPage(
                                        shinyDirButton('folder', 'Folder select', 'Please select a folder', FALSE),
                                        textOutput("folder_file"),    
                                        actionButton("MergeImages",label = "Merge the images with your dataset")),
-                               
                                actionButton("CategoricalByEndoscopist",label = "CategoricalByEndoscopist"),
                                actionButton("HowManyOverTime",label = "HowManyOverTime"),
                                DT::dataTableOutput("mergedTable")))
