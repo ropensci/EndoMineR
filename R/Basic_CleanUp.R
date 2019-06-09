@@ -517,7 +517,7 @@ ColumnCleanUp <- function(vector) {
 
 
 EndoPaste<-function(x){
-  names(x)<-ColumnCleanup(names(x))
+  names(x)<-ColumnCleanUp(names(x))
   names(x)<-gsub("\n+"," ",names(x))
   delim<-paste(names(x))
   v1<-do.call(paste, c(Map(paste, names(x), x), sep="_"))
