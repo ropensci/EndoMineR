@@ -517,6 +517,8 @@ ColumnCleanUp <- function(vector) {
 
 
 EndoPaste<-function(x){
+  names(x)<-ColumnCleanUp(names(x))
+  names(x)<-gsub("\n+"," ",names(x))
   delim<-paste(names(x))
   v1<-do.call(paste, c(Map(paste, names(x), x), sep="_"))
   df<-data.frame(X1_X2_X3 = unname(v1))
