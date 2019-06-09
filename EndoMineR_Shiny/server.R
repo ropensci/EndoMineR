@@ -206,6 +206,9 @@ server <- function(input, output) {
     Imgdf<-MyImgLibrary(file_selected$datapath,
                 input$captionDelim,folder_selected)
     #Now merge the Imgdf with RV3$data and make this RV$data so it can be displayed
+    Imgdf$PatientID<-tolower(Imgdf$PatientID)
+    
+    Endomerge2()
     
     return(Imgdf)
     }
@@ -289,7 +292,7 @@ server <- function(input, output) {
   
   observeEvent(input$Endomerge2,{
     #Merge the patientID column and date from each table. Make sure that the patient ID is chosen first;
-    browser()
+    #browser()
     #Need to fix this to understand when it is selecting the number. I think the user needs to 
     #convert to date and then select columns (date first) at one sitting with the datatable
     
