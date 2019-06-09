@@ -13,6 +13,7 @@ library(shinydashboard)
 library(shinydashboardPlus)
 library(shinythemes)
 library(shinyFiles)
+library(shinyBS)
 
 fluidPage(theme=shinytheme("spacelab"),
  # box(width=12,
