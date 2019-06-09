@@ -7,6 +7,9 @@ library(readxl)
 library(DT)
 library(shinyFiles)
 library(lubridate)
+library(data.table)
+library(tidyr)
+library(pander)
 
 # Define server logic required to draw a histogram
 
@@ -29,7 +32,7 @@ server <- function(input, output) {
   observe({
     inFile_endoscopy <- input$endoscopy
     if (!is.null(inFile_endoscopy)) {   
-      browser()
+      #browser()
       dataFile <- read_excel(inFile_endoscopy$datapath, sheet=1)
       dat <- data.frame(EndoPaste(dataFile)[1], stringsAsFactors=FALSE)
       RV$data<-dat
@@ -152,6 +155,7 @@ server <- function(input, output) {
   observeEvent(input$textPrep,{
     mywordsOGD<-input$caption
     mywordsOGD<-unlist(strsplit(mywordsOGD,","))
+    #browser()
     RV$data<-textPrep(RV$data[,1],mywordsOGD,NegEx="TRUE")
    
   },ignoreInit = TRUE)
@@ -207,8 +211,7 @@ server <- function(input, output) {
                 input$captionDelim,folder_selected)
     #Now merge the Imgdf with RV3$data and make this RV$data so it can be displayed
     Imgdf$PatientID<-tolower(Imgdf$PatientID)
-    
-    Endomerge2()
+    Imgdf<-Endomerge2(Imgdf,"Endo_ResultEntered","PatientID",RV3$data,"Date.x","pHospitalNum")
     
     return(Imgdf)
     }
