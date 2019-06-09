@@ -462,6 +462,7 @@ ColumnCleanUp <- function(vector) {
   vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
   vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
   vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
+  vector<-gsub("\r","",vector)
   vector<-gsub("\\.,","\\.",vector)
   vector<-gsub(",([A-Z])","\\.\\1",vector)
   vector<-gsub("\\. ,",".",vector)
