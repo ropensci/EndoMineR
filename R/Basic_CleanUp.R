@@ -735,6 +735,9 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
 
 MyImgLibrary<-function(file,delim,location){
+  
+  #Get the relative path from the www folder location which is where all files should be stored 
+  location<-gsub(".*\\/","",location)
   htmlCode = readLines(file)
   
   #Collapse all the html together
@@ -761,12 +764,6 @@ MyImgLibrary<-function(file,delim,location){
   #df$img<-gsub("img src=\"Images Captured with Proc Data Audit.files/","",df$img)
   df$df<-NULL
   
-  ####################################################################################
-  ####################################################################################
-  ####################################################################################
-  ####################################################################################
-  ####################################################################################
-  
   #Now collapse the table so all image files for a procedure in one row only:
   mergeddf<-as.data.frame(as.data.table(df)[, toString(img), by = list(Endo_ResultEntered,PatientID)])
   
@@ -776,6 +773,7 @@ MyImgLibrary<-function(file,delim,location){
   mergeddf$V1<-trimws(mergeddf$V1)
   mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.][a-z]+$")
   mergeddf$url<-lapply(mergeddf$img,function(x) paste0("<img src=",location,"/",x,"'>"))
+  mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x))
   mergeddf$V1<-NULL
   mergeddf$url<-gsub("=","=\'",mergeddf$url)
   
