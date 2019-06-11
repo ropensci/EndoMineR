@@ -20,9 +20,7 @@ fluidPage(theme=shinytheme("spacelab"),
       h3(strong("Endoscopy labelled Image Picker"),align="center"),
       hr(),
    # column(6,offset = 6,
-             HTML('<div class="btn-group" role="group" aria-label="Basic example">'),
-             actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
-             HTML('</div>'),
+            
      # ),
       
       #column(12,dataTableOutput("Main_table")),
@@ -51,16 +49,10 @@ dashboardPage(
   
     
     sidebarMenu(
-        menuItem("Dashboard"),
-        fileInput("endoscopy",
-                  label="Upload Endoscopy Dataset here",
-                  multiple = FALSE),
-        fileInput("pathology",
-                  label="Upload Pathology Dataset here",
-                  multiple = FALSE),
-        fileInput("merged",
-                  label="Upload Merged Dataset here",
-                  multiple = FALSE)
+        menuItem("Dashboard")
+       
+       
+       
         )),
 
 
@@ -70,25 +62,35 @@ dashboardPage(
                 tabPanel("Clean your Dataset", verbatimTextOutput("summary"),
                                    
     bsCollapse(id = "collapseExample", open = "Panel 1",
-               bsCollapsePanel("Endoscopy Data", "Upload data to get the endoscopy dataset", style = "info",
-                               textInput("caption", "Caption", "Data Summary"),
+               bsCollapsePanel("Endoscopy Data", "", style = "info",
+                               fileInput("endoscopy",
+                                         label="Upload Endoscopy Dataset here",
+                                         multiple = FALSE),
+                               textInput("caption", "", "Enter the comma separated headers here"),
                                actionButton("textPrep",label = "textPrep"),
                                actionButton("EndoscEndoscopist",label = "EndoscEndoscopist"),
                                actionButton("EndoscMeds",label = "EndoscMeds"),
                                actionButton("EndoscInstrument",label = "EndoscInstrument"),
                                actionButton("DateStandardiserEndo",label = "DateStandardiserEndo"),
                                DT::dataTableOutput("endotable")),
-               bsCollapsePanel("Pathology Data", "Upload data to get the pathology dataset", style = "info",
-                               textInput("captionPath", "Caption", "Data Summary"),
+               bsCollapsePanel("Pathology Data", "", style = "info",
+                               fileInput("pathology",
+                                         label="Upload Pathology Dataset here",
+                                         multiple = FALSE),
+                               textInput("captionPath", "", "Enter the comma separated headers here"),
                                actionButton("textPrepPath",label = "textPrepPath"),
                                actionButton("NumBx",label = "NumBx"),
                                actionButton("BxSize",label = "BxSize"),
                                actionButton("DateStandardiserEPath",label = "DateStandardiserEPath"),
                                DT::dataTableOutput("pathTable")),
-               bsCollapsePanel("Merged Data", "Upload data to get the Merged dataset", style = "info",
-                               textInput("captionMerge", "Caption", "Data Summary"),
+               bsCollapsePanel("Merged Data", "", style = "info",
+                               fileInput("merged",
+                                         label="Upload Merged Dataset here",
+                                         multiple = FALSE),
+                               textInput("captionMerge", "", "Enter the comma separated headers here"),
                                actionButton("Endomerge2",label = "Endomerge2"),
                                actionButton("MergeWithImages",label = "MergeWithImages"),
+                               actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
                                bsModal("modalExample", "Data Table", "MergeWithImages", size = "large",
                                        shinyFilesButton("Btn_GetFile", "Choose a file" ,
                                                         title = "Please select a file:", multiple = FALSE,

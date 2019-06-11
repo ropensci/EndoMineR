@@ -116,7 +116,7 @@ server <- function(input, output) {
            options = list(
              scrollX = TRUE,
              scrollY = "200px",
-             pageLength = 5,
+             pageLength = nrow(RV3$data),
              select = "api"))
   
     
@@ -202,7 +202,7 @@ server <- function(input, output) {
   
   
   observeEvent(input$MergeImages,{
-    browser()
+    #browser()
     input$captionDelim
     file_selected<-parseFilePaths(volumes, input$Btn_GetFile)
     folder_selected<-parseDirPath(volumes, input$folder)
@@ -211,9 +211,20 @@ server <- function(input, output) {
                 input$captionDelim,folder_selected)
     #Now merge the Imgdf with RV3$data and make this RV$data so it can be displayed
     Imgdf$PatientID<-tolower(Imgdf$PatientID)
-    Imgdf<-Endomerge2(Imgdf,"Endo_ResultEntered","PatientID",RV3$data,"Date.x","pHospitalNum")
     
-    return(Imgdf)
+    colnames(Imgdf)[which(names(Imgdf) == "PatientID")] <- "HospitalNum"
+    colnames(Imgdf)[which(names(Imgdf) == "Endo_ResultEntered")] <- "Date"
+    Imgdf$Date <- gsub("\n", "", Imgdf$Date)
+    Imgdf$Date <- as.Date(Imgdf$Date)
+    
+
+    colnames(RV3$data)[which(names(RV3$data) == "Date.x")] <- "Date"
+    colnames(RV3$data)[which(names(RV3$data) == "pHospitalNum")] <- "HospitalNum"
+    RV3$data$Date <- gsub("\n", "", RV3$data$Date)
+    RV3$data$Date <- as.Date(RV3$data$Date)
+    #No need for fuzzy join here as images are from the endoscopy- may need to change this with other images though
+    RV3$data<-left_join(RV3$data,Imgdf,by = c("Date","HospitalNum"), copy = FALSE)
+    return(RV3$data)
     }
   )
   

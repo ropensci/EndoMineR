@@ -43,6 +43,7 @@ Endomerge2 <-
     colnames(x)[which(names(x) == EndoHospNumber)] <- "eHospitalNum"
     colnames(y)[which(names(y) == PathDate)] <- "Date"
     colnames(y)[which(names(y) == PathHospNumber)] <- "pHospitalNum"
+    names(y)<-gsub("[.]","",names(y))
     y$Date <- gsub("\n", "", y$Date)
     y$Date <- as.Date(y$Date)
 
