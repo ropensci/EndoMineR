@@ -14,17 +14,11 @@ library(shinydashboardPlus)
 library(shinythemes)
 library(shinyFiles)
 library(shinyBS)
+library(dplyr)
 
 fluidPage(theme=shinytheme("spacelab"),
- # box(width=12,
-      h3(strong("Endoscopy labelled Image Picker"),align="center"),
-      hr(),
-   # column(6,offset = 6,
-            
-     # ),
-      
-      #column(12,dataTableOutput("Main_table")),
-      tags$script(HTML('$(document).on("click", "input", function () {
+
+            tags$script(HTML('$(document).on("click", "input", function () {
                        var checkboxes = document.getElementsByName("row_selected");
                        var checkboxesChecked = [];
                        for (var i=0; i<checkboxes.length; i++) {
@@ -82,28 +76,29 @@ dashboardPage(
                                actionButton("NumBx",label = "NumBx"),
                                actionButton("BxSize",label = "BxSize"),
                                actionButton("DateStandardiserEPath",label = "DateStandardiserEPath"),
-                               DT::dataTableOutput("pathTable")),
-               bsCollapsePanel("Merged Data", "", style = "info",
-                               fileInput("merged",
-                                         label="Upload Merged Dataset here",
-                                         multiple = FALSE),
-                               textInput("captionMerge", "", "Enter the comma separated headers here"),
-                               actionButton("Endomerge2",label = "Endomerge2"),
-                               actionButton("MergeWithImages",label = "MergeWithImages"),
-                               actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
-                               bsModal("modalExample", "Data Table", "MergeWithImages", size = "large",
-                                       shinyFilesButton("Btn_GetFile", "Choose a file" ,
-                                                        title = "Please select a file:", multiple = FALSE,
-                                                        buttonType = "default", class = NULL),
-                                       textOutput("txt_file"),    
-                                       textInput("captionDelim", "Which word separates the procedures", "delimiting word"),
-                                       textInput("captionImgFolder", "Get the Image folder", "Get the Image folder"),
-                                       shinyDirButton('folder', 'Folder select', 'Please select a folder', FALSE),
-                                       textOutput("folder_file"),    
-                                       actionButton("MergeImages",label = "Merge the images with your dataset")),
-                               actionButton("CategoricalByEndoscopist",label = "CategoricalByEndoscopist"),
-                               actionButton("HowManyOverTime",label = "HowManyOverTime"),
-                               DT::dataTableOutput("mergedTable")))
+                               DT::dataTableOutput("pathTable"))
+               # bsCollapsePanel("Merged Data", "", style = "success",
+               #                 fileInput("merged",
+               #                           label="Upload Merged Dataset here",
+               #                           multiple = FALSE),
+               #                 textInput("captionMerge", "", "Enter the comma separated headers here"),
+               #                 actionButton("Endomerge2",label = "Endomerge2"),
+               #                 actionButton("MergeWithImages",label = "MergeWithImages"),
+               #                 actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
+               #                 bsModal("modalExample", "Data Table", "MergeWithImages", size = "large",
+               #                         shinyFilesButton("Btn_GetFile", "Choose a file" ,
+               #                                          title = "Please select a file:", multiple = FALSE,
+               #                                          buttonType = "default", class = NULL),
+               #                         textOutput("txt_file"),    
+               #                         textInput("captionDelim", "Which word separates the procedures", "delimiting word"),
+               #                         textInput("captionImgFolder", "Get the Image folder", "Get the Image folder"),
+               #                         shinyDirButton('folder', 'Folder select', 'Please select a folder', FALSE),
+               #                         textOutput("folder_file"),    
+               #                         actionButton("MergeImages",label = "Merge the images with your dataset")),
+               #                 actionButton("CategoricalByEndoscopist",label = "CategoricalByEndoscopist"),
+               #                 actionButton("HowManyOverTime",label = "HowManyOverTime"),
+               #                 DT::dataTableOutput("mergedTable"))
+               )
                 ),
                 tabPanel("Barrett's", tableOutput("table5"),
                                actionButton("PragueScore",label = "PragueScore"),
@@ -117,7 +112,19 @@ dashboardPage(
                 tabPanel("Polyps", tableOutput("table3"),
                                actionButton("GRS",label = "GRS"),
                                DT::dataTableOutput("polypTable")
-                    )
+                    ),
+    tabPanel("merged2", tableOutput("table6"),
+             fileInput("merged",
+                       label="Upload Merged Dataset here",
+                       multiple = FALSE),
+             textInput("captionMerge", "", "Enter the comma separated headers here"),
+             actionButton("Endomerge2",label = "Endomerge2"),
+             actionButton("MergeWithImages",label = "MergeWithImages"),
+             actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
+             actionButton("CategoricalByEndoscopist",label = "CategoricalByEndoscopist"),
+             actionButton("HowManyOverTime",label = "HowManyOverTime"),
+             DT::dataTableOutput("mergedTable")
+    )
     )
   )
 )
