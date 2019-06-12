@@ -208,7 +208,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE')){
 Extractor <- function(inputString, delim) {
 #Create a named list of words
 delim <- gsub(":","",delim)
-names(delim) <- delim
+names(delim) <- trimws(delim)
 #Add a : to the tags 
 
 delim <- gsub("(.*)","\\1: ",delim)
