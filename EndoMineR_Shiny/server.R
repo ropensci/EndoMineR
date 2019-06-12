@@ -68,7 +68,7 @@ server <- function(input, output) {
   
   output$endotable = DT::renderDT({
     RV$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,scrollY = "200px",pageLength = 5))
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
   
   
   
@@ -115,7 +115,6 @@ server <- function(input, output) {
                                                                                       "});"),
            options = list(
              scrollX = TRUE,
-             scrollY = "200px",
              pageLength = nrow(RV3$data),
              select = "api"))
   
@@ -124,7 +123,7 @@ server <- function(input, output) {
   
   output$pathTable = DT::renderDT({
     RV2$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,scrollY = "200px",pageLength = 5))
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
   
 
 

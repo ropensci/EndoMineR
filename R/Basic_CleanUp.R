@@ -773,7 +773,7 @@ MyImgLibrary<-function(file,delim,location){
   mergeddf$V1<-trimws(mergeddf$V1)
   mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.][a-z]+$")
   mergeddf$url<-lapply(mergeddf$img,function(x) paste0("<img src=",location,"/",x,"'>"))
-  mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x))
+  mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x)) 
   mergeddf$V1<-NULL
   mergeddf$url<-gsub("=","=\'",mergeddf$url)
   
