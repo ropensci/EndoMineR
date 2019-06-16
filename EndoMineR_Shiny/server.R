@@ -10,11 +10,12 @@ library(lubridate)
 library(data.table)
 library(tidyr)
 library(pander)
+library(esquisse)
 
 # Define server logic required to draw a histogram
 
 RV <- reactiveValues(data = data.frame())
-
+data_r <-reactiveValues(data = data.frame())
 RV2 <- reactiveValues(data = data.frame())
 RV3 <- reactiveValues(data = data.frame())
 RV4 <- reactiveValues(data = data.frame())
@@ -28,6 +29,9 @@ RV10 <- reactiveValues(data = data.frame())
 
 
 server <- function(input, output) {
+  
+
+  
  
   observe({
     inFile_endoscopy <- input$endoscopy
@@ -68,7 +72,11 @@ server <- function(input, output) {
   
   output$endotable = DT::renderDT({
     RV$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
+  },selection = list(target = 'column'),extensions = 'Buttons', options = list(
+    scrollX = TRUE,
+    pageLength = 5,
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
   
   
   
@@ -86,7 +94,7 @@ server <- function(input, output) {
     }
     
     
- datatable(RV3$data,escape=F, extensions = "Select", selection = "none",callback = JS( "var ncols = table.columns().count();",
+ datatable(RV3$data,escape=F, extensions = c("Select","Buttons"), selection = "none",callback = JS( "var ncols = table.columns().count();",
                                                                                       "var tbl = table.table().node();",
                                                                                       "var tblID = $(tbl).closest('.datatables').attr('id');",
                                                                                       "table.on('click', 'tbody td', function(){",
@@ -113,17 +121,23 @@ server <- function(input, output) {
                                                                                    "   }",
                                                                                      " Shiny.onInputChange('checked_rows',checkboxesChecked);",
                                                                                       "});"),
+           
            options = list(
              scrollX = TRUE,
-             pageLength = nrow(RV3$data),
-             select = "api"))
+             pageLength = 200,
+             select = "api",
+             dom = 'Bfrtip',
+             buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis'))
+           )
   
     
   })
   
   output$pathTable = DT::renderDT({
     RV2$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5))
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5,
+                                                       dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
   
 
 
@@ -155,7 +169,7 @@ server <- function(input, output) {
     mywordsOGD<-input$caption
     mywordsOGD<-unlist(strsplit(mywordsOGD,","))
     #browser()
-    RV$data<-textPrep(RV$data[,1],mywordsOGD,NegEx="TRUE")
+    RV$data<-textPrep(RV$data[,1],mywordsOGD)
    
   },ignoreInit = TRUE)
   
@@ -190,8 +204,25 @@ server <- function(input, output) {
                                                                         "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
                                                                         orders = c("dmy", "ymd"))
   },ignoreInit = TRUE)
+ 
   
   
+  
+   
+  #Standardise the Hospital NumberEndoscopy
+  observeEvent(input$HospitalNumberExtractorEndo,{
+    #browser()
+    RV$data[,as.numeric(input$endotable_columns_selected)]<-str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
+                                                                                         "([a-z0-9]\\d{4,}[a-z0-9])")
+    
+  },ignoreInit = TRUE)
+  
+  #Standardise the Hospital NumberPathology
+  observeEvent(input$HospitalNumberExtractorPath,{
+    #browser()
+    RV2$data[,as.numeric(input$pathTable_columns_selected)]<-str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
+                                                                                         "([a-z0-9]\\d{4,}[a-z0-9])")
+  },ignoreInit = TRUE)
   
   
   observeEvent(input$Del_row_head,{
@@ -217,12 +248,16 @@ server <- function(input, output) {
     Imgdf$Date <- as.Date(Imgdf$Date)
     
 
-    colnames(RV3$data)[which(names(RV3$data) == "Date.x")] <- "Date"
-    colnames(RV3$data)[which(names(RV3$data) == "pHospitalNum")] <- "HospitalNum"
-    RV3$data$Date <- gsub("\n", "", RV3$data$Date)
-    RV3$data$Date <- as.Date(RV3$data$Date)
+    #colnames(RV3$data)[which(names(RV3$data) == colnames(input$mergedTable_columns_selected[1]))] <- "Date"
+    
+   
+    names(RV3$data)[as.numeric(input$mergedTable_columns_selected[1])]<- "HospitalNum"
+    names(RV3$data)[as.numeric(input$mergedTable_columns_selected[2])]<- "Date"
+    RV3$data$Date<-as.Date(RV3$data$Date)
+
     #No need for fuzzy join here as images are from the endoscopy- may need to change this with other images though
     RV3$data<-left_join(RV3$data,Imgdf,by = c("Date","HospitalNum"), copy = FALSE)
+    
     return(RV3$data)
     }
   )
@@ -286,7 +321,7 @@ server <- function(input, output) {
   observeEvent(input$textPrepPath,{
     mywordsPath<-input$captionPath
     mywordsPath<-unlist(strsplit(mywordsPath,","))
-    RV2$data<-textPrep(RV2$data[,1],mywordsPath,NegEx="TRUE")
+    RV2$data<-textPrep(RV2$data[,1],mywordsPath)
   },ignoreInit = TRUE)
   
   #Extract the endoscopist
@@ -309,12 +344,22 @@ server <- function(input, output) {
     #Need to fix this to understand when it is selecting the number. I think the user needs to 
     #convert to date and then select columns (date first) at one sitting with the datatable
     
-    RV3$data<-Endomerge2(RV$data,
-                         colnames(RV$data[as.numeric(input$endotable_columns_selected[1])]),
-                         colnames(RV$data[as.numeric(input$endotable_columns_selected[2])]),
-                         RV2$data,
-                         colnames(RV2$data[as.numeric(input$pathTable_columns_selected[1])]),
-                         colnames(RV2$data[as.numeric(input$pathTable_columns_selected[2])]))
+
+
+    
+    EndoDate<-colnames(RV$data[as.numeric(input$endotable_columns_selected[1])])
+    EndoNum<-colnames(RV$data[as.numeric(input$endotable_columns_selected[2])])
+    PathDate<-colnames(RV2$data[as.numeric(input$endotable_columns_selected[1])])
+    PathNum<-colnames(RV2$data[as.numeric(input$endotable_columns_selected[2])])
+    
+    RV3$data<-RV2$data %>% left_join(RV$data, by=setNames(nm=c(EndoNum,EndoDate),c(PathNum,PathDate)))
+    #No need for fuzzy join here as images are from the endoscopy- may need to change this with other images though
+    #RV3$data<-left_join(RV$data,RV2$data,by = c(EndoDate=PathDate,EndoNum=PathNum))
+    
+    
+    
+    
+    
   },ignoreInit = TRUE)
 
   
@@ -351,6 +396,14 @@ server <- function(input, output) {
      selectedCol<-colnames(RV3$data)[cols]
      RV5$data<-MetricByEndoscopist(RV3$data,'endoscopist',selectedCol)
   },ignoreInit = TRUE)
+  
+  observeEvent(input$esquissGraphs,{
+      # Launch with:
+    data_r$data <- RV$data
+    data_r$name <- "Mydftbbinnit"
+    callModule(module = esquisserServer, id = "esquisse", data = data_r)
+  },ignoreInit = TRUE)
+  
   
 }
 

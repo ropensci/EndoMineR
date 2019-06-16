@@ -113,6 +113,10 @@ if (getRversion() >= "2.15.1")
 #' "Histology:","Diagnosis:")
 #' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 
+#Need to make sure the sentences are separated in the Extractor column by a separator such as carriage return
+#So that a tokenizer can be used for NegEx or any other function.
+#Also need to get rid of ASCII \\X10 etc in the Column Cleanup.
+
 textPrep<-function(inputText,delim){
   
   #1. Flatten the text..
@@ -201,7 +205,8 @@ inputString<-EndoMineR::DictionaryInPlaceReplace(inputString,delim)
 inputString<-gsub(": :",": ",inputString)
 inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
 inputString<-gsub("(","",inputString,fixed=TRUE)
-inputString<-gsub("\n","",inputString,fixed=TRUE)
+#Don't remove newlines as these are used as the sentence separators
+inputString<-gsub("\n",".",inputString,fixed=TRUE)
 inputString<-gsub(")","",inputString,fixed=TRUE)
 inputString<-gsub("'","",inputString,fixed=TRUE)
 inputString<-gsub("^","Start:",inputString)
@@ -445,16 +450,15 @@ ColumnCleanUp <- function(vector) {
   vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
   vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
   vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
-  vector<-gsub("\r","",vector)
+  vector<-gsub("\r"," ",vector)
   vector<-gsub("\\.,","\\.",vector)
   vector<-gsub(",([A-Z])","\\.\\1",vector)
   vector<-gsub("\\. ,",".",vector)
   vector<-gsub("\\.\\s+\\,"," ",vector)
   vector<-gsub("^\\s+\\,"," ",vector)
   #Get rid of ASCCII hex here
-  vector<-gsub("[\x80-\xff]", "", vector)
-  vector<-gsub("\\\\.*", "", vector)
-  vector<-gsub("       ", "", vector)
+  vector<-gsub("\\\\[Xx].*?\\\\", " ", vector)
+  vector<-gsub("       ", " ", vector)
   
   #Get rid of query type punctuation:
   vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
@@ -471,16 +475,14 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)","",x))
-  
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
   
   #Get rid of strange things
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,"," ",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
   return(retVector)
 }
-
 
 
 #' Paste into one
