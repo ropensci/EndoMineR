@@ -34,13 +34,12 @@ server <- function(input, output) {
   
  
   observe({
-    inFile_endoscopy <- input$endoscopy
+   #browser()
+    inFile_endoscopy <- input$FileIn_endoscopy
     if (!is.null(inFile_endoscopy)) {   
-      #browser()
       dataFile <- read_excel(inFile_endoscopy$datapath, sheet=1)
       dat <- data.frame(EndoPaste(dataFile)[1], stringsAsFactors=FALSE)
       RV$data<-dat
-      
     }
   })
   
@@ -74,11 +73,28 @@ server <- function(input, output) {
     RV$data
   },selection = list(target = 'column'),extensions = 'Buttons', options = list(
     scrollX = TRUE,
+    scrollY = TRUE,
     pageLength = 5,
     dom = 'Bfrtip',
     buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
   
+ 
   
+  
+  output$BarrettsTable = DT::renderDT({
+    #RV4$data
+    
+    RV4$data %>%  
+      filter_all(any_vars(str_detect(., pattern = "[Bb]arrett")))
+
+  },filter = 'top',selection = list(target = 'column'),extensions = 'Buttons', options = list(
+    scrollX = TRUE,
+    scrollY = TRUE,
+    pageLength = 5,
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
+  
+   
   
   output$mergedTable = DT::renderDT({
     if (!is.null(RV3$data)) {  
@@ -124,6 +140,7 @@ server <- function(input, output) {
            
            options = list(
              scrollX = TRUE,
+             scrollY = TRUE,
              pageLength = 200,
              select = "api",
              dom = 'Bfrtip',
@@ -142,22 +159,17 @@ server <- function(input, output) {
 
 
   output$polypTable = DT::renderDT({
-    RV4$data
-  },options = list(scrollX = TRUE))
-  
-  #To do- the selection of columns only gives the index back not the name of the column
-  output$metricTable = DT::renderDT({
-    RV5$data
-  },options = list(scrollX = TRUE))
-  
-  output$plot <- renderPlot({
-    cols <- as.numeric(input$mergedTable_columns_selected)
-    selectedCol<-colnames(RV3$data)[cols]
-    #RV5$data<-MetricByEndoscopist(RV3$data,'endoscopist',selectedCol)
-    EndoBasicGraph(RV3$data, "endoscopist", selectedCol)
-  })
+    RV3$data
+  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5,
+                                                       dom = 'Bfrtip',
+                                                       buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
 
   
+  
+  output$table1 <- renderDT({
+    #browser()
+    RV6$data<-data.frame(psych::describe(RV4$data))
+  })
   
   
   ############# The function events ###################
@@ -191,7 +203,6 @@ server <- function(input, output) {
   ########### Generic events ############ 
   #Standardise the date
   observeEvent(input$DateStandardiserEndo,{
-   
     RV$data[,as.numeric(input$endotable_columns_selected)]<-parse_date_time(str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
                                                                         "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
                                                                         orders = c("dmy", "ymd"))
@@ -217,11 +228,36 @@ server <- function(input, output) {
     
   },ignoreInit = TRUE)
   
+  
+  
+  #Standardise the Numbers as numeric in Endoscopy
+  observeEvent(input$NumericDataEndo,{
+    RV$data[,as.numeric(input$endotable_columns_selected)]<-as.numeric(str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
+                                                                        "[0-9]+"))
+    
+  },ignoreInit = TRUE)
+  
+  #Standardise the AlphaNumeric as numeric in Endoscopy
+  observeEvent(input$CategoricalDataEndo,{
+    RV$data[,as.numeric(input$endotable_columns_selected)]<-as.factor(RV$data[,as.numeric(input$endotable_columns_selected)])
+    
+  },ignoreInit = TRUE)
+  
+  
+  
   #Standardise the Hospital NumberPathology
   observeEvent(input$HospitalNumberExtractorPath,{
     #browser()
     RV2$data[,as.numeric(input$pathTable_columns_selected)]<-str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
                                                                                          "([a-z0-9]\\d{4,}[a-z0-9])")
+  },ignoreInit = TRUE)
+  
+  #Standardise the Numbers as numeric in Endoscopy
+  observeEvent(input$CategoricalDataPath,{
+    #browser()
+    RV$data[,as.numeric(input$pathTable_columns_selected)]<-as.factor(RV$data[,as.numeric(input$pathTable_columns_selected)],
+                                                                        "[0-9]+")
+    
   },ignoreInit = TRUE)
   
   
@@ -280,9 +316,6 @@ server <- function(input, output) {
                }
   )
   
-
-  
-  
   volumes = getVolumes()
   
   #Show the file
@@ -295,15 +328,7 @@ server <- function(input, output) {
   })
   
   
-  #Get the file
-  
-  #file_selected<-parseFilePaths(volumes, input$Btn_GetFile)
-  #as.character(file_selected$datapath)
-  
-  
-  #Get the folder
-  
-  #parseDirPath(volumes, dir())
+
   
   observe({  
     shinyDirChoose(input, 'folder', roots=volumes)
@@ -334,18 +359,12 @@ server <- function(input, output) {
     RV2$data$BxSize<-HistolBxSize(RV2$data$macroscopicdescription)
   },ignoreInit = TRUE)
   
-
-  
   ########### EndoMerge events ############  
   
   observeEvent(input$Endomerge2,{
     #Merge the patientID column and date from each table. Make sure that the patient ID is chosen first;
-    #browser()
     #Need to fix this to understand when it is selecting the number. I think the user needs to 
     #convert to date and then select columns (date first) at one sitting with the datatable
-    
-
-
     
     EndoDate<-colnames(RV$data[as.numeric(input$endotable_columns_selected[1])])
     EndoNum<-colnames(RV$data[as.numeric(input$endotable_columns_selected[2])])
@@ -353,57 +372,71 @@ server <- function(input, output) {
     PathNum<-colnames(RV2$data[as.numeric(input$endotable_columns_selected[2])])
     
     RV3$data<-RV2$data %>% left_join(RV$data, by=setNames(nm=c(EndoNum,EndoDate),c(PathNum,PathDate)))
+    #Create a copy that can be independently edited for the Barrett's table
+    RV4$data<-RV3$data
     #No need for fuzzy join here as images are from the endoscopy- may need to change this with other images though
-    #RV3$data<-left_join(RV$data,RV2$data,by = c(EndoDate=PathDate,EndoNum=PathNum))
-    
-    
-    
-    
-    
   },ignoreInit = TRUE)
 
   
   
   ########### Barrett's events ############  
    observeEvent(input$PragueScore,{
-     RV3$data<-Barretts_PragueScore(RV3$data, "findings", "findings")
+     cols <- as.numeric(input$BarrettsTable_columns_selected)
+     selectedCol<-colnames(RV4$data)[cols]
+     browser()
+     #Need to get rid of the mytext column as it is a list and it messes up the esquiss graphics
+     RV4$data<-Barretts_PragueScore(RV4$data, selectedCol[1], selectedCol[2])
+     RV4$data$mytext<-NULL
+     
   },ignoreInit = TRUE)
   
   observeEvent(input$PathStage,{
-    RV3$data$IMorNoIM<-Barretts_PathStage(RV3$data, "diagnosis")
+    cols <- as.numeric(input$BarrettsTable_columns_selected)
+    selectedCol<-colnames(RV4$data)[cols]
+    RV4$data$IMorNoIM<-Barretts_PathStage(RV4$data, selectedCol[1])
   },ignoreInit = TRUE)
   
   observeEvent(input$FollowUpType,{
-    RV3$data$FU_Type<-Barretts_FUType(RV3$data, "CStage", "MStage", "IMorNoIM")
+    RV4$data$FU_Type<-Barretts_FUType(RV4$data, "CStage", "MStage", "IMorNoIM")
   },ignoreInit = TRUE)
   
-  observeEvent(input$DataViz4,{
-    RV3$data$IMorNoIM<-BarrettsAll(RV3$data, "findings","findings",RV3$data,"diagnosis","diagnosis")
+  observeEvent(input$SurveillanceTime,{
+    cols <- as.numeric(input$BarrettsTable_columns_selected)
+    selectedCol<-colnames(RV4$data)[cols]
+    RV4$data<-SurveilTimeByRow(RV4$data, selectedCol[1],selectedCol[2])
   },ignoreInit = TRUE)
-
+  
+  
+  
   
   ########### Polyp events ############     
-
   observeEvent(input$GRS,{
-    RV4$data<-GRS_Type_Assess_By_Unit(RV3$data, "procedureperformed","endoscopist", "diagnosis", "diagnosis")
+    cols <- as.numeric(input$polypTable_columns_selected)
+    selectedCol<-colnames(RV5$data)[cols]
+    RV5$data<-GRS_Type_Assess_By_Unit(RV5$data, selectedCol[1],selectedCol[2], selectedCol[3], selectedCol[4])
   },ignoreInit = TRUE)
+  
+  
   
   ########### Graphic events ############   
-  
-  
-  observeEvent(input$MetricByEndoscopist,{
-     cols <- as.numeric(input$mergedTable_columns_selected)
-     selectedCol<-colnames(RV3$data)[cols]
-     RV5$data<-MetricByEndoscopist(RV3$data,'endoscopist',selectedCol)
-  },ignoreInit = TRUE)
-  
-  observeEvent(input$esquissGraphs,{
+  observeEvent(input$data,{
       # Launch with:
-    data_r$data <- RV$data
-    data_r$name <- "Mydftbbinnit"
-    callModule(module = esquisserServer, id = "esquisse", data = data_r)
+    if (input$data == "Endoscopy") {
+      data_r$data <- RV$data
+      data_r$name <- "Endoscopy"
+    } else if (input$data == "Pathology") {
+      data_r$data <- RV2$data
+      data_r$name <- "Pathology"
+    } else if (input$data == "Merged data") {
+      data_r$data <- RV3$data
+      data_r$name <- "mergedData"
+    } else if (input$data == "Barretts") {
+      data_r$data <- RV4$data
+      data_r$name <- "Barretts"
+    }
   },ignoreInit = TRUE)
-  
-  
+    
+  callModule(module = esquisserServer, id = "esquisse", data = data_r)
+
 }
 

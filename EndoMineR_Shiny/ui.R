@@ -16,6 +16,8 @@ library(shinyFiles)
 library(shinyBS)
 library(dplyr)
 library(esquisse)
+library(jsmodule)
+library(GGally)
 
 fluidPage(theme=shinytheme("spacelab"),
 
@@ -33,9 +35,7 @@ fluidPage(theme=shinytheme("spacelab"),
                   Shiny.onInputChange('lastClickId',this.id);
                   Shiny.onInputChange('lastClick', Math.random())
                   });"),
-      
-      
-     
+      tags$style("html, body {overflow: visible !important;"),
 
 dashboardPage(
   
@@ -45,42 +45,56 @@ dashboardPage(
   
     
     sidebarMenu(
-        menuItem("Dashboard")
        
-       
+      tb1moduleUI("tb1")
        
         )),
-
 
  
   dashboardBody(
     tabsetPanel(type = "tabs",
-                tabPanel("Clean your Dataset", verbatimTextOutput("summary"),
+                tabPanel("1. Clean your Dataset", verbatimTextOutput("summary"),
                                    
     bsCollapse(id = "collapseExample", open = "Panel 1",
                bsCollapsePanel("Endoscopy Data", "", style = "info",
-                               box(status = "primary", solidHeader = TRUE,title = "Upload your endoscopy data",
-                                   fileInput("endoscopy",label="",multiple = FALSE),
-                               textInput("caption", "", "Enter the comma separated headers here"),
-                               actionButton("textPrep",label = "textPrep"),
-                               actionButton("DateStandardiserEndo",label = "", icon = icon("far fa-calendar-alt")),
-                               actionButton("HospitalNumberExtractorEndo",label = "", icon = icon("fas fa-barcode"))),
+                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "A. Upload data",
+                                   fileInput("FileIn_endoscopy",label="",multiple = FALSE)),
                                
-                               box(status = "warning", solidHeader = TRUE,title = "Endoscopy Clean Control Panel",br(), br(),
+                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "B. Split the data",
+                               textInput("caption", "", "Enter the comma separated headers here"),
+                               actionButton("textPrep",label = "textPrep")),
+                               
+                               box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "C. Clean columns",br(), br(),
+                               actionButton("DateStandardiserEndo",label = "", icon = icon("far fa-calendar-alt")),
+                               actionButton("HospitalNumberExtractorEndo",label = "", icon = icon("fas fa-barcode")),
+                               actionButton("CategoricalDataEndo",label = "", icon = icon("far fa-flushed")),
+                               actionButton("AlphaNumericDataEndo",label = "", icon = icon("fas fa-font")),
+                               actionButton("NumericDataEndo",label = "", icon = icon("fab fa-neos"))
+                               ),
+                              
+                               box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "D. Derive new columns",br(), br(),
                                actionButton("EndoscEndoscopist",label = "", icon = icon("user-md custom")),
                                actionButton("EndoscMeds",label = "",icon = icon("fas fa-pills")),
                                actionButton("EndoscInstrument",label = "",icon = icon("stethoscope custom"))),
                                DT::dataTableOutput("endotable")),
+               
                bsCollapsePanel("Pathology Data", "", style = "info",
                                fluidRow(
-                               box(status = "primary", solidHeader = TRUE,title = "Upload your pathology data",
-                                   fileInput("pathology",label="",multiple = FALSE),
-                               textInput("captionPath", "", "Enter the comma separated headers here"),
-                               actionButton("textPrepPath",label = "textPrepPath"),
-                               actionButton("DateStandardiserEPath",label = "", icon = icon("far fa-calendar-alt")),
-                               actionButton("HospitalNumberExtractorPath",label = "", icon = icon("fas fa-barcode"))),
+                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "A. Upload  data",
+                                   fileInput("pathology",label="",multiple = FALSE)),
                                
-                               box(status = "warning", solidHeader = TRUE,title = "Pathology Clean Control Panel",br(), br(),
+                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "B. Split data",
+                               textInput("captionPath", "", "Enter the comma separated headers here"),
+                               actionButton("textPrepPath",label = "textPrepPath")),
+                               
+                               box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "C. Clean columns",br(), br(),
+                               actionButton("DateStandardiserEPath",label = "", icon = icon("far fa-calendar-alt")),
+                               actionButton("HospitalNumberExtractorPath",label = "", icon = icon("fas fa-barcode")),
+                               actionButton("CategoricalDataPath",label = "", icon = icon("far fa-flushed")),
+                               actionButton("AlphaNumericDataPath",label = "", icon = icon("fas fa-font")),
+                               actionButton("NumericDataPath",label = "", icon = icon("fab fa-neos"))),
+                               
+                               box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive new columns",br(), br(),
                                actionButton("NumBx",label = "",icon = icon("fas fa-microscope")),
                                actionButton("BxSize",label = "",icon = icon("fas fa-sort-numeric-up"))
                                )),
@@ -88,64 +102,66 @@ dashboardPage(
                                DT::dataTableOutput("pathTable"))
                )
                 ),
-                tabPanel("Barrett's", tableOutput("table5"),
-                               actionButton("PragueScore",label = "PragueScore"),
-                               actionButton("PathStage",label = "PathStage"),
-                               actionButton("FollowUpType",label = "FollowUpType"),
-                               actionButton("AllTheFunctions",label = "AllTheFunctions"),
-                               actionButton("SurveillanceTime",label = "SurveillanceTime"),
-                               actionButton("SurveillanceLastTest",label = "SurveillanceLastTest"),
-                               actionButton("SurveillanceFirstTest",label = "SurveillanceFirstTest")
-                    ),
-                tabPanel("Polyps", tableOutput("table3"),
-                               actionButton("GRS",label = "GRS"),
-                               DT::dataTableOutput("polypTable")
-                    ),
-    tabPanel("merged2", tableOutput("table6"),
+           
+    tabPanel("2. Merge Your Datasets", tableOutput("table6"),
+             
+             box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Upload data anew",br(), br(),
              fileInput("merged",
                        label="Upload Merged Dataset here",
                        multiple = FALSE),
-             textInput("captionMerge", "", "Enter the comma separated headers here"),
+             textInput("captionMerge", "", "Enter the comma separated headers here")),
+             
+             box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Merging Functions",br(), br(),
              actionButton("Endomerge2",label = "Endomerge2"),
-             actionButton("MergeWithImages",label = "MergeWithImages"),
+             actionButton("MergeWithImages",label = "MergeWithImages")),
              actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
-             actionButton(inputId = "esquissGraphs",label = "esquissGraphs"),
-        
+
              
+             bsModal("modalExampleImages", "Data Table1", "MergeWithImages", size = "large",
+                     shinyFilesButton("Btn_GetFile", "Choose a file" ,
+                                      title = "Please select a file:", multiple = FALSE, buttonType = "default", class = NULL),
+                     textOutput("txt_file"),
+                     textInput("captionDelim", "Which word separates the procedures", "delimiting word"),
+                     textInput("captionImgFolder", "Get the Image folder", "Get the Image folder"),
+                     
+                     shinyDirButton('folder', 'Folder select', 'Please select a folder', FALSE),
+                     textOutput("folder_file"),
+                     actionButton("MergeImages",label = "Merge the images with your dataset")),     
+                     DT::dataTableOutput("mergedTable")
+    ),
+    tabPanel("Barrett's", tableOutput("table5"),
+             box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive Barrett's data",br(), br(),
+             actionButton("PragueScore",label = "PragueScore"),
+             actionButton("PathStage",label = "PathStage"),
+             actionButton("FollowUpType",label = "FollowUpType"),
+             actionButton("AllTheFunctions",label = "AllTheFunctions"),
+             actionButton("SurveillanceTime",label = "far fa-clock")),
+             DT::dataTableOutput("BarrettsTable")
+    ),
+    tabPanel("Polyps", tableOutput("table3"),
+             actionButton("GRS",label = "GRS"),
+             DT::dataTableOutput("polypTable")
+    ),
+    tabPanel("Visualise", tableOutput("table7"),
              
-             bsModal("modalExample", "Data Table", "esquissGraphs", size = "large",
-             tags$h1("Use esquisse as a Shiny module"),
-             tags$h1("Use esquisse as a Shiny module"),
-             radioButtons(
-               inputId = "data",
-               label = "Data to use:",
-               choices = c("Mydftbbinnit"),
-               inline = TRUE
-             ),
-             tags$div(
-               style = "height: 700px;", # needs to be in fixed height container
-               esquisserUI(
-                 id = "esquisse",
-                 header = FALSE, # dont display gadget title
-                 choose_data = FALSE # dont display button to change data
-               )
-             )
-             ),
-                             bsModal("modalExample", "Data Table", "MergeWithImages", size = "large",
-                                     
-                                     shinyFilesButton("Btn_GetFile", "Choose a file" ,
-                                                      title = "Please select a file:", multiple = FALSE, buttonType = "default", class = NULL),
-                                     textOutput("txt_file"),
-                                     textInput("captionDelim", "Which word separates the procedures", "delimiting word"),
-                                     textInput("captionImgFolder", "Get the Image folder", "Get the Image folder"),
-                                     
-                                     shinyDirButton('folder', 'Folder select', 'Please select a folder', FALSE),
-                                     textOutput("folder_file"),
-                                     actionButton("MergeImages",label = "Merge the images with your dataset")),
-             
-             actionButton("CategoricalByEndoscopist",label = "CategoricalByEndoscopist"),
-             actionButton("HowManyOverTime",label = "HowManyOverTime"),
-             DT::dataTableOutput("mergedTable")
+    radioButtons(
+      inputId = "data",
+      label = "Data to use:",
+      choices = c("Endoscopy","Pathology","Merged data","Barretts"),
+      inline = TRUE
+    ),
+    tags$div(
+      style = "height: 700px;", # needs to be in fixed height container
+      esquisserUI(
+        id = "esquisse",
+        header = FALSE, # dont display gadget title
+        choose_data = FALSE # dont display button to change data
+      )
+    )
+    ) ,
+    tabPanel("2. Merge Your Datasets", tableOutput("table16"),
+            # tb1moduleUI("tb1"),
+            DT::dataTableOutput("table1")
     )
     )
   )
