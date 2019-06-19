@@ -62,20 +62,41 @@ dashboardPage(
                                
                                box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "B. Split the data",
                                textInput("caption", "", "Enter the comma separated headers here"),
-                               actionButton("textPrep",label = "textPrep")),
+                               actionButton("textPrep",label = "textPrep"),
+                               bsTooltip("textPrep", "Enter the headers from the text separated by a comma to split according to the headers", placement = "bottom", trigger = "hover",
+                                         options = NULL)),
                                
                                box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "C. Clean columns",br(), br(),
                                actionButton("DateStandardiserEndo",label = "", icon = icon("far fa-calendar-alt")),
+                               bsTooltip("DateStandardiserEndo", "Select only one date column then press the button", placement = "bottom", trigger = "hover",
+                                         options = NULL),
                                actionButton("HospitalNumberExtractorEndo",label = "", icon = icon("fas fa-barcode")),
+                               bsTooltip("HospitalNumberExtractorEndo", "Select only one hospital number column then press the button to standardise", placement = "bottom", trigger = "hover",
+                                         options = NULL),
                                actionButton("CategoricalDataEndo",label = "", icon = icon("far fa-flushed")),
+                               bsTooltip("CategoricalDataEndo", "Select only one categorical column then press the button to standardise", placement = "bottom", trigger = "hover",
+                                         options = NULL),
                                actionButton("AlphaNumericDataEndo",label = "", icon = icon("fas fa-font")),
-                               actionButton("NumericDataEndo",label = "", icon = icon("fab fa-neos"))
+                               bsTooltip("AlphaNumericDataEndo", "Select only one alphanumeric column then press the button to standardise", placement = "bottom", trigger = "hover",
+                                         options = NULL),
+                               actionButton("NumericDataEndo",label = "", icon = icon("fab fa-neos")),
+                               bsTooltip("NumericDataEndo", "Select only one numeric column then press the button to standardise", placement = "bottom", trigger = "hover",
+                                         options = NULL),
+                               actionButton("NegExEndo",label = "Negex"),
+                               bsTooltip("NegExEndo", "Select only one text column to exclude all sentences with negative expressions", placement = "bottom", trigger = "hover",
+                                         options = NULL)
                                ),
                               
                                box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "D. Derive new columns",br(), br(),
                                actionButton("EndoscEndoscopist",label = "", icon = icon("user-md custom")),
+                               bsTooltip("EndoscEndoscopist", "Standardise the endoscopist column", placement = "bottom", trigger = "hover",
+                                         options = NULL),
                                actionButton("EndoscMeds",label = "",icon = icon("fas fa-pills")),
-                               actionButton("EndoscInstrument",label = "",icon = icon("stethoscope custom"))),
+                               bsTooltip("EndoscMeds", "Select the medication column to extract medications", placement = "bottom", trigger = "hover",
+                                         options = NULL),
+                               actionButton("EndoscInstrument",label = "",icon = icon("stethoscope custom")),
+                               bsTooltip("EndoscInstrument", "Select the Instrument column to clean instrument names", placement = "bottom", trigger = "hover",
+                                         options = NULL)),
                                DT::dataTableOutput("endotable")),
                
                bsCollapsePanel("Pathology Data", "", style = "info",
@@ -85,18 +106,37 @@ dashboardPage(
                                
                                box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "B. Split data",
                                textInput("captionPath", "", "Enter the comma separated headers here"),
-                               actionButton("textPrepPath",label = "textPrepPath")),
+                               actionButton("textPrepPath",label = "textPrepPath"),
+                               bsTooltip("textPrepPath", "Enter the headers from the text separated by a comma to split according to the headers", placement = "bottom", trigger = "hover",
+                                         options = NULL)),
                                
                                box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "C. Clean columns",br(), br(),
                                actionButton("DateStandardiserEPath",label = "", icon = icon("far fa-calendar-alt")),
+                               bsTooltip("DateStandardiserEPath", "Select only one date column then press the button", placement = "bottom", trigger = "hover",
+                                         options = NULL),
                                actionButton("HospitalNumberExtractorPath",label = "", icon = icon("fas fa-barcode")),
+                               bsTooltip("HospitalNumberExtractorPath", "Select only one hospital number column then press the button to standardise", placement = "bottom", trigger = "hover",
+                                         options = NULL),
                                actionButton("CategoricalDataPath",label = "", icon = icon("far fa-flushed")),
+                               bsTooltip("CategoricalDataPath", "Select only one categorical column then press the button to standardise", placement = "bottom", trigger = "hover",
+                                         options = NULL),
                                actionButton("AlphaNumericDataPath",label = "", icon = icon("fas fa-font")),
-                               actionButton("NumericDataPath",label = "", icon = icon("fab fa-neos"))),
+                               bsTooltip("AlphaNumericDataPath", "Select only one alphanumeric column then press the button to standardise", placement = "bottom", trigger = "hover",
+                                         options = NULL),
+                               actionButton("NumericDataPath",label = "", icon = icon("fab fa-neos")),
+                               bsTooltip("NumericDataPath", "Select only one numeric column then press the button to standardise", placement = "bottom", trigger = "hover",
+                                         options = NULL),
+                               actionButton("NegExPath",label = "Negex", ),
+                               bsTooltip("NegExPath", "Select only one text column to exclude all sentences with negative expressions", placement = "bottom", trigger = "hover",
+                                         options = NULL)),
                                
                                box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive new columns",br(), br(),
                                actionButton("NumBx",label = "",icon = icon("fas fa-microscope")),
-                               actionButton("BxSize",label = "",icon = icon("fas fa-sort-numeric-up"))
+                               bsTooltip("NumBx", "Select column (usually a macroscopic description column from pathology) to extract the total number of biopsies", placement = "bottom", trigger = "hover",
+                                         options = NULL),
+                               actionButton("BxSize",label = "",icon = icon("fas fa-sort-numeric-up")),
+                               bsTooltip("BxSize", "Select column (usually a macroscopic description column from pathology) to extract the average biopsy size ", placement = "bottom", trigger = "hover",
+                                         options = NULL)
                                )),
                                
                                DT::dataTableOutput("pathTable"))
@@ -113,9 +153,12 @@ dashboardPage(
              
              box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Merging Functions",br(), br(),
              actionButton("Endomerge2",label = "Endomerge2"),
-             actionButton("MergeWithImages",label = "MergeWithImages")),
+             bsTooltip("Endomerge2", "Make sure you have standarised both the date and hospital column in both the endoscopy and the pathology datasets, then press this button to get the datasets merged.", placement = "bottom", trigger = "hover",options = NULL),
+             actionButton("MergeWithImages",label = "MergeWithImages"), 
+             bsTooltip("MergeWithImages", "Press here to merge with images. The images must be from a html export with hospital numbers and dates so they can be merged.", placement = "bottom", trigger = "hover",options = NULL)),
+             
              actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
-
+             bsTooltip("Del_row_head", "Select individual rows with the checkbox and then press here to delete from the dataset", placement = "bottom", trigger = "hover",options = NULL),
              
              bsModal("modalExampleImages", "Data Table1", "MergeWithImages", size = "large",
                      shinyFilesButton("Btn_GetFile", "Choose a file" ,
@@ -132,10 +175,18 @@ dashboardPage(
     tabPanel("Barrett's", tableOutput("table5"),
              box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive Barrett's data",br(), br(),
              actionButton("PragueScore",label = "PragueScore"),
+             bsTooltip("PragueScore", "Select two columns with endoscopic findings to generate C and M stage where possible", placement = "bottom", trigger = "hover",options = NULL),
+             
              actionButton("PathStage",label = "PathStage"),
+             bsTooltip("PathStage", "Select two columns with pathological findings to generate the worst pathological grade where possible", placement = "bottom", trigger = "hover",options = NULL),
+             
              actionButton("FollowUpType",label = "FollowUpType"),
+             bsTooltip("FollowUpType", "Only press once the Prague score and Path stage buttons have extracted the relevant columns", placement = "bottom", trigger = "hover",options = NULL),
+             
              actionButton("AllTheFunctions",label = "AllTheFunctions"),
              actionButton("SurveillanceTime",label = "far fa-clock")),
+             bsTooltip("SurveillanceTime", "Select the hospital number and the date of the procedure columns in order to get the time since the last test", placement = "bottom", trigger = "hover",options = NULL),
+             
              DT::dataTableOutput("BarrettsTable")
     ),
     tabPanel("Polyps", tableOutput("table3"),

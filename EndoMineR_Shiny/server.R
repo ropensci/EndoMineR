@@ -84,8 +84,8 @@ server <- function(input, output) {
   output$BarrettsTable = DT::renderDT({
     #RV4$data
     
-    RV4$data %>%  
-      filter_all(any_vars(str_detect(., pattern = "[Bb]arrett")))
+    RV4$data
+      
 
   },filter = 'top',selection = list(target = 'column'),extensions = 'Buttons', options = list(
     scrollX = TRUE,
@@ -244,6 +244,11 @@ server <- function(input, output) {
   },ignoreInit = TRUE)
   
   
+  observeEvent(input$NegExEndo,{
+    RV$data[,as.numeric(input$endotable_columns_selected)]<-NegativeRemove(RV$data[,as.numeric(input$endotable_columns_selected)])
+  },ignoreInit = TRUE)
+  
+  
   
   #Standardise the Hospital NumberPathology
   observeEvent(input$HospitalNumberExtractorPath,{
@@ -252,13 +257,22 @@ server <- function(input, output) {
                                                                                          "([a-z0-9]\\d{4,}[a-z0-9])")
   },ignoreInit = TRUE)
   
-  #Standardise the Numbers as numeric in Endoscopy
+  #Standardise the Categorical as categorical in Pathology
   observeEvent(input$CategoricalDataPath,{
     #browser()
     RV$data[,as.numeric(input$pathTable_columns_selected)]<-as.factor(RV$data[,as.numeric(input$pathTable_columns_selected)],
                                                                         "[0-9]+")
     
   },ignoreInit = TRUE)
+  
+  
+  
+  observeEvent(input$NegExPath,{
+    RV$data[,as.numeric(input$pathTable_columns_selected)]<-NegativeRemove(RV$data[,as.numeric(input$pathTable_columns_selected)])
+  },ignoreInit = TRUE)
+  
+  
+  
   
   
   observeEvent(input$Del_row_head,{
@@ -373,7 +387,7 @@ server <- function(input, output) {
     
     RV3$data<-RV2$data %>% left_join(RV$data, by=setNames(nm=c(EndoNum,EndoDate),c(PathNum,PathDate)))
     #Create a copy that can be independently edited for the Barrett's table
-    RV4$data<-RV3$data
+    RV4$data<-RV3$data %>% filter_all(any_vars(str_detect(., pattern = "[Bb]arrett")))
     #No need for fuzzy join here as images are from the endoscopy- may need to change this with other images though
   },ignoreInit = TRUE)
 
@@ -383,11 +397,11 @@ server <- function(input, output) {
    observeEvent(input$PragueScore,{
      cols <- as.numeric(input$BarrettsTable_columns_selected)
      selectedCol<-colnames(RV4$data)[cols]
-     browser()
      #Need to get rid of the mytext column as it is a list and it messes up the esquiss graphics
      RV4$data<-Barretts_PragueScore(RV4$data, selectedCol[1], selectedCol[2])
      RV4$data$mytext<-NULL
-     
+     RV4$data$MStage<-as.numeric(RV4$data$MStage)
+     RV4$data$CStage<-as.numeric(RV4$data$CStage)
   },ignoreInit = TRUE)
   
   observeEvent(input$PathStage,{
