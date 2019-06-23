@@ -11,8 +11,11 @@ library(data.table)
 library(tidyr)
 library(pander)
 library(esquisse)
+library(jsmodule)
+library(shiny);library(DT);library(data.table);library(jstable)
 
 # Define server logic required to draw a histogram
+options(shiny.maxRequestSize=30*1024^2) 
 
 RV <- reactiveValues(data = data.frame())
 data_r <-reactiveValues(data = data.frame())
@@ -71,7 +74,9 @@ server <- function(input, output) {
   
   output$endotable = DT::renderDT({
     RV$data
-  },selection = list(target = 'column'),extensions = 'Buttons', options = list(
+  },selection = list(target = 'column'),extensions = 'Buttons', 
+   options = list(
+    fixedHeader=TRUE,
     scrollX = TRUE,
     scrollY = TRUE,
     pageLength = 5,
@@ -248,6 +253,10 @@ server <- function(input, output) {
     RV$data[,as.numeric(input$endotable_columns_selected)]<-NegativeRemove(RV$data[,as.numeric(input$endotable_columns_selected)])
   },ignoreInit = TRUE)
   
+  observeEvent(input$Radiant,{
+radiant.data::launch()  
+    },ignoreInit = TRUE)
+  
   
   
   #Standardise the Hospital NumberPathology
@@ -260,8 +269,7 @@ server <- function(input, output) {
   #Standardise the Categorical as categorical in Pathology
   observeEvent(input$CategoricalDataPath,{
     #browser()
-    RV$data[,as.numeric(input$pathTable_columns_selected)]<-as.factor(RV$data[,as.numeric(input$pathTable_columns_selected)],
-                                                                        "[0-9]+")
+    RV$data[,as.numeric(input$pathTable_columns_selected)]<-as.factor(RV$data[,as.numeric(input$pathTable_columns_selected)])
     
   },ignoreInit = TRUE)
   
@@ -380,14 +388,53 @@ server <- function(input, output) {
     #Need to fix this to understand when it is selecting the number. I think the user needs to 
     #convert to date and then select columns (date first) at one sitting with the datatable
     
-    EndoDate<-colnames(RV$data[as.numeric(input$endotable_columns_selected[1])])
-    EndoNum<-colnames(RV$data[as.numeric(input$endotable_columns_selected[2])])
-    PathDate<-colnames(RV2$data[as.numeric(input$endotable_columns_selected[1])])
-    PathNum<-colnames(RV2$data[as.numeric(input$endotable_columns_selected[2])])
+    # EndoDate<-colnames(RV$data[as.numeric(input$endotable_columns_selected[1])])
+    # EndoNum<-colnames(RV$data[as.numeric(input$endotable_columns_selected[2])])
+    # PathDate<-colnames(RV2$data[as.numeric(input$pathTable_columns_selected[1])])
+    # PathNum<-colnames(RV2$data[as.numeric(input$pathTable_columns_selected[2])])
+    browser()
+    
+    
+    colnames(RV$data[as.numeric(input$endotable_columns_selected[1])])<-"Date"
+    colnames(RV$data[as.numeric(input$endotable_columns_selected[2])])<-"HospitalID"
+    colnames(RV2$data[as.numeric(input$endotable_columns_selected[1])])<-"Date"
+    colnames(RV2$data[as.numeric(input$endotable_columns_selected[2])])<-"HospitalID"
+    
+    colnames(RV$data)[which(names(RV$data) == colnames(RV$data[as.numeric(input$endotable_columns_selected[1])]))] <- "HospitalID"
+    colnames(RV$data)[which(names(RV$data) == colnames(RV$data[as.numeric(input$endotable_columns_selected[2])]))] <- "Date"
+    
+    colnames(RV2$data)[which(names(RV2$data) == colnames(RV2$data[as.numeric(input$pathTable_columns_selected[1])]))] <- "HospitalID"
+    colnames(RV2$data)[which(names(RV2$data) == colnames(RV2$data[as.numeric(input$pathTable_columns_selected[2])]))] <- "Date"
+    
     
     RV3$data<-RV2$data %>% left_join(RV$data, by=setNames(nm=c(EndoNum,EndoDate),c(PathNum,PathDate)))
+    
+    #Get the number of days by subtracting the date columns:
+    
+    
+    
+    
+    
+    
     #Create a copy that can be independently edited for the Barrett's table
     RV4$data<-RV3$data %>% filter_all(any_vars(str_detect(., pattern = "[Bb]arrett")))
+    
+    # difference_left_join(RV2$data,
+    #                     RV$data,
+    #                    by=setNames(nm=c(EndoNum,EndoDate),c(PathNum,PathDate)),
+    #                   max_dist = 8,
+    #                  distance_col = "Days"
+    # )
+    
+    sooo<-fuzzyjoin::difference_left_join(RV2$data, RV$data, by = 'HospitalID', max_dist = 8, distance_col = 'Days') 
+    
+    #%>%filter(colnames(RV$data[as.numeric(input$pathTable_columns_selected[2])]) == colnames(RV2$data[as.numeric(input$pathTable_columns_selected[2])]))
+    
+    EndoHistoMerge$pHospitalNum <- trimws(EndoHistoMerge$pHospitalNum)
+    EndoHistoMerge$eHospitalNum <- trimws(gsub("\n", "", EndoHistoMerge$eHospitalNum))
+    EndoHistoMerge1 <- EndoHistoMerge[EndoHistoMerge$eHospitalNum == EndoHistoMerge$pHospitalNum, ]
+    
+    
     #No need for fuzzy join here as images are from the endoscopy- may need to change this with other images though
   },ignoreInit = TRUE)
 
@@ -449,6 +496,10 @@ server <- function(input, output) {
       data_r$name <- "Barretts"
     }
   },ignoreInit = TRUE)
+  
+  
+
+
     
   callModule(module = esquisserServer, id = "esquisse", data = data_r)
 

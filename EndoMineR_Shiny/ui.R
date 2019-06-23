@@ -19,7 +19,7 @@ library(esquisse)
 library(jsmodule)
 library(GGally)
 
-fluidPage(theme=shinytheme("spacelab"),
+fluidPage(theme=shinytheme("cosmo"),
 
             tags$script(HTML('$(document).on("click", "input", function () {
                        var checkboxes = document.getElementsByName("row_selected");
@@ -42,23 +42,22 @@ dashboardPage(
   dashboardHeader(title = 'EndoMineR'),
  
   dashboardSidebar(
-  
-    
-    sidebarMenu(
-       
+    sidebarPanel(
       tb1moduleUI("tb1")
-       
-        )),
+    ), 
+    tags$style(".left-side, .main-sidebar {padding-top: 60px}")),
 
  
   dashboardBody(
     tabsetPanel(type = "tabs",
                 tabPanel("1. Clean your Dataset", verbatimTextOutput("summary"),
+                         
+                         
                                    
     bsCollapse(id = "collapseExample", open = "Panel 1",
                bsCollapsePanel("Endoscopy Data", "", style = "info",
                                box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "A. Upload data",
-                                   fileInput("FileIn_endoscopy",label="",multiple = FALSE)),
+                                   fileInput("FileIn_endoscopy",label="",multiple = FALSE),br()),
                                
                                box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "B. Split the data",
                                textInput("caption", "", "Enter the comma separated headers here"),
@@ -66,7 +65,7 @@ dashboardPage(
                                bsTooltip("textPrep", "Enter the headers from the text separated by a comma to split according to the headers", placement = "bottom", trigger = "hover",
                                          options = NULL)),
                                
-                               box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "C. Clean columns",br(), br(),
+                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "C. Clean columns",br(), br(),
                                actionButton("DateStandardiserEndo",label = "", icon = icon("far fa-calendar-alt")),
                                bsTooltip("DateStandardiserEndo", "Select only one date column then press the button", placement = "bottom", trigger = "hover",
                                          options = NULL),
@@ -84,10 +83,13 @@ dashboardPage(
                                          options = NULL),
                                actionButton("NegExEndo",label = "Negex"),
                                bsTooltip("NegExEndo", "Select only one text column to exclude all sentences with negative expressions", placement = "bottom", trigger = "hover",
+                                         options = NULL),
+                               actionButton("Radiant",label = "Negex"),
+                               bsTooltip("Radiant", "Perform further analyses", placement = "bottom", trigger = "hover",
                                          options = NULL)
                                ),
                               
-                               box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "D. Derive new columns",br(), br(),
+                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "D. Derive new columns",br(), br(),
                                actionButton("EndoscEndoscopist",label = "", icon = icon("user-md custom")),
                                bsTooltip("EndoscEndoscopist", "Standardise the endoscopist column", placement = "bottom", trigger = "hover",
                                          options = NULL),
@@ -102,7 +104,7 @@ dashboardPage(
                bsCollapsePanel("Pathology Data", "", style = "info",
                                fluidRow(
                                box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "A. Upload  data",
-                                   fileInput("pathology",label="",multiple = FALSE)),
+                                   fileInput("pathology",label="",multiple = FALSE),br()),
                                
                                box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "B. Split data",
                                textInput("captionPath", "", "Enter the comma separated headers here"),
@@ -110,7 +112,7 @@ dashboardPage(
                                bsTooltip("textPrepPath", "Enter the headers from the text separated by a comma to split according to the headers", placement = "bottom", trigger = "hover",
                                          options = NULL)),
                                
-                               box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "C. Clean columns",br(), br(),
+                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "C. Clean columns",br(), br(),
                                actionButton("DateStandardiserEPath",label = "", icon = icon("far fa-calendar-alt")),
                                bsTooltip("DateStandardiserEPath", "Select only one date column then press the button", placement = "bottom", trigger = "hover",
                                          options = NULL),
@@ -126,11 +128,11 @@ dashboardPage(
                                actionButton("NumericDataPath",label = "", icon = icon("fab fa-neos")),
                                bsTooltip("NumericDataPath", "Select only one numeric column then press the button to standardise", placement = "bottom", trigger = "hover",
                                          options = NULL),
-                               actionButton("NegExPath",label = "Negex", ),
+                               actionButton("NegExPath",label = "Negex" ),
                                bsTooltip("NegExPath", "Select only one text column to exclude all sentences with negative expressions", placement = "bottom", trigger = "hover",
                                          options = NULL)),
                                
-                               box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive new columns",br(), br(),
+                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive new columns",br(), br(),
                                actionButton("NumBx",label = "",icon = icon("fas fa-microscope")),
                                bsTooltip("NumBx", "Select column (usually a macroscopic description column from pathology) to extract the total number of biopsies", placement = "bottom", trigger = "hover",
                                          options = NULL),
@@ -145,13 +147,13 @@ dashboardPage(
            
     tabPanel("2. Merge Your Datasets", tableOutput("table6"),
              
-             box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Upload data anew",br(), br(),
+             box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Upload data anew",br(), br(),
              fileInput("merged",
                        label="Upload Merged Dataset here",
                        multiple = FALSE),
              textInput("captionMerge", "", "Enter the comma separated headers here")),
              
-             box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Merging Functions",br(), br(),
+             box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Merging Functions",br(), br(),
              actionButton("Endomerge2",label = "Endomerge2"),
              bsTooltip("Endomerge2", "Make sure you have standarised both the date and hospital column in both the endoscopy and the pathology datasets, then press this button to get the datasets merged.", placement = "bottom", trigger = "hover",options = NULL),
              actionButton("MergeWithImages",label = "MergeWithImages"), 
@@ -210,9 +212,10 @@ dashboardPage(
       )
     )
     ) ,
-    tabPanel("2. Merge Your Datasets", tableOutput("table16"),
+    tabPanel("Data Description", tableOutput("table16"),
             # tb1moduleUI("tb1"),
             DT::dataTableOutput("table1")
+            #DTOutput("table1")
     )
     )
   )
