@@ -28,7 +28,7 @@ GRS_Type_Assess_By_Unit <-
              Dx,
              Histol) {
     dataframe <- data.frame(dataframe)
-    dataframe <- dataframe[grepl("colonoscopy", dataframe[, ProcPerformed]), ]
+    dataframe <- dataframe[grepl("[Cc]olonoscopy", dataframe[, ProcPerformed]), ]
 
     # Function should get proportions of a procedure that result in a finding:
 
