@@ -34,7 +34,6 @@ RoxygenNote: 6.1.1
 Suggests: 
     rmarkdown,
     testthat,
-    pander,
     prettydoc,
     randomNames,
     generator,

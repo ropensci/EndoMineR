@@ -128,7 +128,7 @@ PathDataFrameFinalColon3<-Extractor(PathDataFrameFinalColon2$PathReportWhole,myw
 
 ``` r
 #PathDataFrameFinalColon3<-head(PathDataFrameFinalColon3[2:10],1)
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(head(PathDataFrameFinalColon3[,1:9],1))
 ```
 

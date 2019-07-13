@@ -132,7 +132,7 @@ PathDataFrameFinalColon3<-Extractor(PathDataFrameFinalColon2$PathReportWhole,myw
 
 ```{r exampleExtractor3,echo=FALSE}
 
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(head(PathDataFrameFinalColon3[,1:9],1))
 ```
 
@@ -143,7 +143,7 @@ The **Extractor** function is embedded within **textPrep** so you may never have
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE")
+CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 ```
 
 **textPrep** takes the optional parameters NegEx which tells the **textPrep** to remove negative phrases like 'There is no pathology here' from the text.

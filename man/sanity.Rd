@@ -17,8 +17,8 @@ diagrammeR but all the dataframes are automatically filled with the dataframes
 in the script. The user just provides a pathname for the script
 }
 \examples{
-pathName<-paste0(here::here(),"/inst/TemplateProject/munge/PreProcessing.R")
-sanity(pathName)
+# pathName<-paste0(here::here(),"/inst/TemplateProject/munge/PreProcessing.R")
+# sanity(pathName)
 # This creates a consort diagram from any R script (not Rmd). It
 # basically tells you how all the dataframes are related and how many
 # rows each dataframe has so you can see if any data has been lost
