@@ -31,7 +31,7 @@ are removed.
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE")
+CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 }
 \keyword{cleaning}
 \keyword{text}
