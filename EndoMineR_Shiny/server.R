@@ -13,6 +13,7 @@ library(pander)
 library(esquisse)
 library(jsmodule)
 library(shiny);library(DT);library(data.table);library(jstable)
+library(plotly)
 
 # Define server logic required to draw a histogram
 options(shiny.maxRequestSize=30*1024^2) 
@@ -25,9 +26,9 @@ RV4 <- reactiveValues(data = data.frame())
 Trim <- reactiveValues(data = data.frame())
 pivotData<-reactiveValues(data = data.frame())
 RV5 <- reactiveValues(data = data.frame())
-RV6 <- reactiveValues(data = data.frame())
-RV7 <- reactiveValues(data = data.frame())
-RV8 <- reactiveValues(data = data.frame())
+polypData <- reactiveValues(data = data.frame())
+BarrTrim <- reactiveValues(data = data.frame())
+BarrettsData <- reactiveValues(data = data.frame())
 RV9 <- reactiveValues(data = data.frame())
 RV10 <- reactiveValues(data = data.frame())
 
@@ -39,12 +40,13 @@ server <- function(input, output,session) {
   
  
   observe({
-   #browser()
+  #browser()
     inFile_endoscopy <- input$FileIn_endoscopy
     if (!is.null(inFile_endoscopy)) {   
       dataFile <- read_excel(inFile_endoscopy$datapath, sheet=1)
       dat <- data.frame(EndoPaste(dataFile)[1], stringsAsFactors=FALSE)
       RV$data<-dat
+
     }
   })
   
@@ -180,103 +182,52 @@ server <- function(input, output,session) {
 
 
   output$polypTable = DT::renderDT({
-    RV3$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5,
+    polypData$data
+    
+  },filter = 'top',selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 500,
                                                        dom = 'Bfrtip',
                                                        buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
 
   
   
-  output$table1 <- renderDT({
-    if(!is.null(RV4$data)){
-    RV6$data<-data.frame(psych::describe(RV4$data))
-    }
-  })
-  
-  
-  ############# The function events ###################
-  
-  
-  ########### Endoscopy events ############  
+  ########### Dataset 1 events ############  
   #Prepare the text for endoscopy
   observeEvent(input$textPrep,{
     mywordsOGD<-input$caption
     mywordsOGD<-unlist(strsplit(mywordsOGD,","))
     RV$data<-textPrep(RV$data[,1],mywordsOGD)
+    
+    #Try type conversion here:
+    RV$data<-type.convert(RV$data)
    
   },ignoreInit = TRUE)
   
-  #Extract the endoscopist
-  observeEvent(input$EndoscEndoscopist,{
-    RV$data$endoscopist<-EndoscEndoscopist(RV$data$endoscopist)
-  },ignoreInit = TRUE)
   
-  #Extract the medications
-  observeEvent(input$EndoscMeds,{
-    RV$data<-cbind(EndoscMeds(RV$data$medications),RV$data)
-  },ignoreInit = TRUE)
   
-  #Extract the instrument
-  observeEvent(input$EndoscInstrument,{
-    RV$data$instrument<-EndoscInstrument(RV$data$instrument)
-  },ignoreInit = TRUE)
   
-  ########### Generic events ############ 
-  #Standardise the date
+  
+  #Standardise the date Dataset 1
   observeEvent(input$DateStandardiserEndo,{
     RV$data[,as.numeric(input$endotable_columns_selected)]<-parse_date_time(str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
-                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
-                                                                        orders = c("dmy", "ymd"))
+                                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
+                                                                            orders = c("dmy", "ymd"))
+  },ignoreInit = TRUE) 
+  
+  
+  #Standardise the Hospital Number Dataset 1
+  observeEvent(input$HospitalNumberExtractorEndo,{
+    RV$data[,as.numeric(input$endotable_columns_selected)]<-str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
+                                                                        "([a-z0-9]\\d{4,}[a-z0-9])")
+    
   },ignoreInit = TRUE)
   
-  #Standardise the date
-  observeEvent(input$DateStandardiserEPath,{
-    RV2$data[,as.numeric(input$pathTable_columns_selected)]<-parse_date_time(str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
-                                                                        "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
-                                                                        orders = c("dmy", "ymd"))
-  },ignoreInit = TRUE)
- 
   
   
   
    
-  #Standardise the Hospital Number Endoscopy
-  observeEvent(input$HospitalNumberExtractorEndo,{
-    RV$data[,as.numeric(input$endotable_columns_selected)]<-str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
-                                                                                         "([a-z0-9]\\d{4,}[a-z0-9])")
-    
-  },ignoreInit = TRUE)
-  
-  
-  
-  #Standardise the Numbers as numeric in Endoscopy
-  observeEvent(input$NumericDataEndo,{
-    RV$data[,as.numeric(input$endotable_columns_selected)]<-as.numeric(str_extract(RV$data[,as.numeric(input$endotable_columns_selected)],
-                                                                        "[0-9]+"))
-    
-  },ignoreInit = TRUE)
-  
-  #Standardise the AlphaNumeric as numeric in Endoscopy
-  observeEvent(input$CategoricalDataEndo,{
-    RV$data[,as.numeric(input$endotable_columns_selected)]<-as.factor(RV$data[,as.numeric(input$endotable_columns_selected)])
-  },ignoreInit = TRUE)
-  
-  
-  observeEvent(input$NegExEndo,{
-    RV$data[,as.numeric(input$endotable_columns_selected)]<-NegativeRemove(RV$data[,as.numeric(input$endotable_columns_selected)])
-  },ignoreInit = TRUE)
-  
-  observeEvent(input$Radiant,{
-    register(RV$data,org = "", descr = "", env)
-    },ignoreInit = TRUE)
-  
-  
-  
-  #Standardise the Hospital NumberPathology
-  observeEvent(input$HospitalNumberExtractorPath,{
-    RV2$data[,as.numeric(input$pathTable_columns_selected)]<-str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
-                                                                                         "([a-z0-9]\\d{4,}[a-z0-9])")
-  },ignoreInit = TRUE)
+
+ 
+
   
   #Standardise the Categorical as categorical in Pathology
   observeEvent(input$CategoricalDataPath,{
@@ -369,31 +320,47 @@ server <- function(input, output,session) {
   })
 
   
-  ########### Pathology events ############  
+  ########### Dataset 2 events ############  
   observeEvent(input$textPrepPath,{
     mywordsPath<-input$captionPath
     mywordsPath<-unlist(strsplit(mywordsPath,","))
     RV2$data<-textPrep(RV2$data[,1],mywordsPath)
+    RV2$data<-type.convert(RV2$data)
   },ignoreInit = TRUE)
   
-  #Extract the endoscopist
-  observeEvent(input$NumBx,{
-    RV2$data$NumBx<-HistolNumbOfBx(RV2$data$macroscopicdescription,'specimen')
+  
+  
+  
+  #Standardise the date Dataset 2
+  observeEvent(input$DateStandardiserEPath,{
+    RV2$data[,as.numeric(input$pathTable_columns_selected)]<-parse_date_time(str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
+                                                                                         "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
+                                                                             orders = c("dmy", "ymd"))
   },ignoreInit = TRUE)
   
-  #Extract the medications
-  observeEvent(input$BxSize,{
-    RV2$data$BxSize<-HistolBxSize(RV2$data$macroscopicdescription)
-  },ignoreInit = TRUE)
   
+  #Standardise the Hospital Number Dataset 2
+  observeEvent(input$HospitalNumberExtractorPath,{
+    RV2$data[,as.numeric(input$pathTable_columns_selected)]<-str_extract(RV2$data[,as.numeric(input$pathTable_columns_selected)],
+                                                                         "([a-z0-9]\\d{4,}[a-z0-9])")
+  },ignoreInit = TRUE) 
+  
+  
+  observeEvent(input$textPrepMerge,{
+    mywordsOGD<-input$captionMerge
+    mywordsOGD<-unlist(strsplit(mywordsOGD,","))
+    RV3$data<-textPrep(RV3$data[,1],mywordsOGD)
+    
+    #Try type conversion here:
+    RV3$data<-type.convert(RV3$data)
+    
+  },ignoreInit = TRUE)
   
   
   
   
   ############ Basic Stats Events ############
   
-  
-  # Return the requested dataset ----
   datasetInputBasicStats <- reactive({
     switch(input$datasetBasicStats,
            "Endoscopy" = RV$data,
@@ -404,8 +371,6 @@ server <- function(input, output,session) {
   })
   
 
-  
-  
   
 
   
@@ -433,46 +398,18 @@ server <- function(input, output,session) {
     })
   
   
+ 
   
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+   
   ########### EndoMerge events ############  
   
   observeEvent(input$Endomerge2,{
-    
     #Merge the patientID column and date from each table. Make sure that the patient ID is chosen first;
-    
-   
-    
     #Need to fix this to understand when it is selecting the number. I think the user needs to 
-    
-    #convert to date and then select columns (date first) at one sitting with the datatable
-    
-    EndoDate<-colnames(RV$data[as.numeric(input$endotable_columns_selected[1])])
-    
-    EndoNum<-colnames(RV$data[as.numeric(input$endotable_columns_selected[2])])
-    
-    PathDate<-colnames(RV2$data[as.numeric(input$pathTable_columns_selected[1])])
-    
-    PathNum<-colnames(RV2$data[as.numeric(input$pathTable_columns_selected[2])])
-    
-    
+    #convert to date and then select columns (date first) at one sitting with the datatable.
     
     RV3$data<-Endomerge2(RV$data,colnames(RV$data[as.numeric(input$endotable_columns_selected[1])]),
                          colnames(RV$data[as.numeric(input$endotable_columns_selected[2])]),
@@ -482,15 +419,12 @@ server <- function(input, output,session) {
     
     RV3$data<-RV3$data[,1:ncol(RV3$data)-1]
     
-                         
-    
     #Create a copy that can be independently edited for the Barrett's table
-    #browser()
-    
-    #Search for columnar lined or Barrett's terms as per the UMLS
-    #RV4$data<-RV3$data %>% filter_all(any_vars(. %in% c('barrett')))
-    # mtcars %>% filter_all(all_vars(grepl("3", .)))
     RV4$data <- RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+    
+    #Create a copy that can be independently edited for the polyp table
+    mypolypdata1<- RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "polyp")),]
+    polypData$data <- mypolypdata1[Reduce(`|`, lapply(mypolypdata1, grepl, pattern = "colonoscopy")),]
     
     
     #Create a copy that can be filtered for the Trim table
@@ -499,7 +433,101 @@ server <- function(input, output,session) {
   },ignoreInit = TRUE)
   
   
+  #Standardise the date
+  observeEvent(input$DateStandardiserMerge,{
+    RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-parse_date_time(str_extract(RV3$data[,as.numeric(input$mergedTable_columns_selected)],
+                                                                                           "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
+                                                                               orders = c("dmy", "ymd"))
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE)
   
+  #Standardise the Hospital Number Merge
+  observeEvent(input$HospitalNumberExtractorMerge,{
+    RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-str_extract(RV3$data[,as.numeric(input$mergedTable_columns_selected)],
+                                                                         "([a-z0-9]\\d{4,}[a-z0-9])")
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE) 
+  
+  
+  #Standardise the Categorical data
+  observeEvent(input$CategoricalDataMerge,{
+    RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-as.factor(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE)
+  
+  #Standardise the Numbers as numeric in Endoscopy
+  observeEvent(input$NumericDataMerge,{
+    RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-as.numeric(str_extract(RV3$data[,as.numeric(input$mergedTable_columns_selected)],
+                                                                                      "[0-9]+"))
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE)
+  
+  #Negex Remove
+  observeEvent(input$NegExMerge,{
+    RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-NegativeRemove(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
+    
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  #Extract the endoscopist
+  observeEvent(input$EndoscEndoscopistMerge,{
+    #browser()
+    RV$data[,as.numeric(input$endotable_columns_selected)]
+    RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-EndoscEndoscopist(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE)
+  
+  
+  #Extract the mediaction  
+  observeEvent(input$EndoscMedsMerge,{
+    RV3$data<-cbind(EndoscMeds(RV3$data[,as.numeric(input$mergedTable_columns_selected)]),RV3$data)
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE)
+  
+  #Extract the instrument
+  observeEvent(input$EndoscInstrumentMerge,{
+    RV3$data$mergedTable_columns_selected<-EndoscInstrument(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE)
+  
+  
+  
+  #Extract the endoscopic events
+  observeEvent(input$EndoEvent,{
+
+    cols <- as.numeric(input$mergedTable_columns_selected)
+    selectedCol<-colnames(RV3$data)[cols]
+    RV3$data$EndoscopyEvent<-EndoscopyEvent(RV3$data, selectedCol[1], selectedCol[2],selectedCol[3], selectedCol[4])
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+      },ignoreInit = TRUE)
+  
+
+
+
+
+  
+  #Extract the number of biopsies  
+  observeEvent(input$NumBxMerge,{
+    #browser()
+    RV3$data$NumBx<-HistolNumbOfBx(RV3$data[,as.numeric(input$mergedTable_columns_selected)],'specimen')
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE)
+  
+  #Extract the biopsy size
+  observeEvent(input$BxSizeMerge,{
+    RV3$data$BxSize<-HistolBxSize(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+  },ignoreInit = TRUE) 
   
   
   
@@ -547,11 +575,7 @@ server <- function(input, output,session) {
     )
   })
   
-  output$endoscopistPick<-renderUI({
-    selectInput("endoscopistPickChooser", label = h4("Choose the endoscopist:"),
-                choices = unique(RV4$data[,input$endoscopistColChooser]),selected = 1
-    )
-  })
+
   
   output$worstGradeCol<-renderUI({
     selectInput("WorstGradeChooser", label = h4("Choose the column showing the worst grade"),
@@ -565,33 +589,40 @@ server <- function(input, output,session) {
     )
   })
   
-  output$endoscopistPick_documentqual<-renderUI({
-    selectInput("endoscopistPickChooser_documentqual", label = h4("Choose the endoscopist:"),
-                choices = unique(RV4$data[,input$endoscopistColChooser_documentqual]),selected = 1
-    )
-  })
-  
+
   output$endoDoc_documentqual<-renderUI({
     selectInput("endoDoc_documentqualChoose", label = h4("Choose the endoscopic documentation column"),
                 choices = colnames(RV4$data) ,selected = 1
     )
   })
   
-  
-  
-  output$plotBarrQM <- renderPlot({
-    browser()
-    G = ggplot(RV4$data,  aes_string(x = input$WorstGradeChooser,fill=input$endoscopistPickChoose)) + 
-      geom_histogram(stat = "count")
-    G
+  output$endoscopicEvent<-renderUI({
+    selectInput("endoscopicEventColChooser", label = h4("Choose the column containing the events of interest"),
+                choices = colnames(RV4$data) ,selected = 1
+    )
   })
+  output$Dates<-renderUI({
+    selectInput("DateColChooser", label = h4("Choose the column containing the (formatted) dates of the endoscopies"),
+                choices = colnames(RV4$data) ,selected = 1
+    )
+  })
+  
+  
+  
+  
+  
+  output$plotBarrQM <- renderPlotly({
+   ggplot(RV4$data,  aes_string(x = input$WorstGradeChooser,fill=input$endoscopistColChooser)) + 
+      geom_histogram(stat = "count")
+  })
+  
   
   
   myNotableWords <- c("[Ii]sland", "[Hh]iat|astric fold|[Pp]inch","esion|odule|lcer")
   
   
   
-  output$plotBarrEQ <- renderPlot({
+  output$plotBarrEQ <- renderPlotly({
     #browser()
     
     #Perform the lookup from EndoMiner for "[Ii]sland", Prague Score, "[Hh]iat|astric fold|[Pp]inch", "esion|odule|lcer"
@@ -601,15 +632,75 @@ server <- function(input, output,session) {
 
   })
   
-
+  
+  output$plotBarrTSA <- renderPlotly({
+    ####Need to deal with this one:
+    
+    #browser()
+    Endo_ResultPerformeda <- sym(input$DateColChooser)
+    TestNumbers <-
+      RV4$data %>% group_by(!! rlang::sym(input$endoscopicEventColChooser)) %>% 
+      arrange(as.Date(!!Endo_ResultPerformeda)) %>% group_by(
+        week = week(as.Date(!!Endo_ResultPerformeda)),
+        month = month(as.Date(!!Endo_ResultPerformeda)),
+        year = year(as.Date(!!Endo_ResultPerformeda))
+      ) %>%
+      summarise(Number = n())
+    names(TestNumbers) <- c("week", "month", "year", "freq")
+    TestNumbers$DayMonth <-
+      paste("01_", TestNumbers$month, "_", TestNumbers$year, sep = "")
+    TestNumbers$DayMonth <- dmy(TestNumbers$DayMonth)
+    
+    
+    ggplot(data = TestNumbers, aes(x = week, y = freq)) +
+      geom_point() +
+      geom_line() +
+      geom_smooth(method = "loess") 
+    
+    
+  })
+  
+  #output$mytabletryout = DT::renderDT({RV4$data})
+  
+  
+  
+  #Trimmed from the mergedTable data sets:
+  output$BarrtrimTable = DT::renderDT({
+    #browser()
+    BarrTrim$data<-RV4$data[input$BarrettsTable_rows_all, input$BarrettsTable_columns_selected]
+    #BarrTrim$data<-unique(BarrTrim$data)
+  },selection = list(target = 'column'),extensions = 'Buttons', 
+  options = list(
+    fixedHeader=TRUE,
+    scrollX = TRUE,
+    scrollY = TRUE,
+    pageLength = nrow(RV4$data),
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
   
   ########### Polyp events ############     
   observeEvent(input$GRS,{
     cols <- as.numeric(input$polypTable_columns_selected)
-    selectedCol<-colnames(RV5$data)[cols]
-    RV5$data<-GRS_Type_Assess_By_Unit(RV5$data, selectedCol[1],selectedCol[2], selectedCol[3], selectedCol[4])
+    selectedCol<-colnames(polypData$data)[cols]
+    GRS_Type_Assess_By_Unit(polypData$data[input$polypTable_rows_all,], selectedCol[1],selectedCol[2], selectedCol[3], selectedCol[4])
   },ignoreInit = TRUE)
   
+ 
+  #From EndoMineR 
+  #GRS_Type_Assess_By_Unit(dataframe, ProcPerformed, Endo_Endoscopist, Dx,Histol) 
+  
+  output$GRS_Table = DT::renderDT({
+    cols <- as.numeric(input$polypTable_columns_selected)
+    selectedCol<-colnames(polypData$data)[cols]
+    browser()
+    GRS_Type_Assess_By_Unit(polypData$data[input$polypTable_rows_all,], selectedCol[1],selectedCol[2], selectedCol[3], selectedCol[4])
+  
+    },filter = 'top',selection = list(target = 'column'),extensions = 'Buttons', options = list(
+    scrollX = TRUE,
+    scrollY = TRUE,
+    pageLength = 5,
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis'))) 
   
   
   ########### Graphic events ############   
