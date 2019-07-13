@@ -23,7 +23,7 @@ em5<-SurveilCapacity(Myendo,"Dateofprocedure")
 
 
 ## ----exampleSurveillanceCapacity2,echo=FALSE-----------------------------
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(head(em5))
 
 ## ----exampleHowManyTests-------------------------------------------------
@@ -43,7 +43,7 @@ knitr::include_graphics("img/EndoMineR_Sankey.svg")
 knitr::include_graphics("img/EndoMineR_Circos.svg")
 
 ## ----exampleListLookup, eval = TRUE,echo=FALSE---------------------------
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(head(data.frame(Myendo[2:3],Myendo[13])))
 
 ## ----exampleListLookup2, eval = TRUE-------------------------------------
@@ -51,7 +51,7 @@ myNotableWords <- c("arrett", "oeliac")
 tt<-ListLookup(Myendo,'Findings',myNotableWords)
 
 ## ----exampleListLookup3, echo=FALSE--------------------------------------
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(head(tt))
 
 ## ----exampleEndoscChopperMeds--------------------------------------------
@@ -105,6 +105,6 @@ GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed','Endoscopist','Dia
 
 
 ## ----exampleGRS_Type_Assess_By_Unit1, echo = FALSE,message=FALSE---------
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(GRSTable)
 
