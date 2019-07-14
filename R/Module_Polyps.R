@@ -56,5 +56,9 @@ GRS_Type_Assess_By_Unit <-
 
     # Need to add the total colonoscopy count in here
     FinalTable <- data.frame(FinalTable)
+    
+    #Round decimal places
+    is.num <- sapply(FinalTable, is.numeric)
+    FinalTable[is.num] <- lapply(FinalTable[is.num], round, 2)
     return(FinalTable)
   }
