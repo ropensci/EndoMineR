@@ -623,10 +623,25 @@ server <- function(input, output,session) {
   
   
   output$plotBarrEQ <- renderPlotly({
-    #browser()
+    
+
+    
     
     #Perform the lookup from EndoMiner for "[Ii]sland", Prague Score, "[Hh]iat|astric fold|[Pp]inch", "esion|odule|lcer"
-    jj <- ListLookup(RV4$data, input$endoDoc_documentqualChoose,myNotableWords)
+    Hiatus<-RV4$data %>% group_by(endoscopist) %>% summarise(Hiatus = (sum(grepl("[Hh]iatus|[Ii]sland", findings.y)) / dplyr::n()) * 100)
+    Island<-RV4$data %>% group_by(endoscopist) %>% summarise(Island = (sum(grepl("[Ii]sland", findings.y)) / dplyr::n()) * 100)
+    Pinch<-RV4$data %>% group_by(endoscopist) %>% summarise(Pinch = (sum(grepl("[Pp]inch", findings.y)) / dplyr::n()) * 100)
+    Lesion<-RV4$data %>% group_by(endoscopist) %>% summarise(Lesion = (sum(grepl("esion|odule|lcer", findings.y)) / dplyr::n()) * 100)
+    FinalTable <-
+      full_join(Hiatus, Island, by = Endo_Endoscopist)
+    FinalTable <-
+      full_join(FinalTable, Pinch, by = Endo_Endoscopist)
+    FinalTable <-
+      full_join(FinalTable, Lesion, by = Endo_Endoscopist)
+
+    
+    # Need to add the total colonoscopy count in here
+    FinalTable <- data.frame(FinalTable)
     ggplot(jj,  aes(x = X2,y=Prop)) + 
       geom_bar(stat="identity")
 
@@ -679,12 +694,7 @@ server <- function(input, output,session) {
     buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
   
   ########### Polyp events ############     
-  observeEvent(input$GRS,{
-    cols <- as.numeric(input$polypTable_columns_selected)
-    selectedCol<-colnames(polypData$data)[cols]
-    GRS_Type_Assess_By_Unit(polypData$data[input$polypTable_rows_all,], selectedCol[1],selectedCol[2], selectedCol[3], selectedCol[4])
-  },ignoreInit = TRUE)
-  
+
  
   #From EndoMineR 
   #GRS_Type_Assess_By_Unit(dataframe, ProcPerformed, Endo_Endoscopist, Dx,Histol) 
@@ -692,13 +702,13 @@ server <- function(input, output,session) {
   output$GRS_Table = DT::renderDT({
     cols <- as.numeric(input$polypTable_columns_selected)
     selectedCol<-colnames(polypData$data)[cols]
-    browser()
+    #browser()
     GRS_Type_Assess_By_Unit(polypData$data[input$polypTable_rows_all,], selectedCol[1],selectedCol[2], selectedCol[3], selectedCol[4])
   
     },filter = 'top',selection = list(target = 'column'),extensions = 'Buttons', options = list(
     scrollX = TRUE,
     scrollY = TRUE,
-    pageLength = 5,
+    pageLength = 50,
     dom = 'Bfrtip',
     buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis'))) 
   
