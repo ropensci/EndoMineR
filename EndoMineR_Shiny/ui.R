@@ -260,25 +260,15 @@ dashboardPage(
                           #Select the column that has the endoscopists listed:
                           uiOutput("endoscopistCol"),
                           # Select the column with the worst grade:
-                          uiOutput("worstGradeCol")
-                          ),mainPanel(plotlyOutput("plotBarrQM"))),
-                        
-                        
-                        
-                        
-                        
-                        
-                        tabPanel("Endoscopic Quality", sidebarPanel(
-                          #Select the column that has the endoscopists listed:
-                          uiOutput("endoscopistCol_documentqual"),
-                          # Select the column with the worst grade:
+                          uiOutput("worstGradeCol"),
+                          # Select the column with the endoscopy documentation quality:
                           uiOutput("endoDoc_documentqual")
-                        ),mainPanel(plotlyOutput("plotBarrEQ"))),
+                          ),mainPanel(plotlyOutput("plotBarrQM"),plotlyOutput("plotBarrEQ"))),
                         
-                        
-                        
-                        
-                        
+                        # tabPanel("Endoscopic Quality", sidebarPanel(
+                        #   #Select the column that has the endoscopists listed:
+                        #   uiOutput("endoscopistCol_documentqual")
+                        # ),mainPanel(plotlyOutput("plotBarrEQ"))),
                         
                         
                         tabPanel("Endo-pathological Quality", sidebarPanel(
@@ -328,9 +318,6 @@ dashboardPage(
 # Polyps  ----------------------------------------------------
     tabPanel("Polyps", tableOutput("table3"),
         bsCollapsePanel("Polyp Data", "", style = "info",
-             box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive Polyp data",br(), br(),
-             actionButton("GRS",label = "GRS")
-             ),
              DT::dataTableOutput("polypTable")
         ),
         mainPanel(
