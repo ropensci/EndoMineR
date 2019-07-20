@@ -32,17 +32,28 @@ fluidPage(theme=shinytheme("cosmo"),
                   Shiny.onInputChange('lastClickId',this.id);
                   Shiny.onInputChange('lastClick', Math.random())
                   });"),
-      tags$style("html, body {overflow: visible !important;"),
+      tags$style("html, body {overflow: visible !important;.rpivotTable{ overflow-x: scroll; }"),
 
 dashboardPage(
   
-  dashboardHeader(title = 'EndoMineR'),
+  dashboardHeader(title = 'EndoMineR',
+                  tags$li( class="dropdown",a(href = 'https://ropensci.github.io/EndoMineR/articles/EndoMineRPrinciples.html',
+                            icon("fa-li fa-bullseye"))),
+                  tags$li(class="dropdown",a(href = 'https://twitter.com/GastroDS',
+                            icon("fa-li fa fa-twitter"))),
+                  tags$li(class="dropdown",a(href = 'https://github.com/ropensci/EndoMineR',
+                            icon("fa-li fa fa-github fa-lg"))),
+                  tags$li(class="dropdown",a(href = 'https://sebastiz.github.io/gastrodatascience/',
+                            icon("fa-li fa fa-book"))),
+                  tags$li(class="dropdown",a(href = ' https://sebastiz.github.io/gastroDS3',
+                                             icon("fa-li fa fa-book")))
+                  
+                 
+                                          
+  ),
  
-   dashboardSidebar(
-     sidebarPanel(
-       tb1moduleUI("tb1")
-     ), 
-     tags$style(".left-side, .main-sidebar {padding-top: 60px}")
+   dashboardSidebar(collapsed = TRUE
+     
   ),
 
  
@@ -124,11 +135,31 @@ dashboardPage(
                                      actionButton("NegExMerge",label = "Negex" ),
                                       bsPopover ("NegExMerge", "Select only one text column to exclude all sentences with negative expressions", placement = "bottom", trigger = "hover",
                                                options = NULL)),
+                                 box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=FALSE,title = "Merging Functions",br(), br(),
+                                     actionButton("Endomerge2",label = "Endomerge2"),
+                                     bsPopover ("Endomerge2", "Make sure you have standarised both the date and hospital column in both the endoscopy and the pathology datasets, then press this button to get the datasets merged.", placement = "bottom", trigger = "hover",options = NULL),
+                                     actionButton("MergeWithImages",label = "MergeWithImages"),
+                                     bsPopover ("MergeWithImages", "Press here to merge with images. The images must be from a html export with hospital numbers and dates so they can be merged.", placement = "bottom", trigger = "hover",options = NULL),
+                                     actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
+                                     bsPopover ("Del_row_head", "Select individual rows with the checkbox and then press here to delete from the dataset", placement = "bottom", trigger = "hover",options = NULL)
+                                 ),
 
                                  box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive new columns",br(), br(),
                                      actionButton("NumBxMerge",label = "",icon = icon("fas fa-microscope")),
                                       bsPopover ("NumBxMerge", "Select column (usually a macroscopic desc ription column from pathology) to extract the total number of biopsies", placement = "bottom", trigger = "hover",
                                                options = NULL),
+                                     # bsModal("NumBxModal", "Delimiter", "NumBxMerge", size = "small",
+                                     #         textInput("new_name", "which word is your delimiter- ie which word is used to call the number of specimens. Some use 
+                                     #                   'There are 4 pieces of tissue' or '8 specimens' in which case it would be specimen or piece (always use the singular)", "")
+                                     # ),
+                                     bsModal("NumBxModal", "Change name", "NumBxMerge", size = "small",
+                                             textInput("new_name", "Enter the delimiter here:", "") ,
+                                             footer = tagList(
+                                               modalButton("Cancel"),
+                                               actionButton("NumBxModal_ok", "OK")
+                                             )
+                                     ),
+                                  
                                      actionButton("BxSizeMerge",label = "",icon = icon("fas fa-sort-numeric-up")),
                                       bsPopover ("BxSizeMerge", "Select column (usually a macroscopic description column from pathology) to extract the average biopsy size ", placement = "bottom", trigger = "hover",
                                                options = NULL),
@@ -143,17 +174,20 @@ dashboardPage(
                                       bsPopover ("EndoscInstrumentMerge", "Select the Instrument column to clean instrument names", placement = "bottom", trigger = "hover",
                                                    options = NULL),
                                      actionButton("EndoEvent",label = "EndoEvent",icon = icon("fas fa-sort-numeric-up")),
-                                     bsPopover ("EndoEvent", "Select two histology columns and two descriptive endoscopy columns", placement = "bottom", trigger = "hover",
-                                                options = NULL)
+                                     bsPopover ("EndoEvent", "Select: Endoscopic Findings,ProcedurePerformed,Macroscopicdescription and Histology text", placement = "bottom", trigger = "hover",
+                                                options = NULL),
+                                     actionButton("Regex",label = "",icon = icon("fas fa-sort-numeric-up")),
+                                     bsPopover ("Regex", "Put in a regular expression or a keyowrd to derive a new column with those elements extracted so you can filter on them", placement = "bottom", trigger = "hover",
+                                                options = NULL),
+                                     bsModal("RegexColAdder", "Change name", "Regex", size = "small",
+                                             textInput("regexSearch", "Enter the search term here", "") ,
+                                             footer = tagList(
+                                               modalButton("Cancel"),
+                                               actionButton("regexSearch_ok", "OK")
+                                             )
+                                     )
                                  ),
-                               box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=FALSE,title = "Merging Functions",br(), br(),
-                                   actionButton("Endomerge2",label = "Endomerge2"),
-                                    bsPopover ("Endomerge2", "Make sure you have standarised both the date and hospital column in both the endoscopy and the pathology datasets, then press this button to get the datasets merged.", placement = "bottom", trigger = "hover",options = NULL),
-                                   actionButton("MergeWithImages",label = "MergeWithImages"),
-                                    bsPopover ("MergeWithImages", "Press here to merge with images. The images must be from a html export with hospital numbers and dates so they can be merged.", placement = "bottom", trigger = "hover",options = NULL),
-                                   actionButton(inputId = "Del_row_head",label = "Delete selected rows"),
-                                    bsPopover ("Del_row_head", "Select individual rows with the checkbox and then press here to delete from the dataset", placement = "bottom", trigger = "hover",options = NULL)
-                               ),
+
 
                                bsModal("modalExampleImages", "Data Table1", "MergeWithImages", size = "large",
                                        shinyFilesButton("Btn_GetFile", "Choose a file" ,
@@ -167,76 +201,66 @@ dashboardPage(
                                        actionButton("MergeImages",label = "Merge the images with your dataset")),
 
                                DT::dataTableOutput("mergedTable"))
-               ),
-               bsCollapsePanel("Data from the trimmed Merged Table above", "", style = "info",
-                               fluidRow(
-                                 DT::dataTableOutput("trimTable")
-                               )
                )
+
                )
                 ),
 
-# Visualise and Explore ----------------------------------------------------
-
-    
-    tabPanel("Visualise and Explore Trimmed data", tableOutput("table7"),
-             bsCollapsePanel("Visualise", "", style = "info",
-             radioButtons(
-               inputId = "data",
-               label = "Data to use:",
-               choices = c("Endoscopy","Pathology","Merged data","Trimmed","Barretts"),
-               inline = TRUE
-             ),
-             tags$div(
-               style = "height: 700px;", # needs to be in fixed height container
-               esquisserUI(
-                 id = "esquisse",
-                 header = FALSE, # dont display gadget title
-                 choose_data = FALSE # dont display button to change data
-               )
-             )
-             ),
-             bsCollapsePanel("Explore", "", style = "info",
-                             navbarPage("App Title",
-                                        tabPanel("Basic Stats",
-                                                 selectInput(inputId = "datasetBasicStats",
-                                                             label = "Choose a dataset:",
-                                                             choices = c("Endoscopy", "Pathology","Merged","Trimmed","Barretts")),
-                                                 
-                                                 numericInput(inputId = "obs",
-                                                              label = "Number of observations to view:",
-                                                              value = 10),
-                                                 
-                                                 
-                                                 fluidRow(
-                                                   column(12,
-                                                   
-                                                   uiOutput("ibox")
-                                                 )),
-                                                 
-                                                 tableOutput("viewBasicStats")
-                                                 
-                                        ),
-                                        tabPanel("Cross Tabulate", style="overflow: visible",
-                                                 fluidRow(rpivotTableOutput("OverallPivot"))),
-                                        tabPanel("Flow"),
-                                        navbarMenu("More",
-                                                   tabPanel("Summary"),
-                                                   "----",
-                                                   "Section header",
-                                                   tabPanel("Table")
-                                        )
-                             )
-                             )
-    ),
 
 
+
+
+# Custom ----------------------------------------------------  
+
+
+tabPanel("Custom", tableOutput("table53"),
+         
+         bsCollapsePanel("Select columns from the Final Dataset and click to display here", "", style = "info",
+                         fluidRow(
+                           DT::dataTableOutput("CustomTable")
+                         )
+         ),
+         mainPanel(width = 100,
+                   navbarPage("Your analytics",
+                              tabPanel("Visualise",
+                                       tags$div(
+                                         style = "height: 700px;", # needs to be in fixed height container
+                                         esquisserUI(
+                                           id = "esquisseCustom",
+                                           header = FALSE, # dont display gadget title
+                                           choose_data = FALSE # dont display button to change data
+                                         )
+                                       )),
+
+                              tabPanel("Cross Tabulate", style="overflow: visible",
+                                       fluidRow(rpivotTableOutput("OverallPivot"))),
+                              tabPanel("Endoscopy Utilisation", style="overflow: visible",
+                                       sidebarPanel(
+                                       uiOutput("Date_endoscopyutilisationCustom"),
+                                       uiOutput("endoscopicEventCustom"),width = 2),
+                                       mainPanel(verticalLayout(plotlyOutput("endoscopyUse_EndoscopyUseCustom"),
+                                                                plotlyOutput("plotCustomTSA"))
+                                       )),
+                              tabPanel("Theograph", sidebarPanel(width = 2,
+                                                                 # Select variable for the hospital number
+                                                                 uiOutput("HospNumCustomTheo"),
+                                                                 # Select variable for the dates
+                                                                 uiOutput("DatesCustomTheo")
+                              ),mainPanel(plotlyOutput("plotCustomPT")))
+ )
+         )
+         
+),
+         
+         
+         
+         
 # Barrett's ----------------------------------------------------  
 
 
     tabPanel("Barrett's", tableOutput("table5"),
           bsCollapsePanel("Barrett's Data", "", style = "info",
-             box(status = "warning", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive Barrett's data",br(), br(),
+             box(status = "primary", solidHeader = TRUE,collapsible = T,collapsed=TRUE,title = "Derive Barrett's data",br(), br(),
              actionButton("PragueScore",label = "PragueScore"),
               bsPopover ("PragueScore", "Select two columns with endoscopic findings to generate C and M stage where possible", placement = "bottom", trigger = "hover",options = NULL),
              
@@ -247,70 +271,49 @@ dashboardPage(
               bsPopover ("FollowUpType", "Only press once the Prague score and Path stage buttons have extracted the relevant columns", placement = "bottom", trigger = "hover",options = NULL),
              
              actionButton("AllTheFunctions",label = "AllTheFunctions"),
-             actionButton("SurveillanceTime",label = "far fa-clock"),
+             actionButton("SurveillanceTime",label="Surveillance Time", icon = icon("far fa-clock")),
               bsPopover ("SurveillanceTime", "Select the hospital number and the date of the procedure columns in order to get the time since the last test", placement = "bottom", trigger = "hover",options = NULL)
              ),
              DT::dataTableOutput("BarrettsTable")
           ),
           
           
-          mainPanel(
-            tabsetPanel(type = "tabs",
-                        tabPanel("Quality Metrics", sidebarPanel(
+          mainPanel(width = 100,
+                    navbarPage("Barretts analytics",
+                        tabPanel("Quality Metrics", sidebarPanel(width = 2,
                           #Select the column that has the endoscopists listed:
                           uiOutput("endoscopistCol"),
                           # Select the column with the worst grade:
                           uiOutput("worstGradeCol"),
                           # Select the column with the endoscopy documentation quality:
                           uiOutput("endoDoc_documentqual")
-                          ),mainPanel(plotlyOutput("plotBarrQM"),plotlyOutput("plotBarrEQ"))),
-                        
-                        # tabPanel("Endoscopic Quality", sidebarPanel(
-                        #   #Select the column that has the endoscopists listed:
-                        #   uiOutput("endoscopistCol_documentqual")
-                        # ),mainPanel(plotlyOutput("plotBarrEQ"))),
-                        
-                        
-                        tabPanel("Endo-pathological Quality", sidebarPanel(
-                          # Select variable for y-axis
-                          selectInput(inputId = "y", label = "Y-axis:",
-                                      choices = colnames(df)
-                          )
-                        ),mainPanel(plotOutput("plotBarrEPQ"))),
-                        
-                        
-                        
-                        
-                        
-                        tabPanel("Flow", 
-                          # Select variable for y-axis
-                          
-                          DT::dataTableOutput("BarrtrimTable")
-                          
-                          ),
-                        
-                        
-                        
-                        
-                        
-                        
-                        tabPanel("Theograph", sidebarPanel(
-                          # Select variable for y-axis
-                          selectInput(inputId = "y", label = "Y-axis:",
-                                      choices = colnames(df)
-                          )
-                        ),mainPanel(plotlyOutput("plotBarrPT"))),
-                        
-                        
-                        
-                        
-                        
-                        tabPanel("Time Series Analysis", sidebarPanel(
-                          # Select variable for y-axis
-                          uiOutput("endoscopicEvent"),
-                          uiOutput("Dates")
-                        ),mainPanel(plotlyOutput("plotBarrTSA"))))
+                          ),mainPanel(splitLayout(plotlyOutput("plotBarrQM"),plotlyOutput("plotBarrEQ")))),
+                        tabPanel("Visualise",
+                                 tags$div(
+                                   style = "height: 700px;", # needs to be in fixed height container
+                                   esquisserUI(
+                                     id = "esquisseBarr",
+                                     header = FALSE, # dont display gadget title
+                                     choose_data = FALSE # dont display button to change data
+                                   )
+                                 )),
+                        tabPanel("Cross Tabulate", style="overflow: visible",
+                                 fluidRow(rpivotTableOutput("BarrPivot"))),
+                        tabPanel("Endoscopy Utilisation", style="overflow: visible",
+                                 sidebarPanel(
+                                   uiOutput("Date_endoscopyutilisationBarr"),
+                                   uiOutput("endoscopicEventBarr"),width = 2),
+                                 mainPanel(verticalLayout(plotlyOutput("endoscopyUse_EndoscopyUseBarr"),
+                                          plotlyOutput("plotBarrTSA")))),
 
+                        tabPanel("Theograph", sidebarPanel(width = 2,
+                          # Select variable for the hospital number
+                          uiOutput("HospNumBarrTheo"),
+                          # Select variable for the dates
+                          uiOutput("DatesBarrTheo")
+                        ),mainPanel(plotlyOutput("plotBarrPT")))
+                    )
+                        
             )
             
           ),
@@ -320,17 +323,31 @@ dashboardPage(
         bsCollapsePanel("Polyp Data", "", style = "info",
              DT::dataTableOutput("polypTable")
         ),
-        mainPanel(
+        mainPanel(width = 100,
           
-          tabsetPanel(type = "tabs",
-                      tabPanel("Quality Metrics",  DT::dataTableOutput("GRS_Table")),
-                      tabPanel("Endoscopic Quality", plotOutput("plotPolypEQ")),
-                      tabPanel("Endo-pathological Quality", plotOutput("plotPolypEPQ")),
-                      tabPanel("Flow", plotOutput("plotPolypPF")),
-                      tabPanel("Theograph", plotOutput("plotPolypTheo")),
-                      tabPanel("Time Series Analysis", plotOutput("plotPolypTSA"))
+          navbarPage("Polyp analytics",
+                      tabPanel("Quality metrics(ADR)",  DT::dataTableOutput("GRS_Table")),
+                     tabPanel("Visualise",
+                              tags$div(
+                                style = "height: 700px;", # needs to be in fixed height container
+                                esquisserUI(
+                                  id = "esquissePolyp",
+                                  header = FALSE, # dont display gadget title
+                                  choose_data = FALSE # dont display button to change data
+                                )
+                              )),
+
+                     tabPanel("Cross Tabulate", style="overflow: visible",
+                              fluidRow(rpivotTableOutput("OverallPivotPolyp"))),
+                     tabPanel("Endoscopy Utilisation", style="overflow: visible",
+                              sidebarPanel(
+                                uiOutput("Date_endoscopyutilisationPolyp"),
+                                uiOutput("endoscopicEventPolyp"),width = 2),
+                              mainPanel(
+                              fluidRow(plotlyOutput("endoscopyUse_EndoscopyUsePolyp"),
+                                       plotlyOutput("plotPolypTSA")))),
+                      tabPanel("Theograph", plotOutput("plotPolypPF"))
           )
-          
         )
     ),
 
@@ -343,14 +360,32 @@ dashboardPage(
               ),
              DT::dataTableOutput("IBD")
         ),
-        mainPanel(
+        mainPanel(width = 100,
           
 
-          tabsetPanel(type = "tabs",
+          navbarPage("IBD analytics",
                       tabPanel("Quality Metrics", plotOutput("plotIBDQM")),
-                      tabPanel("Endoscopic Quality", plotOutput("plotIBDEQ")),
-                      tabPanel("Endo-pathological Quality", plotOutput("plotIBDEPQ")),
-                      tabPanel("Flow", plotOutput("plotIBDPF")),
+                     tabPanel("Visualise",
+                              radioButtons(
+                                inputId = "dataIBD",
+                                label = "Data to use:",
+                                choices = c("Custom"),
+                                inline = TRUE
+                              ),
+                              tags$div(
+                                style = "height: 700px;", # needs to be in fixed height container
+                                esquisserUI(
+                                  id = "esquisseIBD",
+                                  header = FALSE, # dont display gadget title
+                                  choose_data = FALSE # dont display button to change data
+                                )
+                              )),
+
+                     tabPanel("Cross Tabulate", style="overflow: visible",
+                              fluidRow(rpivotTableOutput("OverallPivotIBD"))),
+                     tabPanel("Endoscopy Utilisation", style="overflow: visible",
+                              uiOutput("Date_endoscopyutilisationIBD"),
+                              fluidRow(plotlyOutput("endoscopyUse_TimeSeriesIBD"))),
                       tabPanel("Theograph", plotOutput("plotIBDTheo")),
                       tabPanel("Time Series Analysis", plotOutput("plotIBDTSA"))
           )
