@@ -19,7 +19,7 @@
 #' @examples
 #' nn <- GRS_Type_Assess_By_Unit(
 #'   vColon, "ProcedurePerformed",
-#'   "Endoscopist", "Diagnosis", "Histology"
+#'   "Endoscopist", "Diagnosis", "Original.y"
 #' )
 GRS_Type_Assess_By_Unit <-
   function(dataframe,
@@ -42,7 +42,8 @@ GRS_Type_Assess_By_Unit <-
     LGD <- dataframe %>% group_by(!!Endo_Endoscopista) %>% summarise(LGD = (sum(grepl(".*[Ll]ow [Gg]rade.*", !!Histola)) / dplyr::n()) * 100)
     Serrated <- dataframe %>% group_by(!!Endo_Endoscopista) %>% summarise(Serrated = (sum(grepl(".*[Ss]errated.*", !!Histola)) / dplyr::n()) * 100)
     Hyperplastic <- dataframe %>% group_by(!!Endo_Endoscopista) %>% summarise(Hyperplastic = (sum(grepl(".*yperplastic.*", !!Histola)) / dplyr::n()) * 100)
-
+    NumberPerformed <- dataframe %>% group_by(!!Endo_Endoscopista) %>% summarise(n=dplyr::n())
+    
     FinalTable <-
       full_join(Adenoma, Adenocarcinoma, by = Endo_Endoscopist)
     FinalTable <-
@@ -53,6 +54,8 @@ GRS_Type_Assess_By_Unit <-
       full_join(FinalTable, Serrated, by = Endo_Endoscopist)
     FinalTable <-
       full_join(FinalTable, Hyperplastic, by = Endo_Endoscopist)
+    FinalTable <-
+      full_join(FinalTable, NumberPerformed, by = Endo_Endoscopist)
 
     # Need to add the total colonoscopy count in here
     FinalTable <- data.frame(FinalTable)
