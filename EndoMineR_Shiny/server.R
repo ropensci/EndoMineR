@@ -16,6 +16,7 @@ library(shiny);library(DT);library(data.table);library(jstable)
 library(plotly)
 library(ggTimeSeries)
 library(shinyWidgets)
+library(profvis)
 
 
 # Define server logic required to draw a histogram
@@ -52,8 +53,10 @@ server <- function(input, output,session) {
   "BarrettsTable_rows_current", "BarrettsTable_cell_clicked","BarrettsTable_search", "BarrettsTable_rows_selected", "BarrettsTable_rows_all", "BarrettsTable_state","BarrettsTable_columns_selected","BarrettsTable_search_columns",
   "BarrDDR_Table_rows_current", "BarrDDR_cell_clicked","BBarrDDR_Table_search", "BarrDDR_Table_rows_selected", "BarrDDR_Table_rows_all", "BarrDDR_Table_state","BarrDDR_Table_columns_selected","BarrDDR_search_columns",
   "CustomTable_rows_current", "CustomTable_cell_clicked","CustomTable_search", "CustomTablee_rows_selected", "CustomTable_rows_all", "CustomTable_state","CustomTable_columns_selected","CustomTable_search_columns",
-  ".*esquisse.*",
-  "polypTable_rows_current", "polypTable_cell_clicked","polypTable_search", "polypTable_rows_selected", "polypTable_rows_all", "polypTableTable_state","polypTableTable_columns_selected","polypTableTable_search_columns",
+  "polypTable_rows_current", "polypTable_cell_clicked","polypTable_search", "polypTable_rows_selected", "polypTable_rows_all", "polypTable_state","polypTable_columns_selected","polypTable_search_columns",
+  "polypTrim_rows_current", "polypTrim_cell_clicked","polypTrim_search", "polypTrim_rows_selected", "polypTrim_rows_all", "polypTrim_state","polypTrim_columns_selected","polypTrim_search_columns",
+  "GRS_Table_rows_current", "GRS_Table_cell_clicked","GRS_Table_search", "GRS_Table_rows_selected", "GRS_Table_rows_all", "GRS_Table_state","GRS_Table_columns_selected","GRS_Table_search_columns",
+  "drilldown_rows_current", "drilldown_cell_clicked","drilldown_search", "drilldown_rows_selected", "drilldown_rows_all", "drilldown_state","drilldown_columns_selected","drilldown_search_columns",
   "drilldownBarr_rows_current", "drilldownBarr_cell_clicked","drilldownBarr_search", "drilldownBarr_rows_selected", "drilldownBarr_rows_all", "drilldownBarr_state","drilldownBarr_columns_selected","drilldownBarr_search_columns",
   "mergedTable_rows_current", "mergedTable_cell_clicked","mergedTable_search", "mergedTable_rows_selected", "mergedTable_rows_all", "mergedTable_state","mergedTable_columns_selected","mergedTable_search_columns",
   "esquisseBarr-controls-adjust","esquisseBarr-controls-bins","esquisseBarr-controls-caption","esquisseBarr-controls-code-holderCode","esquisseBarr-controls-code-insert_code",
@@ -140,7 +143,7 @@ server <- function(input, output,session) {
   #########:::::Table Create- pathTable#############
   output$pathTable = DT::renderDT({
     RV2$data
-  },selection = list(target = 'column'),options = list(scrollX = TRUE,pageLength = 5,
+  },selection = list(target = 'column'),extensions = 'Scroller',options = list(scrollX = TRUE,pageLength = 5,
                                                        dom = 'Bfrtip',
                                                        buttons = c('copy', 'csv', 'excel', 'pdf', 'print','colvis')))
   
@@ -277,10 +280,13 @@ server <- function(input, output,session) {
    # browser()
     mywordsOGD<-input$caption
     mywordsOGD<-unlist(strsplit(mywordsOGD,","))
+    
+   
     RV$data<-textPrep(RV$data[,1],mywordsOGD)
     
     #Try type conversion here:
     RV$data<-type.convert(RV$data)
+  
     
   },ignoreInit = TRUE)
  
@@ -443,7 +449,7 @@ server <- function(input, output,session) {
     #Need to fix this to understand when it is selecting the number. I think the user needs to 
     #convert to date and then select columns (date first) at one sitting with the datatable.
     
-    browser()
+    #browser()
     
     RV3$data<-Endomerge2(RV$data,colnames(RV$data[as.numeric(input$endotable_columns_selected[1])]),
                          colnames(RV$data[as.numeric(input$endotable_columns_selected[2])]),
@@ -465,7 +471,6 @@ server <- function(input, output,session) {
     RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-parse_date_time(str_extract(RV3$data[,as.numeric(input$mergedTable_columns_selected)],
                                                                                            "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})"),
                                                                                orders = c("dmy", "ymd"))
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
   },ignoreInit = TRUE)
   
   ############::::: Button- Hospital standardiser############
@@ -474,7 +479,6 @@ server <- function(input, output,session) {
   observeEvent(input$HospitalNumberExtractorMerge,{
     RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-str_extract(RV3$data[,as.numeric(input$mergedTable_columns_selected)],
                                                                          "([a-z0-9]\\d{4,}[a-z0-9])")
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
   },ignoreInit = TRUE) 
   
   ############::::: Button- Categorical standardiser############
@@ -482,7 +486,6 @@ server <- function(input, output,session) {
   #Standardise the Categorical data
   observeEvent(input$CategoricalDataMerge,{
     RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-as.factor(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
   },ignoreInit = TRUE)
   
   ############::::: Button- Numeric standardiser############
@@ -491,7 +494,7 @@ server <- function(input, output,session) {
   observeEvent(input$NumericDataMerge,{
     RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-as.numeric(str_extract(RV3$data[,as.numeric(input$mergedTable_columns_selected)],
                                                                                       "[0-9]+"))
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+
   },ignoreInit = TRUE)
   
   
@@ -503,7 +506,7 @@ server <- function(input, output,session) {
     standardisedTextOutput<-lapply(standardisedTextOutput, function(x) NegativeRemove(x))
 
     RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-unlist(lapply(standardisedTextOutput, function(x) paste0(unlist(x),collapse=" ")))
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+
     
   },ignoreInit = TRUE)
   
@@ -538,7 +541,7 @@ server <- function(input, output,session) {
     #browser()
     #RV$data[,as.numeric(input$endotable_columns_selected)]
     RV3$data[,as.numeric(input$mergedTable_columns_selected)]<-EndoscEndoscopist(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+
   },ignoreInit = TRUE)
   
   
@@ -547,7 +550,7 @@ server <- function(input, output,session) {
   #Extract the medication  
   observeEvent(input$EndoscMedsMerge,{
     RV3$data<-cbind(EndoscMeds(RV3$data[,as.numeric(input$mergedTable_columns_selected)]),RV3$data)
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+
   },ignoreInit = TRUE)
   
   
@@ -556,7 +559,7 @@ server <- function(input, output,session) {
   #Extract the instrument
   observeEvent(input$EndoscInstrumentMerge,{
     RV3$data$mergedTable_columns_selected<-EndoscInstrument(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+
   },ignoreInit = TRUE)
   
   
@@ -569,7 +572,7 @@ server <- function(input, output,session) {
     input$EndoEventColSelect_colProcPerf,
     input$EndoEventColSelect_colMacroDescript, 
     input$EndoEventColSelect_colHistol)
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
+
       },ignoreInit = TRUE)
   
   ############::::: Chooser- EndoEvent column select for modal ############
@@ -598,7 +601,7 @@ server <- function(input, output,session) {
   
   #Extract the endoscopic events
   observeEvent(input$RemovDupsModal_Okbtn,{
-    browser()
+    #browser()
     
 
     
@@ -633,6 +636,7 @@ server <- function(input, output,session) {
     
   
     RV3$data<-RV3$data[!duplicated(RV3$data[,1:(ncol(RV3$data)-5)]), ]
+    
     
     
     #Get the procedure performed from a modal and get the other columns (as many as you want) to be merged together.
@@ -670,7 +674,6 @@ server <- function(input, output,session) {
   observeEvent(input$NumBxModal_ok,{
     #Need to bring up modal from here first to get the input$new_name as a renderui component
     RV3$data$NumBx<-HistolNumbOfBx(RV3$data[,as.numeric(input$mergedTable_columns_selected)],input$new_name)
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
   },ignoreInit = TRUE)
   
   
@@ -679,7 +682,6 @@ server <- function(input, output,session) {
   #Extract the biopsy size
   observeEvent(input$BxSizeMerge,{
     RV3$data$BxSize<-HistolBxSize(RV3$data[,as.numeric(input$mergedTable_columns_selected)])
-    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
   },ignoreInit = TRUE) 
   
   
@@ -887,7 +889,7 @@ server <- function(input, output,session) {
   #########::::: Table Create- BarrettsTable#############  
   output$BarrettsTable = DT::renderDT({
     #Create a copy that can be independently edited for the Barrett's table
-    RV4$data
+    RV4$data<-RV3$data[Reduce(`|`, lapply(RV3$data, grepl, pattern = "columnar.*?lined.*?\\.|barrett")),]
     
     
   },filter = 'top',selection = list(target = 'column'),extensions = 'Buttons', options = list(
@@ -1312,7 +1314,7 @@ server <- function(input, output,session) {
   observeEvent(input$polypTable_columns_selected,{
     #browser()
     if (length(input$polypTable_columns_selected)>1){
-      polypTrim$data<- RV4$data[input$polypTable_rows_all, input$polypTable_columns_selected]
+      polypTrim$data<- polypData$data[input$polypTable_rows_all, input$polypTable_columns_selected]
     } else(BarrTrim$data<-NULL)
     
   },ignoreInit = TRUE)
@@ -1321,8 +1323,8 @@ server <- function(input, output,session) {
   
   ############::::: Chooser- GRS_ADR column select for modal ############
   
-  output$GRS_ADRColSelect_colEndoFindings <- renderUI(
-    selectInput("ADRColSel_colEndoFindings","Select the Procedure performed column", choices= 
+  output$GRS_ADRColSelect_colEndoEndoscopist <- renderUI(
+    selectInput("GRS_ADRColSelect_colEndoEndoscopist","Select the Procedure performed column", choices= 
                   colnames(RV3$data))
   )
   
@@ -1346,7 +1348,7 @@ server <- function(input, output,session) {
   observeEvent(input$GRS_ADRModalbtn,{
     
     #browser()
-    GRS_TableData$data<<-GRS_Type_Assess_By_Unit(polypData$data[input$polypTable_rows_all,], input$ADRColSel_colEndoFindings,
+    GRS_TableData$data<<-GRS_Type_Assess_By_Unit(polypData$data[input$polypTable_rows_all,], input$ADRColSel_colEndoEndoscopist,
                                                  input$ADRColSel_colProcPerf,
                                                  input$ADRColSel_colMacroDescript,
                                                  input$ADRColSel_colHistol)
@@ -1500,20 +1502,23 @@ options = list(
   
   
   
-  
-  
   ############:::::  CrossTabulate ############
   
   
   output$OverallPivotPolyp <- renderRpivotTable({
     rpivotTable(polypTrim$data)
   })
-  
  
+  
+  #selectedData <- reactive({
+    #output$endotable
+ # })
+  
+  
   
 
   
-  
+   
 
 }
 

@@ -206,7 +206,7 @@ inputString<-gsub(": :",": ",inputString)
 inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
 inputString<-gsub("(","",inputString,fixed=TRUE)
 #Don't remove newlines as these are used as the sentence separators
-inputString<-gsub("\n",".",inputString,fixed=TRUE)
+inputString<-gsub("\n",". ",inputString,fixed=TRUE)
 inputString<-gsub(")","",inputString,fixed=TRUE)
 inputString<-gsub("'","",inputString,fixed=TRUE)
 inputString<-gsub("^","Start:",inputString)
@@ -480,7 +480,7 @@ ColumnCleanUp <- function(vector) {
   #Get rid of strange things
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
-  retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
+  retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
   return(retVector)
 }
 

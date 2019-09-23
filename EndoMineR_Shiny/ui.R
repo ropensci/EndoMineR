@@ -474,8 +474,8 @@ tabPanel("Custom", tableOutput("table53"),
                                
                                ############]]]]]  Button - EndoEvent ADR column select for modal ############
                                bsModal("GRS_ADRModal", "Change name", "GRS_ADRbtn", size = "small",
-                                       uiOutput("GRS_ADRColSelect_colEndoFindings"),
                                        uiOutput("GRS_ADRColSelect_colProcPerf"),
+                                       uiOutput("GRS_ADRColSelect_colEndoEndoscopist"),
                                        uiOutput("GRS_ADRColSelect_colMacroDescript"),
                                        uiOutput("GRS_ADRColSelect_colHistol"),
                                        footer = tagList(
