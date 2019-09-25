@@ -140,7 +140,7 @@ SurveilFirstTest <-
   }
 
 
-#' Last status
+#' Time to status
 #'
 #' This function selects patients who have had a start event and an end
 #' event of the users choosing so you can determine things like how long
@@ -187,7 +187,7 @@ SurveilFirstTest <-
 #'   b1, "Findings", "ProcedurePerformed",
 #'   "Macroscopicdescription", "Histology"
 #' )
-#' nn <- TimeToStatus(b1, "HospitalNumber", "EndoscopyEvent", "rfa", "dilat")
+#' nn <- TimeToStatus(b1, "eHospitalNum", "EndoscopyEvent", "rfa", "dilat")
 #' rm(v)
 TimeToStatus <- function(dataframe, HospNum, EVENT, indicatorEvent, endEvent) {
   dataframe <- data.frame(dataframe)
