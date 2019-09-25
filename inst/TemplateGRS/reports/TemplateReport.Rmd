@@ -119,6 +119,26 @@ load(file=here("data", "TheOGDReportFinal.rda"))
 load(file=here("data", "PathDataFrameFinal.rda"))
 ```
 
+  
+  
+  
+  
+  
+```{r Prep}
+
+######################################### Data cleaning & Data merging######################################### 
+#Now all the text preparation functions
+
+#Prepare the text for OGD
+mywordsOGD<-c("hospital number:","patient name:","general practitioner","date of procedure:","endoscopist:","2nd endoscopist:","medications:","instrument:","extent of exam:","indications:", "procedure performed:","findings:","diagnosis:")
+#MyOGD<-textPrep(TheOGDReportFinal$OGDReportWhole,mywordsOGD)
+MyOGD<-textPrep(TheOGDReportFinal$OGDReportWhole,mywordsOGD,NegEx="TRUE",Extractor="1")
+
+#Prepare the text for Pathology
+mywordsPath<-c("hospital number:","patient name:","dob:","general practitioner:","date received:","nature of specimen:","macroscopic description:" ,"diagnosis:")
+MyPath<-textPrep(PathDataFrameFinal$PathReportWhole,mywordsPath,NegEx="TRUE",Extractor="1")
+
+```
 
 ```{r echo=FALSE}
 read_chunk(here("inst","TemplateProject","munge", "PreProcessing.R"))
