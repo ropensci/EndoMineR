@@ -18,7 +18,7 @@
 #' Myendo$Endoscopist <- EndoscEndoscopist(Myendo$Endoscopist)
 EndoscEndoscopist <- function(EndoscopistColumn) {
   # Extraction of the Endoscopist
-  EndoscopistColumn <- str_replace_all(EndoscopistColumn, "Mr|Professor|Prof|Dr|2nd.*|[^[:alnum:],]", "")
+  EndoscopistColumn <- str_replace_all(EndoscopistColumn, "mr|professor|prof|dr|2nd.*|[^[:alnum:],]", " ")
   # Put gaps between names
   EndoscopistColumn <- str_replace(EndoscopistColumn, "([a-z])([A-Z])", "\\1 \\2")
   # Trim the whitespace

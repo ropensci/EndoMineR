@@ -48,7 +48,7 @@ test_that("Extractor", {
       "Macroscopicdescription",
       "Histology",
       "Diagnosis",
-      "Days"
+      "DayDiff"
     )
   ))
   expect_true(all(!is.na(v$pHospitalNum)))
