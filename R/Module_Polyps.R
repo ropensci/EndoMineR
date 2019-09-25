@@ -23,13 +23,14 @@
 #' )
 GRS_Type_Assess_By_Unit <-
   function(dataframe,
-             ProcPerformed,
-             Endo_Endoscopist,
-             Dx,
-             Histol) {
+           ProcPerformed,
+           Endo_Endoscopist,
+           Dx,
+           Histol) {
     dataframe <- data.frame(dataframe)
     dataframe <- dataframe[grepl("[Cc]olonoscopy", dataframe[, ProcPerformed]), ]
 
+    
     # Function should get proportions of a procedure that result in a finding:
     Endo_Endoscopista <- rlang::sym(Endo_Endoscopist)
     Histola <- rlang::sym(Histol)
@@ -56,6 +57,7 @@ GRS_Type_Assess_By_Unit <-
       full_join(FinalTable, Hyperplastic, by = Endo_Endoscopist)
     FinalTable <-
       full_join(FinalTable, NumberPerformed, by = Endo_Endoscopist)
+
 
     # Need to add the total colonoscopy count in here
     FinalTable <- data.frame(FinalTable)
