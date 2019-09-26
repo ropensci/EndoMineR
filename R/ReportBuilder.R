@@ -1,4 +1,10 @@
-
+if (getRversion() >= "2.15.1")
+  utils::globalVariables(
+    c("read.delim",
+      "rightNum",
+      "leftNum"
+    )
+  )
 
 #' The idea of the package is that it creates a consort diagram using 
 #' diagrammeR but all the dataframes are automatically filled with the dataframes

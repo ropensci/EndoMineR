@@ -34,20 +34,12 @@ if (getRversion() >= "2.15.1") {
 #' )
 Endomerge2 <-
   function(x,
-<<<<<<< HEAD
            EndoDate,
            EndoHospNumber,
            y,
            PathDate,
            PathHospNumber) {
-=======
-             EndoDate,
-             EndoHospNumber,
-             y,
-             PathDate,
-             PathHospNumber) {
->>>>>>> Feeature_Shinyapp
-    
+
     # Rename the columns so can do the join Extract the date from both reports
     colnames(x)[which(names(x) == EndoDate)] <- "Date"
     colnames(x)[which(names(x) == EndoHospNumber)] <- "eHospitalNum"
@@ -65,29 +57,19 @@ Endomerge2 <-
     y$Date <- as.Date(y$Date)
     y$pHospitalNum <- trimws(y$pHospitalNum)
     
-<<<<<<< HEAD
+
     
     #Merge by hospital number first as a full join
     EndoHistoMerge<-merge(x, y, by.x=c( "eHospitalNum"),
                           by.y=c( "pHospitalNum"),
                           all.x=TRUE)
-=======
 
-    #Merge by hospital number first as a full join
-    EndoHistoMerge<-merge(x, y, by.x=c( "eHospitalNum"),
-                by.y=c( "pHospitalNum"),
-                all.x=TRUE)
->>>>>>> Feeature_Shinyapp
     
     #Then create date diff
     EndoHistoMerge$DayDiff<-difftime(EndoHistoMerge$Date.x, EndoHistoMerge$Date.y,units="days")
     
     #Then filter by datediff to get the final list including when no biopsies were taken
     EndoHistoMerge<-EndoHistoMerge%>%filter((DayDiff<7&DayDiff>-1)|is.na(DayDiff))
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> Feeature_Shinyapp
     return(EndoHistoMerge)
   }
