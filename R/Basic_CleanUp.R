@@ -76,7 +76,11 @@ if (getRversion() >= "2.15.1")
       "FindingsAfterProcessing",
       "primDxVector",
       "Temporal",
-      "sentence_id"
+      "sentence_id",
+      "img",
+      "Endo_ResultEntered",
+      "V1",
+      "pandoc.image.return"
     )
   )
 
@@ -104,7 +108,6 @@ if (getRversion() >= "2.15.1")
 #' @keywords text cleaning
 #' @param inputText The relevant pathology text column
 #' @param delim the delimitors so the extractor can be used
-#' @param NegEx parameter to say whether the NegativeRemove function used.
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a string vector.
@@ -540,7 +543,12 @@ EndoPaste<-function(x){
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions and then extracts the type of tissue 
 
-#' Mypath$Tissue<-suppressWarnings(suppressMessages(ExtrapolatefromDictionary(Mypath$Histology,HistolType())))
+#' Mypath$Tissue<-suppressWarnings(
+#' suppressMessages(
+#' ExtrapolatefromDictionary(Mypath$Histology,HistolType()
+#' )
+#' )
+#' )
 #' rm(MypathExtraction)
 
 
