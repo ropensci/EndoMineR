@@ -29,7 +29,7 @@ This will be extended to other GRS outputs in the future.
 \examples{
 nn <- GRS_Type_Assess_By_Unit(
   vColon, "ProcedurePerformed",
-  "Endoscopist", "Diagnosis", "Histology"
+  "Endoscopist", "Diagnosis", "Original.y"
 )
 }
 \keyword{Withdrawal}

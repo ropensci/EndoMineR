@@ -26,7 +26,7 @@ PathDataFrameFinalColon2<-Extractor(PathDataFrameFinalColon2,"PathReportWhole",m
 
 ## ----exampleExtractor3,echo=FALSE----------------------------------------
 PathDataFrameFinalColon2<-head(PathDataFrameFinalColon2[2:10],1)
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(head(PathDataFrameFinalColon2,1))
 
 ## ----fig.width=12, fig.height=8,fig.align='center',echo=FALSE------------

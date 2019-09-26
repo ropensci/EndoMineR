@@ -23,34 +23,6 @@ v <-
 # column
 #### Extractor test ####
 test_that("Extractor", {
-  expect_that(names(v), equals(
-    c(
-      "OGDReportWhole",
-      "pHospitalNum",
-      "PatientName.x",
-      "GeneralPractitioner.x",
-      "Date.x",
-      "Endoscopist",
-      "Secondendoscopist",
-      "Medications",
-      "Instrument",
-      "ExtentofExam",
-      "Indications",
-      "ProcedurePerformed",
-      "Findings",
-      "PathReportWhole",
-      "eHospitalNum",
-      "PatientName.y",
-      "DOB",
-      "GeneralPractitioner.y",
-      "Date.y",
-      "ClinicalDetails",
-      "Macroscopicdescription",
-      "Histology",
-      "Diagnosis",
-      "Days"
-    )
-  ))
   expect_true(all(!is.na(v$pHospitalNum)))
   expect_true(all(!is.na(v$GeneralPractitioner.x)))
   expect_true(all(!is.na(v$Date.x)))
@@ -75,11 +47,11 @@ test_that("EndoscEndoscopist", {
   MyEndoscEndoscopistTest <- data.frame(c("Dr Jeremiah Stubborn"))
   names(MyEndoscEndoscopistTest) <- "Endoscopist"
 
-  MyEndoscEndoscopistTest <- EndoscEndoscopist(MyEndoscEndoscopistTest$Endoscopist)
+  MyEndoscEndoscopistTest <- EndoscEndoscopist(tolower(MyEndoscEndoscopistTest$Endoscopist))
 
   expect_true(all(!is.na(MyEndoscEndoscopistTest)))
   Result <- as.character(MyEndoscEndoscopistTest)
-  expect_identical(Result, "Jeremiah Stubborn")
+  expect_identical(Result, "jeremiah stubborn")
 })
 
 #### EndoscMeds test ####

@@ -4,14 +4,12 @@
 \alias{textPrep}
 \title{textPrep function}
 \usage{
-textPrep(inputText, delim, NegEx = c("TRUE", "FALSE"))
+textPrep(inputText, delim)
 }
 \arguments{
 \item{inputText}{The relevant pathology text column}
 
 \item{delim}{the delimitors so the extractor can be used}
-
-\item{NegEx}{parameter to say whether the NegativeRemove function used.}
 }
 \value{
 This returns a string vector.
@@ -19,19 +17,15 @@ This returns a string vector.
 \description{
 This function prepares the data by cleaning 
 punctuation, checking spelling against the lexicons, mapping terms
-according to the lexicons, removing negative expressions
-and lower casing everything. It contains several of the other functions
-in the package for ease of use. The user can decide whether to also include
-Negative removal as well as which extractor. By default the
-extractor called 'Extractor' (which assumes all headers are present in the
-same order in each text entry) is used. Also by default the negative phrases
-are removed.
+according to the lexicons and lower casing everything. 
+It contains several of the other functions
+in the package for ease of use.
 }
 \examples{
 mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 "Date received:","Clinical Details:","Macroscopic description:",
 "Histology:","Diagnosis:")
-CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE")
+CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 }
 \keyword{cleaning}
 \keyword{text}

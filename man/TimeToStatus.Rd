@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{TimeToStatus}
 \alias{TimeToStatus}
-\title{Last status}
+\title{Time to status}
 \usage{
 TimeToStatus(dataframe, HospNum, EVENT, indicatorEvent, endEvent)
 }
@@ -55,7 +55,7 @@ b1$EndoscopyEvent <- EndoscopyEvent(
   b1, "Findings", "ProcedurePerformed",
   "Macroscopicdescription", "Histology"
 )
-nn <- TimeToStatus(b1, "HospitalNumber", "EndoscopyEvent", "rfa", "dilat")
+nn <- TimeToStatus(b1, "eHospitalNum", "EndoscopyEvent", "rfa", "dilat")
 rm(v)
 }
 \keyword{ourcome}

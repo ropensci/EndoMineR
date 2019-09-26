@@ -10,3 +10,6 @@
 ^codecov\.yml$
 ^\.github$
 ^paper$
+^EndoMineR/inst/.*
+^EndoMineR_Shiny/www/.*
+^EndoMineR_Shiny/www/.*

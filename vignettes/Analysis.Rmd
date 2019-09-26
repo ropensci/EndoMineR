@@ -135,7 +135,7 @@ As regards adherence to documentation for example, a generic function is provide
 _Input_
                       
 ```{r exampleListLookup, eval = TRUE,echo=FALSE}
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(head(data.frame(Myendo[2:3],Myendo[13])))
 ```
 

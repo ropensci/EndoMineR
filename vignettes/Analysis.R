@@ -106,6 +106,6 @@ GRSTable<-GRS_Type_Assess_By_Unit(vColon,'ProcedurePerformed','Endoscopist','Dia
 
 
 ## ----exampleGRS_Type_Assess_By_Unit1, echo = FALSE,message=FALSE---------
-pander::panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
 pander(GRSTable)
 
