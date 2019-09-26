@@ -76,7 +76,11 @@ if (getRversion() >= "2.15.1")
       "FindingsAfterProcessing",
       "primDxVector",
       "Temporal",
-      "sentence_id"
+      "sentence_id",
+      "img",
+      "Endo_ResultEntered",
+      "V1",
+      "pandoc.image.return"
     )
   )
 
@@ -104,7 +108,6 @@ if (getRversion() >= "2.15.1")
 #' @keywords text cleaning
 #' @param inputText The relevant pathology text column
 #' @param delim the delimitors so the extractor can be used
-#' @param NegEx parameter to say whether the NegativeRemove function used.
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a string vector.
@@ -113,13 +116,13 @@ if (getRversion() >= "2.15.1")
 #' "Histology:","Diagnosis:")
 #' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 
-<<<<<<< HEAD
-=======
+
+
 #Need to make sure the sentences are separated in the Extractor column by a separator such as carriage return
 #So that a tokenizer can be used for NegEx or any other function.
 #Also need to get rid of ASCII \\X10 etc in the Column Cleanup.
 
->>>>>>> Feeature_Shinyapp
+
 textPrep<-function(inputText,delim){
   
   #1. Flatten the text..
@@ -143,11 +146,7 @@ textPrep<-function(inputText,delim){
   L <- tolower(unique(unlist(EventList, use.names = FALSE)))
   inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
   
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> Feeature_Shinyapp
   #4. Need to map the terms to the lexicons to make sure everything standardised.
   inputText<-DictionaryInPlaceReplace(inputText,LocationList())
   inputText<-DictionaryInPlaceReplace(inputText,EventList())
@@ -197,35 +196,7 @@ textPrep<-function(inputText,delim){
 
 
 Extractor <- function(inputString, delim) {
-<<<<<<< HEAD
-  #Create a named list of words
-  delim <- gsub(":","",delim)
-  names(delim) <- trimws(delim)
-  #Add a : to the tags 
-  
-  delim <- gsub("(.*)","\\1: ",delim)
-  delim<-as.list(delim)
-  inputString<-gsub(":","",inputString)
-  #Do the find and replace to place the tags in the input text
-  inputString<-EndoMineR::DictionaryInPlaceReplace(inputString,delim)
-  
-  #Do a bit more cleaning to make it into a dcf file:
-  inputString<-gsub(": :",": ",inputString)
-  inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
-  inputString<-gsub("(","",inputString,fixed=TRUE)
-  inputString<-gsub("\n","",inputString,fixed=TRUE)
-  inputString<-gsub(")","",inputString,fixed=TRUE)
-  inputString<-gsub("'","",inputString,fixed=TRUE)
-  inputString<-gsub("^","Start:",inputString)
-  inputString<-gsub("::",":",inputString,fixed=TRUE)
-  
-  #Create the dcf file
-  pat <- sprintf("(%s)", paste(delim, collapse = "|"))
-  g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
-  m <- read.dcf(textConnection(g))
-  m<-data.frame(m,stringsAsFactors = FALSE)
-  return(m)
-=======
+
 #Create a named list of words
 delim <- gsub(":","",delim)
 names(delim) <- trimws(delim)
@@ -254,7 +225,6 @@ g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
 m <- read.dcf(textConnection(g))
 m<-data.frame(m,stringsAsFactors = FALSE)
 return(m)
->>>>>>> Feeature_Shinyapp
 }
 
 
@@ -494,15 +464,10 @@ ColumnCleanUp <- function(vector) {
   vector<-gsub("\\.\\s+\\,"," ",vector)
   vector<-gsub("^\\s+\\,"," ",vector)
   #Get rid of ASCCII hex here
-<<<<<<< HEAD
-  vector<-gsub("[\x80-\xff]", "", vector)
-  vector<-gsub("\\\\.*", "", vector)
-  vector<-gsub("       ", "", vector)
-=======
+
   vector<-gsub("\\\\[Xx].*?\\\\", " ", vector)
   vector<-gsub("       ", " ", vector)
->>>>>>> Feeature_Shinyapp
-  
+
   #Get rid of query type punctuation:
   vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
   vector<-gsub("'","",vector,fixed=TRUE)
@@ -578,7 +543,12 @@ EndoPaste<-function(x){
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions and then extracts the type of tissue 
 
-#' Mypath$Tissue<-suppressWarnings(suppressMessages(ExtrapolatefromDictionary(Mypath$Histology,HistolType())))
+#' Mypath$Tissue<-suppressWarnings(
+#' suppressMessages(
+#' ExtrapolatefromDictionary(Mypath$Histology,HistolType()
+#' )
+#' )
+#' )
 #' rm(MypathExtraction)
 
 
