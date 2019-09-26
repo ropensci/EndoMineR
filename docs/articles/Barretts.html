@@ -117,7 +117,7 @@
       <h1>Barrett’s Oesophagus</h1>
                         <h4 class="author">Sebastian Zeki</h4>
             
-            <h4 class="date">April 17, 2019</h4>
+            <h4 class="date">September 26, 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ropensci/EndoMineR/blob/master/vignettes/Barretts.Rmd"><code>vignettes/Barretts.Rmd</code></a></small>
       <div class="hidden name"><code>Barretts.Rmd</code></div>
@@ -126,23 +126,32 @@
 
     
     
+<p><br></p>
 <div id="specific-diseases---barretts-oesophagus" class="section level2">
 <h2 class="hasAnchor">
-<a href="#specific-diseases---barretts-oesophagus" class="anchor"></a>Specific diseases - Barrett’s oesophagus</h2>
-<p>One particular disease that lends itself well to analytics, particularly as it is part of a surveillance programme, is the premalignant oesophageal condition Barrett’s oesophagus. This is characterised by the growth of cells (called columnar lined epithelium) in the oesophagus. These cells usually occupy the lower part of the oesophagus as a continuous sheet from the top of the stomach to varying lengths up the oesophagus. This condition requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score- explained below) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 UK guidelines, means the presence or absence of intestinal metaplasia). This can be seen in the image below (from Fitzgerald RC, et al. Gut 2013;0:1–36. <a href="doi:10.1136/gutjnl-2013-305372" class="uri">doi:10.1136/gutjnl-2013-305372</a>)</p>
+<a href="#specific-diseases---barretts-oesophagus" class="anchor"></a><strong>Specific diseases - Barrett’s oesophagus</strong>
+</h2>
 <p><br></p>
-<p><img src="img/BarrettsGuide.png" style="display: block; margin: auto;"></p>
+<p>One particular disease that lends itself well to analytics, particularly as it is part of a surveillance programme, is the premalignant oesophageal condition Barrett’s oesophagus. This is characterised by the growth of cells (called columnar lined epithelium) in the oesophagus. These cells usually occupy the lower part of the oesophagus as a continuous sheet from the top of the stomach to varying lengths up the oesophagus.</p>
+<p>This condition requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score- explained below) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 UK guidelines, means the presence or absence of intestinal metaplasia). This can be seen in the image below (from Fitzgerald RC, et al. Gut 2013;0:1–36. <a href="doi:10.1136/gutjnl-2013-305372" class="uri">doi:10.1136/gutjnl-2013-305372</a>)</p>
+<p><br></p>
+<p><img src="img/BarrettsGuide.png" width="230" style="display: block; margin: auto;"></p>
 <p><br></p>
 </div>
 <div id="pre-processing-barretts-samples" class="section level2">
 <h2 class="hasAnchor">
-<a href="#pre-processing-barretts-samples" class="anchor"></a>Pre-processing Barrett’s samples</h2>
+<a href="#pre-processing-barretts-samples" class="anchor"></a><strong>1. Pre-processing Barrett’s samples</strong>
+</h2>
+<p><br></p>
 <p>Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett’s oesophagus itself.</p>
 <p><br></p>
-<div id="prague-score" class="section level3">
+<div id="a-prague-score" class="section level3">
 <h3 class="hasAnchor">
-<a href="#prague-score" class="anchor"></a>Prague score</h3>
-<p>Firstly we need to extract the length of the Barrett’s segment. This is known as the Prague score and is made up of the length from the top of the gastric folds (just below the gastro-oesophageal junction) to the top of the circumferential extent of the Barrett’s segment (C). In addition the maximal extent is from the top of the gastric folds to the top of the tongues of Barrett’s segment (M). This gives an overall score such as C1M2.</p>
+<a href="#a-prague-score" class="anchor"></a><strong>a) Prague score</strong>
+</h3>
+<p><br></p>
+<p>Firstly we need to extract the length of the Barrett’s segment. This is known as the <a href="https://services.nhslothian.scot/endoscopyunit/InformationForClinicalStaff/Documents/PRAGUE%20CRITERIA.pdf">Prague score</a> and is made up of the length from the top of the gastric folds (just below the gastro-oesophageal junction) to the top of the circumferential extent of the Barrett’s segment (C). In addition the maximal extent is from the top of the gastric folds to the top of the tongues of Barrett’s segment (M). This gives an overall score such as C1M2.</p>
+<p><br></p>
 <p>After filtering for endoscopic indication (eg “Surveillance-Barrett’s”- this is stored in the ‘Indication’ column in our data set) the aim of the following function is to extract a C and M stage (Prague score) for Barrett’s samples. This is done using a regular expression where C and M stages are explicitly mentioned in the free text. Specifically it extracts the Prague score. This is usually mentoned in the ‘Findings’ column in our dataset but obviously the user can define which column should be searched.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="../reference/Barretts_PragueScore.html">Barretts_PragueScore</a></span>(Myendo,<span class="st">'Findings'</span>,<span class="st">'OGDReportWhole'</span>)</code></pre></div>
 <table class="table">
@@ -206,12 +215,15 @@
 </tbody>
 </table>
 </div>
-<div id="worst-pathological-stage" class="section level3">
+<div id="b-worst-pathological-stage" class="section level3">
 <h3 class="hasAnchor">
-<a href="#worst-pathological-stage" class="anchor"></a>Worst pathological stage</h3>
-<p>We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using ‘degradation’ so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on.</p>
+<a href="#b-worst-pathological-stage" class="anchor"></a><strong>b) Worst pathological stage</strong>
+</h3>
+<p><br></p>
+<p>We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using ‘degredation’ so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on.</p>
 <p>It looks per report not per biopsy (it is more common for histopathology reports to contain the worst overall grade rather than individual biopsy grades).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath<span class="op">$</span>b &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(Mypath, <span class="st">"Histology"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#The histology column is the one we are interested in:</span>
+Mypath<span class="op">$</span>b &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(Mypath, <span class="st">"Histology"</span>)</code></pre></div>
 <table class="table">
 <colgroup>
 <col width="6%">
@@ -249,15 +261,16 @@
 </tbody>
 </table>
 </div>
-<div id="follow-up-groups" class="section level3">
+<div id="cfollow-up-groups" class="section level3">
 <h3 class="hasAnchor">
-<a href="#follow-up-groups" class="anchor"></a>Follow-up groups</h3>
+<a href="#cfollow-up-groups" class="anchor"></a><strong>c)Follow-up groups</strong>
+</h3>
+<p><br></p>
 <p>Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett’s segment length and therefore their follow-up timing, may fluctuate over time) can be determined.</p>
 <p>The follow-up timing, as explained in the the original guideline flowchart above, depends on the length of the Barrett’s segment and the presence of intestinal metaplasia (a type of columnar lined epithelium). If abnormal cells (dysplasia) are present the there is a different follow-up regime which we won’t concern ourselves with at the moment.</p>
 <p>The timing of follow-up is done with the function <strong>Barretts_FUType.</strong> This relies on the previous functions called <strong>Barretts_PathStage</strong> and <strong>Barretts_PragueScore</strong> having been run. The Barretts_FUType function will tell you which follow up Rule the patient should be on so that the timing of the next endoscopy can be determined. As these functions usually go together a wrapper function called <strong>BarrettAll</strong> is also provided.</p>
 <p><br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#Create the merged dataset</span>
-
 v&lt;-<span class="kw"><a href="../reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>,Mypath,<span class="st">"Dateofprocedure"</span>,<span class="st">"HospitalNumber"</span>)
 <span class="co">#Find the worst pathological grade for that endoscopy</span>
 v<span class="op">$</span>IMorNoIM &lt;-<span class="st"> </span><span class="kw"><a href="../reference/Barretts_PathStage.html">Barretts_PathStage</a></span>(v, <span class="st">"Histology"</span>)
@@ -285,41 +298,41 @@ b1<span class="op">$</span>FU_Type&lt;-<span class="kw"><a href="../reference/Ba
 <tbody>
 <tr class="odd">
 <td align="center"><strong>23</strong></td>
+<td align="center">IM</td>
 <td align="center">Insufficient</td>
-<td align="center">Insufficient</td>
-<td align="center">Oesophagus- Candida in proximal oesophagus, ,Flumazenil given, ,OESOPHAGUS: Two 0, ,Just distal to the anasomosis, inferior wall and anterior wall there were two ulcers with hematin deposits, ,No evidence of reflux oesophagitis, ,No inlet patch, ,STOMACH: PHG mild to moderate, ,Sha has a 2cm, ,They are mostly well covered, with red signs on one varix only, ,Some squamous papillomas in the distal oesophagus, , Therapeutic- RFA</td>
+<td align="center">STOMACH: Portal Hypertensive Gastropathy, ,10mls 1% Lignocaine to skin, ,Stomach: mild/moderate erosive gastritis, ,Oesophagus - Small hiatus hernia, ,STOMACH: moderate antral gastritis - CLO test negative, ,Proximal to the pylorus was an anastomosis opening into a loop with 2 openings ?,There were mutiple small nodules in the distal oesophagus of unknown significance, ,</td>
 <td align="center">Insufficient</td>
 <td align="center">NoRules</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>24</strong></td>
-<td align="center">No_IM</td>
-<td align="center">3</td>
-<td align="center">STOMACH: diffuse gastritis with angiodysplasia and punctate bleeding site on greater curve mid body - no obvious ulcer- antrum scar ?,OESOPHAGUS: Barrett’s osophagus C3M5 34-39cm, ,He also has erosive gastritis in the fundus, ,STOMACH: non-erosive gastritis from mid-body to antrum, CLO test: negative, ,STOMACH: numerous fundic glands looking polyps at body and fundus with size ranging from 2 mm to 10 mm, ,Otherwise entirely normal study, ,Scope easily passed through, , A lesion underwent EMR</td>
-<td align="center">5</td>
+<td align="center">IM</td>
+<td align="center">Insufficient</td>
+<td align="center">2 biopsies from D2, ,Small hiatus hernia from 38 to 41cm, ,STOMACH: Moderate haemorrhagic gastritis - CLO test negative, ,metachronous lesions, ,GOJ at 40cm with stitches from previous repair visible at 3o’clock, ,This couldn’t be resolved with the coag graspers so 2 clips were deploted over the vessel and 1:10,000 adrenaline x10ml was injected with haemostasis achieved, ,Narrowband imaging of the oesophagus: No inlet patch, ,D: oedematous mucosa in D1 but no ulcers seen, ,Biopsies taken from the GOJ x4 and from 38cm x4, ,</td>
+<td align="center">Insufficient</td>
 <td align="center">NoRules</td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>25</strong></td>
-<td align="center">IM</td>
-<td align="center">34</td>
-<td align="center">Top of gastrisc folds:43cm, ,No inlet patch, ,Biopsies taken from distal, mid and proximal third, ,STOMACH: Normal, ,Hiatus Hernia- Small, ,Oesophagus normal with no hiatus hernia or oesophagitis, ,D2 biopsies taken in view of weight loss, ,STOMACH: gastritis in antrum - CLO test: negative, ,Nodules between 38 anc 34cm, Paris Type IIa annd covered 75% of the circumference of the oesophagus, ,</td>
-<td align="center">34</td>
-<td align="center">NoRules</td>
+<td align="center">LGD</td>
+<td align="center">0</td>
+<td align="center">No cause for her pain was found, ,5 cm in size, ,D: Oedematous mucosa and erosions in D1, ,STOMACH: Streaky antral gastritis with linear erosions, ,C0M1 Barretts- biopsied, ,DUODENUM: duodenal ulcer in D1 - 2 cm diameter on the posterior wall, with clean base and surrounding oedema, causing some degree of stricture; scope easily passed into D2, without resistance, ,GOJ on contraction gives a false impression of Schatzki ring, ,G: mild PHG, ,</td>
+<td align="center">0</td>
+<td align="center">Therapy</td>
 </tr>
 <tr class="even">
 <td align="center"><strong>26</strong></td>
-<td align="center">No_IM</td>
-<td align="center">0</td>
-<td align="center">No varices anywhere in the upper GI tract/ no PHG, ,OESOPHAGUS: Barrett’s oesophagus C0 M1, ,No blood or sign of recent bleeding, ,</td>
-<td align="center">1</td>
-<td align="center">Rule1</td>
+<td align="center">Insufficient</td>
+<td align="center">Insufficient</td>
+<td align="center">OESOPHAGUS: Hiatus hernia 36-42 cm, ,</td>
+<td align="center">Insufficient</td>
+<td align="center">NoRules</td>
 </tr>
 <tr class="odd">
 <td align="center"><strong>27</strong></td>
 <td align="center">Insufficient</td>
 <td align="center">Insufficient</td>
-<td align="center">There is a duodenal diverticulum, just after the D1/D2 flexure but there is no inflammation, ulceration or erosions, ,Biopsies from D2 and stomach, ,Biopsies from D2 and stomach, ,Several erosions/small ulcers in inflammed antrum, ,Hiatus hernia, ,The antrum looks spared, ,Stomach - mild gastritis CLO - negative, ,D1 inspected carefully and no othe abnormalities seen, ,</td>
+<td align="center">STOMACH: Antral gastris, ,The mucosa proximal and distal to this segment looked essentially normal apart fromfew scattered tiny white spots, ,No evidence of Barrett’s oesophagus, short 2 cn hiatus hernia, ,No evidence of reflux oesophagitis, , Area APC’d</td>
 <td align="center">Insufficient</td>
 <td align="center">NoRules</td>
 </tr>
@@ -329,31 +342,63 @@ b1<span class="op">$</span>FU_Type&lt;-<span class="kw"><a href="../reference/Ba
 </div>
 <div id="quality-assessment-in-barretts-surveillance" class="section level2">
 <h2 class="hasAnchor">
-<a href="#quality-assessment-in-barretts-surveillance" class="anchor"></a>Quality assessment in Barrett’s surveillance</h2>
+<a href="#quality-assessment-in-barretts-surveillance" class="anchor"></a><strong>2.Quality assessment in Barrett’s surveillance</strong>
+</h2>
+<p><br></p>
 <p>Many of the aspects of generic quality monitoring apply to Barrett’s as well. For example, you may want to make sure that the endoscopy reports adhere to guidance about what should be in an endoscopy report. This can be assessed using the generic function <strong>ListLookUp</strong></p>
 <div id="quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="section level3">
 <h3 class="hasAnchor">
-<a href="#quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="anchor"></a>Quality of perfomance of Barrett’s surveillance endoscopies as just by tissue sampling</h3>
+<a href="#quality-of-perfomance-of-barretts-surveillance-endoscopies-as-just-by-tissue-sampling" class="anchor"></a><strong>Quality of perfomance of Barrett’s surveillance endoscopies as just by tissue sampling</strong>
+</h3>
 <p>Some things are specific to Barrett’s oesophagus however. One of the essential requirements to demonstrate adequate sampling of Barrett’s oesophagus during endoscopy is that the endoscopist should adhere to the ‘Seattle protocol’ for biopsies which is to take 4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett’s samples is pre-requisite. The Number of biopsies and their size should also be extracted using the histopathology functions.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="co"># The number of average number of biopsies is then calculated and</span>
- <span class="co"># compared to the average Prague C score so that those who are taking</span>
- <span class="co"># too few biopsies can be determined</span>
-<span class="co">#Lets just use the Surveillance endoscopies:</span>
-b1&lt;-b1[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">grepl</a></span>(<span class="st">"[Ss]urv"</span>,b1<span class="op">$</span>Indications),]
-b1<span class="op">$</span>NumBx&lt;-<span class="kw"><a href="../reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(b1<span class="op">$</span>Macroscopicdescription,<span class="st">'specimen'</span>)
-b1<span class="op">$</span>BxSize &lt;-<span class="st"> </span><span class="kw"><a href="../reference/HistolBxSize.html">HistolBxSize</a></span>(b1<span class="op">$</span>Macroscopicdescription)
-<span class="kw"><a href="../reference/BarrettsBxQual.html">BarrettsBxQual</a></span>(b1,<span class="st">'Date.x'</span>,<span class="st">'HospitalNumber'</span>,
-                                    <span class="st">'Endoscopist'</span>)</code></pre></div>
-<pre><code>##                       Endoscopist    MeanDiff
-## 1   Dr\n al-Arif, Ummu Kulthoom\n -5696297.67
-## 2  Dr\n Avitia-Ramirez, Alondra\n        2.00
-## 3          Dr\n Greimann, Phoua\n        2.00
-## 4            Dr\n Ives, Rashiah\n       -0.67
-## 5        Dr\n Kekich, Annabelle\n       -4.00
-## 6    Dr\n Kola-Kehinde, Karisma\n -5579167.00
-## 7         Dr\n Martinez, Maegen\n        3.00
-## 8           Dr\n Moreno, Lauren\n       -1.00
-## 9         Dr\n Sullivan, Shelby\n        1.50</code></pre>
+<table class="table">
+<colgroup>
+<col width="41%">
+<col width="13%">
+</colgroup>
+<thead><tr class="header">
+<th align="center">Endoscopist</th>
+<th align="center">MeanDiff</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="center">Dr al-Arif, Ummu Kulthoom</td>
+<td align="center">-5696298</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Avitia-Ramirez, Alondra</td>
+<td align="center">2</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Greimann, Phoua</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Ives, Rashiah</td>
+<td align="center">-0.67</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Kekich, Annabelle</td>
+<td align="center">-4</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Kola-Kehinde, Karisma</td>
+<td align="center">-5579167</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Martinez, Maegen</td>
+<td align="center">3</td>
+</tr>
+<tr class="even">
+<td align="center">Dr Moreno, Lauren</td>
+<td align="center">-1</td>
+</tr>
+<tr class="odd">
+<td align="center">Dr Sullivan, Shelby</td>
+<td align="center">1.5</td>
+</tr>
+</tbody>
+</table>
 <p><br></p>
 <p>This function will again return a dataframe with the number of biopsies taken that is outside of the number that should have been taken for a certain Prague score.</p>
 </div>
@@ -365,9 +410,9 @@ b1<span class="op">$</span>BxSize &lt;-<span class="st"> </span><span class="kw"
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#specific-diseases---barretts-oesophagus">Specific diseases - Barrett’s oesophagus</a></li>
-      <li><a href="#pre-processing-barretts-samples">Pre-processing Barrett’s samples</a></li>
-      <li><a href="#quality-assessment-in-barretts-surveillance">Quality assessment in Barrett’s surveillance</a></li>
+<li><a href="#specific-diseases---barretts-oesophagus"><strong>Specific diseases - Barrett’s oesophagus</strong></a></li>
+      <li><a href="#pre-processing-barretts-samples"><strong>1. Pre-processing Barrett’s samples</strong></a></li>
+      <li><a href="#quality-assessment-in-barretts-surveillance"><strong>2.Quality assessment in Barrett’s surveillance</strong></a></li>
       </ul>
 </div>
       </div>
