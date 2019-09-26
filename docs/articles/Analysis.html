@@ -117,7 +117,7 @@
       <h1>Analysis</h1>
                         <h4 class="author">Sebastian Zeki</h4>
             
-            <h4 class="date">April 17, 2019</h4>
+            <h4 class="date">September 26, 2019</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ropensci/EndoMineR/blob/master/vignettes/Analysis.Rmd"><code>vignettes/Analysis.Rmd</code></a></small>
       <div class="hidden name"><code>Analysis.Rmd</code></div>
@@ -126,18 +126,23 @@
 
     
     
-<p>An important design principle of EndoMineR was that it should address the important categories of questions we all have in gastroenterology, and endoscopy in particular. These questions roughly fall into the following: surveillance, quality and also patient flow.</p>
+<p><br> A fundamental design principle of EndoMineR was that it should address the important categories of questions we all have in gastroenterology, and endoscopy in particular. These questions roughly fall into the following: surveillance, quality and also operational questions (eg patient flow through endoscopy).</p>
 <div id="surveillance-functions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#surveillance-functions" class="anchor"></a>Surveillance functions</h2>
-<p>I often want to know how good our surveillance programmes are. How good are we at making sure patients come back in a timely way for their endoscopy after a polyp removal?</p>
+<a href="#surveillance-functions" class="anchor"></a><strong>1. Surveillance functions</strong>
+</h2>
+<p><br> Surveillance tracking is difficult because it relies on assessment at several timepoint and then deciding on the next examination based on a ruleset. A basic question is often: ’How good are our surveillance programmes?" which really means “How good are we at making sure patients come back in a timely way for their endoscopy after a polyp removal or for Barrett’s surveillance”, for example?</p>
+<p><br></p>
 <p><img src="img/EndoMineR_Surveillance.svg" style="display: block; margin: auto;"></p>
-<p>Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. As such the functions for surveillance extract the date the first test was done, as well as the last test (of the same type) and the difference in timing between each test, always grouped by patient.</p>
-<p>As all these functions are simply looking at the date of the test, they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps.</p>
-<p>The basic surveillance functions are simple but are the most often used. <strong>SurveilTimeByRow</strong> will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. <strong>SurveilLastToNow</strong> will show the time difference between now and the last endoscope the patient had. This can be useful to determine if a patient is overdue a further endoscopy.</p>
-<p><strong>SurveilLastTest</strong> simply extracts the last and first test respectively for each patient.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em1&lt;-<span class="kw"><a href="../reference/SurveilTimeByRow.html">SurveilTimeByRow</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(em1[<span class="dv">2</span>],em1[<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/nrow">ncol</a></span>(em1)]),<span class="dv">5</span>))</code></pre></div>
+<p><br></p>
+<p>Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. To do this, the EndoMineR surveillance functions simply order the endoscopies by patient and date, and extract the date the first test was done, as well as the last test (of the same type) and the difference in timing between each test, always grouped by patient.</p>
+<p><br> As all these functions are simply looking at the date of the test, they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. Of course, the pre-processing steps explained in the EndoMineR vignette (mainly using the <strong>textPrep</strong> function) are recommended however as then the user will be able to perform any other additional analyses if needed.</p>
+<p><br> The basic surveillance functions are simple but are the most used. <strong>SurveilTimeByRow</strong> will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines.</p>
+<p><br></p>
+<p><strong>SurveilLastTest</strong> simply extracts the last and first test respectively for each patient so you can assess how long the patient has been surveilled for. This is likely to come in useful for future iterations of EndoMineR as patient Theographs are developed (work in progress).</p>
+<p><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em1&lt;-<span class="kw"><a href="../reference/SurveilTimeByRow.html">SurveilTimeByRow</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</code></pre></div>
+<p><br></p>
 <table class="table">
 <colgroup>
 <col width="23%">
@@ -150,29 +155,29 @@
 <tbody>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1214 days</td>
+<td align="center">1376 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">1214 days</td>
+<td align="center">1376 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1214 days</td>
+<td align="center">1376 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">1214 days</td>
+<td align="center">1376 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1214 days</td>
+<td align="center">1376 days</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
-em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLastTest</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(em3[<span class="dv">2</span>],em3[<span class="dv">5</span>]),<span class="dv">5</span>))</code></pre></div>
+<p><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLastTest</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</code></pre></div>
+<p><br></p>
 <table class="table">
 <colgroup>
 <col width="23%">
@@ -205,8 +210,9 @@ em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLast
 </tr>
 </tbody>
 </table>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em4&lt;-<span class="kw"><a href="../reference/SurveilFirstTest.html">SurveilFirstTest</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(em4[<span class="dv">2</span>],em4[<span class="dv">5</span>]),<span class="dv">5</span>))</code></pre></div>
+<p><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em4&lt;-<span class="kw"><a href="../reference/SurveilFirstTest.html">SurveilFirstTest</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</code></pre></div>
+<p><br></p>
 <table class="table">
 <colgroup>
 <col width="23%">
@@ -239,10 +245,13 @@ em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLast
 </tr>
 </tbody>
 </table>
+<p><br></p>
 <p>Of course we may also want to know how many tests have been done over a time period and this is provided by the function <strong>HowManyTests</strong></p>
+<p><br></p>
 <p>This function will return the number of tests by day, month and year so they can be easily graphed according to what you want.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/HowManyOverTime.html">HowManyOverTime</a></span>(Myendo,<span class="st">'Indications'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Surv'</span>)
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(how),<span class="dv">5</span>))</code></pre></div>
+<p><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/HowManyOverTime.html">HowManyOverTime</a></span>(Myendo,<span class="st">'Indications'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Surv'</span>)</code></pre></div>
+<p><br></p>
 <table class="table">
 <colgroup>
 <col width="8%">
@@ -306,13 +315,19 @@ em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLast
 </div>
 <div id="assessment-of-quality-functions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#assessment-of-quality-functions" class="anchor"></a>Assessment of quality functions</h2>
+<a href="#assessment-of-quality-functions" class="anchor"></a><strong>2. Assessment of quality functions</strong>
+</h2>
+<p><br></p>
 <p>Quality is measured in a variety of ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)</p>
-<div id="documentation-quality" class="section level3">
+<p><br></p>
+<div id="a-documentation-quality" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-quality" class="anchor"></a>Documentation Quality</h3>
+<a href="#a-documentation-quality" class="anchor"></a><strong>a) Documentation Quality</strong>
+</h3>
+<p><br></p>
 <p>As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised of terms that should be mentioned in a report.</p>
-<p><strong><em>Input</em></strong></p>
+<p><br></p>
+<p><em>Input</em></p>
 <table class="table">
 <colgroup>
 <col width="23%">
@@ -359,6 +374,7 @@ em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLast
 </table>
 <p><br></p>
 <p>In this example we are looking for the words Barrett’s and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscopy report:</p>
+<p><br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tm)
 myNotableWords &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"barrett"</span>, <span class="st">"coeliac"</span>)
 <span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></span>(Myendo,<span class="st">'Findings'</span>,myNotableWords)</code></pre></div>
@@ -366,22 +382,26 @@ myNotableWords &lt;-<span class="st"> </span><span class="kw"><a href="https://w
 ## 1 barrett 18.05
 ## 2 coeliac  6.20</code></pre>
 <p><br></p>
+<p><br></p>
 <p>So we can see that the terms are present in the minority of reports across endoscopists, so perhaps we can look into this further..</p>
 <p><br></p>
 </div>
-<div id="endoscopic-quality" class="section level3">
+<div id="b-endoscopic-quality" class="section level3">
 <h3 class="hasAnchor">
-<a href="#endoscopic-quality" class="anchor"></a>Endoscopic Quality</h3>
+<a href="#b-endoscopic-quality" class="anchor"></a><strong>b) Endoscopic Quality</strong>
+</h3>
 <div id="sedation-usage" class="section level4">
 <h4 class="hasAnchor">
-<a href="#sedation-usage" class="anchor"></a>Sedation Usage</h4>
+<a href="#sedation-usage" class="anchor"></a><strong>Sedation Usage</strong>
+</h4>
+<p><br></p>
 <p>Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(dplyr)
-<span class="co">#We have to attach the output of EndoscMeds to the original dataframe</span>
+<p><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#We have to attach the output of EndoscMeds to the original dataframe</span>
 MyendoNew&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(Myendo<span class="op">$</span>Medications),Myendo)
 <span class="co">#Average Fentanyl use by endoscopist:</span>
-Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(MyendoNew,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(MyendoNew<span class="op">$</span>Endoscopist,MyendoNew<span class="op">$</span>Fent),<span class="dv">10</span>))</code></pre></div>
+Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(MyendoNew,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)</code></pre></div>
+<p><br></p>
 <table class="table">
 <colgroup>
 <col width="41%">
@@ -441,12 +461,18 @@ Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">Met
 </div>
 <div id="patient-flow-functions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#patient-flow-functions" class="anchor"></a>Patient flow functions</h2>
+<a href="#patient-flow-functions" class="anchor"></a><strong>4.Patient flow functions</strong>
+</h2>
+<p><br></p>
 <div id="sankey-plots" class="section level3">
 <h3 class="hasAnchor">
-<a href="#sankey-plots" class="anchor"></a>Sankey plots</h3>
+<a href="#sankey-plots" class="anchor"></a><strong>Sankey plots</strong>
+</h3>
+<p><br></p>
 <p>We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint.</p>
+<p><br></p>
 <p>For example, if we have a dataset with events such as ‘radiofrequency ablation’ and ‘endoscopic mucosal resection’ or ‘nothing’ we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type (“EMR”,“RFA”,“nothing” in this case)</p>
+<p><br></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#how&lt;-SurveySankey(Myendo,"ProcedurePerformed")</span></code></pre></div>
 <p><br></p>
 <p><img src="img/EndoMineR_Sankey.svg" width="100%" style="display: block; margin: auto;"></p>
@@ -454,7 +480,9 @@ Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">Met
 </div>
 <div id="circos-plots" class="section level3">
 <h3 class="hasAnchor">
-<a href="#circos-plots" class="anchor"></a>Circos plots</h3>
+<a href="#circos-plots" class="anchor"></a><strong>Circos plots</strong>
+</h3>
+<p><br></p>
 <p>We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#flow&lt;-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")</span></code></pre></div>
 <p><br></p>
@@ -469,9 +497,9 @@ Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">Met
       <h2 class="hasAnchor">
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-<li><a href="#surveillance-functions">Surveillance functions</a></li>
-      <li><a href="#assessment-of-quality-functions">Assessment of quality functions</a></li>
-      <li><a href="#patient-flow-functions">Patient flow functions</a></li>
+<li><a href="#surveillance-functions"><strong>1. Surveillance functions</strong></a></li>
+      <li><a href="#assessment-of-quality-functions"><strong>2. Assessment of quality functions</strong></a></li>
+      <li><a href="#patient-flow-functions"><strong>4.Patient flow functions</strong></a></li>
       </ul>
 </div>
       </div>
