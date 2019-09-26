@@ -156,13 +156,9 @@ b2<-BarrettsBxQual(b1,'Date.x','HospitalNumber',
 ```{r exampleBarrettsQuality_AnalysisBiopsyNumbertbl, echo = FALSE,message=FALSE, warning=FALSE,echo=FALSE}
 
 #panderOptions('table.split.table', Inf)
-panderOptions("table.style", "rmarkdown")
+panderOptions('table.split.table', Inf)
 pander(b2)
 ```
  <br>
  
  This function will again return a dataframe with the number of biopsies taken that is outside of the number that should have been taken for a certain Prague score.
-
-
-
-
