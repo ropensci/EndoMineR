@@ -16,7 +16,7 @@ HistolType <- function() {
     "(endoscopic mucosal resection)|(endoscopic mucosectomy)" = "EMR",
     "endoscopic submucosal (dissection|resection)" = "ESD",
     "nodul" = "nodul",
-    "polyp " = "polyp"
+    "polyp" = "polyp"
   )
 
 

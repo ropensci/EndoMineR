@@ -76,7 +76,11 @@ if (getRversion() >= "2.15.1")
       "FindingsAfterProcessing",
       "primDxVector",
       "Temporal",
-      "sentence_id"
+      "sentence_id",
+      "img",
+      "Endo_ResultEntered",
+      "V1",
+      "pandoc.image.return"
     )
   )
 
@@ -98,35 +102,38 @@ if (getRversion() >= "2.15.1")
 #'
 #' This function prepares the data by cleaning 
 #' punctuation, checking spelling against the lexicons, mapping terms
-#' according to the lexicons, removing negative expressions
-#' and lower casing everything. It contains several of the other functions
-#' in the package for ease of use. The user can decide whether to also include
-#' Negative removal as well as which extractor. By default the
-#' extractor called 'Extractor' (which assumes all headers are present in the
-#' same order in each text entry) is used. Also by default the negative phrases
-#' are removed.
+#' according to the lexicons and lower casing everything. 
+#' It contains several of the other functions
+#' in the package for ease of use. 
 #' @keywords text cleaning
 #' @param inputText The relevant pathology text column
 #' @param delim the delimitors so the extractor can be used
-#' @param NegEx parameter to say whether the NegativeRemove function used.
 #' @importFrom stringi stri_split_boundaries
 #' @export
 #' @return This returns a string vector.
 #' @examples mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
 #' "Histology:","Diagnosis:")
-#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords,NegEx="TRUE")
+#' CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 
-textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE')){
+
+
+#Need to make sure the sentences are separated in the Extractor column by a separator such as carriage return
+#So that a tokenizer can be used for NegEx or any other function.
+#Also need to get rid of ASCII \\X10 etc in the Column Cleanup.
+
+
+textPrep<-function(inputText,delim){
   
   #1. Flatten the text..
   inputText<-tolower(inputText)
   
-  #1b General cleanup tasks
-  inputText <- ColumnCleanUp(inputText)
+  #1b General cleanup tasks tokenize then clean then recombine
+  standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) ColumnCleanUp(x))
+  inputText<-lapply(standardisedTextOutput, function(x) paste0(unlist(x),collapse="\n"))
   
   #2a . Fuzzy find and replace and term mapping using the find and replace function above using the Location list
-  
   HistolType<-paste0(unlist(HistolType(),use.names=F),collapse="|")
   LocationList<-paste0(unlist(LocationList(),use.names=F),collapse="|")
   EventList<-paste0(unlist(EventList(),use.names=F),collapse="|")
@@ -139,15 +146,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE')){
   L <- tolower(unique(unlist(EventList, use.names = FALSE)))
   inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
   
-  
-  #3.Remove all the negative phrases from the report if the parameter has been supplied
-  #Need to write here if the NegativeRemove has been ticked then should use it
-  
-  if (missing(NegEx)||NegEx=="TRUE")
-    {
-  inputText<-NegativeRemove(inputText)
-  }
-  
+
   #4. Need to map the terms to the lexicons to make sure everything standardised.
   inputText<-DictionaryInPlaceReplace(inputText,LocationList())
   inputText<-DictionaryInPlaceReplace(inputText,EventList())
@@ -155,16 +154,10 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE')){
   
   #returns a lower case version
   inputText<-tolower(inputText)
-  
-  #Merge the POS frame with the original text so tagging happens right at the beginning
   #Will also need to add the Extractor output to the dataframe.
-  
-  standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
-  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) paste0(unlist(x),collapse="\n"))
-  
-    MyCompleteFrame<-Extractor(as.character(standardisedTextOutput),tolower(delim))
-    #Last minute clean up:
-    names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
+  MyCompleteFrame<-Extractor(as.character(inputText),tolower(delim))
+  #Last minute clean up:
+  names(MyCompleteFrame) <- gsub(".", "", names(MyCompleteFrame), fixed = TRUE)
   
   return(MyCompleteFrame)
 }
@@ -203,9 +196,10 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE')){
 
 
 Extractor <- function(inputString, delim) {
+
 #Create a named list of words
 delim <- gsub(":","",delim)
-names(delim) <- delim
+names(delim) <- trimws(delim)
 #Add a : to the tags 
 
 delim <- gsub("(.*)","\\1: ",delim)
@@ -218,7 +212,8 @@ inputString<-EndoMineR::DictionaryInPlaceReplace(inputString,delim)
 inputString<-gsub(": :",": ",inputString)
 inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
 inputString<-gsub("(","",inputString,fixed=TRUE)
-inputString<-gsub("\n","",inputString,fixed=TRUE)
+#Don't remove newlines as these are used as the sentence separators
+inputString<-gsub("\n",". ",inputString,fixed=TRUE)
 inputString<-gsub(")","",inputString,fixed=TRUE)
 inputString<-gsub("'","",inputString,fixed=TRUE)
 inputString<-gsub("^","Start:",inputString)
@@ -228,7 +223,7 @@ inputString<-gsub("::",":",inputString,fixed=TRUE)
 pat <- sprintf("(%s)", paste(delim, collapse = "|"))
 g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
 m <- read.dcf(textConnection(g))
-
+m<-data.frame(m,stringsAsFactors = FALSE)
 return(m)
 }
 
@@ -250,7 +245,7 @@ return(m)
 
 
 DictionaryInPlaceReplace <- function(inputString,list) {
-
+  
   key<-names(list)
   value<-as.character(t(data.frame(list,stringsAsFactors=FALSE))[,1])
   list<-data.frame(key,value,stringsAsFactors = FALSE)
@@ -379,7 +374,7 @@ NegativeRemove <- function(inputText) {
     )
   # Keep abnormal in- don't ignore case as it messes it up
   inputText <- str_replace(inputText,
-                                     ".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "")
+                           ".*(?<!b)[Nn]ormal.*?(\\.|\n|:|$)", "")
   # Other negatives
   inputText <- gsub(
     ".*there (is|are|were) \\bno\\b .*?(\\.|\n|:|$)\\R*",
@@ -403,13 +398,13 @@ NegativeRemove <- function(inputText) {
     perl = TRUE,
     ignore.case = TRUE
   )
-
+  
   # Time related phrases eg post and previous
   inputText <- gsub(" (post|previous|prior)[^a-z].+?[A-Za-z]{3}",
-                              " TIME_REPLACED-",
+                    " TIME_REPLACED-",
                     inputText,
-                              perl = TRUE,
-                              ignore.case = TRUE)
+                    perl = TRUE,
+                    ignore.case = TRUE)
   
   
   return(inputText)
@@ -462,14 +457,17 @@ ColumnCleanUp <- function(vector) {
   vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
   vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
   vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
+  vector<-gsub("\r"," ",vector)
   vector<-gsub("\\.,","\\.",vector)
   vector<-gsub(",([A-Z])","\\.\\1",vector)
   vector<-gsub("\\. ,",".",vector)
   vector<-gsub("\\.\\s+\\,"," ",vector)
   vector<-gsub("^\\s+\\,"," ",vector)
-  vector<-gsub("\\\\.*", "", vector)
-  vector<-gsub("       ", "", vector)
-  
+  #Get rid of ASCCII hex here
+
+  vector<-gsub("\\\\[Xx].*?\\\\", " ", vector)
+  vector<-gsub("       ", " ", vector)
+
   #Get rid of query type punctuation:
   vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
   vector<-gsub("'","",vector,fixed=TRUE)
@@ -485,16 +483,14 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)","",x))
-  
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
   
   #Get rid of strange things
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,"," ",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
-  retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="\n"))
+  retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
   return(retVector)
 }
-
 
 
 #' Paste into one
@@ -517,8 +513,10 @@ ColumnCleanUp <- function(vector) {
 
 
 EndoPaste<-function(x){
+  names(x)<-ColumnCleanUp(names(x))
+  names(x)<-gsub("\n+"," ",names(x))
   delim<-paste(names(x))
-  v1<-do.call(paste, c(Map(paste, names(x), x), sep="_"))
+  v1<-do.call(paste, c(Map(paste, names(x), x), " ",sep="\n"))
   df<-data.frame(X1_X2_X3 = unname(v1))
   return(list(df,delim))
 }
@@ -545,7 +543,12 @@ EndoPaste<-function(x){
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions and then extracts the type of tissue 
 
-#' Mypath$Tissue<-suppressWarnings(suppressMessages(ExtrapolatefromDictionary(Mypath$Histology,HistolType())))
+#' Mypath$Tissue<-suppressWarnings(
+#' suppressMessages(
+#' ExtrapolatefromDictionary(Mypath$Histology,HistolType()
+#' )
+#' )
+#' )
 #' rm(MypathExtraction)
 
 
@@ -618,7 +621,7 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
   #text<-textPrep(inputText)
   text<-standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
   r1 <-lapply(text,function(x) Map(paste, str_extract_all(tolower(x),tolower(list2)), 
-            str_extract_all(tolower(x),tolower(list1)), MoreArgs = list(sep=":")))
+                                   str_extract_all(tolower(x),tolower(list1)), MoreArgs = list(sep=":")))
   
   r1<-lapply(r1,function(x) unlist(x))
   #Unlist into a single row-This should output a character vector
@@ -644,7 +647,7 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 #' @examples # tbb<-EntityPairs_TwoSentence(Myendo$Findings,EventList(),HistolType())
 
 EntityPairs_TwoSentence<-function(inputString,list1,list2){
-    
+  
   #Prepare the text to be back into a tokenised version.
   #text<-textPrep(inputText)
   text<-standardisedTextOutput<-stri_split_boundaries(inputString, type="sentence")
@@ -664,7 +667,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
     
     #Cleaning
     x<-trimws(x)
-
+    
     
     
     #Prepare the text so that all empty text is replaced with NA and 
@@ -709,6 +712,71 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
   }
   )
   return(text)
+}
+
+#' MyImgLibrary
+#'
+#' This is used to pick and clean endoscopic images from html exports so they can be prepared
+#' before being linked to pathology and endoscopy reports
+#' @keywords Image extraction
+#' @param file The html report to extract (the html will have all the images references in it)
+#' @param delim The phrase that separates individual endoscopies
+#' @param location The folder containing the actual images
+#' @importFrom stringr str_extract 
+#' @importFrom lubridate parse_date_time
+#' @importFrom tidyr separate_rows
+#' @importFrom pander pandoc.image.return
+#' @importFrom data.table as.data.table
+#' @export
+#' @examples # MyImgLibrary("S:/Gastroenterology/Seb/R/Data/Barretts/Images Captured with Proc Data Audit_Findings1.html",
+#' #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
+
+MyImgLibrary<-function(file,delim,location){
+  
+  #Get the relative path from the www folder location which is where all files should be stored 
+  location<-gsub(".*\\/","",location)
+  htmlCode = readLines(file)
+  
+  #Collapse all the html together
+  mergedhtml<-paste(htmlCode, sep="", collapse="")
+  
+  #Split according to Procedure Performed which separates each record
+  df<-strsplit(mergedhtml, delim, fixed = FALSE, perl = FALSE, useBytes = FALSE)
+  df<-as.data.frame(df)
+  colnames(df)<-c("df")
+  
+  
+  #Extract and format dates properly
+  df$Endo_ResultEntered<-str_extract(df$df,"(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})")
+  #Get them all as dates:
+  df$Endo_ResultEntered<-parse_date_time(df$Endo_ResultEntered, orders = c("dmy", "ymd"))
+  
+  #Extract the patient ID:
+  df$PatientID<-str_extract(df$df,"[A-Z0-9]{1,}[0-9]{3,}[A-Z0-9]{1}")
+  
+  #Extract the images with the folder name which needs to be kept (but is relative in html so no need to strip it off)
+  df$img<-stringr::str_extract(df$df,"img src.*?(jpg|png|gif|bmp)")
+  
+  #Need to replace the with the current path here
+  #df$img<-gsub("img src=\"Images Captured with Proc Data Audit.files/","",df$img)
+  df$df<-NULL
+  
+  #Now collapse the table so all image files for a procedure in one row only:
+  mergeddf<-as.data.frame(as.data.table(df)[, toString(img), by = list(Endo_ResultEntered,PatientID)])
+  
+  #Split the comma separated img list into a list within the data frame so you should then be able to iterate over it:
+  mergeddf<-separate_rows(mergeddf,V1,sep=",")
+  mergeddf$V1<-gsub("img src=\"","",mergeddf$V1)
+  mergeddf$V1<-trimws(mergeddf$V1)
+  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.][a-z]+$")
+  mergeddf$url<-lapply(mergeddf$img,function(x) paste0("<img src=",location,"/",x,"'>"))
+  mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x)) 
+  mergeddf$V1<-NULL
+  mergeddf$url<-gsub("=","=\'",mergeddf$url)
+  
+  #For pandoc
+  mergeddf$url<-sapply(mergeddf$url,pandoc.image.return)
+  return(mergeddf)
 }
 
 
