@@ -10,9 +10,11 @@ sanity(pathName)
 \item{pathName}{The string in the Indication to search for}
 }
 \description{
-The idea of the package is that it creates a consort diagram using 
-diagrammeR but all the dataframes are automatically filled with the dataframes
-in the script. The user just provides a pathname for the script
+This function creates a consort diagram using 
+diagrammeR by assessing all of the dataframes in your script
+and populating each box in the consort diagram with the 
+number of rows in each dataframe as well as how the dataframes are linked
+together. The user just provides a pathname for the script
 }
 \examples{
 #pathName<-paste0(here::here(),"/inst/TemplateProject/munge/PreProcessing.R")

@@ -34,7 +34,8 @@
   
 <meta property="og:title" content="Basic graph creation using the template specified in theme_Publication. — EndoBasicGraph" />
 
-<meta property="og:description" content="This creates a basic graph using the template specified in theme_Publication." />
+<meta property="og:description" content="This creates a basic graph using the template specified in theme_Publication.
+It takes a numeric column and plots it against any non-numeric x axis in a ggplot" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -156,7 +157,8 @@
 
     <div class="ref-description">
     
-    <p>This creates a basic graph using the template specified in theme_Publication.</p>
+    <p>This creates a basic graph using the template specified in theme_Publication.
+It takes a numeric column and plots it against any non-numeric x axis in a ggplot</p>
     
     </div>
 
@@ -171,7 +173,7 @@
     </tr>
     <tr>
       <th>xdata</th>
-      <td><p>The Time column</p></td>
+      <td><p>The x column</p></td>
     </tr>
     <tr>
       <th>number</th>
@@ -181,13 +183,13 @@
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Myplot the EDA final plot</p>
+    <p>Myplot This is the final plot</p>
 <p>Myplot</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># This function plot numeric y vs non-numeric x</span>
-<span class='co'># Get some numeric columns eg number of biopsies and size</span>
+    <pre class="examples"><div class='input'><span class='co'># This function plots numeric y vs non-numeric x</span>
+<span class='co'># Get some numeric columns e.g. number of biopsies and size</span>
 <span class='no'>Mypath</span>$<span class='no'>Size</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='HistolBxSize.html'>HistolBxSize</a></span>(<span class='no'>Mypath</span>$<span class='no'>Macroscopicdescription</span>)
 <span class='no'>Mypath</span>$<span class='no'>NumBx</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='HistolNumbOfBx.html'>HistolNumbOfBx</a></span>(<span class='no'>Mypath</span>$<span class='no'>Macroscopicdescription</span>, <span class='st'>"specimen"</span>)
 <span class='no'>Mypath2</span> <span class='kw'>&lt;-</span> <span class='no'>Mypath</span>[, <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"NumBx"</span>, <span class='st'>"Size"</span>)]
