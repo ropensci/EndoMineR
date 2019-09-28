@@ -7,8 +7,4 @@ articles:
   Data: Data.html
   EndoMineR: EndoMineR.html
   Polyps: Polyps.html
-reference:
-  - title: "Barrett's functions"
-    desc: "Functions for analysis of Barrett's episodes"
-    contents:
-      - starts_with("Barrett")
+
