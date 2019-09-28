@@ -1,7 +1,7 @@
 ############## Endoscopy Clean-up functions##############
 
 
-#' Cleans endoscopist column if present
+#' Clean endoscopist column
 #'
 #' If an endoscopist column is part of the dataset once the extractor
 #' function has been used this cleans the endoscopist column from the report.
@@ -29,7 +29,7 @@ EndoscEndoscopist <- function(EndoscopistColumn) {
 
 
 
-#' Cleans instrument column if present
+#' Clean instrument column
 #'
 #' This cleans the Instument column from the report assuming such a column exists
 #' (where instrument usually refers to the endoscope number being used.)
@@ -63,7 +63,7 @@ EndoscInstrument <- function(EndoInstrument) {
 ############################# Extrapolating Endoscopy ################################
 
 
-#' Cleans medication column if present
+#' Clean medication column
 #'
 #' This cleans medication column from the report assuming such a column exists.
 #' It gets rid of common entries that are not needed. It also splits the
@@ -109,7 +109,7 @@ EndoscMeds <- function(MedColumn) {
 }
 
 
-#' EndoscopyEvent
+#' Extract the endoscopic event.
 #'
 #' This extracts the endoscopic event. It looks for the event 
 #' term and then looks in the event sentence as well as the one above to see if
@@ -165,7 +165,7 @@ EndoscopyEvent <- function(dataframe, EventColumn1, Procedure, Macroscopic, Hist
 ############################# Extrapolating Histology ################################
 
 
-#' Extract the number of biopsies taken from histology report
+#' Extract the number of biopsies taken from the histology report
 #'
 #' This extracts the number of biopsies taken from the pathology report.
 #' This is usually from the Macroscopic description column.
@@ -228,7 +228,7 @@ HistolBxSize <- function(MacroColumn) {
 
 
 
-#' HistolTypeAndSite
+#' Extract the site a specimen was removed from as well as the type
 #'
 #' This needs some blurb to be written. Used in the OPCS4 coding
 #' @keywords Find and replace

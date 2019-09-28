@@ -140,7 +140,7 @@ SurveilFirstTest <-
   }
 
 
-#' Time to status
+#' Extract the time to an event
 #'
 #' This function selects patients who have had a start event and an end
 #' event of the users choosing so you can determine things like how long
@@ -320,9 +320,6 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 
 ############## Group by endoscopist #####
 
-# Groups anything by Endoscopist and returns the table and a ggplot
-
-
 #' Plot a metric by endoscopist
 #'
 #' This takes any of the numerical metrics in the dataset and plots it by
@@ -366,10 +363,9 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 }
 
 
-############## Group by endoscopist #####
 
-# Groups anything by Endoscopist and returns the table
-
+#' Group anything by Endoscopist and returns the table
+#'
 #' This creates a proportion table for categorical variables by endoscopist
 #' It of course relies on a Endoscopist column being present
 #' @param ProportionColumn The column (categorical data) of interest

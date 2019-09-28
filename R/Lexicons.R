@@ -1,6 +1,6 @@
 ########## Lexicons ##########
 
-#' Extract pathology type
+#' Use list of pathology types
 #'
 #' This standardizes terms to describe the pathology tissue type being examined
 #' @keywords Pathology type
@@ -28,7 +28,7 @@ HistolType <- function() {
 
 
 
-#' Use list of standard locations
+#' Use list of upper and lower GI standard locations
 #'
 
 #' The is a list of standard locations at endoscopy. It used for the site of biopsies/EMRs 
@@ -53,7 +53,6 @@ LocationList <- function() {
 #' Use list of standard locations for upper GI endoscopy
 #'
 #' The is a list of standard locations at endoscopy that is used in the
-
 #' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a 
 #' therapeutic event. It just returns the list in the function.
 
@@ -83,11 +82,9 @@ LocationListUpper <- function() {
 
 #' Use list of standard locations for upper GI endoscopy
 #'
-
 #' The is a list of standard locations at endoscopy that is used in the
 #' extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a
 #' therapeutic event. It just returns the list in the function
-
 #'
 #'
 #' @keywords Location
@@ -164,7 +161,7 @@ RFACath <- function() {
   return(tofind)
 }
 
-#' Event list
+#' Use list of endoscopic events and procedures
 #'
 
 #' This function returns all the conversions from common version of events to
@@ -200,7 +197,7 @@ EventList <- function() {
 }
 
 
-#' Biopsy index list
+#' Index biopsy locations
 #'
 #' This function returns all the conversions from common version of events to
 #' a standardised event list, much like the Location standardidastion function
@@ -247,7 +244,7 @@ BiopsyIndex <- function() {
 
 
 
-#' GISymptoms
+#' Index of GI symptoms
 #'
 #' This function returns all the common GI symptoms. 
 #' They are simply listed as is without grouping
@@ -675,7 +672,7 @@ GISymptomsList <- function() {
 }
 
 
-#' Words to numbers
+#' Convetr words to numbers especially for the histopathology text
 #'
 #' This function converts words to numbers.
 #' @keywords Event extraction
