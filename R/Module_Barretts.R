@@ -42,7 +42,7 @@ if (getRversion() >= "2.15.1") {
 }
 ###### Barrett's specific extrapolation Functions ######
 
-#' Prague score extraction
+#' Extract the Prague score
 #'
 #' The aim is to extract a C and M stage (Prague score) for Barrett's samples.
 #' This is done using a regex where C and M stages are explicitly mentioned in
@@ -116,7 +116,7 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn, EndoReportColumn2)
 }
 
 
-#' Worst pathological stage Barrett's
+#' Get the worst pathological stage for Barrett's
 #'
 #' This extracts the pathological stage from the histopathology specimen. It is
 #' done using 'degradation' so that it will look for the worst overall grade
@@ -173,7 +173,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 
 
 
-#' Follow up group determination
+#' Determine the Follow up group
 #'
 #' This determines the follow up rule a patient should fit in to (according to
 #' the British Society for Gastroenterology guidance on Barrett's oesophagus)
@@ -247,7 +247,7 @@ Barretts_FUType <- function(dataframe, CStage, MStage, IMorNoIM) {
 
 
 
-#' All basic Barrett's functions
+#' Run all the basic Barrett's functions
 #'
 #' Function to encapsulate all the Barrett's functions together. This includes the Prague
 #' score and the worst pathological grade and then feeds both of these things into
@@ -273,7 +273,7 @@ BarrettsAll <- function(Endodataframe, EndoReportColumn, EndoReportColumn2, Path
 }
 
 
-#' Paris vs histopath Barrett's
+#' Run the Paris classification versus worst histopath grade for Barrett's
 #'
 #' This creates a column of Paris grade for all samples where this is mentioned.
 #' @param Column Endoscopy report field of interest as a string vector
@@ -312,7 +312,7 @@ BarrettsParisEMR <- function(Column, Column2) {
 ############## Pathology Quality #############
 
 
-#' Barrett's number of biopsies
+#' Get the number of Barrett's biopsies taken
 #'
 #' This function gets the biopsies taken per endoscopy and compares to the
 #' Prague score for that endoscopy.Endoscopists should be taking a certain
