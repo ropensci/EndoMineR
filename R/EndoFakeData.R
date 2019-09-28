@@ -8,9 +8,9 @@ if (getRversion() >= "2.15.1") {
 
 
 
-#' Endomerge
+#' Merge endoscopy and histology data.
 #'
-#' Merges endoscopy and histology data. This takes the endoscopy dataset date
+#'  This takes the endoscopy dataset date
 #' performed and the hospital number column
 #' and merges with the equivalent column in the pathology dataset. This is
 #' merged within a 7 day time frame as pathology is often reported after

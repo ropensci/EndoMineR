@@ -98,7 +98,7 @@ if (getRversion() >= "2.15.1")
 
 
 
-#' textPrep function
+#' Combine all the text cleaning and extraction functions into one
 #'
 #' This function prepares the data by cleaning 
 #' punctuation, checking spelling against the lexicons, mapping terms
@@ -165,7 +165,7 @@ textPrep<-function(inputText,delim){
 
 
 
-#' Extracts the columns from the raw report
+#' Extract columns from the raw text
 #'
 #' This is the main extractor for the Endoscopy and Histology report.
 #' This relies on the user creating a list of words representing the
@@ -270,7 +270,7 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 
 
 
-#' Removes negative and normal sentences
+#' Remove negative and normal sentences
 #'
 #' Extraction of the negative sentences so that normal findings can be
 #' removed and not counted when searching for true diseases. eg remove
@@ -410,7 +410,7 @@ NegativeRemove <- function(inputText) {
   return(inputText)
 }
 
-#' Find and Replace function
+#' Find and Replace
 #'
 #' This is a helper function for finding and replacing from lexicons
 #' like the event list. The lexicons are all named lists where the name
@@ -436,7 +436,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
     replace(x, lens > 0, mapply(sub, r[lens > 0], replacement, x[lens > 0]))
 }
 
-#' Tidies up messy columns
+#' Tidy up messy columns
 #'
 #' This does a general clean up of whitespace,
 #' semi-colons,full stops at the start
@@ -493,7 +493,7 @@ ColumnCleanUp <- function(vector) {
 }
 
 
-#' Paste into one
+#' Paste endoscopy and histology results into one
 #'
 #' As spreadsheets are likely to be submitted with pre-segregated data as appears from 
 #' endoscopy software output, these should be remerged prior to cleaning. This function
@@ -599,9 +599,9 @@ ExtrapolatefromDictionary<-function(inputString,list){
 
 ############## Extraction Utilities- Colocation ###################
 
-#' EntityPairs_OneSentence 
+#' See if words from two lists co-exist within a sentence 
 #'
-#' Use to see if words from two lists co-exist within a sentence. Eg site and tissue type.
+#' See if words from two lists co-exist within a sentence. Eg site and tissue type.
 #' This function only looks in one sentence for the two terms. If you suspect the terms may
 #' occur in adjacent sentences then use the EntityPairs_TwoSentence function.
 #' @keywords PathPairLookup
@@ -630,8 +630,8 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
   return(out)
 }
 
-#' EntityPairs_TwoSentence
-#'
+#' Look for relationships between site and event
+#' 
 #' This is used to look for relationships between site and event especially for endoscopy events
 #' where sentences such as 'The stomach polyp was large. It was removed with a snare' ie the therapy
 #' and the site are in two different locations.
@@ -714,7 +714,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
   return(text)
 }
 
-#' MyImgLibrary
+#' Clean html endoscopic images
 #'
 #' This is used to pick and clean endoscopic images from html exports so they can be prepared
 #' before being linked to pathology and endoscopy reports

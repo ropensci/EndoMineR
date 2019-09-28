@@ -6,6 +6,8 @@ if (getRversion() >= "2.15.1")
     )
   )
 
+#' Create a basic consort diagram from dataframes
+#' 
 #' The idea of the package is that it creates a consort diagram using 
 #' diagrammeR but all the dataframes are automatically filled with the dataframes
 #' in the script. The user just provides a pathname for the script

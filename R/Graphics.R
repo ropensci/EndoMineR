@@ -44,9 +44,9 @@ if (getRversion() >= "2.15.1") {
 ########### General graph tidy up functions ##############
 
 
-#' #' Sets the publication theme for all the ggplots
-#' #'
-#' #'
+#' Set the publication theme for all the ggplots
+#' 
+#' 
 #' @import grid
 #' @import scales
 #' @import ggthemes
@@ -90,23 +90,23 @@ theme_Publication <- function(base_size = 14, base_family = "Helvetica") {
 }
 
 
-#' #' Sets the publication theme for all the ggplots
+#' #' Set the fill theme for all the ggplots
 #' #'
 #' #'
 #' @keywords ggplot themes
 #' @import grid
 #' @import ggthemes
 #' @import scales
-#' @param ...
 #' @export
 #' @examples
 #' # None needed
 scale_fill_Publication <- function(...) {
   discrete_scale("fill", "Publication", manual_pal(values = c("#386cb0", "#fdb462", "#7fc97f", "#ef3b2c", "#662506", "#a6cee3", "#fb9a99", "#984ea3", "#ffff33")), ...)
-}
+  
+  }
 
 
-#' Sets the publication theme for all the ggplots
+#' Set the colour theme for all the ggplots
 #'
 #' @import grid
 #' @import scales
@@ -348,6 +348,8 @@ PatientFlow_CircosPlots <-
 ##################### Basic Graph #########################
 
 
+#' Basic graph creation using the template specified in theme_Publication.
+#' 
 #' This creates a basic graph using the template specified in theme_Publication.
 #' @param dataframe dataframe
 #' @param number The numeric column
