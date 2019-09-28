@@ -7,7 +7,9 @@
 scale_colour_Publication(...)
 }
 \description{
-Set the colour theme for all the ggplots
+This standardises the colours for any ggplot plot produced.
+If you do use it, like all ggplots it can be extended using the 
+"+" to add whatever else is necessary
 }
 \examples{
 # None needed
