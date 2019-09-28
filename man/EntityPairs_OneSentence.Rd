@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_CleanUp.R
 \name{EntityPairs_OneSentence}
 \alias{EntityPairs_OneSentence}
-\title{EntityPairs_OneSentence}
+\title{See if words from two lists co-exist within a sentence}
 \usage{
 EntityPairs_OneSentence(inputText, list1, list2)
 }
@@ -14,7 +14,7 @@ EntityPairs_OneSentence(inputText, list1, list2)
 \item{list2}{The second list to look for}
 }
 \description{
-Use to see if words from two lists co-exist within a sentence. Eg site and tissue type.
+See if words from two lists co-exist within a sentence. Eg site and tissue type.
 This function only looks in one sentence for the two terms. If you suspect the terms may
 occur in adjacent sentences then use the EntityPairs_TwoSentence function.
 }

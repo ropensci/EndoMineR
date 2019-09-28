@@ -2,9 +2,7 @@
 % Please edit documentation in R/Graphics.R
 \name{theme_Publication}
 \alias{theme_Publication}
-\title{#' Sets the publication theme for all the ggplots
-#'
-#'}
+\title{Set the publication theme for all the ggplots}
 \usage{
 theme_Publication(base_size = 14, base_family = "Helvetica")
 }
@@ -14,9 +12,7 @@ theme_Publication(base_size = 14, base_family = "Helvetica")
 \item{base_family}{the base family}
 }
 \description{
-#' Sets the publication theme for all the ggplots
-#'
-#'
+Set the publication theme for all the ggplots
 }
 \examples{
 # None needed

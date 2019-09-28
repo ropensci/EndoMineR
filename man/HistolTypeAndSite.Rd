@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_EndoPathExtractors.R
 \name{HistolTypeAndSite}
 \alias{HistolTypeAndSite}
-\title{HistolTypeAndSite}
+\title{Extract the site a specimen was removed from as well as the type}
 \usage{
 HistolTypeAndSite(inputString1, inputString2, procedureString)
 }
