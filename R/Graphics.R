@@ -46,6 +46,10 @@ if (getRversion() >= "2.15.1") {
 
 #' Set the publication theme for all the ggplots
 #' 
+#' This standardises the theme for any ggplot plot produced.
+#' If you do use it, like all ggplots it can be extended using the 
+#' "+" to add whatever else is necessary
+#' 
 #' 
 #' @import grid
 #' @import scales
@@ -90,9 +94,11 @@ theme_Publication <- function(base_size = 14, base_family = "Helvetica") {
 }
 
 
-#' #' Set the fill theme for all the ggplots
-#' #'
-#' #'
+#' Set the fills for all the ggplots
+#' 
+#' This standardises the fills for any ggplot plot produced.
+#' If you do use it, like all ggplots it can be extended using the 
+#' "+" to add whatever else is necessary
 #' @keywords ggplot themes
 #' @import grid
 #' @import ggthemes
@@ -107,6 +113,10 @@ scale_fill_Publication <- function(...) {
 
 
 #' Set the colour theme for all the ggplots
+#' 
+#' This standardises the colours for any ggplot plot produced.
+#' If you do use it, like all ggplots it can be extended using the 
+#' "+" to add whatever else is necessary
 #'
 #' @import grid
 #' @import scales
@@ -210,7 +220,9 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
 #' Create a Circos plot for patient flow
 #'
 #' This allows us to look at the overall flow from one
-#' type of procedure to another using circos plots.
+#' type of procedure to another using circos plots. A good example of it's 
+#' use might be to see how patients move from one state (e.g. having an
+#' EMR), to another state (e.g. undergoing RFA)
 #' @param dataframe dataframe
 #' @param Endo_ResultPerformed the column containing the date of the procedure
 #' @param ProcPerformed The procedure that you want to plot (eg EMR,
@@ -351,17 +363,18 @@ PatientFlow_CircosPlots <-
 #' Basic graph creation using the template specified in theme_Publication.
 #' 
 #' This creates a basic graph using the template specified in theme_Publication.
+#' It takes a numeric column and plots it against any non-numeric x axis in a ggplot
 #' @param dataframe dataframe
 #' @param number The numeric column
-#' @param xdata The Time column
+#' @param xdata The x column
 #' @import ggplot2
-#' @return Myplot the EDA final plot
+#' @return Myplot This is the final plot
 #' @keywords Time plots
 #' @export
 #' @return Myplot
 #' @examples
-#' # This function plot numeric y vs non-numeric x
-#' # Get some numeric columns eg number of biopsies and size
+#' # This function plots numeric y vs non-numeric x
+#' # Get some numeric columns e.g. number of biopsies and size
 #' Mypath$Size <- HistolBxSize(Mypath$Macroscopicdescription)
 #' Mypath$NumBx <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
 #' Mypath2 <- Mypath[, c("NumBx", "Size")]
