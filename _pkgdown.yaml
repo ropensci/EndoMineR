@@ -25,7 +25,6 @@ navbar:
           href: articles/Data.html
     - text: "Functions"
       href: reference/index.html
-
   right:
     - icon: fa fa-bullseye
       href: http://gastrodatascience.com
@@ -37,5 +36,85 @@ navbar:
       href: http://www.gastroenterologybook.com/
     - icon:  fas fa-stethoscope
       href: https://www.nhs.uk/profiles/consultant/6029157
+reference:
+  - title: "NLP - Text Cleaning and Extraction:"
+    desc: "Functions to clean raw text"
+    contents:
+      - textPrep
+      - Extractor
+      - DictionaryInPlaceReplace
+      - NegativeRemove
+      - spellCheck
+      - ColumnCleanUp
+      - ListLookup
+  - title: "NLP - Text merging:"
+    desc: "Functions to help merge datasets"
+    contents:
+      - EndoPaste
+      - Endomerge2
+  - title: "NLP - Lexicons:"
+    desc: "Basic lexicons"
+    contents:
+      - HistolType
+      - LocationList
+      - LocationListUpper
+      - LocationListUniversal
+      - LocationListLower
+      - RFACath
+      - EventList
+      - BiopsyIndex
+      - GISymptomsList
+      - WordsToNumbers
+  - title: "Specific Text Cleaning - Endoscopy specific cleaning functions:"
+    desc: "Functions to help clean endoscopy reports"
+    contents:
+      - EndoscEndoscopist
+      - EndoscInstrument
+      - EndoscMeds
+      - EndoscopyEvent
+  - title: "Specific Text Cleaning - Histology specific cleaning functions:"
+    desc: "Functions to help clean histology text"
+    contents:
+      - HistolNumbOfBx
+      - HistolBxSize
+      - HistolTypeAndSite
+  - title: "Basic Analysis Helper - Grouping by endoscopist"
+    desc: "Grouping by endoscopist"
+    contents:
+      - MetricByEndoscopist
+      - CategoricalByEndoscopist
+  - title: "Basic Analysis - Surveillance Functions:"
+    desc: "Functions to analyse surveillance intervals"
+    contents:
+      - SurveilTimeByRow
+      - SurveilLastTest
+      - SurveilFirstTest
+      - TimeToStatus
+      - HowManyOverTime
+  - title: "Disease Specific Analysis - Barretts Data"
+    desc: "Functions for reading and writing Barretts Data."
+    contents:
+      - starts_with("Barretts")
+  - title: "Disease Specific Analysis - Polyp functions:"
+    desc: "Polyp analysis"
+    contents:
+      - GRS_Type_Assess_By_Unit
+  - title: "Patient Flow functions:"
+    desc: "Visualise patient flow"
+    contents:
+      - SurveySankey
+      - PatientFlow_CircosPlots
+  - title: "Data overview:"
+    desc: "Basic consort diagrams"
+    contents:
+      - sanity
+  - title: "Data Presentation helpers:"
+    desc: "Functions to help with data visualisation"
+    contents:
+      - theme_Publication
+      - scale_fill_Publication
+      - scale_colour_Publication
+      - EndoBasicGraph
+
       
       
