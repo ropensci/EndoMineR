@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_EndoPathExtractors.R
 \name{HistolNumbOfBx}
 \alias{HistolNumbOfBx}
-\title{Extract the number of biopsies taken from histology report}
+\title{Extract the number of biopsies taken from the histology report}
 \usage{
 HistolNumbOfBx(inputString, regString)
 }

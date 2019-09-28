@@ -2,7 +2,7 @@
 % Please edit documentation in R/Module_Barretts.R
 \name{BarrettsBxQual}
 \alias{BarrettsBxQual}
-\title{Barrett's number of biopsies}
+\title{Get the number of Barrett's biopsies taken}
 \usage{
 BarrettsBxQual(dataframe, Endo_ResultPerformed, PatientID, Endoscopist)
 }

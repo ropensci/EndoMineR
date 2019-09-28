@@ -2,7 +2,7 @@
 % Please edit documentation in R/Module_Barretts.R
 \name{Barretts_PragueScore}
 \alias{Barretts_PragueScore}
-\title{Prague score extraction}
+\title{Extract the Prague score}
 \usage{
 Barretts_PragueScore(dataframe, EndoReportColumn, EndoReportColumn2)
 }

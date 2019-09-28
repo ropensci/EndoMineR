@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_CleanUp.R
 \name{EndoPaste}
 \alias{EndoPaste}
-\title{Paste into one}
+\title{Paste endoscopy and histology results into one}
 \usage{
 EndoPaste(x)
 }

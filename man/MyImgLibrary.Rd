@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_CleanUp.R
 \name{MyImgLibrary}
 \alias{MyImgLibrary}
-\title{MyImgLibrary}
+\title{Clean html endoscopic images}
 \usage{
 MyImgLibrary(file, delim, location)
 }

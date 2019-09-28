@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_EndoPathExtractors.R
 \name{EndoscMeds}
 \alias{EndoscMeds}
-\title{Cleans medication column if present}
+\title{Clean medication column}
 \usage{
 EndoscMeds(MedColumn)
 }

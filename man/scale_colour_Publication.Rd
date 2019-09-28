@@ -2,12 +2,12 @@
 % Please edit documentation in R/Graphics.R
 \name{scale_colour_Publication}
 \alias{scale_colour_Publication}
-\title{Sets the publication theme for all the ggplots}
+\title{Set the colour theme for all the ggplots}
 \usage{
 scale_colour_Publication(...)
 }
 \description{
-Sets the publication theme for all the ggplots
+Set the colour theme for all the ggplots
 }
 \examples{
 # None needed

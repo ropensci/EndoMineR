@@ -2,7 +2,7 @@
 % Please edit documentation in R/Module_Barretts.R
 \name{BarrettsParisEMR}
 \alias{BarrettsParisEMR}
-\title{Paris vs histopath Barrett's}
+\title{Run the Paris classification versus worst histopath grade for Barrett's}
 \usage{
 BarrettsParisEMR(Column, Column2)
 }

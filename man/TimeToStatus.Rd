@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{TimeToStatus}
 \alias{TimeToStatus}
-\title{Time to status}
+\title{Extract the time to an event}
 \usage{
 TimeToStatus(dataframe, HospNum, EVENT, indicatorEvent, endEvent)
 }

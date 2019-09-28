@@ -2,8 +2,7 @@
 % Please edit documentation in R/EndoMineR.R
 \name{CategoricalByEndoscopist}
 \alias{CategoricalByEndoscopist}
-\title{This creates a proportion table for categorical variables by endoscopist
-It of course relies on a Endoscopist column being present}
+\title{Group anything by Endoscopist and returns the table}
 \usage{
 CategoricalByEndoscopist(ProportionColumn, EndoscopistColumn)
 }

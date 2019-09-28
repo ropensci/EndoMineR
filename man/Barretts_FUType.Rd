@@ -2,7 +2,7 @@
 % Please edit documentation in R/Module_Barretts.R
 \name{Barretts_FUType}
 \alias{Barretts_FUType}
-\title{Follow up group determination}
+\title{Determine the Follow up group}
 \usage{
 Barretts_FUType(dataframe, CStage, MStage, IMorNoIM)
 }
