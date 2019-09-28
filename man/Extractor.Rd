@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_CleanUp.R
 \name{Extractor}
 \alias{Extractor}
-\title{Extracts the columns from the raw report}
+\title{Extract columns from the raw text}
 \usage{
 Extractor(inputString, delim)
 }

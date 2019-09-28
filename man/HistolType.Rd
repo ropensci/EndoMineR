@@ -2,7 +2,7 @@
 % Please edit documentation in R/Lexicons.R
 \name{HistolType}
 \alias{HistolType}
-\title{Extract pathology type}
+\title{Use list of pathology types}
 \usage{
 HistolType()
 }

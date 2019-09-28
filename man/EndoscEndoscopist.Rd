@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_EndoPathExtractors.R
 \name{EndoscEndoscopist}
 \alias{EndoscEndoscopist}
-\title{Cleans endoscopist column if present}
+\title{Clean endoscopist column}
 \usage{
 EndoscEndoscopist(EndoscopistColumn)
 }

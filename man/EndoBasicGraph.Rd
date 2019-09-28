@@ -2,7 +2,7 @@
 % Please edit documentation in R/Graphics.R
 \name{EndoBasicGraph}
 \alias{EndoBasicGraph}
-\title{This creates a basic graph using the template specified in theme_Publication.}
+\title{Basic graph creation using the template specified in theme_Publication.}
 \usage{
 EndoBasicGraph(dataframe, xdata, number)
 }

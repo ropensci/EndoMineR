@@ -2,7 +2,7 @@
 % Please edit documentation in R/Lexicons.R
 \name{BiopsyIndex}
 \alias{BiopsyIndex}
-\title{Biopsy index list}
+\title{Index biopsy locations}
 \usage{
 BiopsyIndex()
 }

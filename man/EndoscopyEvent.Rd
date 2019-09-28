@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_EndoPathExtractors.R
 \name{EndoscopyEvent}
 \alias{EndoscopyEvent}
-\title{EndoscopyEvent}
+\title{Extract the endoscopic event.}
 \usage{
 EndoscopyEvent(dataframe, EventColumn1, Procedure, Macroscopic, Histology)
 }

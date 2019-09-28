@@ -2,9 +2,7 @@
 % Please edit documentation in R/ReportBuilder.R
 \name{sanity}
 \alias{sanity}
-\title{The idea of the package is that it creates a consort diagram using 
-diagrammeR but all the dataframes are automatically filled with the dataframes
-in the script. The user just provides a pathname for the script}
+\title{Create a basic consort diagram from dataframes}
 \usage{
 sanity(pathName)
 }

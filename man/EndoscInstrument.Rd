@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_EndoPathExtractors.R
 \name{EndoscInstrument}
 \alias{EndoscInstrument}
-\title{Cleans instrument column if present}
+\title{Clean instrument column}
 \usage{
 EndoscInstrument(EndoInstrument)
 }

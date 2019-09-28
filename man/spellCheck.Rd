@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_CleanUp.R
 \name{spellCheck}
 \alias{spellCheck}
-\title{Find and Replace function}
+\title{Find and Replace}
 \usage{
 spellCheck(pattern, replacement, x, fixed = FALSE, ...)
 }

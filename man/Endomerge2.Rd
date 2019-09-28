@@ -2,7 +2,7 @@
 % Please edit documentation in R/EndoFakeData.R
 \name{Endomerge2}
 \alias{Endomerge2}
-\title{Endomerge}
+\title{Merge endoscopy and histology data.}
 \usage{
 Endomerge2(x, EndoDate, EndoHospNumber, y, PathDate, PathHospNumber)
 }
@@ -20,7 +20,7 @@ Endomerge2(x, EndoDate, EndoHospNumber, y, PathDate, PathHospNumber)
 \item{PathHospNumber}{The unique hospital number in the endoscopy dataset}
 }
 \description{
-Merges endoscopy and histology data. This takes the endoscopy dataset date
+This takes the endoscopy dataset date
 performed and the hospital number column
 and merges with the equivalent column in the pathology dataset. This is
 merged within a 7 day time frame as pathology is often reported after
