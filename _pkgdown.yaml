@@ -7,8 +7,6 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Functions"
-      href: reference/index.html
     - text: "News"
       href: news/index.html
     - text: "Tutorials"
@@ -25,6 +23,8 @@ navbar:
           href: articles/Polyps.html
         - text: "Data"
           href: articles/Data.html
+    - text: "Functions"
+      href: reference/index.html
 
   right:
     - icon: fa fa-bullseye
