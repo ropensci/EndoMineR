@@ -2,7 +2,7 @@
 % Please edit documentation in R/Module_Barretts.R
 \name{Barretts_PathStage}
 \alias{Barretts_PathStage}
-\title{Worst pathological stage Barrett's}
+\title{Get the worst pathological stage for Barrett's}
 \usage{
 Barretts_PathStage(dataframe, PathColumn)
 }

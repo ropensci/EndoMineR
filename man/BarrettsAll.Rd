@@ -2,7 +2,7 @@
 % Please edit documentation in R/Module_Barretts.R
 \name{BarrettsAll}
 \alias{BarrettsAll}
-\title{All basic Barrett's functions}
+\title{Run all the basic Barrett's functions}
 \usage{
 BarrettsAll(Endodataframe, EndoReportColumn, EndoReportColumn2,
   Pathdataframe, PathColumn)

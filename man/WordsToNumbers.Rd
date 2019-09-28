@@ -2,7 +2,7 @@
 % Please edit documentation in R/Lexicons.R
 \name{WordsToNumbers}
 \alias{WordsToNumbers}
-\title{Words to numbers}
+\title{Convetr words to numbers especially for the histopathology text}
 \usage{
 WordsToNumbers()
 }

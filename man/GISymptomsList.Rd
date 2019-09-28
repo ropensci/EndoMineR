@@ -2,7 +2,7 @@
 % Please edit documentation in R/Lexicons.R
 \name{GISymptomsList}
 \alias{GISymptomsList}
-\title{GISymptoms}
+\title{Index of GI symptoms}
 \usage{
 GISymptomsList()
 }

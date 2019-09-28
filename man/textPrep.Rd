@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_CleanUp.R
 \name{textPrep}
 \alias{textPrep}
-\title{textPrep function}
+\title{Combine all the text cleaning and extraction functions into one}
 \usage{
 textPrep(inputText, delim)
 }

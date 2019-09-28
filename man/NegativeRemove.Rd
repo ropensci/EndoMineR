@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_CleanUp.R
 \name{NegativeRemove}
 \alias{NegativeRemove}
-\title{Removes negative and normal sentences}
+\title{Remove negative and normal sentences}
 \usage{
 NegativeRemove(inputText)
 }

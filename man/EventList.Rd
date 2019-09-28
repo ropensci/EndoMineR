@@ -2,7 +2,7 @@
 % Please edit documentation in R/Lexicons.R
 \name{EventList}
 \alias{EventList}
-\title{Event list}
+\title{Use list of endoscopic events and procedures}
 \usage{
 EventList()
 }

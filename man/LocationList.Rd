@@ -2,7 +2,7 @@
 % Please edit documentation in R/Lexicons.R
 \name{LocationList}
 \alias{LocationList}
-\title{Use list of standard locations}
+\title{Use list of upper and lower GI standard locations}
 \usage{
 LocationList()
 }

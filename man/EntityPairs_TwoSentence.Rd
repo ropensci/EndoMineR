@@ -2,7 +2,7 @@
 % Please edit documentation in R/Basic_CleanUp.R
 \name{EntityPairs_TwoSentence}
 \alias{EntityPairs_TwoSentence}
-\title{EntityPairs_TwoSentence}
+\title{Look for relationships between site and event}
 \usage{
 EntityPairs_TwoSentence(inputString, list1, list2)
 }
