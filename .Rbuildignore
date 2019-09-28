@@ -4,7 +4,7 @@
 ^\.travis\.yml$
 ^README\.Rmd$
 ^CONTRIBUTING\.md$
-^docs$
+^docs/.*
 ^pkgdown$
 ^_pkgdown\.yaml$
 ^codecov\.yml$
