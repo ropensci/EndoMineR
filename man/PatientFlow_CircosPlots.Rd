@@ -20,7 +20,9 @@ any dscription of a procedure you desire)}
 }
 \description{
 This allows us to look at the overall flow from one
-type of procedure to another using circos plots.
+type of procedure to another using circos plots. A good example of it's 
+use might be to see how patients move from one state (e.g. having an
+EMR), to another state (e.g. undergoing RFA)
 }
 \examples{
 # This function builds a circos plot which gives a more aggregated

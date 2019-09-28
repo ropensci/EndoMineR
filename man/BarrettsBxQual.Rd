@@ -16,11 +16,12 @@ BarrettsBxQual(dataframe, Endo_ResultPerformed, PatientID, Endoscopist)
 \item{Endoscopist}{name of the column with the Endoscopist names}
 }
 \description{
-This function gets the biopsies taken per endoscopy and compares to the
+This function gets the number of biopsies taken per 
+endoscopy and compares it to the
 Prague score for that endoscopy.Endoscopists should be taking a certain
 number of biopsies given the length of a Barrett's segment so it
 should be straightforward to detect a shortfall in the number
-of biopsies being taken.
+of biopsies being taken. The output is the shortfall per endoscopist
 }
 \examples{
 # Firstly relevant columns are extrapolated from the

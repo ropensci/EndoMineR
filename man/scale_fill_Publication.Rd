@@ -2,16 +2,14 @@
 % Please edit documentation in R/Graphics.R
 \name{scale_fill_Publication}
 \alias{scale_fill_Publication}
-\title{#' Set the fill theme for all the ggplots
-#'
-#'}
+\title{Set the fills for all the ggplots}
 \usage{
 scale_fill_Publication(...)
 }
 \description{
-#' Set the fill theme for all the ggplots
-#'
-#'
+This standardises the fills for any ggplot plot produced.
+If you do use it, like all ggplots it can be extended using the 
+"+" to add whatever else is necessary
 }
 \examples{
 # None needed

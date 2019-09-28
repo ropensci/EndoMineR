@@ -12,7 +12,9 @@ theme_Publication(base_size = 14, base_family = "Helvetica")
 \item{base_family}{the base family}
 }
 \description{
-Set the publication theme for all the ggplots
+This standardises the theme for any ggplot plot produced.
+If you do use it, like all ggplots it can be extended using the 
+"+" to add whatever else is necessary
 }
 \examples{
 # None needed
