@@ -314,11 +314,12 @@ BarrettsParisEMR <- function(Column, Column2) {
 
 #' Get the number of Barrett's biopsies taken
 #'
-#' This function gets the biopsies taken per endoscopy and compares to the
+#' This function gets the number of biopsies taken per 
+#' endoscopy and compares it to the
 #' Prague score for that endoscopy.Endoscopists should be taking a certain
 #' number of biopsies given the length of a Barrett's segment so it
 #' should be straightforward to detect a shortfall in the number
-#' of biopsies being taken.
+#' of biopsies being taken. The output is the shortfall per endoscopist
 #' @param dataframe dataframe
 #' @param Endo_ResultPerformed Date of the Endocscopy
 #' @param PatientID Patient's unique identifier
