@@ -1,6 +1,6 @@
 Package: EndoMineR
 Title: Functions to mine endoscopic and associated pathology datasets
-Version: 1.0.0.9000
+Version: 2.0.1.9000
 Authors@R: person("Sebastian", "Zeki", email = "sebastiz@hotmail.com",
   role = c("aut", "cre"))
 Description: This script comprises the functions that are used to clean up endoscopic 
