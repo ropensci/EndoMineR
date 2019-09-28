@@ -262,6 +262,7 @@ Barretts_FUType <- function(dataframe, CStage, MStage, IMorNoIM) {
 #' @importFrom dplyr case_when
 #' @export
 #' @return Newdf
+#' @seealso [Barretts_PragueScore()] [Barretts_PathStage()] [Barretts_FUType()]
 #' @examples
 #' Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
 BarrettsAll <- function(Endodataframe, EndoReportColumn, EndoReportColumn2, Pathdataframe, PathColumn) {

@@ -9,21 +9,22 @@ EndoBasicGraph(dataframe, xdata, number)
 \arguments{
 \item{dataframe}{dataframe}
 
-\item{xdata}{The Time column}
+\item{xdata}{The x column}
 
 \item{number}{The numeric column}
 }
 \value{
-Myplot the EDA final plot
+Myplot This is the final plot
 
 Myplot
 }
 \description{
 This creates a basic graph using the template specified in theme_Publication.
+It takes a numeric column and plots it against any non-numeric x axis in a ggplot
 }
 \examples{
-# This function plot numeric y vs non-numeric x
-# Get some numeric columns eg number of biopsies and size
+# This function plots numeric y vs non-numeric x
+# Get some numeric columns e.g. number of biopsies and size
 Mypath$Size <- HistolBxSize(Mypath$Macroscopicdescription)
 Mypath$NumBx <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
 Mypath2 <- Mypath[, c("NumBx", "Size")]
