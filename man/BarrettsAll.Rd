@@ -31,7 +31,9 @@ well as the new columns that have been created.
 Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
 }
 \seealso{
-[Barretts_PragueScore()] [Barretts_PathStage()] [Barretts_FUType()]
+[Barretts_PragueScore()] for PragueScore,
+[Barretts_PathStage()] for the worst path stage
+and [Barretts_FUType()] for follow up groups
 }
 \keyword{Does}
 \keyword{data}
