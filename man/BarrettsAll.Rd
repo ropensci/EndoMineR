@@ -30,6 +30,9 @@ well as the new columns that have been created.
 \examples{
 Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
 }
+\seealso{
+[Barretts_PragueScore()] [Barretts_PathStage()] [Barretts_FUType()]
+}
 \keyword{Does}
 \keyword{data}
 \keyword{something}
