@@ -56,6 +56,7 @@ if (getRversion() >= "2.15.1") {
 #' @importFrom dplyr case_when
 #' @keywords  Prague score
 #' @export
+#' @family Disease Specific Analysis - Barretts Data
 #' @examples
 #' # The example takes the endoscopy demo dataset and searches the
 #' # Findings column (which contains endoscopy free text about the
@@ -135,6 +136,7 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn, EndoReportColumn2)
 #' @export
 #' @importFrom rlang sym
 #' @importFrom dplyr case_when
+#' @family Disease Specific Analysis - Barretts Data
 #' @examples
 #' # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
@@ -196,6 +198,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
 #' @importFrom stringr str_extract str_replace
 #' @importFrom dplyr case_when
 #' @export
+#' @family Disease Specific Analysis - Barretts Data
 #' @examples
 #' # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
@@ -262,9 +265,7 @@ Barretts_FUType <- function(dataframe, CStage, MStage, IMorNoIM) {
 #' @importFrom dplyr case_when
 #' @export
 #' @return Newdf
-#' @seealso [Barretts_PragueScore()] for PragueScore,
-#' [Barretts_PathStage()] for the worst path stage
-#' and [Barretts_FUType()] for follow up groups.
+#' @family Disease Specific Analysis - Barretts Data
 #' @examples
 #' Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
 BarrettsAll <- function(Endodataframe, EndoReportColumn, EndoReportColumn2, Pathdataframe, PathColumn) {
@@ -285,6 +286,7 @@ BarrettsAll <- function(Endodataframe, EndoReportColumn, EndoReportColumn2, Path
 #' @importFrom dplyr case_when
 #' @export
 #' @return a string vector
+#' @family Disease Specific Analysis - Barretts Data
 #' @examples # 
 #' Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
 
@@ -332,6 +334,7 @@ BarrettsParisEMR <- function(Column, Column2) {
 #' @importFrom ggplot2 ggplot geom_point labs theme xlab ylab unit element_text
 #' @keywords Does something with data
 #' @export
+#' @family Disease Specific Analysis - Barretts Data
 #' @examples
 #' # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data

@@ -59,6 +59,7 @@ if (getRversion() >= "2.15.1") {
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
+#' @family Basic Analysis - Surveillance Functions
 #' @examples
 #' aa <- SurveilTimeByRow(
 #'   Myendo, "HospitalNumber",
@@ -95,6 +96,7 @@ SurveilTimeByRow <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
+#' @family Basic Analysis - Surveillance Functions
 #' @examples
 #' cc <- SurveilLastTest(Myendo, "HospitalNumber", "Dateofprocedure")
 SurveilLastTest <-
@@ -122,6 +124,7 @@ SurveilLastTest <-
 #' @importFrom rlang sym
 #' @keywords Surveillance
 #' @export
+#' @family Basic Analysis - Surveillance Functions
 #' @examples
 #' dd <- SurveilFirstTest(
 #'   Myendo, "HospitalNumber",
@@ -156,6 +159,7 @@ SurveilFirstTest <-
 #' @importFrom dplyr group_by slice mutate lead
 #' @importFrom rlang sym
 #' @export
+#' @family Basic Analysis - Surveillance Functions
 #' @examples
 #' # Firstly relevant columns are extrapolated from the
 #' # Mypath demo dataset. These functions are all part of Histology data
@@ -228,6 +232,7 @@ TimeToStatus <- function(dataframe, HospNum, EVENT, indicatorEvent, endEvent) {
 #' @importFrom rlang sym
 #' @importFrom ggplot2 geom_smooth geom_line geom_point scale_x_date theme_bw
 #' @keywords Tests number
+#' @family Basic Analysis - Surveillance Functions
 #' @export
 #' @examples
 #' # This takes the dataframe MyEndo (part of the package examples) and looks in
@@ -290,6 +295,7 @@ HowManyOverTime <-
 #' @import tm
 #' @keywords Lookup
 #' @export
+#' @family Basic Column mutators
 #' @examples
 #' # The function relies on defined a list of
 #' # words you are interested in and then choosing the column you are
@@ -333,6 +339,7 @@ ListLookup <- function(theframe, EndoReportColumn, myNotableWords) {
 #' @importFrom dplyr group_by summarise
 #' @importFrom rlang sym
 #' @keywords Endoscopist
+#' @family Grouping by endoscopist
 #' @export
 
 #' @examples #The function gives a table with any numeric
@@ -376,6 +383,7 @@ MetricByEndoscopist <- function(dataframe, Column, EndoscopistColumn) {
 #' @importFrom rlang sym
 #' @keywords Endoscopist
 #' @export
+#' @family Grouping by endoscopist
 #' @examples
 #' # The function plots any numeric metric by endoscopist
 #' # Mypath demo dataset. These functions are all part of Histology data
