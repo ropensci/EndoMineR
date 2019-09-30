@@ -20,4 +20,10 @@ of lines and converts end sentence full stops to new lines.
 \examples{
 ii<-ColumnCleanUp(Myendo$Findings)
 }
+\seealso{
+Other NLP - Text Cleaning and Extraction: \code{\link{DictionaryInPlaceReplace}},
+  \code{\link{Extractor}}, \code{\link{NegativeRemove}},
+  \code{\link{textPrep}}
+}
+\concept{NLP - Text Cleaning and Extraction}
 \keyword{Cleaner}

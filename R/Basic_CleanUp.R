@@ -549,7 +549,7 @@ EndoPaste<-function(x){
 #' @importFrom fuzzyjoin regex_left_join
 #' @importFrom dplyr as_tibble pull
 #' @export
-#' 
+#' @family Basic Column mutators 
 #' @examples #Firstly we extract histology from the raw report
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions and then extracts the type of tissue 
@@ -621,6 +621,7 @@ ExtrapolatefromDictionary<-function(inputString,list){
 #' @param list2 The second list to look for
 #' @importFrom purrr flatten_chr map_chr map map_if
 #' @export
+#' @family Basic Column mutators 
 #' @examples # tbb<-EntityPairs_OneSentence(Mypath$Histology,HistolType(),LocationList())
 
 EntityPairs_OneSentence<-function(inputText,list1,list2){
@@ -655,6 +656,7 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 #' @importFrom rlang is_empty
 #' @importFrom purrr flatten_chr map_chr map map_if
 #' @export
+#' @family Basic Column mutators 
 #' @examples # tbb<-EntityPairs_TwoSentence(Myendo$Findings,EventList(),HistolType())
 
 EntityPairs_TwoSentence<-function(inputString,list1,list2){
@@ -739,6 +741,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' @importFrom pander pandoc.image.return
 #' @importFrom data.table as.data.table
 #' @export
+#' @family Basic Column mutators 
 #' @examples # MyImgLibrary("S:/Gastroenterology/Seb/R/Data/Barretts/Images Captured with Proc Data Audit_Findings1.html",
 #' #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
 

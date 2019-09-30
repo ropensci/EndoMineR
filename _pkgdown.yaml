@@ -69,6 +69,7 @@ reference:
     desc: "Basic Column mutators"
     contents:
       - ExtrapolatefromDictionary
+      - ListLookup
       - EntityPairs_OneSentence
       - EntityPairs_TwoSentence
       - MyImgLibrary
