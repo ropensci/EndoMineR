@@ -16,6 +16,7 @@
 #' @importFrom dplyr group_by_ do full_join
 #' @keywords Withdrawal
 #' @export
+#' @family Disease Specific Analysis - Polyp functions
 #' @examples
 #' nn <- GRS_Type_Assess_By_Unit(
 #'   vColon, "ProcedurePerformed",

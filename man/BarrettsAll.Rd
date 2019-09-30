@@ -31,10 +31,13 @@ well as the new columns that have been created.
 Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
 }
 \seealso{
-[Barretts_PragueScore()] for PragueScore,
-[Barretts_PathStage()] for the worst path stage
-and [Barretts_FUType()] for follow up groups.
+Other Disease Specific Analysis - Barretts Data: \code{\link{BarrettsBxQual}},
+  \code{\link{BarrettsParisEMR}},
+  \code{\link{Barretts_FUType}},
+  \code{\link{Barretts_PathStage}},
+  \code{\link{Barretts_PragueScore}}
 }
+\concept{Disease Specific Analysis - Barretts Data}
 \keyword{Does}
 \keyword{data}
 \keyword{something}

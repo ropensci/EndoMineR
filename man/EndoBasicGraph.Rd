@@ -30,5 +30,11 @@ Mypath$NumBx <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
 Mypath2 <- Mypath[, c("NumBx", "Size")]
 EndoBasicGraph(Mypath, "Size", "NumBx")
 }
+\seealso{
+Other Data Presentation helpers: \code{\link{scale_colour_Publication}},
+  \code{\link{scale_fill_Publication}},
+  \code{\link{theme_Publication}}
+}
+\concept{Data Presentation helpers}
 \keyword{Time}
 \keyword{plots}

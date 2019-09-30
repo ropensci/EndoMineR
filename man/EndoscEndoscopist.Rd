@@ -22,5 +22,10 @@ It should be used after the textPrep function
 \examples{
 Myendo$Endoscopist <- EndoscEndoscopist(Myendo$Endoscopist)
 }
+\seealso{
+Other Endoscopy specific cleaning functions: \code{\link{EndoscInstrument}},
+  \code{\link{EndoscMeds}}, \code{\link{EndoscopyEvent}}
+}
+\concept{Endoscopy specific cleaning functions}
 \keyword{Endoscopist}
 \keyword{extraction}

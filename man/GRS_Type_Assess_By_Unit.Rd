@@ -32,4 +32,5 @@ nn <- GRS_Type_Assess_By_Unit(
   "Endoscopist", "Diagnosis", "Original.y"
 )
 }
+\concept{Disease Specific Analysis - Polyp functions}
 \keyword{Withdrawal}

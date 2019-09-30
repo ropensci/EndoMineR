@@ -26,6 +26,11 @@ Mypath,'Dateofprocedure','HospitalNumber')
 PathSiteAndType <- HistolTypeAndSite(Myendo2$PathReportWhole,
 Myendo2$Macroscopicdescription, Myendo2$ProcedurePerformed)
 }
+\seealso{
+Other Histology specific cleaning functions: \code{\link{HistolBxSize}},
+  \code{\link{HistolNumbOfBx}}
+}
+\concept{Histology specific cleaning functions}
 \keyword{Find}
 \keyword{and}
 \keyword{replace}

@@ -24,10 +24,10 @@ It uses fuzzy find and replace to account for spelling errors
 }
 \examples{
 L <- tolower(stringr::str_split(HistolType(),"\\\\|"))
-inputText<-TheOGDReportFinal$OGDReportWhole
-inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
-
 }
+\concept{NLP - Text Cleaning and Extraction
+inputText<-TheOGDReportFinal$OGDReportWhole
+inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))}
 \keyword{Find}
 \keyword{and}
 \keyword{replace}

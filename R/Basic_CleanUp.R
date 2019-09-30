@@ -110,6 +110,7 @@ if (getRversion() >= "2.15.1")
 #' @param delim the delimitors so the extractor can be used
 #' @importFrom stringi stri_split_boundaries
 #' @export
+#' @family NLP - Text Cleaning and Extraction
 #' @return This returns a string vector.
 #' @examples mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
@@ -183,6 +184,7 @@ textPrep<-function(inputText,delim){
 #' @importFrom tidyr separate
 #' @importFrom rlang sym
 #' @keywords Extraction
+#' @family NLP - Text Cleaning and Extraction
 #' @export
 #' @examples
 #' # As column names cant start with a number, one of the dividing
@@ -196,6 +198,7 @@ textPrep<-function(inputText,delim){
 
 
 Extractor <- function(inputString, delim) {
+
 
 #Create a named list of words
 delim <- gsub(":","",delim)
@@ -225,6 +228,7 @@ g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
 m <- read.dcf(textConnection(g))
 m<-data.frame(m,stringsAsFactors = FALSE)
 return(m)
+
 }
 
 
@@ -240,6 +244,7 @@ return(m)
 #' @keywords Replace
 #' @export
 #' @return This returns a character vector
+#' @family NLP - Text Cleaning and Extraction
 #' @examples inputText<-DictionaryInPlaceReplace(TheOGDReportFinal$OGDReportWhole,LocationList())
 
 
@@ -283,7 +288,9 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 #' @export
 #' @return This returns a column within a dataframe. THis should be changed to a 
 #' character vector eventually
-#' @examples # Build a character vector and then incorporate into a dataframe
+#' @family NLP - Text Cleaning and Extraction
+#' @examples # Build a character vector and then
+#' # incorporate into a dataframe
 #' anexample<-c("There is no evidence of polyp here",
 #' "Although the prep was poor,there was no adenoma found",
 #' "The colon was basically inflammed, but no polyp was seen",
@@ -423,6 +430,7 @@ NegativeRemove <- function(inputText) {
 #' @param x the target string
 #' @return This returns a character vector
 #' @examples L <- tolower(stringr::str_split(HistolType(),"\\|"))
+#' @family NLP - Text Cleaning and Extraction
 #' inputText<-TheOGDReportFinal$OGDReportWhole
 #' inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
 #' 
@@ -447,6 +455,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
 #' @importFrom stringr str_replace 
 #' @importFrom stringi stri_split_boundaries
 #' @return This returns a character vector
+#' @family NLP - Text Cleaning and Extraction
 #' @examples ii<-ColumnCleanUp(Myendo$Findings)
 
 
@@ -506,6 +515,7 @@ ColumnCleanUp <- function(vector) {
 #' @export
 #' @return This returns a list with a dataframe containingone column of the merged text
 #' and a character vector which is the delimiter list for when the textPrep function is used
+#' @family NLP - Text merging:
 #' @examples testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
 #' ), HospitalNumber = c("H55435", "Y3425345", "Z343424"), Text = c("All bad. Not good", 
 #' "Serious issues", "from a land far away")), class = "data.frame", row.names = c(NA, -3L))
@@ -539,6 +549,7 @@ EndoPaste<-function(x){
 #' @importFrom fuzzyjoin regex_left_join
 #' @importFrom dplyr as_tibble pull
 #' @export
+#' @family Basic Column mutators 
 #' @examples #Firstly we extract histology from the raw report
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions and then extracts the type of tissue 
@@ -610,6 +621,7 @@ ExtrapolatefromDictionary<-function(inputString,list){
 #' @param list2 The second list to look for
 #' @importFrom purrr flatten_chr map_chr map map_if
 #' @export
+#' @family Basic Column mutators 
 #' @examples # tbb<-EntityPairs_OneSentence(Mypath$Histology,HistolType(),LocationList())
 
 EntityPairs_OneSentence<-function(inputText,list1,list2){
@@ -644,6 +656,7 @@ EntityPairs_OneSentence<-function(inputText,list1,list2){
 #' @importFrom rlang is_empty
 #' @importFrom purrr flatten_chr map_chr map map_if
 #' @export
+#' @family Basic Column mutators 
 #' @examples # tbb<-EntityPairs_TwoSentence(Myendo$Findings,EventList(),HistolType())
 
 EntityPairs_TwoSentence<-function(inputString,list1,list2){
@@ -728,6 +741,7 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' @importFrom pander pandoc.image.return
 #' @importFrom data.table as.data.table
 #' @export
+#' @family Basic Column mutators 
 #' @examples # MyImgLibrary("S:/Gastroenterology/Seb/R/Data/Barretts/Images Captured with Proc Data Audit_Findings1.html",
 #' #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
 

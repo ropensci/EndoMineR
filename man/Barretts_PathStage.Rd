@@ -33,5 +33,13 @@ which is called Dx_Simplified
 b <- Barretts_PathStage(Mypath, "Histology")
 rm(v)
 }
+\seealso{
+Other Disease Specific Analysis - Barretts Data: \code{\link{BarrettsAll}},
+  \code{\link{BarrettsBxQual}},
+  \code{\link{BarrettsParisEMR}},
+  \code{\link{Barretts_FUType}},
+  \code{\link{Barretts_PragueScore}}
+}
+\concept{Disease Specific Analysis - Barretts Data}
 \keyword{Pathology}
 \keyword{extraction}
