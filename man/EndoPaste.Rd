@@ -27,6 +27,7 @@ testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
 "Serious issues", "from a land far away")), class = "data.frame", row.names = c(NA, -3L))
 EndoPaste(testList)
 }
+\concept{NLP - Text merging:}
 \keyword{Merge}
 \keyword{columns}
 \keyword{dataframe}

@@ -4,6 +4,7 @@
 #'
 #' This standardizes terms to describe the pathology tissue type being examined
 #' @keywords Pathology type
+#' @family NLP - Lexicons
 #' @export
 
 HistolType <- function() {
@@ -38,6 +39,7 @@ HistolType <- function() {
 #'
 #'
 #' @keywords Location
+#' @family NLP - Lexicons
 #' @export
 
 LocationList <- function() {
@@ -59,6 +61,7 @@ LocationList <- function() {
 #'
 #'
 #' @keywords Location
+#' @family NLP - Lexicons
 #' @export
 
 LocationListUpper <- function() {
@@ -88,6 +91,7 @@ LocationListUpper <- function() {
 #'
 #'
 #' @keywords Location
+#' @family NLP - Lexicons
 #' @export
 
 LocationListUniversal <- function() {
@@ -107,6 +111,7 @@ LocationListUniversal <- function() {
 #'
 #'
 #' @keywords Location
+#' @family NLP - Lexicons
 #' @export
 
 LocationListLower <- function() {
@@ -146,6 +151,7 @@ LocationListLower <- function() {
 #' The takes a list of catheters used in radiofrequency ablation.
 #'
 #' @keywords RFA
+#' @family NLP - Lexicons
 #' @export
 
 RFACath <- function() {
@@ -170,6 +176,7 @@ RFACath <- function() {
 
 #' extracted from the pathology so is part of pathology type.
 #' @keywords Event extraction
+#' @family NLP - Lexicons
 #' @examples
 #' # unique(unlist(EventList(), use.names = FALSE))
 #' @export
@@ -205,6 +212,7 @@ EventList <- function() {
 #' extracted from the pathology so is part of pathology type. It is used for
 #' automated OPCS-4 coding.
 #' @keywords Event extraction
+#' @family NLP - Lexicons
 #' @export
 
 BiopsyIndex <- function() {
@@ -252,6 +260,7 @@ BiopsyIndex <- function() {
 #' list with synonyms derived from the UMLS Methatharus
 #' using the browser.
 #' @keywords Event extraction
+#' @family NLP - Lexicons
 #' @export
 
 GISymptomsList <- function() {
@@ -676,6 +685,7 @@ GISymptomsList <- function() {
 #'
 #' This function converts words to numbers.
 #' @keywords Event extraction
+#' @family NLP - Lexicons
 #' @export
 
 WordsToNumbers <- function() {

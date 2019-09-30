@@ -13,5 +13,15 @@ This does not include EMR as this is
 extracted from the pathology so is part of pathology type. It is used for
 automated OPCS-4 coding.
 }
+\seealso{
+Other NLP - Lexicons: \code{\link{EventList}},
+  \code{\link{GISymptomsList}}, \code{\link{HistolType}},
+  \code{\link{LocationListLower}},
+  \code{\link{LocationListUniversal}},
+  \code{\link{LocationListUpper}},
+  \code{\link{LocationList}}, \code{\link{RFACath}},
+  \code{\link{WordsToNumbers}}
+}
+\concept{NLP - Lexicons}
 \keyword{Event}
 \keyword{extraction}

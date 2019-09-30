@@ -21,7 +21,8 @@ looking for candidal infections. It is used by default as part of
 the textPrep function but can be turned off as an optional parameter
 }
 \examples{
-# Build a character vector and then incorporate into a dataframe
+# Build a character vector and then
+# incorporate into a dataframe
 anexample<-c("There is no evidence of polyp here",
 "Although the prep was poor,there was no adenoma found",
 "The colon was basically inflammed, but no polyp was seen",
@@ -33,5 +34,11 @@ names(anexample)<-"Thecol"
 # parts of sentences) with negative parts in them.
 hh<-NegativeRemove(anexample$Thecol)
 }
+\seealso{
+Other NLP - Text Cleaning and Extraction: \code{\link{ColumnCleanUp}},
+  \code{\link{DictionaryInPlaceReplace}},
+  \code{\link{Extractor}}, \code{\link{textPrep}}
+}
+\concept{NLP - Text Cleaning and Extraction}
 \keyword{Negative}
 \keyword{Sentences}

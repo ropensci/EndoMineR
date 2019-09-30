@@ -23,4 +23,9 @@ as the endoscope coding used here is not widely used.
 \examples{
 Myendo$Instrument <- EndoscInstrument(Myendo$Instrument)
 }
+\seealso{
+Other Endoscopy specific cleaning functions: \code{\link{EndoscEndoscopist}},
+  \code{\link{EndoscMeds}}, \code{\link{EndoscopyEvent}}
+}
+\concept{Endoscopy specific cleaning functions}
 \keyword{Instrument}

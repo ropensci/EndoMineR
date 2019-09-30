@@ -51,4 +51,8 @@ hh <- PatientFlow_CircosPlots(Myendo, "Dateofprocedure", "PatientID", "EndoEvent
 rm(Myendo)
 rm(EndoEvent)
 }
+\keyword{@family}
 \keyword{Circos}
+\keyword{Flow}
+\keyword{Patient}
+\keyword{functions}

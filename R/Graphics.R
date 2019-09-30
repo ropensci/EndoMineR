@@ -58,6 +58,7 @@ if (getRversion() >= "2.15.1") {
 #' @param base_size the base size
 #' @param base_family the base family
 #' @export
+#' @family Data Presentation helpers
 #' @examples
 #' # None needed
 theme_Publication <- function(base_size = 14, base_family = "Helvetica") {
@@ -104,6 +105,7 @@ theme_Publication <- function(base_size = 14, base_family = "Helvetica") {
 #' @import ggthemes
 #' @import scales
 #' @export
+#' @family Data Presentation helpers
 #' @examples
 #' # None needed
 scale_fill_Publication <- function(...) {
@@ -123,6 +125,7 @@ scale_fill_Publication <- function(...) {
 #' @import ggthemes
 #' @keywords ggplot themes
 #' @export
+#' @family Data Presentation helpers
 #' @examples
 #' # None needed
 scale_colour_Publication <- function(...) {
@@ -151,6 +154,7 @@ scale_colour_Publication <- function(...) {
 #' @importFrom magrittr '%>%'
 #' @importFrom data.table 'setDT' 'rowid'
 #' @keywords Sankey
+#' @family Patient Flow functions
 #' @export
 #' @examples names(Myendo)[names(Myendo) == "HospitalNumber"] <- "PatientID"
 #' gg <- SurveySankey(Myendo, "ProcedurePerformed", "PatientID")
@@ -234,6 +238,7 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
 #' @importFrom magrittr '%>%'
 #' @importFrom rlang sym
 #' @keywords Circos
+#'  @family Patient Flow functions
 #' @export
 #' @examples
 #' # This function builds a circos plot which gives a more aggregated
@@ -371,6 +376,7 @@ PatientFlow_CircosPlots <-
 #' @return Myplot This is the final plot
 #' @keywords Time plots
 #' @export
+#' @family Data Presentation helpers
 #' @return Myplot
 #' @examples
 #' # This function plots numeric y vs non-numeric x

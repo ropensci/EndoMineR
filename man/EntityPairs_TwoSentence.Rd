@@ -21,6 +21,12 @@ and the site are in two different locations.
 \examples{
 # tbb<-EntityPairs_TwoSentence(Myendo$Findings,EventList(),HistolType())
 }
+\seealso{
+Other Basic Column mutators: \code{\link{EntityPairs_OneSentence}},
+  \code{\link{ExtrapolatefromDictionary}},
+  \code{\link{ListLookup}}, \code{\link{MyImgLibrary}}
+}
+\concept{Basic Column mutators}
 \keyword{Find}
 \keyword{and}
 \keyword{replace}

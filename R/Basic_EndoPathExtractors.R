@@ -14,6 +14,7 @@
 #' @export
 #' @return This returns a character vector
 #' @importFrom stringr str_replace
+#' @family Endoscopy specific cleaning functions
 #' @examples
 #' Myendo$Endoscopist <- EndoscEndoscopist(Myendo$Endoscopist)
 EndoscEndoscopist <- function(EndoscopistColumn) {
@@ -42,6 +43,7 @@ EndoscEndoscopist <- function(EndoscopistColumn) {
 #' @return This returns a character vector
 #' @importFrom stringr str_replace
 #' @export
+#' @family Endoscopy specific cleaning functions
 #' @examples
 #' Myendo$Instrument <- EndoscInstrument(Myendo$Instrument)
 EndoscInstrument <- function(EndoInstrument) {
@@ -74,6 +76,7 @@ EndoscInstrument <- function(EndoInstrument) {
 #' @return This returns a dataframe
 #' @importFrom stringr str_extract str_replace
 #' @export
+#' @family Endoscopy specific cleaning functions
 #' @examples
 #' MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
 EndoscMeds <- function(MedColumn) {
@@ -124,6 +127,7 @@ EndoscMeds <- function(MedColumn) {
 #' @param Histology Column with free text histology (usually microscopic histology)
 #' @return This returns a character vector
 #' @export
+#' @family Endoscopy specific cleaning functions
 #' @examples
 #' # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings",
 #' # "ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
@@ -177,6 +181,7 @@ EndoscopyEvent <- function(dataframe, EventColumn1, Procedure, Macroscopic, Hist
 #' @importFrom stringr str_match_all str_replace_all
 #' @keywords Biopsy number
 #' @export
+#' @family Histology specific cleaning functions
 #' @examples
 #' qq <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
 HistolNumbOfBx <- function(inputString, regString) {
@@ -211,6 +216,7 @@ HistolNumbOfBx <- function(inputString, regString) {
 #' @importFrom stringr  str_match str_replace
 #' @keywords biopsy size
 #' @export
+#' @family Histology specific cleaning functions
 #' @examples
 #' rr <- HistolBxSize(Mypath$Macroscopicdescription)
 HistolBxSize <- function(MacroColumn) {
@@ -237,6 +243,7 @@ HistolBxSize <- function(MacroColumn) {
 #' @param procedureString The column with the procedure in it
 #' @importFrom stringr str_remove_all str_replace_all
 #' @export
+#' @family Histology specific cleaning functions
 #' @return a list with two columns, one is the type and site and the other
 #' is the index to be used for OPCS4 coding later if needed.
 #' @examples
