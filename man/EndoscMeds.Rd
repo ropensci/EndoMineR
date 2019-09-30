@@ -21,5 +21,11 @@ It should be used after the textPrep function.
 \examples{
 MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
 }
+\seealso{
+Other Endoscopy specific cleaning functions: \code{\link{EndoscEndoscopist}},
+  \code{\link{EndoscInstrument}},
+  \code{\link{EndoscopyEvent}}
+}
+\concept{Endoscopy specific cleaning functions}
 \keyword{Endoscopy}
 \keyword{medications}

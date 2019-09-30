@@ -21,5 +21,10 @@ This is usually from the Macroscopic description column.
 \examples{
 rr <- HistolBxSize(Mypath$Macroscopicdescription)
 }
+\seealso{
+Other Histology specific cleaning functions: \code{\link{HistolNumbOfBx}},
+  \code{\link{HistolTypeAndSite}}
+}
+\concept{Histology specific cleaning functions}
 \keyword{biopsy}
 \keyword{size}

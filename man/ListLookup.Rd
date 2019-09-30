@@ -30,4 +30,11 @@ have those terms.
 myNotableWords <- c("arrett", "oeliac")
 jj <- ListLookup(Myendo, "Findings", myNotableWords)
 }
+\seealso{
+Other Basic Column mutators: \code{\link{EntityPairs_OneSentence}},
+  \code{\link{EntityPairs_TwoSentence}},
+  \code{\link{ExtrapolatefromDictionary}},
+  \code{\link{MyImgLibrary}}
+}
+\concept{Basic Column mutators}
 \keyword{Lookup}

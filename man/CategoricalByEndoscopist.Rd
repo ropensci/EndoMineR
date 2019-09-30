@@ -38,4 +38,8 @@ colnames(v)[colnames(v) == "pHospitalNum"] <- "HospitalNumber"
 kk <- CategoricalByEndoscopist(v$IMorNoIM, v$Endoscopist)
 rm(Myendo)
 }
+\seealso{
+Other Grouping by endoscopist: \code{\link{MetricByEndoscopist}}
+}
+\concept{Grouping by endoscopist}
 \keyword{Endoscopist}

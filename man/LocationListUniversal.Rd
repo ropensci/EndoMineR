@@ -11,4 +11,14 @@ The is a list of standard locations at endoscopy that is used in the
 extraction of the site of biopsies/EMRs and potentially in functions looking at the site of a
 therapeutic event. It just returns the list in the function
 }
+\seealso{
+Other NLP - Lexicons: \code{\link{BiopsyIndex}},
+  \code{\link{EventList}}, \code{\link{GISymptomsList}},
+  \code{\link{HistolType}},
+  \code{\link{LocationListLower}},
+  \code{\link{LocationListUpper}},
+  \code{\link{LocationList}}, \code{\link{RFACath}},
+  \code{\link{WordsToNumbers}}
+}
+\concept{NLP - Lexicons}
 \keyword{Location}

@@ -33,4 +33,8 @@ kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
 #if you want to see the graph
 rm(Myendo)
 }
+\seealso{
+Other Grouping by endoscopist: \code{\link{CategoricalByEndoscopist}}
+}
+\concept{Grouping by endoscopist}
 \keyword{Endoscopist}

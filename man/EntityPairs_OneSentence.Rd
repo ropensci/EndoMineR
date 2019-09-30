@@ -21,4 +21,10 @@ occur in adjacent sentences then use the EntityPairs_TwoSentence function.
 \examples{
 # tbb<-EntityPairs_OneSentence(Mypath$Histology,HistolType(),LocationList())
 }
+\seealso{
+Other Basic Column mutators: \code{\link{EntityPairs_TwoSentence}},
+  \code{\link{ExtrapolatefromDictionary}},
+  \code{\link{ListLookup}}, \code{\link{MyImgLibrary}}
+}
+\concept{Basic Column mutators}
 \keyword{PathPairLookup}

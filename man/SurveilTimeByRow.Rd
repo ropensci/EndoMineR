@@ -23,4 +23,10 @@ aa <- SurveilTimeByRow(
   "Dateofprocedure"
 )
 }
+\seealso{
+Other Basic Analysis - Surveillance Functions: \code{\link{HowManyOverTime}},
+  \code{\link{SurveilFirstTest}},
+  \code{\link{SurveilLastTest}}, \code{\link{TimeToStatus}}
+}
+\concept{Basic Analysis - Surveillance Functions}
 \keyword{Surveillance}
