@@ -114,6 +114,7 @@ if (getRversion() >= "2.15.1")
 #' text when headers are sometimes missing
 #' @importFrom stringi stri_split_boundaries
 #' @export
+#' @family NLP - Text Cleaning and Extraction
 #' @return This returns a string vector.
 #' @examples mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 #' "Date received:","Clinical Details:","Macroscopic description:",
@@ -247,6 +248,7 @@ textPrep<-function(inputText,delim,NegEx=c('TRUE','FALSE'),Extractor=c('1','2'))
 #' @importFrom tidyr separate
 #' @importFrom rlang sym
 #' @keywords Extraction
+#' @family NLP - Text Cleaning and Extraction
 #' @export
 #' @examples
 #' # As column names cant start with a number, one of the dividing
@@ -314,6 +316,7 @@ Extractor <- function(inputString, delim) {
 #' @importFrom stringr str_extract
 #' @keywords Extraction
 #' @export
+#' @family NLP - Text Cleaning and Extraction
 #' @examples v<-TheOGDReportFinal
 #' Myendo<-TheOGDReportFinal
 #' Myendo$OGDReportWhole<-gsub('2nd Endoscopist:','Second endoscopist:',
@@ -368,6 +371,7 @@ Extractor2 <- function(x, y, stra, strb, t) {
 #' @keywords Replace
 #' @export
 #' @return This returns a character vector
+#' @family NLP - Text Cleaning and Extraction
 #' @examples inputText<-DictionaryInPlaceReplace(TheOGDReportFinal$OGDReportWhole,LocationList())
 
 
@@ -414,6 +418,7 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 #' @export
 #' @return This returns a column within a dataframe. THis should be changed to a 
 #' character vector eventually
+#' @family NLP - Text Cleaning and Extraction
 #' @examples # Build a character vector and then
 #' # incorporate into a dataframe
 #' anexample<-c("There is no evidence of polyp here",
@@ -560,6 +565,7 @@ NegativeRemove <- function(inputText) {
 #' @param x the target string
 #' @return This returns a character vector
 #' @examples L <- tolower(stringr::str_split(HistolType(),"\\|"))
+#' @family NLP - Text Cleaning and Extraction
 #' inputText<-TheOGDReportFinal$OGDReportWhole
 #' inputText<-Reduce(function(x, nm) spellCheck(nm, L[[nm]], x), init = inputText, names(L))
 #' 
@@ -584,6 +590,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
 #' @importFrom stringr str_replace 
 #' @importFrom stringi stri_split_boundaries
 #' @return This returns a character vector
+#' @family NLP - Text Cleaning and Extraction
 #' @examples ii<-ColumnCleanUp(Myendo$Findings)
 
 
@@ -643,6 +650,7 @@ ColumnCleanUp <- function(vector) {
 #' @param x the dataframe
 #' @return This returns a list with a dataframe containingone column of the merged text
 #' and a character vector which is the delimiter list for when the textPrep function is used
+#' @family NLP - Text merging:
 #' @examples testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
 #' ), HospitalNumber = c("H55435", "Y3425345", "Z343424"), Text = c("All bad. Not good", 
 #' "Serious issues", "from a land far away")), class = "data.frame", row.names = c(NA, -3L))
@@ -676,6 +684,7 @@ EndoPaste<-function(x){
 #' @importFrom fuzzyjoin regex_left_join
 #' @importFrom dplyr as_tibble pull
 #' @export
+#' 
 #' @examples #Firstly we extract histology from the raw report
 #' # The function then standardises the histology terms through a series of
 #' # regular expressions and then extracts the type of tissue 
