@@ -20,4 +20,11 @@ patientID and the last test done
 \examples{
 cc <- SurveilLastTest(Myendo, "HospitalNumber", "Dateofprocedure")
 }
+\seealso{
+Other Basic Analysis - Surveillance Functions: \code{\link{HowManyOverTime}},
+  \code{\link{SurveilFirstTest}},
+  \code{\link{SurveilTimeByRow}},
+  \code{\link{TimeToStatus}}
+}
+\concept{Basic Analysis - Surveillance Functions}
 \keyword{Surveillance}

@@ -31,6 +31,11 @@ added to the event.
 # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings",
 # "ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 }
+\seealso{
+Other Endoscopy specific cleaning functions: \code{\link{EndoscEndoscopist}},
+  \code{\link{EndoscInstrument}}, \code{\link{EndoscMeds}}
+}
+\concept{Endoscopy specific cleaning functions}
 \keyword{Find}
 \keyword{and}
 \keyword{replace}
