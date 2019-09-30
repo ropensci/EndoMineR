@@ -65,6 +65,13 @@ reference:
       - BiopsyIndex
       - GISymptomsList
       - WordsToNumbers
+  - title: "Basic Column mutators"
+    desc: "Basic Column mutators"
+    contents:
+      - ExtrapolatefromDictionary
+      - EntityPairs_OneSentence
+      - EntityPairs_TwoSentence
+      - MyImgLibrary
   - title: "Specific Text Cleaning - Endoscopy specific cleaning functions:"
     desc: "Functions to help clean endoscopy reports"
     contents:
