@@ -4,7 +4,7 @@
 \alias{scale_fill_Publication}
 \title{Set the fills for all the ggplots}
 \usage{
-scale_fill_Publication(...)
+scale_fill_Publication()
 }
 \description{
 This standardises the fills for any ggplot plot produced.
