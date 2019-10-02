@@ -9,7 +9,7 @@ output:
     toc_depth: 5
     css: style.css
 vignette: >
-  %\VignetteIndexEntry{EndoMineR}
+  %\VignetteIndexEntry{Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
