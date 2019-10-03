@@ -4,7 +4,7 @@
 \alias{spellCheck}
 \title{Find and Replace}
 \usage{
-spellCheck(pattern, replacement, x, fixed = FALSE, ...)
+spellCheck(pattern, replacement, x, fixed = FALSE)
 }
 \arguments{
 \item{pattern}{the pattern to look for}

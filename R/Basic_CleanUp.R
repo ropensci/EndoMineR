@@ -436,7 +436,7 @@ NegativeRemove <- function(inputText) {
 #' 
 
 
-spellCheck <- function(pattern, replacement, x, fixed = FALSE, ...) {
+spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
   m <- aregexec(pattern, x, fixed = fixed,ignore.case = T)
   r <- regmatches(x, m)
   lens <- lengths(r)
