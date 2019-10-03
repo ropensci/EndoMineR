@@ -1,5 +1,5 @@
 ---
-title: Data
+title: "Data"
 author: Sebastian Zeki
 date: '`r format(Sys.Date(), "%B %d, %Y")`'
 output:
@@ -9,7 +9,7 @@ output:
     toc_depth: 5
     css: style.css
 vignette: >
-  %\VignetteIndexEntry{EndoMineR}
+  %\VignetteIndexEntry{Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

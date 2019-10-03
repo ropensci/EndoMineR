@@ -4,7 +4,7 @@
 \alias{scale_colour_Publication}
 \title{Set the colour theme for all the ggplots}
 \usage{
-scale_colour_Publication(...)
+scale_colour_Publication()
 }
 \description{
 This standardises the colours for any ggplot plot produced.
