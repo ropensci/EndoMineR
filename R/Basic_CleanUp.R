@@ -766,7 +766,7 @@ MyImgLibrary<-function(file,delim,location){
   df$Endo_ResultEntered<-parse_date_time(df$Endo_ResultEntered, orders = c("dmy", "ymd"))
   
   #Extract the patient ID:
-  df$PatientID<-str_extract(df$df,"[A-Z0-9]{1,}[0-9]{3,}[A-Z0-9]{1}")
+  df$PatientID<-str_extract(df$df,"(?:[A-Z]{1,}[0-9]{3,}[0-9]{1})|(?:[0-9]{1,}[0-9]{3,}[A-Z]{1})")
   
   #Extract the images with the folder name which needs to be kept (but is relative in html so no need to strip it off)
   df$img<-stringr::str_extract(df$df,"img src.*?(jpg|png|gif|bmp)")
