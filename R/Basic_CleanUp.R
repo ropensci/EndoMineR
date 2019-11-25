@@ -747,8 +747,9 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 
 MyImgLibrary<-function(file,delim,location){
   
-  #Get the relative path from the www folder location which is where all files should be stored 
-  location<-gsub(".*\\/","",location)
+  #Get the relative path from the www folder location which is where all files should be stored.
+  #Make sure the folder is after the www folder. All folders should be realtive to the www folder in the shiny app.
+  location<-gsub(".*\\/www\\/", "", location)
   htmlCode = readLines(file)
   
   #Collapse all the html together
