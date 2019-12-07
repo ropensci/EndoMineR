@@ -288,12 +288,12 @@ library(readxl)
 SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
 mywords<-c("PatientID","Patient Name","Date of Birth","General Practicioner","Hospital Number","Date of Procedure","Endoscopist","Second endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Complications","Co-morbidity","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED","FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP","OPCS4 Code","NATURE OF SPECIMEN","CLINICAL DETAILS","MACROSCOPICAL DESCRIPTION","HISTOLOGY","DIAGNOSIS")
 SelfOGD_Dunn2<-data.frame(paste(SelfOGD_Dunn$PatientID,",",SelfOGD_Dunn$Endo_ResultText,",",SelfOGD_Dunn$Histo_ResultText),stringsAsFactors = FALSE)
-SelfOGD_Dunn2<-textPrep(SelfOGD_Dunn2[,1],mywords)
+SelfOGD_Dunn2<-EndoMineR::textPrep(SelfOGD_Dunn2[,1],mywords)
 PathSite<-HistolTypeAndSite(SelfOGD_Dunn2$histology,SelfOGD_Dunn2$macroscopicaldescription,SelfOGD_Dunn2$procedureperformed)
 SelfOGD_Dunn2$PathSite<-unlist(PathSite[1])
 SelfOGD_Dunn2$PathSiteIndex<-unlist(PathSite[2])
 SelfOGD_Dunn2$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn2,"findings","procedureperformed","macroscopicaldescription","histology")
-as.Date(str_extract(SelfOGD_Dunn2$dateofprocedure,"\\d+.*\\d+"),"%d/%m/%Y")
+SelfOGD_Dunn2$EndoscopyEventRaw<-SelfOGD_Dunn2$EndoscopyEvent
 SelfOGD_Dunn3<-dev_ExtrapolateOPCS4Prep(SelfOGD_Dunn2,"procedureperformed","PathSiteIndex","EndoscopyEvent","extentofexam")
 write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
 
@@ -322,7 +322,7 @@ write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
  selectedClean$PatientID<-tolower(selectedClean$PatientID)
  mergedData <- merge(selectedClean,SelfOGD_Dunn3,by=c("Endo_ResultEntered","PatientID"))
  
- ForRules<-mergedData%>%filter(grepl("gastroscopy",procedureperformed))%>%select(extentofexam,histology,findings,EndoscopyEvent,prim_proc_code_description,x2nd_proc_code,PathSite,PathSiteIndex)%>%sample_n(100)
+ ForRules<-mergedData%>%filter(grepl("gastroscopy",procedureperformed))%>%select(extentofexam,histology,PathSite,PathSiteIndex,findings,EndoscopyEventRaw,EndoscopyEvent, OPCS4Primary,prim_proc_code_description,x2nd_proc_code)%>%sample_n(100)
  View(ForRules)
  
  
@@ -333,8 +333,6 @@ write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
 
 dev_ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event,extent) {  
   dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
-  
-  
   
   #For the primary codes:
   dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):apc","G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
