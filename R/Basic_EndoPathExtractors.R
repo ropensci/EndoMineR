@@ -414,33 +414,3 @@ dev_ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event,extent)
     )
   return(dataframe)
 }
->>>>>>> Feature_OPCS4Extract
-
-
-HistolTypeAndSite <- function(inputString1, inputString2, procedureString) {
-
-  output <- ifelse(EntityPairs_OneSentence(inputString1, HistolType(), LocationList()) == "NA:NA",
-    EntityPairs_OneSentence(inputString2, HistolType(), LocationList()),
-    EntityPairs_OneSentence(inputString1, HistolType(), LocationList())
-  )
-
-  # If there is only a colon (punctuation) and then empty then assume it is a biopsy
-  output <- str_replace_all(output, ":,|:$", ":biopsy,")
-
-  # Make sure only unique values represented:
-  output <- lapply(output, function(x) paste(unlist(unique(unlist(strsplit(x, ",")))), collapse = ","))
-
-  output <- ifelse(grepl("Gastroscopy", procedureString),
-    str_remove_all(output, paste0("(", tolower(paste0(unlist(LocationListLower(), use.names = F), collapse = "|")), ")", ":biopsy")),
-    ifelse(grepl("Colonoscopy|Flexi", procedureString),
-      str_remove_all(output, paste0("(", tolower(paste0(unlist(LocationListUpper(), use.names = F), collapse = "|")), ")", ":biopsy")), output
-    )
-  )
-
-  output <- unlist(output)
-
-  biopsyIndexresults <- suppressWarnings(suppressMessages(ExtrapolatefromDictionary(output, BiopsyIndex())))
-
-  output <- list(HistolTypeAndSite = output, BiopsyIndex = biopsyIndexresults)
-  return(output)
-}
