@@ -253,6 +253,170 @@ HistolBxSize <- function(MacroColumn) {
 #'Myendo2$Macroscopicdescription, Myendo2$ProcedurePerformed)
 
 
+
+HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
+  
+  output<-ifelse(EntityPairs_OneSentence(inputString1,HistolType(),LocationList())=="NA:NA", 
+                 EntityPairs_OneSentence(inputString2,HistolType(),LocationList()),
+                 EntityPairs_OneSentence(inputString1,HistolType(),LocationList()))
+  
+  #If there is only a colon (punctuation) and then empty then assume it is a biopsy
+  output<-str_replace_all(output, ":,|:$", ":biopsy,")
+  
+  #Make sure only unique values represented:
+  output<-lapply(output, function(x) paste(unlist(unique(unlist(strsplit(x,",")))),collapse=","))
+  
+  output<-ifelse(grepl("Gastroscopy",procedureString),
+                 str_remove_all(output, paste0('(',tolower( paste0(unlist(LocationListLower(),use.names=F),collapse="|")),')',':biopsy')),
+                 ifelse(grepl("Colonoscopy|Flexi",procedureString),
+                        str_remove_all(output, paste0('(',tolower(paste0(unlist(LocationListUpper(),use.names=F),collapse="|")),')',':biopsy')),output))
+  
+  output<-unlist(output)
+  
+  biopsyIndexresults<-ExtrapolatefromDictionary(output,BiopsyIndex())
+  
+  output<-list(HistolTypeAndSite=output,BiopsyIndex=biopsyIndexresults)
+  return(output)
+}
+
+#' OPCS-4 Coding 
+#'
+#' This function extracts the OPCS-4 codes for all Barrett's procedures
+#' It should take the OPCS-4 from the EVENT and perhaps also using extent
+#' depending on how the coding is done. The EVENT column will need to 
+#' extract multiple findings
+#' The hope is that the OPCS-4 column will then map from the EVENT column. This returns a nested list 
+#' column with the procedure, furthest path site and event performed 
+#' 
+#'
+#' @param dataframe the dataframe
+#' @param Event the EVENT column
+#' @param Procedure The Procedure column
+#' @param PathSite The column containing the Pathology site
+#' @keywords OPCS-4 codes extraction
+#' @importFrom dplyr mutate case_when
+#' @importFrom rlang sym
+#' @importFrom stringr str_detect
+#' @export
+#' @examples # Need to run the HistolTypeSite and EndoscopyEvent functions first here
+#' # SelfOGD_Dunn$OPCS4w<-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
+#' # "PathSite","EndoscopyEvent")
+
+# #####################################################   Sandbox    ##################################################################################################################
+library(readxl) 
+SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
+mywords<-c("PatientID","Patient Name","Date of Birth","General Practicioner","Hospital Number","Date of Procedure","Endoscopist","Second endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Complications","Co-morbidity","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED","FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP","OPCS4 Code","NATURE OF SPECIMEN","CLINICAL DETAILS","MACROSCOPICAL DESCRIPTION","HISTOLOGY","DIAGNOSIS")
+SelfOGD_Dunn2<-data.frame(paste(SelfOGD_Dunn$PatientID,",",SelfOGD_Dunn$Endo_ResultText,",",SelfOGD_Dunn$Histo_ResultText),stringsAsFactors = FALSE)
+SelfOGD_Dunn2<-EndoMineR::textPrep(SelfOGD_Dunn2[,1],mywords)
+PathSite<-HistolTypeAndSite(SelfOGD_Dunn2$histology,SelfOGD_Dunn2$macroscopicaldescription,SelfOGD_Dunn2$procedureperformed)
+SelfOGD_Dunn2$PathSite<-unlist(PathSite[1])
+SelfOGD_Dunn2$PathSiteIndex<-unlist(PathSite[2])
+SelfOGD_Dunn2$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn2,"findings","procedureperformed","macroscopicaldescription","histology")
+SelfOGD_Dunn2$EndoscopyEventRaw<-SelfOGD_Dunn2$EndoscopyEvent
+SelfOGD_Dunn3<-dev_ExtrapolateOPCS4Prep(SelfOGD_Dunn2,"procedureperformed","PathSiteIndex","EndoscopyEvent","extentofexam")
+write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
+
+
+#Checking against actual coding data
+ ManualOPCS_4<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/TB_ALLPATID_Dunn_2013ToPresent.xls")
+ library(janitor)
+ selectedClean<-ManualOPCS_4%>%select("Prim Proc Code & Description","2nd Proc Code","Trust ID",
+                                      "Consultant","Admission Date","Prim Diag Code & Description",
+                                      "2nd Diagnosis Code",
+                                      "3rd Diagnosis Code",
+                                      "5th Diagnosis Code",
+                                      "6th Diagnosis Code",
+                                      "7th Diagnosis Code",
+                                      "8th Diagnosis Code",
+                                      "9th Diagnosis Code",
+                                      "10th Diagnosis Code")
+ selectedClean<-clean_names(selectedClean,"snake")
+ names(selectedClean) <- gsub('admission_date', 'Endo_ResultEntered', names(selectedClean))
+ names(selectedClean) <- gsub('trust_id', 'PatientID', names(selectedClean))
+
+ #convert the date and hospital number column names so can do a merge
+ SelfOGD_Dunn3$Endo_ResultEntered<-as.Date(str_extract(SelfOGD_Dunn2$dateofprocedure,"\\d+.*\\d+"),"%d/%m/%Y")
+ selectedClean$Endo_ResultEntered<-as.Date(selectedClean$Endo_ResultEntered)
+ SelfOGD_Dunn3$PatientID<-str_extract(SelfOGD_Dunn3$Start,"[a-z]*\\d+[a-z]*")
+ selectedClean$PatientID<-tolower(selectedClean$PatientID)
+ mergedData <- merge(selectedClean,SelfOGD_Dunn3,by=c("Endo_ResultEntered","PatientID"))
+ 
+ ForRules<-mergedData%>%filter(grepl("gastroscopy",procedureperformed))%>%select(extentofexam,histology,PathSite,PathSiteIndex,findings,EndoscopyEventRaw,EndoscopyEvent, OPCS4Primary,prim_proc_code_description,x2nd_proc_code)%>%sample_n(100)
+ View(ForRules)
+ 
+ 
+ 
+ 
+######################################################################################################################################################################################################
+#For each event site:
+
+dev_ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event,extent) {  
+  dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
+  
+  #For the primary codes:
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):apc","G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):emr","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)  
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):polypectomy","G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) 
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):rfa","G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):esd","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):dilat", "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("APC","G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE) 
+  dataframe$EndoscopyEvent<-gsub("EMR","G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)  
+  dataframe$EndoscopyEvent<-gsub("Polypectomy","G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case= TRUE)
+  dataframe$EndoscopyEvent<-gsub("RFA","G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("ESD","G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("Dilatation","G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  
+  
+  #For the non-event entries:
+  
+  dataframe<-dataframe %>%   
+    mutate(OPCS4Primary = case_when(
+      grepl("OGD", dataframe$procedureperformed,ignore.case = TRUE) ~  case_when(
+        
+        #No event and no biopsy taken:
+        dataframe$EndoscopyEvent==""&(dataframe$PathSite==""|dataframe$PathSiteIndex=="NA:NA") ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
+        
+        #No event and upper GI biopsy taken:
+        dataframe$EndoscopyEvent==""& grepl("O",dataframe$PathSiteIndex,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
+        
+        #Event (oesophageal) and upper GI biopsy taken
+        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSiteIndex,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus"
+        
+      ),
+      TRUE ~ "SomethingElse"
+    ))
+  
+  
+  #For the secondary codes:
+  dataframe$MAXOFPATHSITE<-stringr::str_extract_all(dataframe$PathSiteIndex,"\\d")
+  dataframe$MAXOFPATHSITE<-lapply(dataframe$MAXOFPATHSITE,function(x) max(as.numeric(x)))
+  
+  dataframe<-dataframe %>%   
+    mutate(OPCS4ZCode = case_when( 
+      dataframe$PathSiteIndex==""~ case_when(
+        #1. if no biopsy and no Event (covers oesophageal and non-oesophageal), then give the extent reached
+        tolower(dataframe$extentofexam)=="second part of duodenum"~  "Z27.4",
+        tolower(dataframe$extentofexam)=="pylorus"~  "Z27.3",
+        tolower(dataframe$extentofexam)=="stomach"~  "Z27.2",
+        tolower(dataframe$extentofexam)=="oesophagus"~  "Z27.1",
+      ),
+      
+      #2.If event (oesophageal) and biopsy 
+      dataframe$PathSite!="" ~ case_when(
+        dataframe$MAXOFPATHSITE== 5 ~  "Z27.4",
+        dataframe$MAXOFPATHSITE== 4 ~  "Z27.3",
+        dataframe$MAXOFPATHSITE== 3 ~  "Z27.2",
+        dataframe$MAXOFPATHSITE== 1|2 ~  "Z27.1",
+      ),
+      TRUE ~ "No code here"
+    )
+    )
+  return(dataframe)
+}
+>>>>>>> Feature_OPCS4Extract
+
+
 HistolTypeAndSite <- function(inputString1, inputString2, procedureString) {
 
   output <- ifelse(EntityPairs_OneSentence(inputString1, HistolType(), LocationList()) == "NA:NA",
