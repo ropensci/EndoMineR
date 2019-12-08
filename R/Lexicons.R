@@ -187,14 +187,13 @@ EventList <- function() {
     "(argon plasma coagulation)|apc" = "APC",
     "halo| rfa" = "RFA",
     "dilatation|dilated" = "dilat",
-    " emr" = "EMR",
-    "(endoscopic mucosal resection)|(endoscopic mucosectomy)" = "EMR",
     "clip" = "clip",
     "grasp" = "grasp",
     "iodine" = "iodine",
     "acetic" = "acetic",
     "NAC" = "NAC",
     "Brushings" = "brushings"
+    " cryo" = "cryablation"
   )
 
   # To get the list as a list of values only in a regex use

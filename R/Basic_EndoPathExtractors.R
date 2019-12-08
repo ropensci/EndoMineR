@@ -116,9 +116,9 @@ EndoscMeds <- function(MedColumn) {
 #'
 #' This extracts the endoscopic event. It looks for the event 
 #' term and then looks in the event sentence as well as the one above to see if
-#' the location is listed. It needs to be run AFTER the 
-#' HistolTypeAndSite function as emr needs to be
-#' added to the event.
+#' the location is listed. It only looks within the endoscopy fields. If tissue is taken
+#' then this will be extracted with the HistolTypeAndSite function rather than being 
+#' listed as a result as this is cleaner and more robust.
 #' @keywords Find and replace
 #' @param dataframe datafrane of interest
 #' @param EventColumn1 The relevant endoscopt free text column describing the findings
@@ -137,21 +137,27 @@ EndoscopyEvent <- function(dataframe, EventColumn1, Procedure, Macroscopic, Hist
   # Extract the events from the
   output <- EntityPairs_TwoSentence(dataframe[, EventColumn1], EventList(), LocationList())
 
-  MyHistolEvents <- HistolTypeAndSite(dataframe[, Histology], dataframe[, Macroscopic], dataframe[, Procedure])
+  #MyHistolEvents <- HistolTypeAndSite(dataframe[, Histology], dataframe[, Macroscopic], dataframe[, Procedure])
   output <- unlist(lapply(output, function(x) paste(x, collapse = ";")))
+  #MyHistolEventsdf<-data.frame(MyHistolEvents[1],MyHistolEvents[2],stringsAsFactors = FALSE)
+  
+  #hiya %>%   
+  #  mutate(MyEvent = case_when(
+  #    grepl("emr", MyHistolEvents[1], ignore.case = TRUE) ~ "hi",
+  #    TRUE ~ "SomethingElse"
+  #  ))
 
-  # Add emr only if this is seen in the histopath
-  # Remove EMR from events if not seen in histopath
+  # Add emr only if this is seen in the histopath & remove EMR from events if not seen in histopath
 
   # If emr is in the histology and in the event then leave it
-  output <- ifelse(grepl("emr", MyHistolEvents, ignore.case = TRUE) & grepl("(oesophagus|goj|stomach|gastric|antrum|cardia|pylorus):emr", output, ignore.case = TRUE), output,
-    # If emr is in the histology but not in the event then dont add it (sometimes EMR written in the request as past therapy
-    # but  it hasn't actually been done)
-    ifelse(grepl("emr", MyHistolEvents, ignore.case = TRUE) & !grepl("emr", output, ignore.case = TRUE), gsub("[A-Za-z]+:emr", "", output),
-      # If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
-      ifelse(!grepl("emr|nodul", MyHistolEvents, ignore.case = TRUE) & grepl("emr", output, ignore.case = TRUE), gsub("[A-Za-z]+:emr", "", output), output)
-    )
-  )
+  # output <- ifelse(grepl("emr", MyHistolEvents, ignore.case = TRUE) & grepl("(oesophagus|goj|stomach|gastric|antrum|cardia|pylorus):emr", output, ignore.case = TRUE), output,
+  #   # If emr is in the histology but not in the event then dont add it (sometimes EMR written in the request as past therapy
+  #   # but  it hasn't actually been done)
+  #   ifelse(grepl("emr", MyHistolEvents, ignore.case = TRUE) & !grepl("emr", output, ignore.case = TRUE), gsub("[A-Za-z]+:emr", "", output),
+  #     # If emr is not in the histology but is in the event then remove from the event, otherwise leave as output
+  #     ifelse(!grepl("emr|nodul", MyHistolEvents, ignore.case = TRUE) & grepl("emr", output, ignore.case = TRUE), gsub("[A-Za-z]+:emr", "", output), output)
+  #   )
+  # )
 
 
 
@@ -343,7 +349,7 @@ write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
  selectedClean$PatientID<-tolower(selectedClean$PatientID)
  mergedData <- merge(selectedClean,SelfOGD_Dunn3,by=c("Endo_ResultEntered","PatientID"))
  
- ForRules<-mergedData%>%filter(grepl("gastroscopy",procedureperformed))%>%select(PatientID,extentofexam,histology,PathSite,PathSiteIndex,findings,EndoscopyEventRaw,EndoscopyEvent, OPCS4Primary,prim_proc_code_description,x2nd_proc_code)%>%sample_n(100)
+ ForRules<-mergedData%>%filter(grepl("gastroscopy",procedureperformed))%>%select(PatientID,extentofexam,macroscopicaldescription,histology,PathSite,PathSiteIndex,findings,EndoscopyEventRaw,EndoscopyEvent, OPCS4Primary,prim_proc_code_description,x2nd_proc_code)%>%sample_n(100)
  View(ForRules)
  
  
@@ -351,43 +357,49 @@ write_xlsx(SelfOGD_Dunn, "/home/rstudio/EndoscopyEventToValidate.xlsx")
  
 ######################################################################################################################################################################################################
 #For each event site:
-
 dev_ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event,extent) {  
   dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
   
   #For the primary codes:
-  dataframe$EndoscopyEventOPCS4<-gsub("(Oesophagus|GOJ):apc","G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE)
-  dataframe$EndoscopyEventOPCS4<-gsub("(Oesophagus|GOJ):emr","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE)  
-  dataframe$EndoscopyEventOPCS4<-gsub("(Oesophagus|GOJ):polypectomy","G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE) 
-  dataframe$EndoscopyEventOPCS4<-gsub("(Oesophagus|GOJ):rfa","G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE)
-  dataframe$EndoscopyEventOPCS4<-gsub("(Oesophagus|GOJ):esd","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE)
-  dataframe$EndoscopyEventOPCS4<-gsub("(Oesophagus|GOJ):dilat", "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE)
-  dataframe$EndoscopyEventOPCS4<-gsub("APC","G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE) 
-  dataframe$EndoscopyEventOPCS4<-gsub("EMR","G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)  
-  dataframe$EndoscopyEventOPCS4<-gsub("Polypectomy","G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEventOPCS4,ignore.case= TRUE)
-  dataframe$EndoscopyEventOPCS4<-gsub("RFA","G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE)
-  dataframe$EndoscopyEventOPCS4<-gsub("ESD","G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE)
-  dataframe$EndoscopyEventOPCS4<-gsub("Dilatation","G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):apc","G143  -  Fibreoptic Endoscopic Cauterisation of Lesion of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):emr","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)  
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):polypectomy","G141  -  Fibreoptic endoscopic snare resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) 
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):rfa","G145  -  Fibreoptic endoscopic destruction of lesion of oesophagus NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):esd","G146  -  Fibreoptic endoscopic submucosal resection of lesion of oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("(Oesophagus|GOJ):dilat", "G152  -  Fibreoptic Endoscopic Balloon Dilation of Oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("APC","G432  -  Fibreoptic endoscopic laser destruction of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE) 
+  dataframe$EndoscopyEvent<-gsub("Polypectomy","G431  -  Fibreoptic endoscopic snare resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case= TRUE)
+  dataframe$EndoscopyEvent<-gsub("RFA","G435  -  Fibreoptic endoscopic destruction of lesion of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("ESD","G421  -  Fibreoptic endoscopic submucosal resection of lesion of upper gastrointestinal tract",dataframe$EndoscopyEvent,ignore.case = TRUE)
+  dataframe$EndoscopyEvent<-gsub("Dilatation","G443  -  Fibreoptic endoscopic dilation of upper gastrointestinal tract NEC",dataframe$EndoscopyEvent,ignore.case = TRUE)
   
+  #From pathology samples. If EMR present in the pathology samples then add the code:
+  
+  dataframe$EndoscopyEvent <- ifelse(grepl("(Oesophagus|GOJ)?:(emr|resection", dataframe$PathSite, ignore.case = TRUE) , paste(dataframe$EndoscopyEvent,"G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract"), dataframe$EndoscopyEvent)
+  #dataframe$PathEvent<-gsub("EMR","G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",dataframe$PathSite,ignore.case = TRUE)  
+  #dataframe$PathEvent<-gsub("(Oesophagus|GOJ):emr","G423  -  Fibreoptic endoscopic mucosal resection of lesion of upper gastrointestinal tract",dataframe$PathSite,ignore.case = TRUE)  
   
   #For the non-event entries:
-  
   dataframe<-dataframe %>%   
     mutate(OPCS4Primary = case_when(
       grepl("OGD", dataframe$procedureperformed,ignore.case = TRUE) ~  case_when(
         
         #No event and no biopsy taken:
-        dataframe$EndoscopyEventOPCS4==""&(dataframe$PathSite==""|dataframe$PathSiteIndex=="NA:NA") ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
+        dataframe$EndoscopyEvent==""&(dataframe$PathSite==""|dataframe$PathSiteIndex=="NA:NA") ~ "G459  -  Unspecified diagnostic fibreoptic endoscopic examination of upper gastrointestinal tract",
         
         #No event and upper GI biopsy taken:
-        dataframe$EndoscopyEventOPCS4==""& grepl("O",dataframe$PathSiteIndex,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
+        dataframe$EndoscopyEvent==""& grepl("O",dataframe$PathSiteIndex,ignore.case = TRUE) ~ "G451  -  Fibreoptic endoscopic exam of upper gastrointestinal tract and biopsy of lesion of upper GI tract",
         
         #Event (oesophageal) and upper GI biopsy taken
-        grepl("oesophagus",dataframe$EndoscopyEventOPCS4,ignore.case = TRUE) & grepl("O",dataframe$PathSiteIndex,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus"
+        grepl("oesophagus",dataframe$EndoscopyEvent,ignore.case = TRUE) & grepl("O",dataframe$PathSiteIndex,ignore.case = TRUE) ~ "G161  -  Diagnostic fibreoptic endoscopic examination of oesophagus and biopsy of lesion of oesophagus"
         
       ),
       TRUE ~ "SomethingElse"
     ))
+  
+  #paste the OPCS4Primary and the Endoscopy Event together:
+  dataframe$OPCS4Primary<-paste(dataframe$OPCS4Primary,dataframe$EndoscopyEvent)
+  
   
   
   #For the secondary codes:
