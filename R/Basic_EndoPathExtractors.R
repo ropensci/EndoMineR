@@ -453,6 +453,25 @@ dev_ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event,extent)
     select(-row)
   
   
+  #Further rules:
+  
+  
+  # When a therapeutic endoscopic procedure is performed that is not an excision and a
+  # biopsy is taken at the same time, from the same or a different site, the following codes
+  # and sequencing must be applied:
+  #   • Therapeutic endoscopy code
+  # • Chapter Z site code (if the therapeutic endoscopy code does not state the site of the
+  #                        procedure or where the site of the biopsy is different to the therapeutic endoscopy)
+  # • Y20 Biopsy of organ NOC
+  # • Chapter Z site code (for the site of the biopsy)
+  # When an endoscopic excision is performed and a biopsy is taken at the same time, the
+  # biopsy must only be coded if it is taken from a different site to the excision (the sites
+  # included at each category are indicated at the category includes notes) ,using the following
+  # codes and sequencing:
+  #   • Endoscopic excision code
+  # • Chapter Z site code (if doing so adds further information)
+  # • Y20 Biopsy of organ NOC
+  # • Chapter Z site code (for the site of the biopsy)
   
   miner<-data.frame(miner)
   dataframe$x2ndProcedureCodes<-miner$x2ndProcedureCodes
