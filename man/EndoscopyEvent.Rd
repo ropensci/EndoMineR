@@ -23,9 +23,9 @@ This returns a character vector
 \description{
 This extracts the endoscopic event. It looks for the event 
 term and then looks in the event sentence as well as the one above to see if
-the location is listed. It needs to be run AFTER the 
-HistolTypeAndSite function as emr needs to be
-added to the event.
+the location is listed. It only looks within the endoscopy fields. If tissue is taken
+then this will be extracted with the HistolTypeAndSite function rather than being 
+listed as a result as this is cleaner and more robust.
 }
 \examples{
 # Myendo$EndoscopyEvent<-EndoscopyEvent(Myendo,"Findings",
