@@ -19,7 +19,7 @@
 #' Myendo$Endoscopist <- EndoscEndoscopist(Myendo$Endoscopist)
 EndoscEndoscopist <- function(EndoscopistColumn) {
   # Extraction of the Endoscopist
-  EndoscopistColumn <- str_replace_all(EndoscopistColumn, "mr|professor|prof| dr|2nd.*|[^[:alnum:],]", " ")
+  EndoscopistColumn <- str_replace_all(EndoscopistColumn, "mr|professor|prof|(?<= |^)dr|2nd.*|[^[:alnum:],]", " ")
   # Put gaps between names
   EndoscopistColumn <- str_replace(EndoscopistColumn, "([a-z])([A-Z])", "\\1 \\2")
   # Trim the whitespace
@@ -310,56 +310,56 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 #' # "PathSite","EndoscopyEvent")
 
 # #####################################################   Sandbox    ##################################################################################################################
-library(readxl) 
-library(stringr)
-library(dplyr)
-SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
-mywords<-c("PatientID","Patient Name","Date of Birth","General Practicioner","Hospital Number","Date of Procedure","Endoscopist","Second endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Complications","Co-morbidity","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED","FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP","OPCS4 Code","NATURE OF SPECIMEN","CLINICAL DETAILS","MACROSCOPICAL DESCRIPTION","HISTOLOGY","DIAGNOSIS")
-SelfOGD_Dunn2<-data.frame(paste(SelfOGD_Dunn$PatientID,",",SelfOGD_Dunn$Endo_ResultText,",",SelfOGD_Dunn$Histo_ResultText),stringsAsFactors = FALSE)
-SelfOGD_Dunn2<-EndoMineR::textPrep(SelfOGD_Dunn2[,1],mywords)
-PathSite<-HistolTypeAndSite(SelfOGD_Dunn2$histology,SelfOGD_Dunn2$macroscopicaldescription,SelfOGD_Dunn2$procedureperformed)
-SelfOGD_Dunn2$PathSite<-unlist(PathSite[1])
-SelfOGD_Dunn2$PathSiteIndex<-unlist(PathSite[2])
-SelfOGD_Dunn2$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn2,"findings","procedureperformed","macroscopicaldescription","histology")
-
-SelfOGD_Dunn3<-dev_ExtrapolateOPCS4Prep(SelfOGD_Dunn2,"procedureperformed","PathSiteIndex","EndoscopyEvent","extentofexam")
-
-
-
-
-#Checking against actual coding data
- ManualOPCS_4<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/TB_ALLPATID_Dunn_2013ToPresent.xls")
- library(janitor)
- selectedClean<-ManualOPCS_4%>%select("Prim Proc Code & Description","2nd Proc Code","3rd Proc Code","4th Proc Code","Trust ID",
-                                      "Consultant","Admission Date","Prim Diag Code & Description",
-                                      "2nd Diagnosis Code",
-                                      "3rd Diagnosis Code",
-                                      "5th Diagnosis Code",
-                                      "6th Diagnosis Code",
-                                      "7th Diagnosis Code",
-                                      "8th Diagnosis Code",
-                                      "9th Diagnosis Code",
-                                      "10th Diagnosis Code")
- selectedClean<-clean_names(selectedClean,"snake")
- names(selectedClean) <- gsub('admission_date', 'Endo_ResultEntered', names(selectedClean))
- names(selectedClean) <- gsub('trust_id', 'PatientID', names(selectedClean))
-
- #convert the date and hospital number column names so can do a merge
- SelfOGD_Dunn3$Endo_ResultEntered<-as.Date(str_extract(SelfOGD_Dunn2$dateofprocedure,"\\d+.*\\d+"),"%d/%m/%Y")
- selectedClean$Endo_ResultEntered<-as.Date(selectedClean$Endo_ResultEntered)
- SelfOGD_Dunn3$PatientID<-str_extract(SelfOGD_Dunn3$Start,"[a-z]*\\d+[a-z]*")
- selectedClean$PatientID<-tolower(selectedClean$PatientID)
- mergedData <- merge(selectedClean,SelfOGD_Dunn3,by=c("Endo_ResultEntered","PatientID"))
- 
- ForRules<-mergedData%>%filter(grepl("gastroscopy",procedureperformed))%>%select(PatientID,extentofexam,
-                                                                                 macroscopicaldescription,
-                                                                                 histology,procedureperformed,
-                                                                                 findings,EndoscopyEvent,
-                                                                                 SecondaryCodes,prim_proc_code_description,
-                                                                                 x2nd_proc_code,x3rd_proc_code,x4th_proc_code)%>%sample_n(100)
- View(ForRules)
- write_xlsx(ForRules, "/home/rstudio/EndoscopyEventToValidate.xlsx")
- 
+# library(readxl) 
+# library(stringr)
+# library(dplyr)
+# SelfOGD_Dunn<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/SelfOGD_Dunn.xlsx")
+# mywords<-c("PatientID","Patient Name","Date of Birth","General Practicioner","Hospital Number","Date of Procedure","Endoscopist","Second endoscopist","Trainee","Referring Physician","Nurses","Medications","Instrument","Extent of Exam","Complications","Co-morbidity","INDICATIONS FOR EXAMINATION","PROCEDURE PERFORMED","FINDINGS","ENDOSCOPIC DIAGNOSIS","RECOMMENDATIONS","COMMENTS","FOLLOW UP","OPCS4 Code","NATURE OF SPECIMEN","CLINICAL DETAILS","MACROSCOPICAL DESCRIPTION","HISTOLOGY","DIAGNOSIS")
+# SelfOGD_Dunn2<-data.frame(paste(SelfOGD_Dunn$PatientID,",",SelfOGD_Dunn$Endo_ResultText,",",SelfOGD_Dunn$Histo_ResultText),stringsAsFactors = FALSE)
+# SelfOGD_Dunn2<-EndoMineR::textPrep(SelfOGD_Dunn2[,1],mywords)
+# PathSite<-HistolTypeAndSite(SelfOGD_Dunn2$histology,SelfOGD_Dunn2$macroscopicaldescription,SelfOGD_Dunn2$procedureperformed)
+# SelfOGD_Dunn2$PathSite<-unlist(PathSite[1])
+# SelfOGD_Dunn2$PathSiteIndex<-unlist(PathSite[2])
+# SelfOGD_Dunn2$EndoscopyEvent<-EndoscopyEvent(SelfOGD_Dunn2,"findings","procedureperformed","macroscopicaldescription","histology")
+# 
+# SelfOGD_Dunn3<-dev_ExtrapolateOPCS4Prep(SelfOGD_Dunn2,"procedureperformed","PathSiteIndex","EndoscopyEvent","extentofexam")
+# 
+# 
+# 
+# 
+# #Checking against actual coding data
+#  ManualOPCS_4<-read_excel("/home/rstudio/GenDev/DevFiles/EndoMineRFunctionDev/TB_ALLPATID_Dunn_2013ToPresent.xls")
+#  library(janitor)
+#  selectedClean<-ManualOPCS_4%>%select("Prim Proc Code & Description","2nd Proc Code","3rd Proc Code","4th Proc Code","Trust ID",
+#                                       "Consultant","Admission Date","Prim Diag Code & Description",
+#                                       "2nd Diagnosis Code",
+#                                       "3rd Diagnosis Code",
+#                                       "5th Diagnosis Code",
+#                                       "6th Diagnosis Code",
+#                                       "7th Diagnosis Code",
+#                                       "8th Diagnosis Code",
+#                                       "9th Diagnosis Code",
+#                                       "10th Diagnosis Code")
+#  selectedClean<-clean_names(selectedClean,"snake")
+#  names(selectedClean) <- gsub('admission_date', 'Endo_ResultEntered', names(selectedClean))
+#  names(selectedClean) <- gsub('trust_id', 'PatientID', names(selectedClean))
+# 
+#  #convert the date and hospital number column names so can do a merge
+#  SelfOGD_Dunn3$Endo_ResultEntered<-as.Date(str_extract(SelfOGD_Dunn2$dateofprocedure,"\\d+.*\\d+"),"%d/%m/%Y")
+#  selectedClean$Endo_ResultEntered<-as.Date(selectedClean$Endo_ResultEntered)
+#  SelfOGD_Dunn3$PatientID<-str_extract(SelfOGD_Dunn3$Start,"[a-z]*\\d+[a-z]*")
+#  selectedClean$PatientID<-tolower(selectedClean$PatientID)
+#  mergedData <- merge(selectedClean,SelfOGD_Dunn3,by=c("Endo_ResultEntered","PatientID"))
+#  
+#  ForRules<-mergedData%>%filter(grepl("gastroscopy",procedureperformed))%>%select(PatientID,extentofexam,
+#                                                                                  macroscopicaldescription,
+#                                                                                  histology,procedureperformed,
+#                                                                                  findings,EndoscopyEvent,
+#                                                                                  SecondaryCodes,prim_proc_code_description,
+#                                                                                  x2nd_proc_code,x3rd_proc_code,x4th_proc_code)%>%sample_n(100)
+#  View(ForRules)
+#  write_xlsx(ForRules, "/home/rstudio/EndoscopyEventToValidate.xlsx")
+#  
  
  
 ######################################################################################################################################################################################################
