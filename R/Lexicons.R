@@ -17,7 +17,8 @@ HistolType <- function() {
     "(endoscopic mucosal resection)|(endoscopic mucosectomy)" = "EMR",
     "endoscopic submucosal (dissection|resection)" = "ESD",
     "nodul" = "nodul",
-    "polyp" = "polyp"
+    "polyp" = "polyp",
+    "emr" = "EMR"
   )
 
 
@@ -192,7 +193,7 @@ EventList <- function() {
     "iodine" = "iodine",
     "acetic" = "acetic",
     "NAC" = "NAC",
-    "Brushings" = "brushings"
+    "Brushings" = "brushings",
     " cryo" = "cryablation"
   )
 
