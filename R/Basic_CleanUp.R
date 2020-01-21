@@ -463,26 +463,44 @@ ColumnCleanUp <- function(vector) {
   
   
   #Optimise for tokenisation eg full stops followed by a number need to change so add a Letter before the number
-  vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
-  vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
-  vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
-  vector<-gsub("\r"," ",vector)
-  vector<-gsub("\\.,","\\.",vector)
-  vector<-gsub(",([A-Z])","\\.\\1",vector)
-  vector<-gsub("\\. ,",".",vector)
-  vector<-gsub("\\.\\s+\\,"," ",vector)
-  vector<-gsub("^\\s+\\,"," ",vector)
+  #vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
+  
+  #Get rid of convert anything that has a full stop in the middle into a new line eg line .Ever
+  #vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
+  
+  
+  #vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
+  
+  #Convert word return to space
+  vector<-gsub("\r","\n",vector)
+  
+
+  
+  #Convert ,hi to fullstop the the word if it is a capital letter
+  vector<-gsub(",([A-Z])","\n\\1",vector)
+  
+
+  #Conver "., or . ,"  to a space and vice versa
+  vector<-gsub("\\.\\s*\\,","\n",vector)
+  vector<-gsub("\\,\\s*\\.","\n",vector)
+  
+  #Convert " ," to a space
+  #vector<-gsub("^\\s+\\,"," ",vector)
+  
+  #Get rid of big space gaps
+  #vector<-gsub("       ", " ", vector)
+  
   #Get rid of ASCCII hex here
-
   vector<-gsub("\\\\[Xx].*?\\\\", " ", vector)
-  vector<-gsub("       ", " ", vector)
-
+  
   #Get rid of query type punctuation:
   vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
+  
+  #Get rid of pointless single quote marks
   vector<-gsub("'","",vector,fixed=TRUE)
   
   #Have to tokenize here so you can strip punctuation without getting rid of newlines
-  standardisedTextOutput<-stri_split_boundaries(vector, type="sentence")
+  standardisedTextOutput<-stringi::stri_split_boundaries(vector, type="sentence")
   
   #Get rid of whitespace
   standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
@@ -498,6 +516,7 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
+  retVector<-gsub("\\.\\.","\\.",retVector)
   return(retVector)
 }
 
