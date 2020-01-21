@@ -128,6 +128,8 @@ textPrep<-function(inputText,delim){
   
   #1. Flatten the text..
   inputText<-tolower(inputText)
+  #Need to do clean up on the data first before sentence splitting:
+  inputText<-ColumnCleanUp(inputText)
   
   #1b General cleanup tasks tokenize then clean then recombine
   standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
@@ -492,7 +494,7 @@ ColumnCleanUp <- function(vector) {
   
   #Get rid of middle of line newlines which seems to
   #happen e.g. I am Sebastian and \n I live in a hole
-  vector<-gsub("([a-z]\\s*)\n+(\\s*[a-z])","\\1 \\2",vector)
+  vector<-gsub("(?:\\h*\\R)++(?!\\z)\\h*", " ", mytext, perl=TRUE)
   
   #Get rid of ASCCII hex here
   vector<-gsub("\\\\[Xx].*?\\\\", " ", vector)
