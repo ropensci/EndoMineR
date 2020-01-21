@@ -490,6 +490,10 @@ ColumnCleanUp <- function(vector) {
   #Get rid of big space gaps
   #vector<-gsub("       ", " ", vector)
   
+  #Get rid of middle of line newlines which seems to
+  #happen e.g. I am Sebastian and \n I live in a hole
+  vector<-gsub("[a-z]\\s*\n\\s*[a-z]"," ",vector)
+  
   #Get rid of ASCCII hex here
   vector<-gsub("\\\\[Xx].*?\\\\", " ", vector)
   
@@ -498,6 +502,9 @@ ColumnCleanUp <- function(vector) {
   
   #Get rid of pointless single quote marks
   vector<-gsub("'","",vector,fixed=TRUE)
+  
+  #Get rid of excessive space
+  #vector<-gsub("\\s","",vector,fixed=TRUE)
   
   #Have to tokenize here so you can strip punctuation without getting rid of newlines
   standardisedTextOutput<-stringi::stri_split_boundaries(vector, type="sentence")
