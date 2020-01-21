@@ -492,7 +492,7 @@ ColumnCleanUp <- function(vector) {
   
   #Get rid of middle of line newlines which seems to
   #happen e.g. I am Sebastian and \n I live in a hole
-  vector<-gsub("([a-z]\\s*)\n+(\\s*[a-z])","\\1 \\2",vector)
+  vector<-gsub("(?:\\h*\\R)++(?!\\z)\\h*", " ", vector, perl=TRUE)
   
   #Get rid of ASCCII hex here
   vector<-gsub("\\\\[Xx].*?\\\\", " ", vector)
