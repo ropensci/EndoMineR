@@ -484,7 +484,7 @@ ColumnCleanUp <- function(vector) {
   #Conver "., or . ,"  to a space and vice versa
   vector<-gsub("\\.\\s*\\,","\n",vector)
   vector<-gsub("\\,\\s*\\.","\n",vector)
-  
+  vector<-gsub("(\\.\\s*)+","\\.",vector)
   
   #Get rid of middle of line newlines which seems to
   #happen e.g. I am Sebastian and \n I live in a hole
