@@ -10,13 +10,16 @@ RFACath()
 The takes a list of catheters used in radiofrequency ablation.
 }
 \seealso{
-Other NLP - Lexicons: \code{\link{BiopsyIndex}},
-  \code{\link{EventList}}, \code{\link{GISymptomsList}},
-  \code{\link{HistolType}},
-  \code{\link{LocationListLower}},
-  \code{\link{LocationListUniversal}},
-  \code{\link{LocationListUpper}},
-  \code{\link{LocationList}}, \code{\link{WordsToNumbers}}
+Other NLP - Lexicons: 
+\code{\link{BiopsyIndex}()},
+\code{\link{EventList}()},
+\code{\link{GISymptomsList}()},
+\code{\link{HistolType}()},
+\code{\link{LocationListLower}()},
+\code{\link{LocationListUniversal}()},
+\code{\link{LocationListUpper}()},
+\code{\link{LocationList}()},
+\code{\link{WordsToNumbers}()}
 }
 \concept{NLP - Lexicons}
 \keyword{RFA}

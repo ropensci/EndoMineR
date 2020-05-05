@@ -22,11 +22,12 @@ This creates a column of Paris grade for all samples where this is mentioned.
 Myendo$EMR<-BarrettsParisEMR(Myendo$ProcedurePerformed,Myendo$Findings)
 }
 \seealso{
-Other Disease Specific Analysis - Barretts Data: \code{\link{BarrettsAll}},
-  \code{\link{BarrettsBxQual}},
-  \code{\link{Barretts_FUType}},
-  \code{\link{Barretts_PathStage}},
-  \code{\link{Barretts_PragueScore}}
+Other Disease Specific Analysis - Barretts Data: 
+\code{\link{BarrettsAll}()},
+\code{\link{BarrettsBxQual}()},
+\code{\link{Barretts_FUType}()},
+\code{\link{Barretts_PathStage}()},
+\code{\link{Barretts_PragueScore}()}
 }
 \concept{Disease Specific Analysis - Barretts Data}
 \keyword{Does}

@@ -16,13 +16,16 @@ extracted from the pathology so is part of pathology type.
 # unique(unlist(EventList(), use.names = FALSE))
 }
 \seealso{
-Other NLP - Lexicons: \code{\link{BiopsyIndex}},
-  \code{\link{GISymptomsList}}, \code{\link{HistolType}},
-  \code{\link{LocationListLower}},
-  \code{\link{LocationListUniversal}},
-  \code{\link{LocationListUpper}},
-  \code{\link{LocationList}}, \code{\link{RFACath}},
-  \code{\link{WordsToNumbers}}
+Other NLP - Lexicons: 
+\code{\link{BiopsyIndex}()},
+\code{\link{GISymptomsList}()},
+\code{\link{HistolType}()},
+\code{\link{LocationListLower}()},
+\code{\link{LocationListUniversal}()},
+\code{\link{LocationListUpper}()},
+\code{\link{LocationList}()},
+\code{\link{RFACath}()},
+\code{\link{WordsToNumbers}()}
 }
 \concept{NLP - Lexicons}
 \keyword{Event}

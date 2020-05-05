@@ -31,9 +31,11 @@ ExtrapolatefromDictionary(Mypath$Histology,HistolType()
 rm(MypathExtraction)
 }
 \seealso{
-Other Basic Column mutators: \code{\link{EntityPairs_OneSentence}},
-  \code{\link{EntityPairs_TwoSentence}},
-  \code{\link{ListLookup}}, \code{\link{MyImgLibrary}}
+Other Basic Column mutators: 
+\code{\link{EntityPairs_OneSentence}()},
+\code{\link{EntityPairs_TwoSentence}()},
+\code{\link{ListLookup}()},
+\code{\link{MyImgLibrary}()}
 }
 \concept{Basic Column mutators}
 \keyword{Withdrawal}

@@ -454,6 +454,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 #' @param vector column of interest
 #' @keywords Cleaner
 #' @export
+#' @import parallel
 #' @importFrom stringr str_replace 
 #' @importFrom stringi stri_split_boundaries
 #' @return This returns a character vector
@@ -463,6 +464,8 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 
 ColumnCleanUp <- function(vector) {
   
+  #Detect the number of cores so can be parallelised
+  numCores <- detectCores()
   
   #Optimise for tokenisation eg full stops followed by a number need to change so add a Letter before the number
   #vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
@@ -474,6 +477,7 @@ ColumnCleanUp <- function(vector) {
   #vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
   
   #Convert word return to space
+  vector<-gsub("\r\n"," ",vector)
   vector<-gsub("\r","\n",vector)
   
 
@@ -485,12 +489,7 @@ ColumnCleanUp <- function(vector) {
   #Conver "., or . ,"  to a space and vice versa
   vector<-gsub("\\.\\s*\\,","\n",vector)
   vector<-gsub("\\,\\s*\\.","\n",vector)
-  
-  #Convert " ," to a space
-  #vector<-gsub("^\\s+\\,"," ",vector)
-  
-  #Get rid of big space gaps
-  #vector<-gsub("       ", " ", vector)
+  vector<-gsub("(\\.\\s*)+","\\.",vector)
   
   #Get rid of middle of line newlines which seems to
   #happen e.g. I am Sebastian and \n I live in a hole
@@ -505,25 +504,23 @@ ColumnCleanUp <- function(vector) {
   #Get rid of pointless single quote marks
   vector<-gsub("'","",vector,fixed=TRUE)
   
-  #Get rid of excessive space
-  #vector<-gsub("\\s","",vector,fixed=TRUE)
-  
   #Have to tokenize here so you can strip punctuation without getting rid of newlines
   standardisedTextOutput<-stringi::stri_split_boundaries(vector, type="sentence")
   
   #Get rid of whitespace
-  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
+  standardisedTextOutput<-mclapply(standardisedTextOutput, function(x) trimws(x),mc.cores = numCores)
   
   #Get rid of trailing punctuation
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x),mc.cores = numCores)
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x),mc.cores = numCores)
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x),mc.cores = numCores)
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x),mc.cores = numCores)
   
   #Get rid of strange things
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x),mc.cores = numCores)
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x),mc.cores = numCores)
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x),mc.cores = numCores)
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
   retVector<-gsub("\\.\\.","\\.",retVector)
   return(retVector)
