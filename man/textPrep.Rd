@@ -28,9 +28,11 @@ mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 CleanResults<-textPrep(PathDataFrameFinal$PathReportWhole,mywords)
 }
 \seealso{
-Other NLP - Text Cleaning and Extraction: \code{\link{ColumnCleanUp}},
-  \code{\link{DictionaryInPlaceReplace}},
-  \code{\link{Extractor}}, \code{\link{NegativeRemove}}
+Other NLP - Text Cleaning and Extraction: 
+\code{\link{ColumnCleanUp}()},
+\code{\link{DictionaryInPlaceReplace}()},
+\code{\link{Extractor}()},
+\code{\link{NegativeRemove}()}
 }
 \concept{NLP - Text Cleaning and Extraction}
 \keyword{cleaning}

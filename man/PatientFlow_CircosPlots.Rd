@@ -4,8 +4,12 @@
 \alias{PatientFlow_CircosPlots}
 \title{Create a Circos plot for patient flow}
 \usage{
-PatientFlow_CircosPlots(dataframe, Endo_ResultPerformed, HospNum_Id,
-  ProcPerformed)
+PatientFlow_CircosPlots(
+  dataframe,
+  Endo_ResultPerformed,
+  HospNum_Id,
+  ProcPerformed
+)
 }
 \arguments{
 \item{dataframe}{dataframe}

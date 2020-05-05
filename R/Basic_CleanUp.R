@@ -452,6 +452,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 #' @param vector column of interest
 #' @keywords Cleaner
 #' @export
+#' @import parallel
 #' @importFrom stringr str_replace 
 #' @importFrom stringi stri_split_boundaries
 #' @return This returns a character vector
@@ -461,6 +462,8 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 
 ColumnCleanUp <- function(vector) {
   
+  #Detect the number of cores so can be parallelised
+  numCores <- detectCores()
   
   #Optimise for tokenisation eg full stops followed by a number need to change so add a Letter before the number
   #vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
@@ -503,19 +506,19 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-stringi::stri_split_boundaries(vector, type="sentence")
   
   #Get rid of whitespace
-  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
+  standardisedTextOutput<-mclapply(standardisedTextOutput, function(x) trimws(x),mc.cores = numCores)
   
   #Get rid of trailing punctuation
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x),mc.cores = numCores)
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x),mc.cores = numCores)
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x),mc.cores = numCores)
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x),mc.cores = numCores)
   
   #Get rid of strange things
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x),mc.cores = numCores)
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x),mc.cores = numCores)
+  standardisedTextOutput<-mclapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x),mc.cores = numCores)
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
   retVector<-gsub("\\.\\.","\\.",retVector)
   return(retVector)

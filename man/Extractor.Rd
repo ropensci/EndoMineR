@@ -33,9 +33,11 @@ mywords<-c("Hospital Number","Patient Name:","DOB:","General Practitioner:",
 Mypath2<-Extractor(PathDataFrameFinal$PathReportWhole,mywords)
 }
 \seealso{
-Other NLP - Text Cleaning and Extraction: \code{\link{ColumnCleanUp}},
-  \code{\link{DictionaryInPlaceReplace}},
-  \code{\link{NegativeRemove}}, \code{\link{textPrep}}
+Other NLP - Text Cleaning and Extraction: 
+\code{\link{ColumnCleanUp}()},
+\code{\link{DictionaryInPlaceReplace}()},
+\code{\link{NegativeRemove}()},
+\code{\link{textPrep}()}
 }
 \concept{NLP - Text Cleaning and Extraction}
 \keyword{Extraction}

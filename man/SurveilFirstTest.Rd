@@ -24,10 +24,11 @@ dd <- SurveilFirstTest(
 )
 }
 \seealso{
-Other Basic Analysis - Surveillance Functions: \code{\link{HowManyOverTime}},
-  \code{\link{SurveilLastTest}},
-  \code{\link{SurveilTimeByRow}},
-  \code{\link{TimeToStatus}}
+Other Basic Analysis - Surveillance Functions: 
+\code{\link{HowManyOverTime}()},
+\code{\link{SurveilLastTest}()},
+\code{\link{SurveilTimeByRow}()},
+\code{\link{TimeToStatus}()}
 }
 \concept{Basic Analysis - Surveillance Functions}
 \keyword{Surveillance}

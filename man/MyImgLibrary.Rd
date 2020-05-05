@@ -22,10 +22,11 @@ before being linked to pathology and endoscopy reports
 #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
 }
 \seealso{
-Other Basic Column mutators: \code{\link{EntityPairs_OneSentence}},
-  \code{\link{EntityPairs_TwoSentence}},
-  \code{\link{ExtrapolatefromDictionary}},
-  \code{\link{ListLookup}}
+Other Basic Column mutators: 
+\code{\link{EntityPairs_OneSentence}()},
+\code{\link{EntityPairs_TwoSentence}()},
+\code{\link{ExtrapolatefromDictionary}()},
+\code{\link{ListLookup}()}
 }
 \concept{Basic Column mutators}
 \keyword{Image}
