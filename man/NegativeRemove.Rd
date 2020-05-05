@@ -35,9 +35,11 @@ names(anexample)<-"Thecol"
 hh<-NegativeRemove(anexample$Thecol)
 }
 \seealso{
-Other NLP - Text Cleaning and Extraction: \code{\link{ColumnCleanUp}},
-  \code{\link{DictionaryInPlaceReplace}},
-  \code{\link{Extractor}}, \code{\link{textPrep}}
+Other NLP - Text Cleaning and Extraction: 
+\code{\link{ColumnCleanUp}()},
+\code{\link{DictionaryInPlaceReplace}()},
+\code{\link{Extractor}()},
+\code{\link{textPrep}()}
 }
 \concept{NLP - Text Cleaning and Extraction}
 \keyword{Negative}

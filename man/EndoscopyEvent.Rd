@@ -32,8 +32,10 @@ listed as a result as this is cleaner and more robust.
 # "ProcedurePerformed","MACROSCOPICALDESCRIPTION","HISTOLOGY")
 }
 \seealso{
-Other Endoscopy specific cleaning functions: \code{\link{EndoscEndoscopist}},
-  \code{\link{EndoscInstrument}}, \code{\link{EndoscMeds}}
+Other Endoscopy specific cleaning functions: 
+\code{\link{EndoscEndoscopist}()},
+\code{\link{EndoscInstrument}()},
+\code{\link{EndoscMeds}()}
 }
 \concept{Endoscopy specific cleaning functions}
 \keyword{Find}
