@@ -56,11 +56,12 @@ v$FU_Type <- Barretts_FUType(v, "CStage", "MStage", "IMorNoIM")
 rm(v)
 }
 \seealso{
-Other Disease Specific Analysis - Barretts Data: \code{\link{BarrettsAll}},
-  \code{\link{BarrettsBxQual}},
-  \code{\link{BarrettsParisEMR}},
-  \code{\link{Barretts_PathStage}},
-  \code{\link{Barretts_PragueScore}}
+Other Disease Specific Analysis - Barretts Data: 
+\code{\link{BarrettsAll}()},
+\code{\link{BarrettsBxQual}()},
+\code{\link{BarrettsParisEMR}()},
+\code{\link{Barretts_PathStage}()},
+\code{\link{Barretts_PragueScore}()}
 }
 \concept{Disease Specific Analysis - Barretts Data}
 \keyword{Follow-Up}

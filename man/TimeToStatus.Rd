@@ -59,10 +59,11 @@ nn <- TimeToStatus(b1, "eHospitalNum", "EndoscopyEvent", "rfa", "dilat")
 rm(v)
 }
 \seealso{
-Other Basic Analysis - Surveillance Functions: \code{\link{HowManyOverTime}},
-  \code{\link{SurveilFirstTest}},
-  \code{\link{SurveilLastTest}},
-  \code{\link{SurveilTimeByRow}}
+Other Basic Analysis - Surveillance Functions: 
+\code{\link{HowManyOverTime}()},
+\code{\link{SurveilFirstTest}()},
+\code{\link{SurveilLastTest}()},
+\code{\link{SurveilTimeByRow}()}
 }
 \concept{Basic Analysis - Surveillance Functions}
 \keyword{ourcome}

@@ -4,8 +4,7 @@
 \alias{HowManyOverTime}
 \title{Number of tests done per month and year by indication}
 \usage{
-HowManyOverTime(dataframe, Indication, Endo_ResultPerformed,
-  StringToSearch)
+HowManyOverTime(dataframe, Indication, Endo_ResultPerformed, StringToSearch)
 }
 \arguments{
 \item{dataframe}{dataframe}
@@ -40,10 +39,11 @@ rm(list = ls(all = TRUE))
 ff <- HowManyOverTime(Myendo, "Indications", "Dateofprocedure", ".*")
 }
 \seealso{
-Other Basic Analysis - Surveillance Functions: \code{\link{SurveilFirstTest}},
-  \code{\link{SurveilLastTest}},
-  \code{\link{SurveilTimeByRow}},
-  \code{\link{TimeToStatus}}
+Other Basic Analysis - Surveillance Functions: 
+\code{\link{SurveilFirstTest}()},
+\code{\link{SurveilLastTest}()},
+\code{\link{SurveilTimeByRow}()},
+\code{\link{TimeToStatus}()}
 }
 \concept{Basic Analysis - Surveillance Functions}
 \keyword{Tests}

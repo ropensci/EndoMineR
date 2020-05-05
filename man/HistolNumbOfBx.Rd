@@ -21,8 +21,9 @@ to whatever the string boundary is (z).
 qq <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
 }
 \seealso{
-Other Histology specific cleaning functions: \code{\link{HistolBxSize}},
-  \code{\link{HistolTypeAndSite}}
+Other Histology specific cleaning functions: 
+\code{\link{HistolBxSize}()},
+\code{\link{HistolTypeAndSite}()}
 }
 \concept{Histology specific cleaning functions}
 \keyword{Biopsy}
