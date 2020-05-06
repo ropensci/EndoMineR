@@ -483,7 +483,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 #' @param vector column of interest
 #' @keywords Cleaner
 #' @export
-#' @importFrom stringr str_replace 
+#' @importFrom stringr str_replace str_trim
 #' @importFrom stringi stri_split_boundaries
 #' @return This returns a character vector
 #' @family NLP - Text Cleaning and Extraction
@@ -535,11 +535,11 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-stringi::stri_split_boundaries(vector, type="sentence")
   
   #Get rid of whitespace
-  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) gsub("(^[[:space:]]+|[[:space:]]+$)", "", x))
   
   #Get rid of trailing punctuation
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
@@ -550,7 +550,7 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
   retVector<-gsub("(\\.\\s*){2,}","\\.",retVector)
-  
+  gc(TRUE)
   return(retVector)
 }
 
