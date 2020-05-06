@@ -558,7 +558,6 @@ ColumnCleanUp <- function(vector) {
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
   retVector<-gsub("(\\.\\s*){2,}","\\.",retVector)
-  gc(TRUE)
   return(retVector)
 }
 
