@@ -36,6 +36,7 @@ Mypath2<-Extractor(PathDataFrameFinal$PathReportWhole,mywords)
 Other NLP - Text Cleaning and Extraction: 
 \code{\link{ColumnCleanUp}()},
 \code{\link{DictionaryInPlaceReplace}()},
+\code{\link{NegativeRemoveWrapper}()},
 \code{\link{NegativeRemove}()},
 \code{\link{textPrep}()}
 }

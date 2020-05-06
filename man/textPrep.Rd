@@ -32,6 +32,7 @@ Other NLP - Text Cleaning and Extraction:
 \code{\link{ColumnCleanUp}()},
 \code{\link{DictionaryInPlaceReplace}()},
 \code{\link{Extractor}()},
+\code{\link{NegativeRemoveWrapper}()},
 \code{\link{NegativeRemove}()}
 }
 \concept{NLP - Text Cleaning and Extraction}
