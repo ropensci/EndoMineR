@@ -211,7 +211,7 @@ delim <- gsub("(.*)","\\1: ",delim)
 delim<-as.list(delim)
 inputString<-gsub(":","",inputString)
 #Do the find and replace to place the tags in the input text
-inputString<-EndoMineR::DictionaryInPlaceReplace(inputString,delim)
+inputString<-DictionaryInPlaceReplace(inputString,delim)
 
 #Do a bit more cleaning to make it into a dcf file:
 inputString<-gsub(": :",": ",inputString)
@@ -244,6 +244,7 @@ return(m)
 #' @param inputString the input string (ie the full medical report)
 #' @param list The replacing list
 #' @keywords Replace
+#' @importFrom stringi stri_replace
 #' @export
 #' @return This returns a character vector
 #' @family NLP - Text Cleaning and Extraction
@@ -260,7 +261,7 @@ DictionaryInPlaceReplace <- function(inputString,list) {
   new_string <- inputString
   vapply(1:nrow(list),
          function (k) {
-           new_string <<- gsub(list$key[k], list$value[k], new_string)
+           new_string <<- stringi::stri_replace(new_string, regex=list$value[k], list$key[k])
            0L
          }, integer(1))
   
