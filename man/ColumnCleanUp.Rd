@@ -24,6 +24,7 @@ ii<-ColumnCleanUp(Myendo$Findings)
 Other NLP - Text Cleaning and Extraction: 
 \code{\link{DictionaryInPlaceReplace}()},
 \code{\link{Extractor}()},
+\code{\link{NegativeRemoveWrapper}()},
 \code{\link{NegativeRemove}()},
 \code{\link{textPrep}()}
 }

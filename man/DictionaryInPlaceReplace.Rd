@@ -26,6 +26,7 @@ inputText<-DictionaryInPlaceReplace(TheOGDReportFinal$OGDReportWhole,LocationLis
 Other NLP - Text Cleaning and Extraction: 
 \code{\link{ColumnCleanUp}()},
 \code{\link{Extractor}()},
+\code{\link{NegativeRemoveWrapper}()},
 \code{\link{NegativeRemove}()},
 \code{\link{textPrep}()}
 }
