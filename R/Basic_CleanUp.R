@@ -515,7 +515,7 @@ ColumnCleanUp <- function(vector) {
   
 
   #Conver "., or . ,"  to a space and vice versa
-  str_replace_all(vector,"(\\.\\s*\\,)|(\\,\\s*\\.)|((\\.\\s*)+)","\\.")
+  vector<-stri_replace_all(vector,"\\.",regex="(\\.\\s*\\,)|(\\,\\s*\\.)|((\\.\\s*)+)")
   #vector<-gsub("\\.\\s*\\,","\\.",vector)
   #vector<-gsub("\\,\\s*\\.","\\.",vector)
   #vector<-gsub("(\\.\\s*)+","\\.",vector)
@@ -549,7 +549,10 @@ ColumnCleanUp <- function(vector) {
   
   #Get rid of strange things in the text
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) str_replace_all(x,"(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))","\\."))
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) str_replace_all(x,"(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))","\\."))
+  
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) stri_replace_all(x,"\\.",regex="(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))"))
+  
   
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
