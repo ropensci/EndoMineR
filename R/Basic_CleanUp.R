@@ -485,8 +485,8 @@ ColumnCleanUp <- function(vector) {
   
 
   #Conver "., or . ,"  to a space and vice versa
-  vector<-gsub("\\.\\s*\\,","\n",vector)
-  vector<-gsub("\\,\\s*\\.","\n",vector)
+  vector<-gsub("\\.\\s*\\,","\\.",vector)
+  vector<-gsub("\\,\\s*\\.","\\.",vector)
   vector<-gsub("(\\.\\s*)+","\\.",vector)
   
   #Get rid of middle of line newlines which seems to
@@ -520,7 +520,8 @@ ColumnCleanUp <- function(vector) {
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
-  retVector<-gsub("\\.\\.","\\.",retVector)
+  retVector<-gsub("(\\.\\s*){2,}","\\.",retVector)
+  
   return(retVector)
 }
 
