@@ -485,7 +485,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace str_trim
-#' @importFrom stringi stri_split_boundaries
+#' @importFrom stringi stri_split_boundaries stri_replace
 #' @return This returns a character vector
 #' @family NLP - Text Cleaning and Extraction
 #' @examples ii<-ColumnCleanUp(Myendo$Findings)
@@ -515,9 +515,10 @@ ColumnCleanUp <- function(vector) {
   
 
   #Conver "., or . ,"  to a space and vice versa
-  vector<-gsub("\\.\\s*\\,","\\.",vector)
-  vector<-gsub("\\,\\s*\\.","\\.",vector)
-  vector<-gsub("(\\.\\s*)+","\\.",vector)
+  str_replace_all(vector,"(\\.\\s*\\,)|(\\,\\s*\\.)|((\\.\\s*)+)","\\.")
+  #vector<-gsub("\\.\\s*\\,","\\.",vector)
+  #vector<-gsub("\\,\\s*\\.","\\.",vector)
+  #vector<-gsub("(\\.\\s*)+","\\.",vector)
   
   #Get rid of middle of line newlines which seems to
   #happen e.g. I am Sebastian and \n I live in a hole
@@ -540,15 +541,18 @@ ColumnCleanUp <- function(vector) {
   
   #Get rid of trailing punctuation
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
+  
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
   
   #Get rid of strange things in the text
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) str_replace_all(x,"(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))","\\."))
+  
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
   retVector<-gsub("(\\.\\s*){2,}","\\.",retVector)
   gc(TRUE)
