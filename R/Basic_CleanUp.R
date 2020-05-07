@@ -204,7 +204,7 @@ Extractor <- function(inputString, delim) {
   
   
   #Create a named list of words
-  delim <- gsub(":","",delim)
+  delim <- stri_replace_all_fixed(delim,":","")
   names(delim) <- trimws(delim)
   #Add a : to the tags 
   
