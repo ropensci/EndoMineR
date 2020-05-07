@@ -183,6 +183,7 @@ textPrep<-function(inputText,delim){
 #' @param delim the vector of words that will be used as the boundaries to
 #' extract against
 #' @importFrom stringr str_extract
+#' @importFrom stringi stri_replace_all_fixed 
 #' @importFrom tidyr separate
 #' @importFrom rlang sym
 #' @keywords Extraction
@@ -209,20 +210,21 @@ names(delim) <- trimws(delim)
 
 delim <- gsub("(.*)","\\1: ",delim)
 delim<-as.list(delim)
-inputString<-gsub(":","",inputString)
+
+inputString<-stri_replace_all(inputString,"",regex="'|\\)|:|\\(")
+
+
 #Do the find and replace to place the tags in the input text
 inputString<-DictionaryInPlaceReplace(inputString,delim)
 
 #Do a bit more cleaning to make it into a dcf file:
-inputString<-gsub(": :",": ",inputString)
+inputString<-stri_replace_all_fixed(inputString,": :",": ")
+
 inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
-inputString<-gsub("(","",inputString,fixed=TRUE)
 #Don't remove newlines as these are used as the sentence separators
 inputString<-gsub("\n",". ",inputString,fixed=TRUE)
-inputString<-gsub(")","",inputString,fixed=TRUE)
-inputString<-gsub("'","",inputString,fixed=TRUE)
-inputString<-gsub("^","Start:",inputString)
-inputString<-gsub("::",":",inputString,fixed=TRUE)
+inputString<-stri_replace_all(inputString,"Start:",regex="^")
+inputString<-stri_replace_all_fixed(inputString,"::",":")
 
 #Create the dcf file
 pat <- sprintf("(%s)", paste(delim, collapse = "|"))
