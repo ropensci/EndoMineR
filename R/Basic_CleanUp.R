@@ -201,39 +201,40 @@ textPrep<-function(inputText,delim){
 
 
 Extractor <- function(inputString, delim) {
-
-
-#Create a named list of words
-delim <- gsub(":","",delim)
-names(delim) <- trimws(delim)
-#Add a : to the tags 
-
-delim <- gsub("(.*)","\\1: ",delim)
-delim<-as.list(delim)
-
-inputString<-stri_replace_all(inputString,"",regex="'|\\)|:|\\(")
-
-
-#Do the find and replace to place the tags in the input text
-inputString<-DictionaryInPlaceReplace(inputString,delim)
-
-#Do a bit more cleaning to make it into a dcf file:
-inputString<-stri_replace_all_fixed(inputString,": :",": ")
-
-inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
-#Don't remove newlines as these are used as the sentence separators
-inputString<-gsub("\n",". ",inputString,fixed=TRUE)
-inputString<-stri_replace_all(inputString,"Start:",regex="^")
-inputString<-stri_replace_all_fixed(inputString,"::",":")
-
-#Create the dcf file
-pat <- sprintf("(%s)", paste(delim, collapse = "|"))
-g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
-m <- read.dcf(textConnection(g))
-m<-data.frame(m,stringsAsFactors = FALSE)
-return(m)
-
+  
+  
+  #Create a named list of words
+  delim <- gsub(":","",delim)
+  names(delim) <- trimws(delim)
+  #Add a : to the tags 
+  
+  delim <- gsub("(.*)","\\1: ",delim)
+  delim<-as.list(delim)
+  
+  inputString<-stri_replace_all(inputString,"",regex="'|\\)|:|\\(")
+  
+  
+  #Do the find and replace to place the tags in the input text
+  inputString<-DictionaryInPlaceReplace(inputString,delim)
+  
+  #Do a bit more cleaning to make it into a dcf file:
+  inputString<-stri_replace_all_fixed(inputString,": :",": ")
+  
+  inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
+  #Don't remove newlines as these are used as the sentence separators
+  inputString<-gsub("\n",". ",inputString,fixed=TRUE)
+  inputString<-stri_replace_all(inputString,"Start:",regex="^")
+  inputString<-stri_replace_all_fixed(inputString,"::",":")
+  
+  #Create the dcf file
+  pat <- sprintf("(%s)", paste(delim, collapse = "|"))
+  g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
+  m <- read.dcf(textConnection(g))
+  m<-data.frame(m,stringsAsFactors = FALSE)
+  return(m)
+  
 }
+
 
 
 #' Dictionary In Place Replace
@@ -263,7 +264,8 @@ DictionaryInPlaceReplace <- function(inputString,list) {
   new_string <- inputString
   vapply(1:nrow(list),
          function (k) {
-           new_string <<- stringi::stri_replace(new_string, regex=list$value[k], list$key[k])
+           #new_string <<- gsub(list$key[k], list$value[k], new_string)
+           new_string <<- stri_replace_all(new_string,list$value[k],regex=list$key[k])
            0L
          }, integer(1))
   
@@ -495,7 +497,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 
 ColumnCleanUp <- function(vector) {
   
-
+  
   
   #Optimise for tokenisation eg full stops followed by a number need to change so add a Letter before the number
   #vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
@@ -510,12 +512,12 @@ ColumnCleanUp <- function(vector) {
   vector<-gsub("\r\n"," ",vector)
   vector<-gsub("\r","\n",vector)
   
-
+  
   
   #Convert ,hi to fullstop the the word if it is a capital letter
   vector<-gsub(",([A-Z])","\n\\1",vector)
   
-
+  
   #Conver "., or . ,"  to a space and vice versa
   vector<-stri_replace_all(vector,"\\.",regex="(\\.\\s*\\,)|(\\,\\s*\\.)|((\\.\\s*)+)")
   #vector<-gsub("\\.\\s*\\,","\\.",vector)
@@ -562,7 +564,6 @@ ColumnCleanUp <- function(vector) {
   retVector<-gsub("(\\.\\s*){2,}","\\.",retVector)
   return(retVector)
 }
-
 
 #' Paste endoscopy and histology results into one
 #'
