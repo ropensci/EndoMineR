@@ -183,7 +183,7 @@ textPrep<-function(inputText,delim){
 #' @param delim the vector of words that will be used as the boundaries to
 #' extract against
 #' @importFrom stringr str_extract
-#' @importFrom stringi stri_replace_all_fixed 
+#' @importFrom stringi stri_replace_all_fixed stri_replace_all
 #' @importFrom tidyr separate
 #' @importFrom rlang sym
 #' @keywords Extraction
@@ -247,7 +247,7 @@ Extractor <- function(inputString, delim) {
 #' @param inputString the input string (ie the full medical report)
 #' @param list The replacing list
 #' @keywords Replace
-#' @importFrom stringi stri_replace
+#' @importFrom stringi stri_replace stri_replace_all
 #' @export
 #' @return This returns a character vector
 #' @family NLP - Text Cleaning and Extraction
@@ -278,6 +278,7 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 #' This performs negative removal on a per sentance basis 
 #' @keywords Negative Sentences
 #' @importFrom stringr str_replace
+#' @importFrom Hmisc capitalize
 #' @export
 #' @return This returns a column within a dataframe. This should be changed to a 
 #' character vector eventually
@@ -293,7 +294,7 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 #' names(anexample)<-"Thecol"
 #' # Run the function on the dataframe and it should get rid of sentences (and
 #' # parts of sentences) with negative parts in them.
-#' hh<-NegativeRemoveWrapper(anexample$Thecol)
+#' #hh<-NegativeRemoveWrapper(anexample$Thecol)
 
 NegativeRemoveWrapper <- function(inputText) {
   
@@ -489,7 +490,7 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 #' @keywords Cleaner
 #' @export
 #' @importFrom stringr str_replace str_trim
-#' @importFrom stringi stri_split_boundaries stri_replace
+#' @importFrom stringi stri_split_boundaries stri_replace stri_replace_all
 #' @return This returns a character vector
 #' @family NLP - Text Cleaning and Extraction
 #' @examples ii<-ColumnCleanUp(Myendo$Findings)
@@ -818,7 +819,7 @@ MyImgLibrary<-function(file,delim,location){
   #Collapse all the html together
   mergedhtml<-paste(htmlCode, sep="", collapse="")
   
-  #Split according to Procedure Performed which separates each record
+  #Split according to Procedure Number which separates each record
   df<-strsplit(mergedhtml, delim, fixed = FALSE, perl = FALSE, useBytes = FALSE)
   df<-as.data.frame(df)
   colnames(df)<-c("df")
@@ -833,27 +834,68 @@ MyImgLibrary<-function(file,delim,location){
   df$PatientID<-str_extract(df$df,"(?:[A-Z]{1,}[0-9]{3,}[0-9]{1})|(?:[0-9]{1,}[0-9]{3,}[A-Z]{1})")
   
   #Extract the images with the folder name which needs to be kept (but is relative in html so no need to strip it off)
-  df$img<-stringr::str_extract(df$df,"img src.*?(jpg|png|gif|bmp)")
+  df$img<-stringr::str_extract_all(df$df,"img src.*?(jpg|png|gif|bmp)")
   
   #Need to replace the with the current path here
   #df$img<-gsub("img src=\"Images Captured with Proc Data Audit.files/","",df$img)
   df$df<-NULL
   
-  #Now collapse the table so all image files for a procedure in one row only:
   mergeddf<-as.data.frame(as.data.table(df)[, toString(img), by = list(Endo_ResultEntered,PatientID)])
   
   #Split the comma separated img list into a list within the data frame so you should then be able to iterate over it:
   mergeddf<-separate_rows(mergeddf,V1,sep=",")
   mergeddf$V1<-gsub("img src=\"","",mergeddf$V1)
   mergeddf$V1<-trimws(mergeddf$V1)
-  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.][a-z]+$")
+  #Now extract the image file name so can set a path relative to system for it:
+  #Need to extract just the file names
+  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.]jpg")
   mergeddf$url<-lapply(mergeddf$img,function(x) paste0("<img src=",location,"/",x,"'>"))
   mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x)) 
   mergeddf$V1<-NULL
   mergeddf$url<-gsub("=","=\'",mergeddf$url)
   
+  #Need to put all images in one row for a patient and date
+  
   #For pandoc
   mergeddf$url<-sapply(mergeddf$url,pandoc.image.return)
+  
+  #Now collapse the table so all image files for a procedure in one row only:
+  mergeddf<-as.data.frame(as.data.table(mergeddf)[, toString(url), by = list(Endo_ResultEntered,PatientID)])
+  mergeddf$url<-mergeddf$V1
+  
+  
+  
+  
+  ##########Now associate each row with the Image label and Image Comments
+  #Go back to the original data frame:
+  mergedhtml<-gsub("<(img src=.*?)>",":\\1:",mergedhtml)
+  mergedhtml<-gsub("<.*?>",":",mergedhtml)
+  #Then identify the key value pairs and replace with ;
+  mergedhtml<-gsub("([A-Za-z0-9]+):::([A-Za-z0-9]+)","\\1;\\2",mergedhtml)
+  
+  #Split the string up by the hospital number  
+  outddd<-strsplit(mergedhtml,"Patient MRN")
+  #Make sure the hospital number is still a part of the string
+  outddd<-lapply(outddd,function(x) gsub("^;","Patient MRN;",x))
+  outddd<-lapply(outddd,function(x) gsub("img src","Image Name;img src",x))
+  
+  #Split up using Extractor function
+  delim<-c("Patient MRN","Date of procedure","Procedure Performed","Image label","Image Comment","Image Name")
+  mydf<-data.frame(lapply(out,function(x) EndoMineR::Extractor(x,delim)))
+  #Get the image name
+  mydf$img<-str_extract(mydf$Image.Name,"[A-Za-z0-9]+[.]jpg")
+  
+  #Get rid of unnecessary semi colons in all of the columns
+  mydf2<-apply(mydf,2,function(x) gsub(";","",x))
+  mydf2<-data.frame(mydf2)
+  #Get the date column properly formatted:
+  mydf2$Date.of.procedure<-as.Date(mydf2$Date.of.procedure,format="%Y-%m-%d")
+  
+  mydf2<-mydf2%>%rename("Endo_ResultEntered"="Date.of.procedure","PatientID"="Start")
+  
+  #Merge with the mergeddf dataframe
+  mergeddf<-merge(mergeddf,mydf2, by=c("PatientID","Endo_ResultEntered","img"))
+  
   return(mergeddf)
 }
 

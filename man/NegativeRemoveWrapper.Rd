@@ -25,7 +25,7 @@ anexample<-data.frame(anexample)
 names(anexample)<-"Thecol"
 # Run the function on the dataframe and it should get rid of sentences (and
 # parts of sentences) with negative parts in them.
-hh<-NegativeRemoveWrapper(anexample$Thecol)
+#hh<-NegativeRemoveWrapper(anexample$Thecol)
 }
 \seealso{
 Other NLP - Text Cleaning and Extraction: 
