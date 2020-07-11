@@ -6,22 +6,23 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Functions to mine endoscopic and associated pathology datasets • EndoMineR</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Functions to mine endoscopic and associated pathology datasets">
 <meta property="og:description" content="This script comprises the functions that are used to clean up endoscopic 
              reports and pathology reports as well as many of the scripts used for analysis.  
              The scripts assume the endoscopy and histopathology data set is merged already but it can 
              also be used of course with the unmerged datasets.">
-<meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -117,11 +118,12 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="contents col-md-9">
 
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<pre><code>## here() starts at /home/rstudio/EndoMineR_devSite</code></pre>
 <p>This package has undergone a major revision to make it much more user friendly. THe documentation has been updated to reflect this. I am always happy to hear of any feedback, positive and negative so I can continue to improve this package.</p>
 <div id="aims-of-endominer" class="section level2">
 <h2 class="hasAnchor">
@@ -143,19 +145,19 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install EndoMineR from github with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"sebastiz/EndoMineR"</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="co"># install.packages("devtools")</span>
+<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"sebastiz/EndoMineR"</span>)</pre></div>
 <p>If you dont have access to github, then download the zip and change the working dirctory to the place you have downloaded it, then do</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/getwd">setwd</a></span>(<span class="st">"C:/Users/Desktop/"</span>)
+<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/getwd.html">setwd</a></span>(<span class="st">"C:/Users/Desktop/"</span>)
 
 <span class="co">#On windows you cand cd to change the directory or us pushd to create a temporary directory indtead of cd and then setwd to the temporary directory</span>
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/unzip">unzip</a></span>(<span class="st">"EndoMineR.zip"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/files">file.rename</a></span>(<span class="st">"EndoMineR.zip-master"</span>, <span class="st">"EndoMineR.zip"</span>)
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/system">shell</a></span>(<span class="st">"R CMD build EndoMineR.zip"</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span>(<span class="st">"EndoMineR.zip"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/files.html">file.rename</a></span>(<span class="st">"EndoMineR.zip-master"</span>, <span class="st">"EndoMineR.zip"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/system.html">shell</a></span>(<span class="st">"R CMD build EndoMineR.zip"</span>)
 
 <span class="co">#Then install the resulting tarball with:</span>
 
-<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"EndoMineR_0.2.0.9000.tar.gz"</span>, <span class="dt">repos =</span> <span class="ot">NULL</span>)</code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"EndoMineR_0.2.0.9000.tar.gz"</span>, <span class="kw">repos</span> <span class="kw">=</span> <span class="kw">NULL</span>)</pre></div>
 </div>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
@@ -165,153 +167,174 @@ devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumen
 <h2 class="hasAnchor">
 <a href="#extraction-and-cleaning" class="anchor"></a><strong>1. Extraction and cleaning</strong>
 </h2>
-<p>If using raw reports, then once you have imported the data into your R environment, you can go ahead and use the <strong>textPrep</strong> function. If you have pre-segregated data, then use the <strong>EndoPaste</strong> function (explained at the end of this section).</p>
-<p>Once the data is ready you can use the <strong>textPrep</strong> function. This function is really a wrapper for a number of different functions that work on your data.</p>
+<p>If using raw reports, then once you have imported the data into your R environment, you can go ahead and use the <strong>textPrep</strong> function. If you have pre-segregated data, then use the EndoPaste function. This basically reformats your data so that everything is merged back into a raw text file, but it keeps the column headers as delimiters for use later.</p>
+<p><strong>EndoPaste</strong> is provided as an optional function to get your data in the right shape to allow EndoMineR to process the data properly.</p>
+<p>EndoPaste outputs the data as well as a list of delimiters (basically your column headings). The delimiters can then be used in the textPrep function. This would work as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="co">#An example dataset</span>
+<span class="no">testList</span><span class="kw">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">PatientName</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Tom Hardy"</span>, <span class="st">"Elma Fudd"</span>, <span class="st">"Bingo Man"</span>),
+                         <span class="kw">HospitalNumber</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"H55435"</span>, <span class="st">"Y3425345"</span>, <span class="st">"Z343424"</span>), <span class="kw">Text</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"All bad. Not good"</span>,
+<span class="st">"Serious issues"</span>, <span class="st">"from a land far away"</span>)), <span class="kw">class</span> <span class="kw">=</span> <span class="st">"data.frame"</span>, <span class="kw">row.names</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">NA</span>, -<span class="fl">3L</span>))
+<span class="no">myReadyDataset</span><span class="kw">&lt;-</span><span class="fu"><a href="reference/EndoPaste.html">EndoPaste</a></span>(<span class="no">testList</span>)</pre></div>
+<p>The dataframe can be obtained from myReadyDataset<br><span class="math display">1</span><br> and the delimiters from myReadyDataset<br><span class="math display">2</span><br></p>
+<p>Once the data is ready you can use the textPrep function. This function is really a wrapper for a number of different functions that work on your data.</p>
 <div id="a--dusting-the-data" class="section level4">
 <h4 class="hasAnchor">
 <a href="#a--dusting-the-data" class="anchor"></a>a. <strong>Dusting the data</strong>
 </h4>
-<p>Firstly the data is cleaned up so that extra newlines, spaces, unnecessary punctuation etc is dealt with. Although you dont need to know the details of this, if you want to look under the hood you can see that this is part of the <strong>ColumnCleanUp</strong> function.</p>
+<p>Firstly the data is cleaned up so that extra newlines, spaces, unnecessary punctuation etc is dealt with. Although you dont need to know the details of this, if you want to look under the hood you can see that this is part of the ColumnCleanUp function.</p>
 </div>
 <div id="b--spell-checking" class="section level4">
 <h4 class="hasAnchor">
 <a href="#b--spell-checking" class="anchor"></a>b. <strong>Spell checking</strong>
 </h4>
-<p>The textPrep also implements a spell checker (the <strong>spellCheck</strong> function). This really checks the spelling of gastroenterology terms that are present in the in-built lexicons. So, if for example the report contains the terms ‘Radiafrequency ablashion’ then this will be corrected using Radiofrequency ablation. This is one function that acts to standardise the text in the report so that downstream analyses can be robust.</p>
+<p>The textPrep also implements a spell checker (the <strong>spellCheck</strong> function). This really checks the spelling of gastroenterology terms that are present in the in-built lexcicons. So if for example the report contains the terms ‘Radiafrequency ablashion’ then this will be corrected using Radiofrequency ablation. This is one function that acts to standardise the text in the report so that downstream analyses can be robust.</p>
 </div>
 <div id="c--negative-phrase-removal" class="section level4">
 <h4 class="hasAnchor">
 <a href="#c--negative-phrase-removal" class="anchor"></a>c. <strong>Negative phrase removal</strong>
 </h4>
-<p>The text is then passed along to the <strong>NegativeRemove</strong> function. This will remove any phrases that contain negative sentences indicating a non-positive finding. For example it would remove ‘There is no evidence of dysplasia here’. This makes text extraction analyses, which often report the detection of a positive finding, much more accurate. If you wish to include negative phrases however, you can. This function is part of the parameters you can switch on and off for the <strong>textPrep</strong> function.</p>
+<p>The text is then passed along to the <strong>NegativeRemove</strong> function. This will remove any phrases that contain negative sentences indicating a non-positive finding. For example it would remove ‘There is no evidence of dysplasia here’. This makes text extraction analyses, which often report the detection of a positive finding, much more accurate. If you wish to include these types of phrases however, you can. This function is part of the parameters you can switch on and off for the textPrep function.</p>
 </div>
 <div id="d--term-mapping" class="section level4">
 <h4 class="hasAnchor">
 <a href="#d--term-mapping" class="anchor"></a>d. <strong>Term mapping</strong>
 </h4>
-<p>The next step is to perform term mapping. This means that variations of a term are all mapped to a single common term. For example ‘RFA’ and ‘HALO’ may be both mapped to ‘Radiofrequency ablation’. This is performed using the using the <strong>DictionaryInPlaceReplace</strong> function. This function looks through all of the lexicons included in this package to perform this. The lexicons are all manually created and consist of key-value pairs which therefore map a key which is the term variant) to a value (which is the standardised term that should be used).</p>
+<p>The next step is to perform term mapping. This means that variations of a term are all mapped to a single common term. For example ‘RFA’ and ‘HALO’ may be both mapped to ‘Radiofrequency ablation’. This is performed using the using the <strong>DictionaryInPlaceReplace</strong> function. This function looks through all of the lexicons included in this package to perform this. The lexicons are all manually created and consist of key-value pairs which therefore map a key 9which is the term variant) to a value (which is the standardised term that should be used).</p>
 </div>
 <div id="e--segregating-the-data" class="section level4">
 <h4 class="hasAnchor">
 <a href="#e--segregating-the-data" class="anchor"></a>e. <strong>Segregating the data</strong>
 </h4>
-<p>Finally the text is ready to separate into columns. The basic <strong>Extractor</strong> function will take your data with the list of terms you have supplied that act as the column boundaries and separate your data accordingly. It is up to the user to define the list of boundary keywords. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe.</p>
-</div>
-<div id="what-if-my-data-is-already-in-columns" class="section level3">
-<h3 class="hasAnchor">
-<a href="#what-if-my-data-is-already-in-columns" class="anchor"></a><strong>What if my data is already in columns?</strong>
-</h3>
-<p>Often the raw data is derived from a basic query to some endoscopy software. The output is likely to be a spreadsheet with some of the data (eg Endoscopist) already placed in separate columns. The report still needs to be tidied up in order to maximise what we can get from the data and especially the free text. In order to do the term mapping and negative removal etc it is therefore necessary for EndoMineR to merge all of the columns together, for each endoscopy, but it keeps the column headers as delimiters for use later. This is the case with the top left box in the first diagram.</p>
-<p><strong>EndoPaste</strong> is provided as an optional function to get your data in the right shape to allow EndoMineR to process the data properly in this situation</p>
-<p><strong>EndoPaste</strong> outputs two things: the data, as well as a list of delimiters (basically your column headings). The delimiters can then be used in the <strong>textPrep</strong> function. This would work as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">
-<span class="co">#An example dataset</span>
-testList&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/structure">structure</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(<span class="dt">PatientName =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Tom Hardy"</span>, <span class="st">"Elma Fudd"</span>, <span class="st">"Bingo Man"</span>), 
-                         <span class="dt">HospitalNumber =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"H55435"</span>, <span class="st">"Y3425345"</span>, <span class="st">"Z343424"</span>), <span class="dt">Text =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"All bad. Not good"</span>, 
-<span class="st">"Serious issues"</span>, <span class="st">"from a land far away"</span>)), <span class="dt">class =</span> <span class="st">"data.frame"</span>, <span class="dt">row.names =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="ot">NA</span>, <span class="op">-</span>3L))
-myReadyDataset&lt;-<span class="kw"><a href="reference/EndoPaste.html">EndoPaste</a></span>(testList)</code></pre></div>
-<p>The dataframe can be obtained from myReadyDataset[1] and the delimiters from myReadyDataset[2]</p>
+<p>Finally the text is ready to separate into columns. The basic <strong>Extractor</strong> function will take your data and the list of terms you have supplied that act as the column boundaries, the separate your data accordingly. There are a couple of options here. If you think the headers for your text vary a little bit, then you can change the parameter in the textPrep function to use an alternatiuve Extractor, called <strong>Extractor2</strong> that can deal with this. It can be worth experimenting with your data to find out which is the better segregator. The Extractor (or Extractor2) is a very useful function. Different hospitals will use different software with different headings for endoscopic reports. The Extractor allows the user to define the separations in a report so that all reports can be automatically placed into a meaningful dataframe for further cleaning. Here we use the in-built datasets as part of the package. A list of keywords is then constructed. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The list is therefore populated with these headers as defined by the user. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe.</p>
 <p><br><br><br></p>
-</div>
-<div id="can-i-have-an-example-please" class="section level3">
-<h3 class="hasAnchor">
-<a href="#can-i-have-an-example-please" class="anchor"></a><strong>Can I have an example please?</strong>
-</h3>
-<p>As an example, here we use an sample dataset (which has not had separate columns selected already, so no need to use EndoPaste) as the input. This contains a synthetic dataset provided as part of the EndoMineR package.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PathDataFrameFinalColon2&lt;-PathDataFrameFinalColon
-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/names">names</a></span>(PathDataFrameFinalColon2)&lt;-<span class="st">"PathReportWhole"</span>
-<span class="kw">pander</span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(PathDataFrameFinalColon2,<span class="dv">1</span>))</code></pre></div>
-<table class="table table">
+<p>Here we use an example dataset (which has not had separate columns selected already) as the input:</p>
+<table class="table">
 <colgroup><col width="44%"></colgroup>
 <thead><tr class="header">
-<th align="center">PathReportWhole</th>
+<th align="center">
+PathReportWhole
+</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: H2890235 Patient Name: al-Bilal, Widdad DOB: 1922-05-04 General Practitioner: Dr. Mondragon, Amber Date received: 2002-11-10 Clinical Details: Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen. Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’| Macroscopic description: 1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm Histology: The appearances are of a hyperplastic polyp.,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3.,Completeness of excision is uncertain as the base is not clearly visualised.,There is no ulceration.,Kikuchi level: sm2. Diagnosis: Colon, biopsy - Normal.,- Focal granulomatous inflammation, non-necrotising.,Duodenum, biopsy - within normal histological limits.,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia.,- Hyperplastic polyp .,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia.,- Mild chronic inflammation within the oesophageal mucosa.,Sigmoid colon biopsies:- normal mucosa.,Sigmoid polyp excision:- tubular adenoma.</td>
-</tr></tbody>
-</table>
-<table class="table table">
-<colgroup><col width="44%"></colgroup>
-<thead><tr class="header">
-<th align="center">PathReportWhole</th>
-</tr></thead>
-<tbody><tr class="odd">
-<td align="center">Hospital: Random NHS Foundation Trust Hospital Number: H2890235 Patient Name: al-Bilal, Widdad DOB: 1922-05-04 General Practitioner: Dr. Mondragon, Amber Date received: 2002-11-10 Clinical Details: Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen. Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’| Macroscopic description: 1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm Histology: The appearances are of a hyperplastic polyp.,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3.,Completeness of excision is uncertain as the base is not clearly visualised.,There is no ulceration.,Kikuchi level: sm2. Diagnosis: Colon, biopsy - Normal.,- Focal granulomatous inflammation, non-necrotising.,Duodenum, biopsy - within normal histological limits.,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia.,- Hyperplastic polyp .,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia.,- Mild chronic inflammation within the oesophageal mucosa.,Sigmoid colon biopsies:- normal mucosa.,Sigmoid polyp excision:- tubular adenoma.</td>
+<td align="center">
+Hospital: Random NHS Foundation Trust Hospital Number: H2890235 Patient Name: al-Bilal, Widdad DOB: 1922-05-04 General Practitioner: Dr. Mondragon, Amber Date received: 2002-11-10 Clinical Details: Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen. Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’| Macroscopic description: 1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm Histology: The appearances are of a hyperplastic polyp.,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3.,Completeness of excision is uncertain as the base is not clearly visualised.,There is no ulceration.,Kikuchi level: sm2. Diagnosis: Colon, biopsy - Normal.,- Focal granulomatous inflammation, non-necrotising.,Duodenum, biopsy - within normal histological limits.,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia.,- Hyperplastic polyp .,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia.,- Mild chronic inflammation within the oesophageal mucosa.,Sigmoid colon biopsies:- normal mucosa.,Sigmoid polyp excision:- tubular adenoma.
+</td>
 </tr></tbody>
 </table>
 <p><br></p>
 <p>We can then define the list of delimiters that will split this text into separate columns, title the columns according to the delimiters and return a dataframe. each column simply contains the text between the delimiters that the user has defined. These columns are then ready for the more refined cleaning provided by subesquent functions.</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(EndoMineR)
-mywords&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
+<div class="sourceCode" id="cb4"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EndoMineR</span>)
+<span class="no">mywords</span><span class="kw">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Hospital Number"</span>,<span class="st">"Patient Name:"</span>,<span class="st">"DOB:"</span>,<span class="st">"General Practitioner:"</span>,
 <span class="st">"Date received:"</span>,<span class="st">"Clinical Details:"</span>,<span class="st">"Macroscopic description:"</span>,
 <span class="st">"Histology:"</span>,<span class="st">"Diagnosis:"</span>)
 
-PathDataFrameFinalColon3&lt;-<span class="kw"><a href="reference/Extractor.html">Extractor</a></span>(PathDataFrameFinalColon2<span class="op">$</span>PathReportWhole,mywords)</code></pre></div>
-<table class="table table">
+<span class="no">PathDataFrameFinalColon3</span><span class="kw">&lt;-</span><span class="fu"><a href="reference/Extractor.html">Extractor</a></span>(<span class="no">PathDataFrameFinalColon2</span>$<span class="no">PathReportWhole</span>,<span class="no">mywords</span>)</pre></div>
+<div class="sourceCode" id="cb5"><pre class="r"><span class="co">#PathDataFrameFinalColon3&lt;-head(PathDataFrameFinalColon3[2:10],1)</span>
+<span class="fu">panderOptions</span>(<span class="st">'table.split.table'</span>, <span class="fl">Inf</span>)
+<span class="fu">pander</span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">PathDataFrameFinalColon3</span>[,<span class="fl">1</span>:<span class="fl">9</span>],<span class="fl">1</span>))</pre></div>
+<table class="table">
 <colgroup>
-<col width="14%">
-<col width="8%">
-<col width="8%">
-<col width="6%">
-<col width="10%">
 <col width="7%">
-<col width="14%">
-<col width="14%">
-<col width="14%">
+<col width="8%">
+<col width="5%">
+<col width="10%">
+<col width="6%">
+<col width="15%">
+<col width="15%">
+<col width="15%">
+<col width="15%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">Start</th>
-<th align="center">Hospital.Number</th>
-<th align="center">Patient.Name</th>
-<th align="center">DOB</th>
-<th align="center">General.Practitioner</th>
-<th align="center">Date.received</th>
-<th align="center">Clinical.Details</th>
-<th align="center">Macroscopic.description</th>
-<th align="center">Histology</th>
+<th align="center">
+HospitalNumber
+</th>
+<th align="center">
+PatientName
+</th>
+<th align="center">
+DOB
+</th>
+<th align="center">
+GeneralPractitioner
+</th>
+<th align="center">
+Datereceived
+</th>
+<th align="center">
+ClinicalDetails
+</th>
+<th align="center">
+Macroscopicdescription
+</th>
+<th align="center">
+Histology
+</th>
+<th align="center">
+Diagnosis
+</th>
 </tr></thead>
 <tbody><tr class="odd">
-<td align="center">Hospital Random NHS Foundation Trust.</td>
-<td align="center">H2890235.</td>
-<td align="center">al-Bilal, Widdad.</td>
-<td align="center">1922-05-04.</td>
-<td align="center">Dr. Mondragon, Amber.</td>
-<td align="center">2002-11-10.</td>
-<td align="center">Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index. 3 specimen. Nature of specimen Nature of specimen as stated on pot = Ascending colon x2 |,Nature of specimen as stated on request form = rectum|,Nature of specimen as stated on pot = 4X LOWER, 4X UPPER OESOPHAGUS |,Nature of specimen as stated on pot = rectal polyp |.</td>
-<td align="center">1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm.</td>
-<td align="center">The appearances are of a hyperplastic polyp.,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3.,Completeness of excision is uncertain as the base is not clearly visualised.,There is no ulceration.,Kikuchi level sm2..</td>
+<td align="center">
+: H2890235
+</td>
+<td align="center">
+al-Bilal, Widdad
+</td>
+<td align="center">
+1922-05-04
+</td>
+<td align="center">
+Dr. Mondragon, Amber
+</td>
+<td align="center">
+2002-11-10
+</td>
+<td align="center">
+Previous had serrated lesions ?,If looks more like UC, please provide Nancy severity index 3 specimen. Nature of specimen: Nature of specimen as stated on pot = ‘Ascending colon x2’|,Nature of specimen as stated on request form = ‘rectum’|,Nature of specimen as stated on pot = ‘4X LOWER, 4X UPPER OESOPHAGUS’|,Nature of specimen as stated on pot = ‘rectal polyp’|
+</td>
+<td align="center">
+1 specimens collected the largest measuring 3 x 5 x 2 mm and the smallest 3 x 5 x 5 mm
+</td>
+<td align="center">
+The appearances are of a hyperplastic polyp.,8 pieces of tissue, the largest measuring 4 x 36 x 2 mm and the smallest 3 x 3.,Completeness of excision is uncertain as the base is not clearly visualised.,There is no ulceration.,Kikuchi level: sm2.
+</td>
+<td align="center">
+Colon, biopsy - Normal.,- Focal granulomatous inflammation, non-necrotising.,Duodenum, biopsy - within normal histological limits.,Sigmoid colon, polypectomy: - Tubular adenoma with moderate dysplasia.,- Hyperplastic polyp .,Caecum polyp biopsies:- tubular adenoma, low grade dysplasia.,- Mild chronic inflammation within the oesophageal mucosa.,Sigmoid colon biopsies:- normal mucosa.,Sigmoid polyp excision:- tubular adenoma.
+</td>
 </tr></tbody>
 </table>
-<p>The <strong>Extractor</strong> function is embedded within <strong>textPrep</strong> so you may never have to use it directly, but you will always have to submit a list of delimiters so that <strong>textPrep</strong> can use the <strong>Extractor</strong> to do its segregation:</p>
-<p><strong>textPrep</strong> takes the optional parameters NegEx which tells the <strong>textPrep</strong> to remove negative phrases like ‘There is no pathology here’ from the text.</p>
+<p>The Extractor function is embedded within textPrep so you may never have to use it directly, but you will always have to submit a list of delimiters so that textPrep can use the Extractor to do its segregation:</p>
+<p><strong>textPrep</strong> takes the optional parameters NegEx (which tells the textPrep to remove negative phrases like ‘There is no pathology here’ from the text) and the Extractor parameter which tells the textPrep function to either use the regular Extractor when you know the subheadings are always in the same order, or Extractor2 when you think some of the subtitles might be missing.</p>
 <p>There will always be a certain amount of data cleaning that only the end user can do before data can be extracted. There is some cleaning that is common to many endoscopy reports and so functions have been provided for this. An abvious function is the cleaning of the endoscopist’s name. This is done with the function <strong>EndoscEndoscopist</strong>. This removes titles and tidies up the names so that there aren’t duplicate names (eg “Dr. Sebastian Zeki” and “Sebastian Zeki”). This is applied to any endoscopy column where the Endoscopist name has been isolated into its own column.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(Myendo<span class="op">$</span>Endoscopist[<span class="dv">2</span><span class="op">:</span><span class="dv">6</span>])
-<span class="co">#&gt; [1] "Dr  Kekich, Annabelle"      "Dr  Sullivan, Shelby"      </span>
-<span class="co">#&gt; [3] "Dr  Avitia Ramirez, Alon a" "Dr  Greimann, Phoua"       </span>
-<span class="co">#&gt; [5] "Dr  Avitia Ramirez, Alon a"</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="r"><span class="fu"><a href="reference/EndoscEndoscopist.html">EndoscEndoscopist</a></span>(<span class="no">Myendo</span>$<span class="no">Endoscopist</span>[<span class="fl">2</span>:<span class="fl">6</span>])
+<span class="co">#&gt; [1] "Kekich,Annabelle"       "Sullivan,Shelby"       </span>
+<span class="co">#&gt; [3] "Avitia Ramirez,Alondra" "Greimann,Phoua"        </span>
+<span class="co">#&gt; [5] "Avitia Ramirez,Alondra"</span></pre></div>
 </div>
 </div>
 <div id="data-linkage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-linkage" class="anchor"></a><strong>2. Data linkage</strong>
 </h2>
-<p>Endoscopy data may be linked with other types of data. The most common associated dataset is pathology data from biopsies etc taken at endoscopy. This pathology data should be processed in exactly the same way as the endoscopy data- namely with <strong>textPrep</strong> (with or without <strong>EndoPaste</strong>).</p>
-<p>The resulting pathology dataset should then be merged with the endoscopy dataset using <strong>Endomerge2</strong> which will merge all rows with the same hospital number and do a fuzzy match (up to 7 days after the endoscopy) with pathology so the right endoscopy event is associated with the right pathology report.An example of merging the included datasets Mypath and Myendo is given here:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">v&lt;-<span class="kw"><a href="reference/Endomerge2.html">Endomerge2</a></span>(Myendo,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,Mypath,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>)</code></pre></div>
+<p>Endoscopy data may be linked with other types of data. The most common associated dataset is pathology data from biopsies etc taken at endoscopy. This pathology data should be processed in exactly the same way as the endoscopy data- namely with textPrep (with or without EndoPaste).</p>
+<p>The resulting pathology dataset should then be merged with the endoscopy dataset using <strong>Endomerge</strong> which will merge all rows with the same hospital number and do a fuzzy match (up to 7 days after the endoscopy) with pathology so the right endoscopy event is associated with the right pathology report.An example of merging the included datasets Mypath and Myendo is given here:</p>
+<div class="sourceCode" id="cb7"><pre class="r"><span class="no">v</span><span class="kw">&lt;-</span><span class="fu"><a href="reference/Endomerge2.html">Endomerge2</a></span>(<span class="no">Myendo</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>,<span class="no">Mypath</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'HospitalNumber'</span>)</pre></div>
 </div>
 <div id="deriving-new-data-from-what-you-have" class="section level2">
 <h2 class="hasAnchor">
 <a href="#deriving-new-data-from-what-you-have" class="anchor"></a><strong>3. Deriving new data from what you have</strong>
 </h2>
 <p>Once the text has been separated in to the columns of your choosing you are ready to see what we can extract. Functions are provided to allow quite complex extractions at both a general level and also for specific diseases.</p>
+<p>The extraction of medication type and dose is important for lots of analyses in endoscopy. This is provided with the function <strong>EndoscMeds</strong>. The function will take the column that you specify and then output a dataframe. You will need to re-bind this output with the original dataframe for further analyses. This is shown below</p>
 <div id="i-medication" class="section level4">
 <h4 class="hasAnchor">
 <a href="#i-medication" class="anchor"></a><strong>i) Medication</strong>
 </h4>
-<p>The extraction of medication type and dose is important for lots of analyses in endoscopy. This is provided with the function <strong>EndoscMeds</strong>. The function currently extracts Fentanyl, Pethidine, Midazolam and Propofol doses into a separate column and reformats them as numeric columns so further calculations can be done. It outputs a dataframe so you will need to re-bind this output with the original dataframe for further analyses. This is shown below:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">MyendoMeds&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="reference/EndoscMeds.html">EndoscMeds</a></span>(Myendo<span class="op">$</span>Medications), Myendo)</code></pre></div>
-<table class="table table">
+<p>The EndoscMeds currently extracts Fentanyl, Pethidine, Midazolam and Propofol doses into a separate column and reformats them as numeric columns so further calculations can be done.</p>
+<div class="sourceCode" id="cb8"><pre class="r"><span class="no">MyendoMeds</span><span class="kw">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="reference/EndoscMeds.html">EndoscMeds</a></span>(<span class="no">Myendo</span>$<span class="no">Medications</span>), <span class="no">Myendo</span>)
+<span class="fu">pander</span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">MyendoMeds</span>[<span class="fl">1</span>:<span class="fl">4</span>],<span class="fl">5</span>))</pre></div>
+<table class="table">
 <colgroup>
 <col width="43%">
 <col width="9%">
@@ -319,41 +342,89 @@ PathDataFrameFinalColon3&lt;-<span class="kw"><a href="reference/Extractor.html"
 <col width="11%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">MedColumn</th>
-<th align="center">Fent</th>
-<th align="center">Midaz</th>
-<th align="center">Peth</th>
+<th align="center">
+MedColumn
+</th>
+<th align="center">
+Fent
+</th>
+<th align="center">
+Midaz
+</th>
+<th align="center">
+Peth
+</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">Fentanyl 12 5mcg Midazolam 6mg</td>
-<td align="center">NA</td>
-<td align="center">6</td>
-<td align="center">NA</td>
+<td align="center">
+Fentanyl 12 5mcg Midazolam 6mg
+</td>
+<td align="center">
+NA
+</td>
+<td align="center">
+6
+</td>
+<td align="center">
+NA
+</td>
 </tr>
 <tr class="even">
-<td align="center">Fentanyl 125mcg Midazolam 7mg</td>
-<td align="center">125</td>
-<td align="center">7</td>
-<td align="center">NA</td>
+<td align="center">
+Fentanyl 125mcg Midazolam 7mg
+</td>
+<td align="center">
+125
+</td>
+<td align="center">
+7
+</td>
+<td align="center">
+NA
+</td>
 </tr>
 <tr class="odd">
-<td align="center">Fentanyl 125mcg Midazolam 6mg</td>
-<td align="center">125</td>
-<td align="center">6</td>
-<td align="center">NA</td>
+<td align="center">
+Fentanyl 125mcg Midazolam 6mg
+</td>
+<td align="center">
+125
+</td>
+<td align="center">
+6
+</td>
+<td align="center">
+NA
+</td>
 </tr>
 <tr class="even">
-<td align="center">Fentanyl 12 5mcg Midazolam 2mg</td>
-<td align="center">NA</td>
-<td align="center">2</td>
-<td align="center">NA</td>
+<td align="center">
+Fentanyl 12 5mcg Midazolam 2mg
+</td>
+<td align="center">
+NA
+</td>
+<td align="center">
+2
+</td>
+<td align="center">
+NA
+</td>
 </tr>
 <tr class="odd">
-<td align="center">Fentanyl 75mcg Midazolam 6mg</td>
-<td align="center">75</td>
-<td align="center">6</td>
-<td align="center">NA</td>
+<td align="center">
+Fentanyl 75mcg Midazolam 6mg
+</td>
+<td align="center">
+75
+</td>
+<td align="center">
+6
+</td>
+<td align="center">
+NA
+</td>
 </tr>
 </tbody>
 </table>
@@ -362,97 +433,170 @@ PathDataFrameFinalColon3&lt;-<span class="kw"><a href="reference/Extractor.html"
 <h4 class="hasAnchor">
 <a href="#ii-endosccopy-event-extraction" class="anchor"></a><strong>ii) Endosccopy Event extraction</strong>
 </h4>
-<p>The <strong>EndoscopyEvent</strong> function will extract any event that has been performed at the endoscopy and dump it in a new column. It does this by looking in pairs of sentences and therefore wraps around a more basic function called <strong>EndoscopyPairs_TwoSentence</strong> which you dont have to directly use. This allows us to get the site that the event (usually a therapy) happened on. A example sentence might be ‘There was a bleeding gastric ulcer. A clip was applied to it’ We can only extract stomach:clip by reference to the two sentences.</p>
+<p>The <strong>EndoscopyEvent</strong> function will extract any event that has been performed at the endoscopy and dump it in a new column. It does this by looking in pairs of sentences and therefore wraps around a more basic function called <strong>EndoscopyPairs_TwoSentence</strong>. This allows us to get the site that the event (usually a therapy) happened on. A example sentence might be ‘There was a bleeding gastric ulcer. A clip was applied to it’ We can only extract stomach:clip by reference to the two sentences.</p>
 </div>
 <div id="iii-histology-biopsy-number-extraction" class="section level4">
 <h4 class="hasAnchor">
 <a href="#iii-histology-biopsy-number-extraction" class="anchor"></a><strong>iii) Histology biopsy number extraction</strong>
 </h4>
 <p>There is also a lot of information we can extract into a separate column from the histopathology information. We can derive the number of biopsies taken (usually specified in the macroscopic description of a sample) using the function <strong>HistolNumbOfBx</strong>.</p>
-<p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex [0-9]{1,2}.{0,3} to whatever the string boundary is.</p>
-<p>For example, a report might say:</p>
+<p>In order to extract the numbers, the limit of what has to be extracted has to be set as part of the regex so that the function takes whatever word limits the selection.It collects everything from the regex <br><span class="math display">0 − 9</span><br>{1,2}.{0,3} to whatever the string boundary is. For example, if the report usually says:</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sg&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Mypath<span class="op">$</span>HospitalNumber,Mypath<span class="op">$</span>PatientName,Mypath<span class="op">$</span>Macroscopicdescription)</code></pre></div>
-<table class="table table">
+<div class="sourceCode" id="cb9"><pre class="r"><span class="no">sg</span><span class="kw">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">Mypath</span>$<span class="no">HospitalNumber</span>,<span class="no">Mypath</span>$<span class="no">PatientName</span>,<span class="no">Mypath</span>$<span class="no">Macroscopicdescription</span>)
+<span class="fu">pander</span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">sg</span>,<span class="fl">5</span>))</pre></div>
+<table class="table">
 <colgroup>
 <col width="30%">
 <col width="29%">
 <col width="40%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">Mypath.HospitalNumber</th>
-<th align="center">Mypath.PatientName</th>
-<th align="center">Mypath.Macroscopicdescription</th>
+<th align="center">
+Mypath.HospitalNumber
+</th>
+<th align="center">
+Mypath.PatientName
+</th>
+<th align="center">
+Mypath.Macroscopicdescription
+</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">Jargon, Victoria</td>
-<td align="center">3 specimens collected the largest measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm</td>
+<td align="center">
+J6044658
+</td>
+<td align="center">
+Jargon, Victoria
+</td>
+<td align="center">
+3 specimens collected the largest measuring 3 x 2 x 1 mm and the smallest 2 x 1 x 5 mm
+</td>
 </tr>
 <tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">Powell, Destiny</td>
-<td align="center">4 specimens collected the largest measuring 4 x 4 x 4 mm and the smallest 5 x 3 x 1 mm</td>
+<td align="center">
+Y6417773
+</td>
+<td align="center">
+Powell, Destiny
+</td>
+<td align="center">
+4 specimens collected the largest measuring 4 x 4 x 4 mm and the smallest 5 x 3 x 1 mm
+</td>
 </tr>
 <tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">Martinez-Santos, Ana</td>
-<td align="center">9 specimens collected the largest measuring 2 x 5 x 2 mm and the smallest 1 x 1 x 4 mm</td>
+<td align="center">
+B6072011
+</td>
+<td align="center">
+Martinez-Santos, Ana
+</td>
+<td align="center">
+9 specimens collected the largest measuring 2 x 5 x 2 mm and the smallest 1 x 1 x 4 mm
+</td>
 </tr>
 <tr class="even">
-<td align="center">G1449886</td>
-<td align="center">Lopez, Maria</td>
-<td align="center">4 specimens collected the largest measuring 5 x 4 x 1 mm and the smallest 1 x 3 x 3 mm</td>
+<td align="center">
+G1449886
+</td>
+<td align="center">
+Lopez, Maria
+</td>
+<td align="center">
+4 specimens collected the largest measuring 5 x 4 x 1 mm and the smallest 1 x 3 x 3 mm
+</td>
 </tr>
 <tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">al-Rahimi, Rif’a</td>
-<td align="center">5 specimens collected the largest measuring 2 x 2 x 1 mm and the smallest 3 x 4 x 3 mm</td>
+<td align="center">
+V1607560
+</td>
+<td align="center">
+al-Rahimi, Rif’a
+</td>
+<td align="center">
+5 specimens collected the largest measuring 2 x 2 x 1 mm and the smallest 3 x 4 x 3 mm
+</td>
 </tr>
 </tbody>
 </table>
 <p><br></p>
 <p>Based on this, the word that limits the number you are interested in is ‘specimen’ so the function and it’s output is:</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath<span class="op">$</span>NumbOfBx&lt;-<span class="kw"><a href="reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(Mypath<span class="op">$</span>Macroscopicdescription,<span class="st">'specimen'</span>)
-sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Mypath<span class="op">$</span>HospitalNumber,Mypath<span class="op">$</span>PatientName,Mypath<span class="op">$</span>NumbOfBx)</code></pre></div>
-<table class="table table">
+<div class="sourceCode" id="cb10"><pre class="r"><span class="no">Mypath</span>$<span class="no">NumbOfBx</span><span class="kw">&lt;-</span><span class="fu"><a href="reference/HistolNumbOfBx.html">HistolNumbOfBx</a></span>(<span class="no">Mypath</span>$<span class="no">Macroscopicdescription</span>,<span class="st">'specimen'</span>)
+<span class="no">sh</span><span class="kw">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">Mypath</span>$<span class="no">HospitalNumber</span>,<span class="no">Mypath</span>$<span class="no">PatientName</span>,<span class="no">Mypath</span>$<span class="no">NumbOfBx</span>)
+<span class="fu">pander</span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">sh</span>,<span class="fl">5</span>))</pre></div>
+<table class="table">
 <colgroup>
 <col width="33%">
 <col width="31%">
 <col width="23%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">Mypath.HospitalNumber</th>
-<th align="center">Mypath.PatientName</th>
-<th align="center">Mypath.NumbOfBx</th>
+<th align="center">
+Mypath.HospitalNumber
+</th>
+<th align="center">
+Mypath.PatientName
+</th>
+<th align="center">
+Mypath.NumbOfBx
+</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">Jargon, Victoria</td>
-<td align="center">3</td>
+<td align="center">
+J6044658
+</td>
+<td align="center">
+Jargon, Victoria
+</td>
+<td align="center">
+3
+</td>
 </tr>
 <tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">Powell, Destiny</td>
-<td align="center">4</td>
+<td align="center">
+Y6417773
+</td>
+<td align="center">
+Powell, Destiny
+</td>
+<td align="center">
+4
+</td>
 </tr>
 <tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">Martinez-Santos, Ana</td>
-<td align="center">9</td>
+<td align="center">
+B6072011
+</td>
+<td align="center">
+Martinez-Santos, Ana
+</td>
+<td align="center">
+9
+</td>
 </tr>
 <tr class="even">
-<td align="center">G1449886</td>
-<td align="center">Lopez, Maria</td>
-<td align="center">4</td>
+<td align="center">
+G1449886
+</td>
+<td align="center">
+Lopez, Maria
+</td>
+<td align="center">
+4
+</td>
 </tr>
 <tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">al-Rahimi, Rif’a</td>
-<td align="center">5</td>
+<td align="center">
+V1607560
+</td>
+<td align="center">
+al-Rahimi, Rif’a
+</td>
+<td align="center">
+5
+</td>
 </tr>
 </tbody>
 </table>
@@ -462,44 +606,81 @@ sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/to
 <a href="#iv-histology-biopsy-size-extraction" class="anchor"></a><strong>iv) Histology biopsy size extraction</strong>
 </h4>
 <p>We might also be interested in the size of the biopsy taken. A further function called <strong>HistolBxSize</strong> is provided for this. This is also derived from the macroscopic description of the specimen</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Mypath<span class="op">$</span>BxSize&lt;-<span class="kw"><a href="reference/HistolBxSize.html">HistolBxSize</a></span>(Mypath<span class="op">$</span>Macroscopicdescription)
-sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(Mypath<span class="op">$</span>HospitalNumber,Mypath<span class="op">$</span>PatientName,Mypath<span class="op">$</span>BxSize)</code></pre></div>
-<table class="table table">
+<div class="sourceCode" id="cb11"><pre class="r"><span class="no">Mypath</span>$<span class="no">BxSize</span><span class="kw">&lt;-</span><span class="fu"><a href="reference/HistolBxSize.html">HistolBxSize</a></span>(<span class="no">Mypath</span>$<span class="no">Macroscopicdescription</span>)
+<span class="no">sh</span><span class="kw">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="no">Mypath</span>$<span class="no">HospitalNumber</span>,<span class="no">Mypath</span>$<span class="no">PatientName</span>,<span class="no">Mypath</span>$<span class="no">BxSize</span>)
+<span class="fu">pander</span>(<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">sh</span>,<span class="fl">5</span>))</pre></div>
+<table class="table">
 <colgroup>
 <col width="33%">
 <col width="31%">
 <col width="20%">
 </colgroup>
 <thead><tr class="header">
-<th align="center">Mypath.HospitalNumber</th>
-<th align="center">Mypath.PatientName</th>
-<th align="center">Mypath.BxSize</th>
+<th align="center">
+Mypath.HospitalNumber
+</th>
+<th align="center">
+Mypath.PatientName
+</th>
+<th align="center">
+Mypath.BxSize
+</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">J6044658</td>
-<td align="center">Jargon, Victoria</td>
-<td align="center">6</td>
+<td align="center">
+J6044658
+</td>
+<td align="center">
+Jargon, Victoria
+</td>
+<td align="center">
+6
+</td>
 </tr>
 <tr class="even">
-<td align="center">Y6417773</td>
-<td align="center">Powell, Destiny</td>
-<td align="center">64</td>
+<td align="center">
+Y6417773
+</td>
+<td align="center">
+Powell, Destiny
+</td>
+<td align="center">
+64
+</td>
 </tr>
 <tr class="odd">
-<td align="center">B6072011</td>
-<td align="center">Martinez-Santos, Ana</td>
-<td align="center">20</td>
+<td align="center">
+B6072011
+</td>
+<td align="center">
+Martinez-Santos, Ana
+</td>
+<td align="center">
+20
+</td>
 </tr>
 <tr class="even">
-<td align="center">G1449886</td>
-<td align="center">Lopez, Maria</td>
-<td align="center">20</td>
+<td align="center">
+G1449886
+</td>
+<td align="center">
+Lopez, Maria
+</td>
+<td align="center">
+20
+</td>
 </tr>
 <tr class="odd">
-<td align="center">V1607560</td>
-<td align="center">al-Rahimi, Rif’a</td>
-<td align="center">4</td>
+<td align="center">
+V1607560
+</td>
+<td align="center">
+al-Rahimi, Rif’a
+</td>
+<td align="center">
+4
+</td>
 </tr>
 </tbody>
 </table>
@@ -509,16 +690,12 @@ sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/to
 <a href="#v-histology-type-and-site-extraction" class="anchor"></a><strong>v) Histology type and site extraction</strong>
 </h4>
 <p>A final function is also provided called <strong>HistolTypeAndSite</strong>. This is particularly useful when trying to find out which biopsies came from which site. The output is provided as a site:specimen type pair. An alternative output is also provided which groups locations (eg the gastro-oesophageal junction is seen as part of the oesophagus).</p>
-</div>
-</div>
-<div id="and-this-is-just-the-beginning" class="section level2">
-<h2 class="hasAnchor">
-<a href="#and-this-is-just-the-beginning" class="anchor"></a><strong>And this is just the beginning…</strong>
-</h2>
 <p>What is described above are the building blocks for starting a more complex analysis of the Endoscopic and Pathological data.</p>
 <p>Generic analyses, such as figuring out surveillance intervals, can be determined using the appropriate functions in the Analysis module.</p>
 <p>The dataset can also be fed in to more complex functions as are described in the Barrett’s, Inflammatory Bowel Diseaes (IBD) or Polyp modules.</p>
 <p>The package also provides generic data visualisation tools to assess Patient flow, amonst other visualisations.</p>
+<p>Further more detailed examples are provided in the associated vignette for this package</p>
+</div>
 <div id="how-to-contribute" class="section level3">
 <h3 class="hasAnchor">
 <a href="#how-to-contribute" class="anchor"></a>How to contribute</h3>
@@ -536,13 +713,14 @@ sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/to
 </div>
 </div>
 </div>
+
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/ropensci/EndoMineR">https://​github.com/​ropensci/​EndoMineR</a>
+<li>Browse source code at <br><a href="https://github.com/ropensci/EndoMineR/">https://​github.com/​ropensci/​EndoMineR/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/ropensci/EndoMineR/issues">https://​github.com/​ropensci/​EndoMineR/​issues</a>
 </li>
@@ -552,6 +730,12 @@ sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/to
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
+</ul>
+</div>
+<div class="community">
+<h2>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 </ul>
 </div>
 <div class="developers">
@@ -564,7 +748,7 @@ sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/to
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/sebastiz/EndoMineR"><img src="https://travis-ci.org/sebastiz/EndoMineR.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://travis-ci.org/rOpenSci/EndoMineR"><img src="https://travis-ci.org/rOpenSci/EndoMineR.svg?branch=master" alt="Build Status"></a></li>
 <li><a href="https://github.com/ropensci/onboarding/issues/153"><img src="https://badges.ropensci.org/153_status.svg" alt="ropensci"></a></li>
 <li><a href="https://codecov.io/github/sebastiz/EndoMineR?branch=master"><img src="https://codecov.io/gh/sebastiz/EndoMineR/branch/master/graph/badge.svg" alt="Coverage status"></a></li>
 </ul>
@@ -578,12 +762,14 @@ sh&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/to
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

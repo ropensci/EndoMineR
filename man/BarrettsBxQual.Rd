@@ -9,7 +9,7 @@ BarrettsBxQual(dataframe, Endo_ResultPerformed, PatientID, Endoscopist)
 \arguments{
 \item{dataframe}{dataframe}
 
-\item{Endo_ResultPerformed}{Date of the Endocscopy}
+\item{Endo_ResultPerformed}{Date of the Endoscopy}
 
 \item{PatientID}{Patient's unique identifier}
 

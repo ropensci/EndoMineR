@@ -279,6 +279,7 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 #' @keywords Negative Sentences
 #' @importFrom stringr str_replace
 #' @importFrom Hmisc capitalize
+#' @param inputText the text to remove Negatives from
 #' @export
 #' @return This returns a column within a dataframe. This should be changed to a 
 #' character vector eventually
@@ -463,6 +464,7 @@ NegativeRemove <- function(inputText) {
 #' @keywords Find and replace
 #' @importFrom utils aregexec
 #' @param pattern the pattern to look for
+#' @param fixed whether the pattern is regex or not. Default not.
 #' @param replacement the pattern replaceme with
 #' @param x the target string
 #' @return This returns a character vector
@@ -806,8 +808,8 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' @importFrom data.table as.data.table
 #' @export
 #' @family Basic Column mutators 
-#' @examples # MyImgLibrary("S:/Gastroenterology/Seb/R/Data/Barretts/Images Captured with Proc Data Audit_Findings1.html",
-#' #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
+#' @examples # MyImgLibrary("~/Images Captured with Proc Data Audit_Findings1.html",
+#' #                         "procedureperformed","~/")
 
 MyImgLibrary<-function(file,delim,location){
   

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dictionary In Place Replace — DictionaryInPlaceReplace • EndoMineR</title>
+<title>OPCS-4 Coding — dev_ExtrapolateOPCS4Prep • EndoMineR</title>
 
 
 <!-- jquery -->
@@ -41,10 +41,13 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Dictionary In Place Replace — DictionaryInPlaceReplace" />
-<meta property="og:description" content="This maps terms in the text and replaces them with the 
-standardised term (mapped in the lexicon file) within the text.
-It is used within the textPrep function." />
+<meta property="og:title" content="OPCS-4 Coding — dev_ExtrapolateOPCS4Prep" />
+<meta property="og:description" content="This function extracts the OPCS-4 codes for all Barrett's procedures
+It should take the OPCS-4 from the EVENT and perhaps also using extent
+depending on how the coding is done. The EVENT column will need to 
+extract multiple findings
+The hope is that the OPCS-4 column will then map from the EVENT column. This returns a nested list 
+column with the procedure, furthest path site and event performed" />
 
 
 
@@ -163,46 +166,49 @@ It is used within the textPrep function." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Dictionary In Place Replace</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_CleanUp.R'><code>R/Basic_CleanUp.R</code></a></small>
-    <div class="hidden name"><code>DictionaryInPlaceReplace.Rd</code></div>
+    <h1>OPCS-4 Coding</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_EndoPathExtractors.R'><code>R/Basic_EndoPathExtractors.R</code></a></small>
+    <div class="hidden name"><code>dev_ExtrapolateOPCS4Prep.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This maps terms in the text and replaces them with the 
-standardised term (mapped in the lexicon file) within the text.
-It is used within the textPrep function.</p>
+    <p>This function extracts the OPCS-4 codes for all Barrett's procedures
+It should take the OPCS-4 from the EVENT and perhaps also using extent
+depending on how the coding is done. The EVENT column will need to 
+extract multiple findings
+The hope is that the OPCS-4 column will then map from the EVENT column. This returns a nested list 
+column with the procedure, furthest path site and event performed</p>
     </div>
 
-    <pre class="usage"><span class='fu'>DictionaryInPlaceReplace</span>(<span class='no'>inputString</span>, <span class='no'>list</span>)</pre>
+    <pre class="usage"><span class='fu'>dev_ExtrapolateOPCS4Prep</span>(<span class='no'>dataframe</span>, <span class='no'>Procedure</span>, <span class='no'>PathSite</span>, <span class='no'>Event</span>, <span class='no'>extent</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>inputString</th>
-      <td><p>the input string (ie the full medical report)</p></td>
+      <th>dataframe</th>
+      <td><p>the dataframe</p></td>
     </tr>
     <tr>
-      <th>list</th>
-      <td><p>The replacing list</p></td>
+      <th>Procedure</th>
+      <td><p>The Procedure column</p></td>
+    </tr>
+    <tr>
+      <th>PathSite</th>
+      <td><p>The column containing the Pathology site</p></td>
+    </tr>
+    <tr>
+      <th>Event</th>
+      <td><p>the EVENT column</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>This returns a character vector</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other NLP - Text Cleaning and Extraction: 
-<code><a href='ColumnCleanUp.html'>ColumnCleanUp</a>()</code>,
-<code><a href='Extractor.html'>Extractor</a>()</code>,
-<code><a href='NegativeRemoveWrapper.html'>NegativeRemoveWrapper</a>()</code>,
-<code><a href='NegativeRemove.html'>NegativeRemove</a>()</code>,
-<code><a href='textPrep.html'>textPrep</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>inputText</span><span class='kw'>&lt;-</span><span class='fu'>DictionaryInPlaceReplace</span>(<span class='no'>TheOGDReportFinal</span>$<span class='no'>OGDReportWhole</span>,<span class='fu'><a href='LocationList.html'>LocationList</a></span>())</div></pre>
+    <pre class="examples"><div class='input'># Need to run the HistolTypeSite and EndoscopyEvent functions first here
+# SelfOGD_Dunn$OPCS4w&lt;-ExtrapolateOPCS4Prep(SelfOGD_Dunn,"PROCEDUREPERFORMED",
+# "PathSite","EndoscopyEvent")
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

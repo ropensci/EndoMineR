@@ -4,10 +4,12 @@
 \name{PathDataFrameFinalColon}
 \alias{PathDataFrameFinalColon}
 \title{Fake Lower GI Pathology Set}
-\format{A data frame with 2000 rows and 1 variables:
+\format{
+A data frame with 2000 rows and 1 variables:
 \describe{
   \item{PathReportWhole}{The whole report, in text}
-}}
+}
+}
 \usage{
 PathDataFrameFinalColon
 }

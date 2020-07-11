@@ -4,7 +4,8 @@
 \name{vColon}
 \alias{vColon}
 \title{Fake Lower GI Endoscopy Set including Pathology}
-\format{A data frame with 2000 rows and 26 variables:
+\format{
+A data frame with 2000 rows and 26 variables:
 \describe{
   \item{pHospitalNum}{The HospitalNum, in text}
   \item{PatientName.x}{The PatientName, in text}
@@ -32,7 +33,8 @@
   \item{Diagnosis}{The Diagnosis report, in text}
   \item{Original.y}{The whole report, in text}
   \item{Days}{Days, in numbers}
-}}
+}
+}
 \usage{
 vColon
 }
