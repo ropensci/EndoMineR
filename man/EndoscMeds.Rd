@@ -22,9 +22,10 @@ It should be used after the textPrep function.
 MyendoNew <- cbind(EndoscMeds(Myendo$Medications), Myendo)
 }
 \seealso{
-Other Endoscopy specific cleaning functions: \code{\link{EndoscEndoscopist}},
-  \code{\link{EndoscInstrument}},
-  \code{\link{EndoscopyEvent}}
+Other Endoscopy specific cleaning functions: 
+\code{\link{EndoscEndoscopist}()},
+\code{\link{EndoscInstrument}()},
+\code{\link{EndoscopyEvent}()}
 }
 \concept{Endoscopy specific cleaning functions}
 \keyword{Endoscopy}

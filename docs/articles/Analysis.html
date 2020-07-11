@@ -6,19 +6,20 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Analysis • EndoMineR</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
 <meta property="og:title" content="Analysis">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="EndoMineR">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -114,13 +115,14 @@
 <!--/.navbar -->
 
       
+
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Analysis</h1>
+      <h1 data-toc-skip>Analysis</h1>
                         <h4 class="author">Sebastian Zeki</h4>
             
-            <h4 class="date">October 01, 2019</h4>
+            <h4 class="date">July 11, 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ropensci/EndoMineR/blob/master/vignettes/Analysis.Rmd"><code>vignettes/Analysis.Rmd</code></a></small>
       <div class="hidden name"><code>Analysis.Rmd</code></div>
@@ -130,10 +132,7 @@
     
     
 <p><br> A fundamental design principle of EndoMineR was that it should address the important categories of questions we all have in gastroenterology, and endoscopy in particular. These questions roughly fall into the following: surveillance, quality and also operational questions (eg patient flow through endoscopy).</p>
-<div id="surveillance-functions" class="section level2">
-<h2 class="hasAnchor">
-<a href="#surveillance-functions" class="anchor"></a><strong>1. Surveillance functions</strong>
-</h2>
+<p>##<strong>1. Surveillance functions</strong></p>
 <p><br> Surveillance tracking is difficult because it relies on assessment at several timepoint and then deciding on the next examination based on a ruleset. A basic question is often: ’How good are our surveillance programmes?" which really means “How good are we at making sure patients come back in a timely way for their endoscopy after a polyp removal or for Barrett’s surveillance”, for example?</p>
 <p><br></p>
 <p><img src="img/EndoMineR_Surveillance.svg" style="display: block; margin: auto;"></p>
@@ -144,7 +143,7 @@
 <p><br></p>
 <p><strong>SurveilLastTest</strong> simply extracts the last and first test respectively for each patient so you can assess how long the patient has been surveilled for. This is likely to come in useful for future iterations of EndoMineR as patient Theographs are developed (work in progress).</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em1&lt;-<span class="kw"><a href="../reference/SurveilTimeByRow.html">SurveilTimeByRow</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">em1</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/SurveilTimeByRow.html">SurveilTimeByRow</a></span>(<span class="no">Myendo</span>,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</pre></body></html></div>
 <p><br></p>
 <table class="table">
 <colgroup>
@@ -158,33 +157,33 @@
 <tbody>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1381 days</td>
+<td align="center">1665 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">1381 days</td>
+<td align="center">1665 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1381 days</td>
+<td align="center">1665 days</td>
 </tr>
 <tr class="even">
 <td align="center">A1648588</td>
-<td align="center">1381 days</td>
+<td align="center">1665 days</td>
 </tr>
 <tr class="odd">
 <td align="center">A1648588</td>
-<td align="center">1381 days</td>
+<td align="center">1665 days</td>
 </tr>
 </tbody>
 </table>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em3&lt;-<span class="kw"><a href="../reference/SurveilLastTest.html">SurveilLastTest</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</code></pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">em3</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/SurveilLastTest.html">SurveilLastTest</a></span>(<span class="no">Myendo</span>,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</pre></body></html></div>
 <p><br></p>
 <table class="table">
 <colgroup>
 <col width="23%">
-<col width="23%">
+<col width="25%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">HospitalNumber</th>
@@ -214,12 +213,12 @@
 </tbody>
 </table>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">em4&lt;-<span class="kw"><a href="../reference/SurveilFirstTest.html">SurveilFirstTest</a></span>(Myendo,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">em4</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/SurveilFirstTest.html">SurveilFirstTest</a></span>(<span class="no">Myendo</span>,<span class="st">'HospitalNumber'</span>,<span class="st">'Dateofprocedure'</span>)</pre></body></html></div>
 <p><br></p>
 <table class="table">
 <colgroup>
 <col width="23%">
-<col width="23%">
+<col width="25%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">HospitalNumber</th>
@@ -253,7 +252,7 @@
 <p><br></p>
 <p>This function will return the number of tests by day, month and year so they can be easily graphed according to what you want.</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">how&lt;-<span class="kw"><a href="../reference/HowManyOverTime.html">HowManyOverTime</a></span>(Myendo,<span class="st">'Indications'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Surv'</span>)</code></pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">how</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/HowManyOverTime.html">HowManyOverTime</a></span>(<span class="no">Myendo</span>,<span class="st">'Indications'</span>,<span class="st">'Dateofprocedure'</span>,<span class="st">'Surv'</span>)</pre></body></html></div>
 <p><br></p>
 <table class="table">
 <colgroup>
@@ -262,7 +261,7 @@
 <col width="11%">
 <col width="9%">
 <col width="9%">
-<col width="16%">
+<col width="18%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">day</th>
@@ -315,7 +314,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <div id="assessment-of-quality-functions" class="section level2">
 <h2 class="hasAnchor">
 <a href="#assessment-of-quality-functions" class="anchor"></a><strong>2. Assessment of quality functions</strong>
@@ -335,7 +333,7 @@
 <colgroup>
 <col width="23%">
 <col width="31%">
-<col width="44%">
+<col width="45%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">HospitalNumber</th>
@@ -378,9 +376,9 @@
 <p><br></p>
 <p>In this example we are looking for the words Barrett’s and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscopy report:</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(tm)
-myNotableWords &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"barrett"</span>, <span class="st">"coeliac"</span>)
-<span class="kw"><a href="../reference/ListLookup.html">ListLookup</a></span>(Myendo,<span class="st">'Findings'</span>,myNotableWords)</code></pre></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tm</span>)
+<span class="no">myNotableWords</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"barrett"</span>, <span class="st">"coeliac"</span>)
+<span class="fu"><a href="../reference/ListLookup.html">ListLookup</a></span>(<span class="no">Myendo</span>,<span class="st">'Findings'</span>,<span class="no">myNotableWords</span>)</pre></body></html></div>
 <pre><code>##        X2  Prop
 ## 1 barrett 18.05
 ## 2 coeliac  6.20</code></pre>
@@ -400,15 +398,15 @@ myNotableWords &lt;-<span class="st"> </span><span class="kw"><a href="https://w
 <p><br></p>
 <p>Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#We have to attach the output of EndoscMeds to the original dataframe</span>
-MyendoNew&lt;-<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cbind">cbind</a></span>(<span class="kw"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(Myendo<span class="op">$</span>Medications),Myendo)
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co">#We have to attach the output of EndoscMeds to the original dataframe</span>
+<span class="no">MyendoNew</span><span class="kw">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="fu"><a href="../reference/EndoscMeds.html">EndoscMeds</a></span>(<span class="no">Myendo</span>$<span class="no">Medications</span>),<span class="no">Myendo</span>)
 <span class="co">#Average Fentanyl use by endoscopist:</span>
-Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(MyendoNew,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)</code></pre></div>
+<span class="no">Mytable</span><span class="kw">&lt;-</span><span class="fu"><a href="../reference/MetricByEndoscopist.html">MetricByEndoscopist</a></span>(<span class="no">MyendoNew</span>,<span class="st">'Endoscopist'</span>,<span class="st">'Fent'</span>)</pre></body></html></div>
 <p><br></p>
 <table class="table">
 <colgroup>
 <col width="41%">
-<col width="22%">
+<col width="23%">
 </colgroup>
 <thead><tr class="header">
 <th align="center">MyendoNew.Endoscopist</th>
@@ -476,7 +474,7 @@ Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">Met
 <p><br></p>
 <p>For example, if we have a dataset with events such as ‘radiofrequency ablation’ and ‘endoscopic mucosal resection’ or ‘nothing’ we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type (“EMR”,“RFA”,“nothing” in this case)</p>
 <p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#how&lt;-SurveySankey(Myendo,"ProcedurePerformed")</span></code></pre></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r">#how&lt;-SurveySankey(Myendo,"ProcedurePerformed")</pre></body></html></div>
 <p><br></p>
 <p><img src="img/EndoMineR_Sankey.svg" width="100%" style="display: block; margin: auto;"></p>
 <p><br></p>
@@ -487,7 +485,7 @@ Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">Met
 </h3>
 <p><br></p>
 <p>We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#flow&lt;-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")</span></code></pre></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r">#flow&lt;-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")</pre></body></html></div>
 <p><br></p>
 <p><img src="img/EndoMineR_Circos.svg" width="60%" style="display: block; margin: auto;"></p>
 <p><br></p>
@@ -495,19 +493,14 @@ Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">Met
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#surveillance-functions"><strong>1. Surveillance functions</strong></a></li>
-      <li><a href="#assessment-of-quality-functions"><strong>2. Assessment of quality functions</strong></a></li>
-      <li><a href="#patient-flow-functions"><strong>4.Patient flow functions</strong></a></li>
-      </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
+
 
 
       <footer><div class="copyright">
@@ -515,12 +508,14 @@ Mytable&lt;-<span class="kw"><a href="../reference/MetricByEndoscopist.html">Met
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.2.0.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
+
       </footer>
 </div>
 
   
+
 
   </body>
 </html>

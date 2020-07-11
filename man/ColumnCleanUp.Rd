@@ -21,9 +21,12 @@ of lines and converts end sentence full stops to new lines.
 ii<-ColumnCleanUp(Myendo$Findings)
 }
 \seealso{
-Other NLP - Text Cleaning and Extraction: \code{\link{DictionaryInPlaceReplace}},
-  \code{\link{Extractor}}, \code{\link{NegativeRemove}},
-  \code{\link{textPrep}}
+Other NLP - Text Cleaning and Extraction: 
+\code{\link{DictionaryInPlaceReplace}()},
+\code{\link{Extractor}()},
+\code{\link{NegativeRemoveWrapper}()},
+\code{\link{NegativeRemove}()},
+\code{\link{textPrep}()}
 }
 \concept{NLP - Text Cleaning and Extraction}
 \keyword{Cleaner}

@@ -326,7 +326,7 @@ BarrettsParisEMR <- function(Column, Column2) {
 #' should be straightforward to detect a shortfall in the number
 #' of biopsies being taken. The output is the shortfall per endoscopist
 #' @param dataframe dataframe
-#' @param Endo_ResultPerformed Date of the Endocscopy
+#' @param Endo_ResultPerformed Date of the Endoscopy
 #' @param PatientID Patient's unique identifier
 #' @param Endoscopist name of the column with the Endoscopist names
 #' @importFrom dplyr summarise group_by filter

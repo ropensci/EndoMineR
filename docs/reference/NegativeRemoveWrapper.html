@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Dictionary In Place Replace — DictionaryInPlaceReplace • EndoMineR</title>
+<title>Wrapper for Negative Remove — NegativeRemoveWrapper • EndoMineR</title>
 
 
 <!-- jquery -->
@@ -41,10 +41,8 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Dictionary In Place Replace — DictionaryInPlaceReplace" />
-<meta property="og:description" content="This maps terms in the text and replaces them with the 
-standardised term (mapped in the lexicon file) within the text.
-It is used within the textPrep function." />
+<meta property="og:title" content="Wrapper for Negative Remove — NegativeRemoveWrapper" />
+<meta property="og:description" content="This performs negative removal on a per sentance basis" />
 
 
 
@@ -163,46 +161,44 @@ It is used within the textPrep function." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Dictionary In Place Replace</h1>
+    <h1>Wrapper for Negative Remove</h1>
     <small class="dont-index">Source: <a href='https://github.com/ropensci/EndoMineR/blob/master/R/Basic_CleanUp.R'><code>R/Basic_CleanUp.R</code></a></small>
-    <div class="hidden name"><code>DictionaryInPlaceReplace.Rd</code></div>
+    <div class="hidden name"><code>NegativeRemoveWrapper.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This maps terms in the text and replaces them with the 
-standardised term (mapped in the lexicon file) within the text.
-It is used within the textPrep function.</p>
+    <p>This performs negative removal on a per sentance basis</p>
     </div>
 
-    <pre class="usage"><span class='fu'>DictionaryInPlaceReplace</span>(<span class='no'>inputString</span>, <span class='no'>list</span>)</pre>
+    <pre class="usage"><span class='fu'>NegativeRemoveWrapper</span>(<span class='no'>inputText</span>)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>inputString</th>
-      <td><p>the input string (ie the full medical report)</p></td>
-    </tr>
-    <tr>
-      <th>list</th>
-      <td><p>The replacing list</p></td>
-    </tr>
-    </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>This returns a character vector</p>
+    <p>This returns a column within a dataframe. This should be changed to a 
+character vector eventually</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other NLP - Text Cleaning and Extraction: 
 <code><a href='ColumnCleanUp.html'>ColumnCleanUp</a>()</code>,
+<code><a href='DictionaryInPlaceReplace.html'>DictionaryInPlaceReplace</a>()</code>,
 <code><a href='Extractor.html'>Extractor</a>()</code>,
-<code><a href='NegativeRemoveWrapper.html'>NegativeRemoveWrapper</a>()</code>,
 <code><a href='NegativeRemove.html'>NegativeRemove</a>()</code>,
 <code><a href='textPrep.html'>textPrep</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>inputText</span><span class='kw'>&lt;-</span><span class='fu'>DictionaryInPlaceReplace</span>(<span class='no'>TheOGDReportFinal</span>$<span class='no'>OGDReportWhole</span>,<span class='fu'><a href='LocationList.html'>LocationList</a></span>())</div></pre>
+    <pre class="examples"><div class='input'><span class='co'># Build a character vector and then</span>
+<span class='co'># incorporate into a dataframe</span>
+<span class='no'>anexample</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"There is no evidence of polyp here"</span>,
+<span class='st'>"Although the prep was poor,there was no adenoma found"</span>,
+<span class='st'>"The colon was basically inflammed, but no polyp was seen"</span>,
+<span class='st'>"The Barrett's segment was not biopsied"</span>,
+<span class='st'>"The C0M7 stretch of Barrett's was flat"</span>)
+<span class='no'>anexample</span><span class='kw'>&lt;-</span><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span>(<span class='no'>anexample</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>anexample</span>)<span class='kw'>&lt;-</span><span class='st'>"Thecol"</span>
+<span class='co'># Run the function on the dataframe and it should get rid of sentences (and</span>
+<span class='co'># parts of sentences) with negative parts in them.</span>
+<span class='co'>#hh&lt;-NegativeRemoveWrapper(anexample$Thecol)</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

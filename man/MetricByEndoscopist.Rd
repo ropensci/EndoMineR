@@ -34,7 +34,8 @@ kk<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
 rm(Myendo)
 }
 \seealso{
-Other Grouping by endoscopist: \code{\link{CategoricalByEndoscopist}}
+Other Grouping by endoscopist: 
+\code{\link{CategoricalByEndoscopist}()}
 }
 \concept{Grouping by endoscopist}
 \keyword{Endoscopist}

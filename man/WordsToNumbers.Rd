@@ -10,13 +10,16 @@ WordsToNumbers()
 This function converts words to numbers.
 }
 \seealso{
-Other NLP - Lexicons: \code{\link{BiopsyIndex}},
-  \code{\link{EventList}}, \code{\link{GISymptomsList}},
-  \code{\link{HistolType}},
-  \code{\link{LocationListLower}},
-  \code{\link{LocationListUniversal}},
-  \code{\link{LocationListUpper}},
-  \code{\link{LocationList}}, \code{\link{RFACath}}
+Other NLP - Lexicons: 
+\code{\link{BiopsyIndex}()},
+\code{\link{EventList}()},
+\code{\link{GISymptomsList}()},
+\code{\link{HistolType}()},
+\code{\link{LocationListLower}()},
+\code{\link{LocationListUniversal}()},
+\code{\link{LocationListUpper}()},
+\code{\link{LocationList}()},
+\code{\link{RFACath}()}
 }
 \concept{NLP - Lexicons}
 \keyword{Event}
