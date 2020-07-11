@@ -1,4 +1,15 @@
-############## Endoscopy Clean-up functions##############
+if (getRversion() >= "2.15.1") {
+  utils::globalVariables(
+    c(
+      "EndoscopyEventRaw",
+      "out",
+      "x2ndProcedureCodes"
+    )
+  )
+}    
+      
+      
+      ############## Endoscopy Clean-up functions##############
 
 
 #' Clean endoscopist column
@@ -297,7 +308,7 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
 #' The hope is that the OPCS-4 column will then map from the EVENT column. This returns a nested list 
 #' column with the procedure, furthest path site and event performed 
 #' 
-#'
+#' @param extentofexam the furthest point reached in the examination
 #' @param dataframe the dataframe
 #' @param Event the EVENT column
 #' @param Procedure The Procedure column
@@ -366,7 +377,7 @@ HistolTypeAndSite<-function(inputString1,inputString2,procedureString){
  
 ######################################################################################################################################################################################################
 #For each event site:
-dev_ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event,extent) {  
+dev_ExtrapolateOPCS4Prep <- function(dataframe, Procedure,PathSite,Event,extentofexam) {  
   dataframe<-data.frame(dataframe,stringsAsFactors=FALSE)
   
   #Clean up the PathSite:

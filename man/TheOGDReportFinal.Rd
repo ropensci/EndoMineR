@@ -4,10 +4,12 @@
 \name{TheOGDReportFinal}
 \alias{TheOGDReportFinal}
 \title{Fake Upper GI Endoscopy Set}
-\format{A data frame with 2000 rows and 1 variables:
+\format{
+A data frame with 2000 rows and 1 variables:
 \describe{
   \item{OGDReportWhole}{The whole report, in text}
-}}
+}
+}
 \usage{
 TheOGDReportFinal
 }
