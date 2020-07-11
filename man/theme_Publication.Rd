@@ -20,9 +20,10 @@ If you do use it, like all ggplots it can be extended using the
 # None needed
 }
 \seealso{
-Other Data Presentation helpers: \code{\link{EndoBasicGraph}},
-  \code{\link{scale_colour_Publication}},
-  \code{\link{scale_fill_Publication}}
+Other Data Presentation helpers: 
+\code{\link{EndoBasicGraph}()},
+\code{\link{scale_colour_Publication}()},
+\code{\link{scale_fill_Publication}()}
 }
 \concept{Data Presentation helpers}
 \keyword{ggplot}

@@ -4,7 +4,8 @@
 \name{Mypath}
 \alias{Mypath}
 \title{Fake Pathology report}
-\format{A data frame with 2000 rows and 1 variables:
+\format{
+A data frame with 2000 rows and 1 variables:
 \describe{
   \item{PathReportWhole}{The whole report, in text}
   \item{HospitalNumber}{Hospital Number, in text}
@@ -16,7 +17,8 @@
   \item{Macroscopicdescription}{Macroscopic description of the report, in text}
   \item{Histology}{Histology, in text}
   \item{Diagnosis}{Diagnosis, in text}
-}}
+}
+}
 \usage{
 Mypath
 }

@@ -1,10 +1,11 @@
-pandoc: 1.19.2.1
-pkgdown: 1.2.0.9000
-pkgdown_sha: c980e84a573614087c6e151d5e6e19a22748b761
+pandoc: 2.3.1
+pkgdown: 1.5.1
+pkgdown_sha: ~
 articles:
   Analysis: Analysis.html
   Barretts: Barretts.html
   Data: Data.html
   EndoMineR: EndoMineR.html
   Polyps: Polyps.html
+last_built: 2020-07-11T16:08Z
 

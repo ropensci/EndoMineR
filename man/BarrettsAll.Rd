@@ -4,8 +4,13 @@
 \alias{BarrettsAll}
 \title{Run all the basic Barrett's functions}
 \usage{
-BarrettsAll(Endodataframe, EndoReportColumn, EndoReportColumn2,
-  Pathdataframe, PathColumn)
+BarrettsAll(
+  Endodataframe,
+  EndoReportColumn,
+  EndoReportColumn2,
+  Pathdataframe,
+  PathColumn
+)
 }
 \arguments{
 \item{Endodataframe}{endoscopy dataframe of interest}
@@ -31,11 +36,12 @@ well as the new columns that have been created.
 Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
 }
 \seealso{
-Other Disease Specific Analysis - Barretts Data: \code{\link{BarrettsBxQual}},
-  \code{\link{BarrettsParisEMR}},
-  \code{\link{Barretts_FUType}},
-  \code{\link{Barretts_PathStage}},
-  \code{\link{Barretts_PragueScore}}
+Other Disease Specific Analysis - Barretts Data: 
+\code{\link{BarrettsBxQual}()},
+\code{\link{BarrettsParisEMR}()},
+\code{\link{Barretts_FUType}()},
+\code{\link{Barretts_PathStage}()},
+\code{\link{Barretts_PragueScore}()}
 }
 \concept{Disease Specific Analysis - Barretts Data}
 \keyword{Does}

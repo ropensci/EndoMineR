@@ -9,7 +9,7 @@ BarrettsBxQual(dataframe, Endo_ResultPerformed, PatientID, Endoscopist)
 \arguments{
 \item{dataframe}{dataframe}
 
-\item{Endo_ResultPerformed}{Date of the Endocscopy}
+\item{Endo_ResultPerformed}{Date of the Endoscopy}
 
 \item{PatientID}{Patient's unique identifier}
 
@@ -58,11 +58,12 @@ hh <- BarrettsBxQual(
 rm(v)
 }
 \seealso{
-Other Disease Specific Analysis - Barretts Data: \code{\link{BarrettsAll}},
-  \code{\link{BarrettsParisEMR}},
-  \code{\link{Barretts_FUType}},
-  \code{\link{Barretts_PathStage}},
-  \code{\link{Barretts_PragueScore}}
+Other Disease Specific Analysis - Barretts Data: 
+\code{\link{BarrettsAll}()},
+\code{\link{BarrettsParisEMR}()},
+\code{\link{Barretts_FUType}()},
+\code{\link{Barretts_PathStage}()},
+\code{\link{Barretts_PragueScore}()}
 }
 \concept{Disease Specific Analysis - Barretts Data}
 \keyword{Does}

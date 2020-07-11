@@ -150,7 +150,7 @@ scale_colour_Publication <- function() {
 #' rocPerformed for example
 #' @param PatientID the column containing the patients unique identifier
 #' eg hostpital number
-#' @importFrom dplyr group_by
+#' @importFrom dplyr group_by summarise
 #' @importFrom magrittr '%>%'
 #' @importFrom data.table 'setDT' 'rowid'
 #' @keywords Sankey
@@ -181,8 +181,8 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
   for (i in 3:ncol(orders)) {
     ord.cache <-
       orders %>%
-      group_by(orders[, i - 1], orders[, i]) %>%
-      summarise(n = n())
+      dplyr::group_by(orders[, i - 1], orders[, i]) %>%
+      dplyr::summarise(n = dplyr::n())
 
     colnames(ord.cache)[1:2] <- c("from", "to")
 
@@ -257,7 +257,7 @@ SurveySankey <- function(dfw, ProcPerformedColumn, PatientID) {
 #' fff <- unlist(EndoEvent)
 #' fff <- data.frame(fff)
 #' names(fff) <- "col1"
-#' Myendo <- cbind(fff$col1, Myendo)
+#' Myendo$EndoEvent<-fff$col1
 #' names(Myendo)[names(Myendo) == "HospitalNumber"] <- "PatientID"
 #' names(Myendo)[names(Myendo) == "fff$col1"] <- "EndoEvent"
 #' # Myendo$EndoEvent<-as.character(Myendo$EndoEvent)
@@ -277,15 +277,15 @@ PatientFlow_CircosPlots <-
 
     mydf <-
       dataframe %>%
-      arrange(!!Endo_ResultPerformeda) %>%
-      group_by(!!HospNum_Ida) %>%
-      mutate(
+      dplyr::arrange(!!Endo_ResultPerformeda) %>%
+      dplyr::group_by(!!HospNum_Ida) %>%
+      dplyr::mutate(
         origin = lag(!!ProcPerformeda, 1),
         destination = !!ProcPerformeda
       ) %>%
-      select(origin, destination, PatientID) %>%
-      group_by(origin, destination, PatientID) %>%
-      summarise(n = n()) %>%
+      dplyr::select(origin, destination, PatientID) %>%
+      dplyr::group_by(origin, destination, PatientID) %>%
+      dplyr::summarise(n = dplyr::n()) %>%
       ungroup()
 
     mydf <- data.frame(reshape2::dcast(mydf, origin ~ destination))
@@ -300,13 +300,13 @@ PatientFlow_CircosPlots <-
 
     df_format <-
       mydf %>%
-      select(1:3) %>%
-      rename(
+      dplyr::select(1:3) %>%
+      dplyr::rename(
         order = V1,
         rgb = V2,
         region = origin
       ) %>%
-      mutate(region = gsub("_", " ", region))
+      dplyr::mutate(region = gsub("_", " ", region))
     # flow matrix. Need to add V1 and V2 to the matrix here
 
     matmydf <- as.matrix(mydf[, -(1:3)])
@@ -316,8 +316,8 @@ PatientFlow_CircosPlots <-
     df_format <-
       df_format %>%
       dplyr::arrange(order) %>%
-      separate(rgb, c("r", "g", "b")) %>%
-      mutate(
+      tidyr::separate(rgb, c("r", "g", "b")) %>%
+      dplyr::mutate(
         col = rgb(r, g, b, max = 255),
         max = rowSums(matmydf) + colSums(matmydf)
       )

@@ -14,13 +14,16 @@ list with synonyms derived from the UMLS Methatharus
 using the browser.
 }
 \seealso{
-Other NLP - Lexicons: \code{\link{BiopsyIndex}},
-  \code{\link{EventList}}, \code{\link{HistolType}},
-  \code{\link{LocationListLower}},
-  \code{\link{LocationListUniversal}},
-  \code{\link{LocationListUpper}},
-  \code{\link{LocationList}}, \code{\link{RFACath}},
-  \code{\link{WordsToNumbers}}
+Other NLP - Lexicons: 
+\code{\link{BiopsyIndex}()},
+\code{\link{EventList}()},
+\code{\link{HistolType}()},
+\code{\link{LocationListLower}()},
+\code{\link{LocationListUniversal}()},
+\code{\link{LocationListUpper}()},
+\code{\link{LocationList}()},
+\code{\link{RFACath}()},
+\code{\link{WordsToNumbers}()}
 }
 \concept{NLP - Lexicons}
 \keyword{Event}

@@ -23,9 +23,12 @@ It is used within the textPrep function.
 inputText<-DictionaryInPlaceReplace(TheOGDReportFinal$OGDReportWhole,LocationList())
 }
 \seealso{
-Other NLP - Text Cleaning and Extraction: \code{\link{ColumnCleanUp}},
-  \code{\link{Extractor}}, \code{\link{NegativeRemove}},
-  \code{\link{textPrep}}
+Other NLP - Text Cleaning and Extraction: 
+\code{\link{ColumnCleanUp}()},
+\code{\link{Extractor}()},
+\code{\link{NegativeRemoveWrapper}()},
+\code{\link{NegativeRemove}()},
+\code{\link{textPrep}()}
 }
 \concept{NLP - Text Cleaning and Extraction}
 \keyword{Replace}

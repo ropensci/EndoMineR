@@ -31,11 +31,12 @@ Specfically it extracts the Prague score
 aa <- Barretts_PragueScore(Myendo, "Findings", "OGDReportWhole")
 }
 \seealso{
-Other Disease Specific Analysis - Barretts Data: \code{\link{BarrettsAll}},
-  \code{\link{BarrettsBxQual}},
-  \code{\link{BarrettsParisEMR}},
-  \code{\link{Barretts_FUType}},
-  \code{\link{Barretts_PathStage}}
+Other Disease Specific Analysis - Barretts Data: 
+\code{\link{BarrettsAll}()},
+\code{\link{BarrettsBxQual}()},
+\code{\link{BarrettsParisEMR}()},
+\code{\link{Barretts_FUType}()},
+\code{\link{Barretts_PathStage}()}
 }
 \concept{Disease Specific Analysis - Barretts Data}
 \keyword{Prague}

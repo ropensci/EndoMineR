@@ -128,6 +128,8 @@ textPrep<-function(inputText,delim){
   
   #1. Flatten the text..
   inputText<-tolower(inputText)
+  #Need to do clean up on the data first before sentence splitting:
+  inputText<-ColumnCleanUp(inputText)
   
   #1b General cleanup tasks tokenize then clean then recombine
   standardisedTextOutput<-stri_split_boundaries(inputText, type="sentence")
@@ -181,6 +183,7 @@ textPrep<-function(inputText,delim){
 #' @param delim the vector of words that will be used as the boundaries to
 #' extract against
 #' @importFrom stringr str_extract
+#' @importFrom stringi stri_replace_all_fixed stri_replace_all
 #' @importFrom tidyr separate
 #' @importFrom rlang sym
 #' @keywords Extraction
@@ -198,38 +201,40 @@ textPrep<-function(inputText,delim){
 
 
 Extractor <- function(inputString, delim) {
-
-
-#Create a named list of words
-delim <- gsub(":","",delim)
-names(delim) <- trimws(delim)
-#Add a : to the tags 
-
-delim <- gsub("(.*)","\\1: ",delim)
-delim<-as.list(delim)
-inputString<-gsub(":","",inputString)
-#Do the find and replace to place the tags in the input text
-inputString<-EndoMineR::DictionaryInPlaceReplace(inputString,delim)
-
-#Do a bit more cleaning to make it into a dcf file:
-inputString<-gsub(": :",": ",inputString)
-inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
-inputString<-gsub("(","",inputString,fixed=TRUE)
-#Don't remove newlines as these are used as the sentence separators
-inputString<-gsub("\n",". ",inputString,fixed=TRUE)
-inputString<-gsub(")","",inputString,fixed=TRUE)
-inputString<-gsub("'","",inputString,fixed=TRUE)
-inputString<-gsub("^","Start:",inputString)
-inputString<-gsub("::",":",inputString,fixed=TRUE)
-
-#Create the dcf file
-pat <- sprintf("(%s)", paste(delim, collapse = "|"))
-g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
-m <- read.dcf(textConnection(g))
-m<-data.frame(m,stringsAsFactors = FALSE)
-return(m)
-
+  
+  
+  #Create a named list of words
+  delim <- stri_replace_all_fixed(delim,":","")
+  names(delim) <- trimws(delim)
+  #Add a : to the tags 
+  
+  delim <- gsub("(.*)","\\1: ",delim)
+  delim<-as.list(delim)
+  
+  inputString<-stri_replace_all(inputString,"",regex="'|\\)|:|\\(")
+  
+  
+  #Do the find and replace to place the tags in the input text
+  inputString<-DictionaryInPlaceReplace(inputString,delim)
+  
+  #Do a bit more cleaning to make it into a dcf file:
+  inputString<-stri_replace_all_fixed(inputString,": :",": ")
+  
+  inputString<-gsub(":([A-Za-z0-9])",": \\1",inputString)
+  #Don't remove newlines as these are used as the sentence separators
+  inputString<-gsub("\n",". ",inputString,fixed=TRUE)
+  inputString<-stri_replace_all(inputString,"Start:",regex="^")
+  inputString<-stri_replace_all_fixed(inputString,"::",":")
+  
+  #Create the dcf file
+  pat <- sprintf("(%s)", paste(delim, collapse = "|"))
+  g <- gsub(pat, "\n\\1", paste0(inputString, "\n"))
+  m <- read.dcf(textConnection(g))
+  m<-data.frame(m,stringsAsFactors = FALSE)
+  return(m)
+  
 }
+
 
 
 #' Dictionary In Place Replace
@@ -242,6 +247,7 @@ return(m)
 #' @param inputString the input string (ie the full medical report)
 #' @param list The replacing list
 #' @keywords Replace
+#' @importFrom stringi stri_replace stri_replace_all
 #' @export
 #' @return This returns a character vector
 #' @family NLP - Text Cleaning and Extraction
@@ -258,7 +264,8 @@ DictionaryInPlaceReplace <- function(inputString,list) {
   new_string <- inputString
   vapply(1:nrow(list),
          function (k) {
-           new_string <<- gsub(list$key[k], list$value[k], new_string)
+           #new_string <<- gsub(list$key[k], list$value[k], new_string)
+           new_string <<- stri_replace_all(new_string,list$value[k],regex=list$key[k])
            0L
          }, integer(1))
   
@@ -266,7 +273,38 @@ DictionaryInPlaceReplace <- function(inputString,list) {
 }
 
 
+#' Wrapper for Negative Remove
+#'
+#' This performs negative removal on a per sentance basis 
+#' @keywords Negative Sentences
+#' @importFrom stringr str_replace
+#' @importFrom Hmisc capitalize
+#' @param inputText the text to remove Negatives from
+#' @export
+#' @return This returns a column within a dataframe. This should be changed to a 
+#' character vector eventually
+#' @family NLP - Text Cleaning and Extraction
+#' @examples # Build a character vector and then
+#' # incorporate into a dataframe
+#' anexample<-c("There is no evidence of polyp here",
+#' "Although the prep was poor,there was no adenoma found",
+#' "The colon was basically inflammed, but no polyp was seen",
+#' "The Barrett's segment was not biopsied",
+#' "The C0M7 stretch of Barrett's was flat")
+#' anexample<-data.frame(anexample)
+#' names(anexample)<-"Thecol"
+#' # Run the function on the dataframe and it should get rid of sentences (and
+#' # parts of sentences) with negative parts in them.
+#' #hh<-NegativeRemoveWrapper(anexample$Thecol)
 
+NegativeRemoveWrapper <- function(inputText) {
+  
+  standardisedTextOutput<-stringr::str_split(inputText, "\\.")
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) Hmisc::capitalize(as.character(x)))
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) NegativeRemove(x))
+  inputText<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
+  
+}
 
 
 
@@ -426,6 +464,7 @@ NegativeRemove <- function(inputText) {
 #' @keywords Find and replace
 #' @importFrom utils aregexec
 #' @param pattern the pattern to look for
+#' @param fixed whether the pattern is regex or not. Default not.
 #' @param replacement the pattern replaceme with
 #' @param x the target string
 #' @return This returns a character vector
@@ -452,8 +491,8 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 #' @param vector column of interest
 #' @keywords Cleaner
 #' @export
-#' @importFrom stringr str_replace 
-#' @importFrom stringi stri_split_boundaries
+#' @importFrom stringr str_replace str_trim
+#' @importFrom stringi stri_split_boundaries stri_replace stri_replace_all
 #' @return This returns a character vector
 #' @family NLP - Text Cleaning and Extraction
 #' @examples ii<-ColumnCleanUp(Myendo$Findings)
@@ -462,45 +501,72 @@ spellCheck <- function(pattern, replacement, x, fixed = FALSE) {
 ColumnCleanUp <- function(vector) {
   
   
+  
   #Optimise for tokenisation eg full stops followed by a number need to change so add a Letter before the number
-  vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
-  vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
-  vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
-  vector<-gsub("\r"," ",vector)
-  vector<-gsub("\\.,","\\.",vector)
-  vector<-gsub(",([A-Z])","\\.\\1",vector)
-  vector<-gsub("\\. ,",".",vector)
-  vector<-gsub("\\.\\s+\\,"," ",vector)
-  vector<-gsub("^\\s+\\,"," ",vector)
+  #vector<-gsub("\\.\\s*(\\d)","\\.T\\1",vector)
+  
+  #Get rid of convert anything that has a full stop in the middle into a new line eg line .Ever
+  #vector<-gsub("([A-Za-z]\\s*)\\.(\\s*[A-Za-z])","\\1\n\\2",vector)
+  
+  
+  #vector<-gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",vector)
+  
+  #Convert word return to space
+  vector<-gsub("\r\n"," ",vector)
+  vector<-gsub("\r","\n",vector)
+  
+  
+  
+  #Convert ,hi to fullstop the the word if it is a capital letter
+  vector<-gsub(",([A-Z])","\n\\1",vector)
+  
+  
+  #Conver "., or . ,"  to a space and vice versa
+  vector<-stri_replace_all(vector,"\\.",regex="(\\.\\s*\\,)|(\\,\\s*\\.)|((\\.\\s*)+)")
+  #vector<-gsub("\\.\\s*\\,","\\.",vector)
+  #vector<-gsub("\\,\\s*\\.","\\.",vector)
+  #vector<-gsub("(\\.\\s*)+","\\.",vector)
+  
+  #Get rid of middle of line newlines which seems to
+  #happen e.g. I am Sebastian and \n I live in a hole
+  vector<-gsub("(?:\\h*\\R)++(?!\\z)\\h*", " ", vector, perl=TRUE)
+  
   #Get rid of ASCCII hex here
-
   vector<-gsub("\\\\[Xx].*?\\\\", " ", vector)
-  vector<-gsub("       ", " ", vector)
-
+  
   #Get rid of query type punctuation:
   vector<-gsub("(.*)\\?(.*[A-Za-z]+)","\\1 \\2",vector)
+  
+  #Get rid of pointless single quote marks
   vector<-gsub("'","",vector,fixed=TRUE)
   
   #Have to tokenize here so you can strip punctuation without getting rid of newlines
-  standardisedTextOutput<-stri_split_boundaries(vector, type="sentence")
+  standardisedTextOutput<-stringi::stri_split_boundaries(vector, type="sentence")
   
   #Get rid of whitespace
-  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) trimws(x))
+  standardisedTextOutput<-lapply(standardisedTextOutput, function(x) gsub("(^[[:space:]]+|[[:space:]]+$)", "", x))
   
   #Get rid of trailing punctuation
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
+  
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("[[:punct:]]+$","",x))
   #Question marks result in tokenized sentences so whenever anyone write query Barrett's, it gets split.
   standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("([A-Za-z]+.*)\\?(.*[A-Za-z]+.*)","\\1 \\2",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("(Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*)"," ",x))
   
-  #Get rid of strange things
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
+  #Get rid of strange things in the text
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) str_replace_all(x,"(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))","\\."))
+  
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) stri_replace_all(x,"\\.",regex="(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))"))
+  
+  
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
+  #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^[[:punct:]]+","",x))
   retVector<-sapply(standardisedTextOutput, function(x) paste(x,collapse="."))
+  retVector<-gsub("(\\.\\s*){2,}","\\.",retVector)
   return(retVector)
 }
-
 
 #' Paste endoscopy and histology results into one
 #'
@@ -742,19 +808,20 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' @importFrom data.table as.data.table
 #' @export
 #' @family Basic Column mutators 
-#' @examples # MyImgLibrary("S:/Gastroenterology/Seb/R/Data/Barretts/Images Captured with Proc Data Audit_Findings1.html",
-#' #                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
+#' @examples # MyImgLibrary("~/Images Captured with Proc Data Audit_Findings1.html",
+#' #                         "procedureperformed","~/")
 
 MyImgLibrary<-function(file,delim,location){
   
-  #Get the relative path from the www folder location which is where all files should be stored 
-  location<-gsub(".*\\/","",location)
+  #Get the relative path from the www folder location which is where all files should be stored.
+  #Make sure the folder is after the www folder. All folders should be realtive to the www folder in the shiny app.
+  location<-gsub(".*\\/www\\/", "", location)
   htmlCode = readLines(file)
   
   #Collapse all the html together
   mergedhtml<-paste(htmlCode, sep="", collapse="")
   
-  #Split according to Procedure Performed which separates each record
+  #Split according to Procedure Number which separates each record
   df<-strsplit(mergedhtml, delim, fixed = FALSE, perl = FALSE, useBytes = FALSE)
   df<-as.data.frame(df)
   colnames(df)<-c("df")
@@ -769,31 +836,68 @@ MyImgLibrary<-function(file,delim,location){
   df$PatientID<-str_extract(df$df,"(?:[A-Z]{1,}[0-9]{3,}[0-9]{1})|(?:[0-9]{1,}[0-9]{3,}[A-Z]{1})")
   
   #Extract the images with the folder name which needs to be kept (but is relative in html so no need to strip it off)
-  df$img<-stringr::str_extract(df$df,"img src.*?(jpg|png|gif|bmp)")
+  df$img<-stringr::str_extract_all(df$df,"img src.*?(jpg|png|gif|bmp)")
   
   #Need to replace the with the current path here
   #df$img<-gsub("img src=\"Images Captured with Proc Data Audit.files/","",df$img)
   df$df<-NULL
   
-  #Now collapse the table so all image files for a procedure in one row only:
   mergeddf<-as.data.frame(as.data.table(df)[, toString(img), by = list(Endo_ResultEntered,PatientID)])
   
   #Split the comma separated img list into a list within the data frame so you should then be able to iterate over it:
   mergeddf<-separate_rows(mergeddf,V1,sep=",")
   mergeddf$V1<-gsub("img src=\"","",mergeddf$V1)
   mergeddf$V1<-trimws(mergeddf$V1)
-  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.][a-z]+$")
+  #Now extract the image file name so can set a path relative to system for it:
+  #Need to extract just the file names
+  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.]jpg")
   mergeddf$url<-lapply(mergeddf$img,function(x) paste0("<img src=",location,"/",x,"'>"))
   mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x)) 
   mergeddf$V1<-NULL
   mergeddf$url<-gsub("=","=\'",mergeddf$url)
   
+  #Need to put all images in one row for a patient and date
+  
   #For pandoc
   mergeddf$url<-sapply(mergeddf$url,pandoc.image.return)
+  
+  #Now collapse the table so all image files for a procedure in one row only:
+  mergeddf<-as.data.frame(as.data.table(mergeddf)[, toString(url), by = list(Endo_ResultEntered,PatientID)])
+  mergeddf$url<-mergeddf$V1
+  
+  
+  
+  
+  ##########Now associate each row with the Image label and Image Comments
+  #Go back to the original data frame:
+  mergedhtml<-gsub("<(img src=.*?)>",":\\1:",mergedhtml)
+  mergedhtml<-gsub("<.*?>",":",mergedhtml)
+  #Then identify the key value pairs and replace with ;
+  mergedhtml<-gsub("([A-Za-z0-9]+):::([A-Za-z0-9]+)","\\1;\\2",mergedhtml)
+  
+  #Split the string up by the hospital number  
+  outddd<-strsplit(mergedhtml,"Patient MRN")
+  #Make sure the hospital number is still a part of the string
+  outddd<-lapply(outddd,function(x) gsub("^;","Patient MRN;",x))
+  outddd<-lapply(outddd,function(x) gsub("img src","Image Name;img src",x))
+  
+  #Split up using Extractor function
+  delim<-c("Patient MRN","Date of procedure","Procedure Performed","Image label","Image Comment","Image Name")
+  mydf<-data.frame(lapply(out,function(x) EndoMineR::Extractor(x,delim)))
+  #Get the image name
+  mydf$img<-str_extract(mydf$Image.Name,"[A-Za-z0-9]+[.]jpg")
+  
+  #Get rid of unnecessary semi colons in all of the columns
+  mydf2<-apply(mydf,2,function(x) gsub(";","",x))
+  mydf2<-data.frame(mydf2)
+  #Get the date column properly formatted:
+  mydf2$Date.of.procedure<-as.Date(mydf2$Date.of.procedure,format="%Y-%m-%d")
+  
+  mydf2<-mydf2%>%rename("Endo_ResultEntered"="Date.of.procedure","PatientID"="Start")
+  
+  #Merge with the mergeddf dataframe
+  mergeddf<-merge(mergeddf,mydf2, by=c("PatientID","Endo_ResultEntered","img"))
+  
   return(mergeddf)
 }
-
-
-
-
 
