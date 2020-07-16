@@ -855,7 +855,7 @@ MyImgLibrary<-function(file,delim,location){
   mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x)) 
   mergeddf$V1<-NULL
   mergeddf$url<-gsub("=","=\'",mergeddf$url)
-  
+  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.]jpg")
   #Need to put all images in one row for a patient and date
   
   #For pandoc
