@@ -883,7 +883,7 @@ MyImgLibrary<-function(file,delim,location){
   
   #Split up using Extractor function
   delim<-c("Patient MRN","Date of procedure","Procedure Performed","Image label","Image Comment","Image Name")
-  mydf<-data.frame(lapply(out,function(x) EndoMineR::Extractor(x,delim)))
+  mydf<-data.frame(lapply(outddd,function(x) EndoMineR::Extractor(x,delim)))
   #Get the image name
   mydf$img<-str_extract(mydf$Image.Name,"[A-Za-z0-9]+[.]jpg")
   
