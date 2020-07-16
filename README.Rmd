@@ -57,7 +57,7 @@ You can install EndoMineR from github with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
-devtools::install_github("sebastiz/EndoMineR")
+devtools::install_github("ropenSci/EndoMineR")
 ```
 
 If you dont have access to github, then download the zip and change the working dirctory to the place you have downloaded it, then do
