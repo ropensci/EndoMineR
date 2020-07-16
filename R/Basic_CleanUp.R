@@ -897,7 +897,6 @@ MyImgLibrary<-function(file,delim,location){
   
   mergeddf$img<-str_extract(mergeddf$url, "[A-Za-z0-9]+[.]jpg")
   
-  
   #Merge with the mergeddf dataframe
   mergeddf<-merge(mergeddf,mydf2, by=c("PatientID","Endo_ResultEntered","img"))
   
