@@ -579,7 +579,7 @@ ColumnCleanUp <- function(vector) {
 #' @keywords Merge dataframe columns into one text
 #' @param x the dataframe
 #' @export
-#' @return This returns a list with a dataframe containingone column of the merged text
+#' @return This returns a list with a dataframe containing one column of the merged text
 #' and a character vector which is the delimiter list for when the textPrep function is used
 #' @family NLP - Text merging:
 #' @examples testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
