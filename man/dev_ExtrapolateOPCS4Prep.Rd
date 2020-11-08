@@ -4,7 +4,7 @@
 \alias{dev_ExtrapolateOPCS4Prep}
 \title{OPCS-4 Coding}
 \usage{
-dev_ExtrapolateOPCS4Prep(dataframe, Procedure, PathSite, Event, extent)
+dev_ExtrapolateOPCS4Prep(dataframe, Procedure, PathSite, Event, extentofexam)
 }
 \arguments{
 \item{dataframe}{the dataframe}
@@ -14,6 +14,8 @@ dev_ExtrapolateOPCS4Prep(dataframe, Procedure, PathSite, Event, extent)
 \item{PathSite}{The column containing the Pathology site}
 
 \item{Event}{the EVENT column}
+
+\item{extentofexam}{the furthest point reached in the examination}
 }
 \description{
 This function extracts the OPCS-4 codes for all Barrett's procedures

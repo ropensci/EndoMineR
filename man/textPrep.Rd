@@ -7,7 +7,7 @@
 textPrep(inputText, delim)
 }
 \arguments{
-\item{inputText}{The relevant pathology text column}
+\item{inputText}{The relevant pathology text columns}
 
 \item{delim}{the delimitors so the extractor can be used}
 }
