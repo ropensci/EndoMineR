@@ -47,6 +47,7 @@ Eosinophilics<-function(dataframe,findings,histol,IndicationsFroExamination){
   dataframe$EoE_EndoFindings<-str_extract_all(dataframe[,findings],"[Tt]racheal|[Rr]idg|[Ff]urrow|[Nn]arrow|[Pp]ipe|[Pp]laqu|[Ww]hit|[Ss]trict|[Rr]ing|[Ee]xud|edema|[Ss]chat|[Ss]hat|[Cc]andi|[Dd]ebris|[Oo]esophagit")
   dataframe$HPF<-as.numeric(sapply(str_extract_all(dataframe[,histol], "[0-9]+(?=(\\s+[Ii]ntraepithelial)?(\\s+[Ee]osinophils)?\\s+(per|in one|in a|\\/)?.+([Hh][Pp][Ff]|[Hh]igh.+power.+field|[Hh]ighpower\\s+field))"), 
                                    function(x) x[which.max(as.numeric(x))][1]))
+  dataframe$EoE_Histol<-str_extract_all(dataframe[,histol],".*edema.*|[Mm]icroabscesses|[Mm]icro-abscesses|[Ss]pongiosi.*|[Hh]yperpl.*|[Ff]ibro|[Nn]eutrophil|[Ll]ymphocyte")
   
   return(dataframe)
 }
