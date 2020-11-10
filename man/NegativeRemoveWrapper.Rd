@@ -6,6 +6,9 @@
 \usage{
 NegativeRemoveWrapper(inputText)
 }
+\arguments{
+\item{inputText}{the text to remove Negatives from}
+}
 \value{
 This returns a column within a dataframe. This should be changed to a 
 character vector eventually

@@ -291,3 +291,12 @@ test_that("Barretts_FUType", {
   expect_true(nrow(ff) > 0)
   expect_identical(ff$FU_Type, "Rule2")
 })
+
+
+#### Esoinophilics ####
+
+test_that("Eosinophilics", {
+
+  aa <- Eosinophilics(v, "Findings", "Histology","Indications")
+  expect_true(nrow(aa) > 0)
+})

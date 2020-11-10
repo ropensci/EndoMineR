@@ -106,7 +106,7 @@ if (getRversion() >= "2.15.1")
 #' It contains several of the other functions
 #' in the package for ease of use. 
 #' @keywords text cleaning
-#' @param inputText The relevant pathology text column
+#' @param inputText The relevant pathology text columns
 #' @param delim the delimitors so the extractor can be used
 #' @importFrom stringi stri_split_boundaries
 #' @export
