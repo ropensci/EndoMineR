@@ -558,7 +558,7 @@ ColumnCleanUp <- function(vector) {
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) str_replace_all(x,"(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))","\\."))
   
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) stri_replace_all(x,"\\.",regex="(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))"))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) stri_replace_all(x,"\\.",regex="(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+))"))
   
   
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
