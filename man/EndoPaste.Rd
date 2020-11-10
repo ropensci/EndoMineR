@@ -10,7 +10,7 @@ EndoPaste(x)
 \item{x}{the dataframe}
 }
 \value{
-This returns a list with a dataframe containingone column of the merged text
+This returns a list with a dataframe containing one column of the merged text
 and a character vector which is the delimiter list for when the textPrep function is used
 }
 \description{
