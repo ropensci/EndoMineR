@@ -811,95 +811,63 @@ EntityPairs_TwoSentence<-function(inputString,list1,list2){
 #' @examples # MyImgLibrary("~/Images Captured with Proc Data Audit_Findings1.html",
 #' #                         "procedureperformed","~/")
 
-MyImgLibrary<-function(file,delim,location){
-  
-  #Get the relative path from the www folder location which is where all files should be stored.
-  #Make sure the folder is after the www folder. All folders should be realtive to the www folder in the shiny app.
-  location<-gsub(".*\\/www\\/", "", location)
+MyImgLibrary<-function (file, delim, location) 
+{
+  location <- gsub(".*\\/www\\/", "", location)
   htmlCode = readLines(file)
+  mergedhtml <- paste(htmlCode, sep = "", collapse = "")
+  df <- strsplit(mergedhtml, delim, fixed = FALSE, perl = FALSE, 
+                 useBytes = FALSE)
+  df <- as.data.frame(df)
+  colnames(df) <- c("df")
+  df$Endo_ResultEntered <- str_extract(df$df, "(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})")
+  df$Endo_ResultEntered <- parse_date_time(df$Endo_ResultEntered, 
+                                           orders = c("dmy", "ymd"))
+  df$PatientID <- str_extract(df$df, "(?:[A-Z]{1,}[0-9]{3,}[0-9]{1})|(?:[0-9]{1,}[0-9]{3,}[A-Z]{1})")
+  df$img <- stringr::str_extract_all(df$df, "img src.*?(jpg|png|gif|bmp)")
+  df$df <- NULL
+  mergeddf <- as.data.frame(as.data.table(df)[, toString(img), 
+                                              by = list(Endo_ResultEntered, PatientID)])
+  mergeddf <- separate_rows(mergeddf, V1, sep = ",")
+  mergeddf$V1 <- gsub("img src=\"", "", mergeddf$V1)
+  mergeddf$V1 <- trimws(mergeddf$V1)
+  mergeddf$img <- str_extract(mergeddf$V1, "[A-Za-z0-9]+[.]jpg")
+  mergeddf$url <- lapply(mergeddf$img, function(x) paste0("<img src=", 
+                                                          location, "/", x, "'>"))
+  mergeddf$base64 <- lapply(mergeddf$img, function(x) paste0(location, 
+                                                             "/", x))
   
-  #Collapse all the html together
-  mergedhtml<-paste(htmlCode, sep="", collapse="")
-  
-  #Split according to Procedure Number which separates each record
-  df<-strsplit(mergedhtml, delim, fixed = FALSE, perl = FALSE, useBytes = FALSE)
-  df<-as.data.frame(df)
-  colnames(df)<-c("df")
-  
-  
-  #Extract and format dates properly
-  df$Endo_ResultEntered<-str_extract(df$df,"(\\d{4}[[:punct:]]\\d{2}[^:alnum:]\\d{2})|(\\d{2}[^:alnum:]\\d{2}[^:alnum:]\\d{4})")
-  #Get them all as dates:
-  df$Endo_ResultEntered<-parse_date_time(df$Endo_ResultEntered, orders = c("dmy", "ymd"))
-  
-  #Extract the patient ID:
-  df$PatientID<-str_extract(df$df,"(?:[A-Z]{1,}[0-9]{3,}[0-9]{1})|(?:[0-9]{1,}[0-9]{3,}[A-Z]{1})")
-  
-  #Extract the images with the folder name which needs to be kept (but is relative in html so no need to strip it off)
-  df$img<-stringr::str_extract_all(df$df,"img src.*?(jpg|png|gif|bmp)")
-  
-  #Need to replace the with the current path here
-  #df$img<-gsub("img src=\"Images Captured with Proc Data Audit.files/","",df$img)
-  df$df<-NULL
-  
-  mergeddf<-as.data.frame(as.data.table(df)[, toString(img), by = list(Endo_ResultEntered,PatientID)])
-  
-  #Split the comma separated img list into a list within the data frame so you should then be able to iterate over it:
-  mergeddf<-separate_rows(mergeddf,V1,sep=",")
-  mergeddf$V1<-gsub("img src=\"","",mergeddf$V1)
-  mergeddf$V1<-trimws(mergeddf$V1)
-  #Now extract the image file name so can set a path relative to system for it:
-  #Need to extract just the file names
-  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.]jpg")
-  mergeddf$url<-lapply(mergeddf$img,function(x) paste0("<img src=",location,"/",x,"'>"))
-  mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x)) 
-  mergeddf$V1<-NULL
-  mergeddf$url<-gsub("=","=\'",mergeddf$url)
-  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.]jpg")
-  #Need to put all images in one row for a patient and date
-  
-  #For pandoc
-  mergeddf$url<-sapply(mergeddf$url,pandoc.image.return)
-  
-  #Now collapse the table so all image files for a procedure in one row only:
-  mergeddf<-as.data.frame(as.data.table(mergeddf)[, toString(url), by = list(Endo_ResultEntered,PatientID)])
-  mergeddf$url<-mergeddf$V1
-  
-  
-  
-  
-  ##########Now associate each row with the Image label and Image Comments
-  #Go back to the original data frame:
-  mergedhtml<-gsub("<(img src=.*?)>",":\\1:",mergedhtml)
-  mergedhtml<-gsub("<.*?>",":",mergedhtml)
-  #Then identify the key value pairs and replace with ;
-  mergedhtml<-gsub("([A-Za-z0-9]+):::([A-Za-z0-9]+)","\\1;\\2",mergedhtml)
-  
-  #Split the string up by the hospital number  
-  outddd<-strsplit(mergedhtml,"Patient MRN")
-  #Make sure the hospital number is still a part of the string
-  outddd<-lapply(outddd,function(x) gsub("^;","Patient MRN;",x))
-  outddd<-lapply(outddd,function(x) gsub("img src","Image Name;img src",x))
-  
-  #Split up using Extractor function
-  delim<-c("Patient MRN","Date of procedure","Procedure Performed","Image label","Image Comment","Image Name")
-  mydf<-data.frame(lapply(outddd,function(x) EndoMineR::Extractor(x,delim)))
-  #Get the image name
-  mydf$img<-str_extract(mydf$Image.Name,"[A-Za-z0-9]+[.]jpg")
-  
-  #Get rid of unnecessary semi colons in all of the columns
-  mydf2<-apply(mydf,2,function(x) gsub(";","",x))
-  mydf2<-data.frame(mydf2)
-  #Get the date column properly formatted:
-  mydf2$Date.of.procedure<-as.Date(mydf2$Date.of.procedure,format="%Y-%m-%d")
-  
-  mydf2<-mydf2%>%rename("Endo_ResultEntered"="Date.of.procedure","PatientID"="Start")
-  
-  mergeddf$img<-str_extract(mergeddf$url, "[A-Za-z0-9]+[.]jpg")
-  
-  #Merge with the mergeddf dataframe
-  mergeddf<-merge(mergeddf,mydf2, by=c("PatientID","Endo_ResultEntered","img"))
-  
+  # mergeddf$V1 <- NULL
+  mergeddf$url <- gsub("=", "='", mergeddf$url)
+  mergeddf$img <- str_extract(mergeddf$V1, "[A-Za-z0-9]+[.]jpg")
+  mergeddf$url <- sapply(mergeddf$url, pandoc.image.return)
+  mergeddf <- as.data.frame(as.data.table(mergeddf)[, toString(url), 
+                                                    by = list(Endo_ResultEntered, PatientID)])
+  mergeddf$url <- mergeddf$V1
+  mergedhtml <- gsub("<(img src=.*?)>", ":\\1:", mergedhtml)
+  mergedhtml <- gsub("<.*?>", ":", mergedhtml)
+  mergedhtml <- gsub("([A-Za-z0-9]+):::([A-Za-z0-9]+)", "\\1;\\2", 
+                     mergedhtml)
+  outddd <- strsplit(mergedhtml, "Patient MRN")
+  outddd <- lapply(outddd, function(x) gsub("^;", "Patient MRN;", 
+                                            x))
+  outddd <- lapply(outddd, function(x) gsub("img src", "Image Name;img src", 
+                                            x))
+  delim <- c("Patient MRN", "Date of procedure", "Procedure Performed", 
+             "Image label", "Image Comment", "Image Name")
+  mydf <- data.frame(lapply(outddd, function(x) EndoMineR::Extractor(x, 
+                                                                     delim)))
+  #mydf<-mydf%>%rename(PatientID=Patient.MRN)
+  mydf$img <- str_extract(mydf$Image.Name, "[A-Za-z0-9]+[.]jpg")
+  mydf2 <- apply(mydf, 2, function(x) gsub(";", "", x))
+  mydf2 <- data.frame(mydf2)
+  mydf2$Date.of.procedure <- as.Date(mydf2$Date.of.procedure, 
+                                     format = "%Y-%m-%d")
+  mydf2 <- mydf2 %>% rename(Endo_ResultEntered = "Date.of.procedure", 
+                            PatientID = "Patient.MRN")
+  mergeddf$img <- str_extract(mergeddf$url, "[A-Za-z0-9]+[.]jpg")
+  mergeddf <- merge(mergeddf, mydf2, by = c("PatientID", "Endo_ResultEntered", 
+                                            "img"))
   return(mergeddf)
 }
 
