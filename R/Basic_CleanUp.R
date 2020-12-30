@@ -106,7 +106,7 @@ if (getRversion() >= "2.15.1")
 #' It contains several of the other functions
 #' in the package for ease of use. 
 #' @keywords text cleaning
-#' @param inputText The relevant pathology text column
+#' @param inputText The relevant pathology text columns
 #' @param delim the delimitors so the extractor can be used
 #' @importFrom stringi stri_split_boundaries
 #' @export
@@ -558,7 +558,7 @@ ColumnCleanUp <- function(vector) {
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("\\.\\s+\\,","\\.",x))
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) str_replace_all(x,"(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))","\\."))
   
-  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) stri_replace_all(x,"\\.",regex="(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+)|([Rr]eported.*)|([Dd]ictated by.*))"))
+  standardisedTextOutput<-lapply(standardisedTextOutput,function(x) stri_replace_all(x,"\\.",regex="(\\.\\s+\\,)|(^\\s+\\,)|(^[[:punct:]]+)|((Dr.*?[A-Za-z]+))"))
   
   
   #standardisedTextOutput<-lapply(standardisedTextOutput,function(x) gsub("^\\s+\\,"," ",x))
@@ -579,7 +579,7 @@ ColumnCleanUp <- function(vector) {
 #' @keywords Merge dataframe columns into one text
 #' @param x the dataframe
 #' @export
-#' @return This returns a list with a dataframe containingone column of the merged text
+#' @return This returns a list with a dataframe containing one column of the merged text
 #' and a character vector which is the delimiter list for when the textPrep function is used
 #' @family NLP - Text merging:
 #' @examples testList<-structure(list(PatientName = c("Tom Hardy", "Elma Fudd", "Bingo Man"
@@ -855,7 +855,7 @@ MyImgLibrary<-function(file,delim,location){
   mergeddf$base64<-lapply(mergeddf$img,function(x) paste0(location,"/",x)) 
   mergeddf$V1<-NULL
   mergeddf$url<-gsub("=","=\'",mergeddf$url)
-  
+  mergeddf$img<-str_extract(mergeddf$V1,"[A-Za-z0-9]+[.]jpg")
   #Need to put all images in one row for a patient and date
   
   #For pandoc

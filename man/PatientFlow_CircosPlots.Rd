@@ -45,7 +45,7 @@ EndoEvent <- replicate(2000, sample(Event, 1, replace = FALSE))
 fff <- unlist(EndoEvent)
 fff <- data.frame(fff)
 names(fff) <- "col1"
-Myendo <- cbind(fff$col1, Myendo)
+Myendo$EndoEvent<-fff$col1
 names(Myendo)[names(Myendo) == "HospitalNumber"] <- "PatientID"
 names(Myendo)[names(Myendo) == "fff$col1"] <- "EndoEvent"
 # Myendo$EndoEvent<-as.character(Myendo$EndoEvent)

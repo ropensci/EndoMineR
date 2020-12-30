@@ -157,6 +157,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
         grepl("sm1", !!PathColumna, ignore.case = TRUE) ~ "SM1",
         grepl("T1b", !!PathColumna, ignore.case = TRUE) ~ "T1b",
         grepl("T1a|ntramucosal", !!PathColumna, ignore.case = TRUE) ~ "T1a",
+        grepl("denocarcino", !!PathColumna, ignore.case = TRUE) ~ "Cancer unstaged",
         grepl("[Hh]igh [Gg]rade ", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "HGD",
         grepl("[Ll]ow [Gg]rade", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "LGD",
         grepl("[Ii]ndef", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "IGD",
