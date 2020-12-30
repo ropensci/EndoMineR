@@ -831,7 +831,7 @@ MyImgLibrary<-function (file, delim, location)
   mergeddf <- separate_rows(mergeddf, V1, sep = ",")
   mergeddf$V1 <- gsub("img src=\"", "", mergeddf$V1)
   mergeddf$V1 <- trimws(mergeddf$V1)
-  mergeddf$img <- str_extract(mergeddf$V1, "[A-Za-z0-9]+[.]jpg")
+  mergeddf$img <- str_extract(mergeddf$V1, "[A-Za-z0-9]+[.]bmp")
   mergeddf$url <- lapply(mergeddf$img, function(x) paste0("<img src=", 
                                                           location, "/", x, "'>"))
   mergeddf$base64 <- lapply(mergeddf$img, function(x) paste0(location, 
@@ -839,7 +839,7 @@ MyImgLibrary<-function (file, delim, location)
   
   # mergeddf$V1 <- NULL
   mergeddf$url <- gsub("=", "='", mergeddf$url)
-  mergeddf$img <- str_extract(mergeddf$V1, "[A-Za-z0-9]+[.]jpg")
+  mergeddf$img <- str_extract(mergeddf$V1, "[A-Za-z0-9]+[.]bmp")
   mergeddf$url <- sapply(mergeddf$url, pandoc.image.return)
   mergeddf <- as.data.frame(as.data.table(mergeddf)[, toString(url), 
                                                     by = list(Endo_ResultEntered, PatientID)])
@@ -858,14 +858,14 @@ MyImgLibrary<-function (file, delim, location)
   mydf <- data.frame(lapply(outddd, function(x) EndoMineR::Extractor(x, 
                                                                      delim)))
   #mydf<-mydf%>%rename(PatientID=Patient.MRN)
-  mydf$img <- str_extract(mydf$Image.Name, "[A-Za-z0-9]+[.]jpg")
+  mydf$img <- str_extract(mydf$Image.Name, "[A-Za-z0-9]+[.]bmp")
   mydf2 <- apply(mydf, 2, function(x) gsub(";", "", x))
   mydf2 <- data.frame(mydf2)
   mydf2$Date.of.procedure <- as.Date(mydf2$Date.of.procedure, 
                                      format = "%Y-%m-%d")
   mydf2 <- mydf2 %>% rename(Endo_ResultEntered = "Date.of.procedure", 
                             PatientID = "Patient.MRN")
-  mergeddf$img <- str_extract(mergeddf$url, "[A-Za-z0-9]+[.]jpg")
+  mergeddf$img <- str_extract(mergeddf$url, "[A-Za-z0-9]+[.]bmp")
   mergeddf <- merge(mergeddf, mydf2, by = c("PatientID", "Endo_ResultEntered", 
                                             "img"))
   return(mergeddf)
