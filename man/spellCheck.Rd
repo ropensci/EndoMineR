@@ -12,6 +12,8 @@ spellCheck(pattern, replacement, x, fixed = FALSE)
 \item{replacement}{the pattern replaceme with}
 
 \item{x}{the target string}
+
+\item{fixed}{whether the pattern is regex or not. Default not.}
 }
 \value{
 This returns a character vector

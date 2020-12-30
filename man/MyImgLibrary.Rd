@@ -18,8 +18,8 @@ This is used to pick and clean endoscopic images from html exports so they can b
 before being linked to pathology and endoscopy reports
 }
 \examples{
-# MyImgLibrary("S:/Gastroenterology/Seb/R/Data/Barretts/Images Captured with Proc Data Audit_Findings1.html",
-#                         "procedureperformed","S:/Gastroenterology/Seb/R/Data/Barretts/")
+# MyImgLibrary("~/Images Captured with Proc Data Audit_Findings1.html",
+#                         "procedureperformed","~/")
 }
 \seealso{
 Other Basic Column mutators: 
