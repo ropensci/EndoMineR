@@ -35,11 +35,9 @@ IBD_Scores <- function(inputColumn1) {
   df$SES_Score2<-stringr::str_extract(df$SearchTarget,"ses *- *cd.*?\\d(?!\\+)")
   df$SES_Score3<-stringr::str_extract(df$SearchTarget,"ses.*?cd.*?\\d(?!\\+)")
   df$SES_Score4<-stringr::str_extract(df$SearchTarget,"sescd.*?\\d(?! \\+)")
-  
   df$FinalScore<-ifelse(is.na(df$SES_Score),df$SES_Score2,df$SES_Score)
   df$FinalScore<-ifelse(is.na(df$FinalScore),df$SES_Score3,df$FinalScore)
   df$FinalScore<-ifelse(is.na(df$FinalScore),df$SES_Score4,df$FinalScore)
-  
   
   #Now clean up the final score:
   df$FinalScore<-gsub(".*=","",df$FinalScore)
