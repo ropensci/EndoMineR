@@ -1,3 +1,13 @@
+IBD_AllAssess
+
+if (getRversion() >= "2.15.1")
+  utils::globalVariables(
+    c(
+      "IBD_AllAssess"
+    )
+  )
+
+
 #IBD Functions
 
 #' Cleans medication column if present
