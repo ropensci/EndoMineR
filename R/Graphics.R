@@ -360,8 +360,59 @@ PatientFlow_CircosPlots <-
     )
   }
 
+#' Create a plot over time of patient categorical findings as a line chart
+#'
+#' This plots the findings at endoscopy (or pathology) over time for individual
+#' patients. An example might be with worst pathological grade on biopsy for 
+#' Barrett's oesophagus over time 
+#' @param theframe dataframe
+#' @param EndoReportColumn the column containing the date of the procedure
+#' @param myNotableWords The terms from a column with categorical variables
+#' @param DateofProcedure Column with the date of the procedure
+#' @param PatientID Column with the patient's unique identifier
+#' @importFrom dplyrgroup_by filter n
+#' @importFrom ggplot2 separate
+#' @importFrom ggplus facet_multiple
+#' @importFrom rlang sym
+#' @keywords Patient flow
+#' @family Patient Flow functions
+#' @export
+#' @examples
+#' # This function builds chart of categorical outcomes for individal patients over time
+#' # It allows a two dimensional visualisation of patient progress. A perfect example is 
+#' # visualising the Barrett's progression for patients on surveillance and then
+#' # therapy if dysplasia develops and highlighting recurrence if it happens
+#' # Barretts_df <- BarrettsAll(Myendo, "Findings", "OGDReportWhole", Mypath, "Histology")
+#' # myNotableWords<-c("No_IM","IM","LGD","HGD","T1a","IGD","SM1","SM2")
+#' # PatientFlowIndividual(Barretts_df,"IMorNoIM",myNotableWords,DateofProcedure,"HospitalNumber")
+#' # Once the function is run you should always call dev.off()
 
 
+
+PatientFlowIndividual<-
+  function(theframe,EndoReportColumn,myNotableWords,DateofProcedure,PatientID) {
+  
+PatientIDa <- rlang::sym(PatientID)
+theframe$DateofProcedure<-as.Date(gsub("[\r\n].*","",theframe$Dateofprocedure),"%Y-%m-%d")
+
+theframe["RecodedColumn"] <- as.integer(factor(theframe[,EndoReportColumn], myNotableWords, ordered = TRUE))
+
+#Now for rows where there the hospital number is in more than one row:
+theframe<-theframe %>% group_by(!!PatientIDa) %>% filter(n() > 2)
+
+#Now develop the patient specific journey with faceted plot in ggplot2
+f<-ggplot(theframe) +
+  geom_line(aes(DateofProcedure,RecodedColumn),shape=11,size=1) +
+  geom_point(aes(DateofProcedure,RecodedColumn),shape=11,colour="red",size=1) +
+  xlab("Date") + 
+  ylab("Histopathological State") +
+  theme(axis.text.x=element_text(angle=-90)) 
+limits=c(-4,4)
+
+theframe$HospitalNumber
+t<-facet_multiple(plot = f, facets = PatientID ,ncol = 1, nrow = 5,scales = "free_x")
+
+}
 ##################### Basic Graph #########################
 
 
