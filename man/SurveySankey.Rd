@@ -27,5 +27,9 @@ names(Myendo)[names(Myendo) == "HospitalNumber"] <- "PatientID"
 gg <- SurveySankey(Myendo, "ProcedurePerformed", "PatientID")
 
 }
+\seealso{
+Other Patient Flow functions: 
+\code{\link{PatientFlowIndividual}()}
+}
 \concept{Patient Flow functions}
 \keyword{Sankey}
