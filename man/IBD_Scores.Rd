@@ -17,9 +17,7 @@ This extracts all of the relevant IBD scores where present
 from the medical text.
 }
 \examples{
- df<-read.csv("/Users/sebastianzeki/Documents/AnonKCHendo6m.csv",stringsAsFactors = FALSE)
-IBD_Scores(df$ER_FINDINGS_STR)
-MydfNew <- cbind(IBD_Scores(df$ER_FINDINGS_STR), df)
+ # Example to be provided
 }
 \keyword{IBD}
 \keyword{scores}
