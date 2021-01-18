@@ -20,9 +20,8 @@ if (getRversion() >= "2.15.1")
 #' @importFrom stringr str_extract str_match
 #' @export
 #' @examples
-#'  df<-read.csv("/Users/sebastianzeki/Documents/AnonKCHendo6m.csv",stringsAsFactors = FALSE)
-#' IBD_Scores(df$ER_FINDINGS_STR)
-#' MydfNew <- cbind(IBD_Scores(df$ER_FINDINGS_STR), df)
+#'  # Example to be provided
+
 IBD_Scores <- function(inputColumn1) {
   df <- data.frame(inputColumn1, stringsAsFactors = FALSE)
   inputColumn1<-tolower(inputColumn1)

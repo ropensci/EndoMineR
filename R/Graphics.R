@@ -36,7 +36,8 @@ if (getRversion() >= "2.15.1") {
       "Myendo",
       "Mypath",
       "im",
-      "manual_pal"
+      "manual_pal",
+      "RecodedColumn"
     )
   )
 }
@@ -370,8 +371,8 @@ PatientFlow_CircosPlots <-
 #' @param myNotableWords The terms from a column with categorical variables
 #' @param DateofProcedure Column with the date of the procedure
 #' @param PatientID Column with the patient's unique identifier
-#' @importFrom dplyrgroup_by filter n
-#' @importFrom ggplot2 separate
+#' @importFrom dplyr group_by filter n
+#' @import ggplot2 
 #' @importFrom ggplus facet_multiple
 #' @importFrom rlang sym
 #' @keywords Patient flow
