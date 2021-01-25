@@ -54,7 +54,7 @@ Eosinophilics<-function(dataframe,findings,histol,IndicationsFroExamination){
   dataframe$EoE_EndoFindings<-unlist(lapply(dataframe$EoE_EndoFindings,function(x) paste0(x,collapse=" ; ")))
   dataframe$Eosinoph<-unlist(lapply(dataframe$Eosinoph,function(x) paste0(x,collapse=" ; ")))
   
-  dataframe$Eosinoph<-ifelse(is.na(dataframe$Eosinoph),  "N", "Y")
+  dataframe$Eosinoph<-ifelse(dataframe$Eosinoph=="",  "N", "Y")
   dataframe$Hiatus<-str_extract(dataframe[,findings],"hiatu")
   dataframe$Hiatus<-ifelse(is.na(dataframe$Hiatus),  "N", "Y")
   dataframe$Schatzki<-str_extract(dataframe$EoE_EndoFindings,"schat")
