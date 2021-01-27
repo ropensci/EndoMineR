@@ -99,8 +99,8 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn, EndoReportColumn2)
         mytext, ~ case_when(
           grepl("(?<=\\d)\\s*[Mm](?:\\s|=)*\\d+", .x,perl = TRUE) ~ stringr::str_replace(stringr::str_extract(.x, "(?<=\\d)\\s*[Mm](?:\\s|=)*\\d+"), "M", ""),
           grepl("(?=[^\\.]*Barr)[^\\.]*\\s+\\d{2}\\s*[cm]*\\s*(to |-| and)\\s*\\d{2}\\s*[cm]*\\s*", .x, ignore.case = TRUE, perl = TRUE) ~ as.character(as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(.x, "\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"), "\\d{2}"), function(y) abs(diff(as.numeric(y)))))),
-          grepl("(?=[^\\.]*cm)(?=[^\\.]*Barr)(?=[^\\.]*(of |length))[^\\.]*", .x, perl = TRUE) ~ stringr::str_extract(paste0(stringr::str_match(.x, "(?=[^\\.]*cm)(?=[^\\.]*[Bb]arr)(?=[^\\.]*(of |length))[^\\.]*"), collapse = ""), "\\d+"),
-          grepl("(\\.|^|\n)(?=[^\\.]*(small|tiny|tongue|finger))(?=[^\\.]*Barr)[^\\.]*(\\.|\n|$)", .x, perl = TRUE) ~ stringr::str_replace(.x, ".*", "1"),
+          grepl("(?=[^\\.]*cm)(?=[^\\.]*[Bb]arr)(?=[^\\.]*(of |length))[^\\.]*", .x, perl = TRUE) ~ stringr::str_extract(paste0(stringr::str_match(.x, "(?=[^\\.]*cm)(?=[^\\.]*[Bb]arr)(?=[^\\.]*(of |length))[^\\.]*"), collapse = ""), "\\d+"),
+          grepl("(\\.|^|\n)(?=[^\\.]*(small|tiny|tongue|finger))(?=[^\\.]*[Bb]arr)[^\\.]*(\\.|\n|$)", .x, perl = TRUE) ~ stringr::str_replace(.x, ".*", "1"),
           TRUE ~ "Insufficient"
         )
       )
