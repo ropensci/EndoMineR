@@ -98,7 +98,7 @@ Barretts_PragueScore <- function(dataframe, EndoReportColumn, EndoReportColumn2)
       MStage = map(
         mytext, ~ case_when(
           grepl("(?<=\\d)\\s*[Mm](?:\\s|=)*\\d+", .x,perl = TRUE) ~ stringr::str_replace(stringr::str_extract(.x, "(?<=\\d)\\s*[Mm](?:\\s|=)*\\d+"), "M", ""),
-          grepl("(?=[^\\.]*Barr)[^\\.]*\\s+\\d{2}\\s*[cm]*\\s*(to |-| and)\\s*\\d{2}\\s*[cm]*\\s*", .x, ignore.case = TRUE, perl = TRUE) ~ as.character(as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(.x, "\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"), "\\d{2}"), function(y) abs(diff(as.numeric(y)))))),
+          grepl("(?=[^\\.]*[Bb]arr)[^\\.]*\\s+\\d{2}\\s*[cm]*\\s*(to |-| and)\\s*\\d{2}\\s*[cm]*\\s*", .x, ignore.case = TRUE, perl = TRUE) ~ as.character(as.numeric(sapply(stringr::str_extract_all(stringr::str_extract(.x, "\\d{2}\\s*[cm]*\\s*(to|-|and)\\s*\\d{2}\\s*[cm]*\\s*"), "\\d{2}"), function(y) abs(diff(as.numeric(y)))))),
           grepl("(?=[^\\.]*cm)(?=[^\\.]*[Bb]arr)(?=[^\\.]*(of |length))[^\\.]*", .x, perl = TRUE) ~ stringr::str_extract(paste0(stringr::str_match(.x, "(?=[^\\.]*cm)(?=[^\\.]*[Bb]arr)(?=[^\\.]*(of |length))[^\\.]*"), collapse = ""), "\\d+"),
           grepl("(\\.|^|\n)(?=[^\\.]*(small|tiny|tongue|finger))(?=[^\\.]*[Bb]arr)[^\\.]*(\\.|\n|$)", .x, perl = TRUE) ~ stringr::str_replace(.x, ".*", "1"),
           TRUE ~ "Insufficient"
@@ -154,16 +154,16 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
   df <- dataframe %>%
     mutate(
       IMorNoIM = case_when(
-        grepl("sm2", !!PathColumna, ignore.case = TRUE) ~ "SM2",
-        grepl("sm1", !!PathColumna, ignore.case = TRUE) ~ "SM1",
-        grepl("T1b", !!PathColumna, ignore.case = TRUE) ~ "T1b",
-        grepl("T1a|ntramucosal", !!PathColumna, ignore.case = TRUE) ~ "T1a",
+        grepl("[Ss][Mm]2", !!PathColumna, ignore.case = TRUE) ~ "SM2",
+        grepl("[Ss[Mm]1", !!PathColumna, ignore.case = TRUE) ~ "SM1",
+        grepl("[Tt]1b", !!PathColumna, ignore.case = TRUE) ~ "T1b",
+        grepl("[Tt]1a|ntramucosal", !!PathColumna, ignore.case = TRUE) ~ "T1a",
         grepl("denocarcino", !!PathColumna, ignore.case = TRUE) ~ "Cancer unstaged",
         grepl("[Hh]igh [Gg]rade ", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "HGD",
         grepl("[Ll]ow [Gg]rade", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "LGD",
         grepl("[Ii]ndef", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "IGD",
         grepl("[Ii]ntestinal|[^-][Ss]pecialised", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "IM",
-        grepl("[Mm]etaplasia|[Cc]olumnar|Glandular", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "No_IM",
+        grepl("[Mm]etaplasia|[Cc]olumnar|[Gg]landular", !!PathColumna, ignore.case = TRUE, perl = TRUE) ~ "No_IM",
         is.na(!!PathColumna) ~ "Insufficient",
         TRUE ~ "Insufficient"
       )
