@@ -235,14 +235,14 @@ Barretts_FUType <- function(dataframe, CStage, MStage, IMorNoIM) {
   df <- dataframe %>%
     mutate(
       FU_Type = case_when(
-        grepl("SM2|SM1|T1b_Unspec|T1a|LGD|HGD|IGD", !!IMorNoIMa, ignore.case = TRUE) ~ "Therapy",
-        !!CStagea == "Insufficient" & !!MStagea == "Insufficient" ~ "NoRules",
-        !!IMorNoIMa == "No_IM" & !is.na(!!MStagea) & as.numeric(!!MStagea) < 3 ~ "Rule1",
-        !!IMorNoIMa == "IM" & !is.na(!!MStagea) & as.numeric(!!MStagea) < 3 ~ "Rule2",
-        (!is.na(!!MStagea) & as.numeric(!!MStagea)) >= 3 ~ "Rule3",
-        !!IMorNoIMa == "No_IM" & !is.na(!!CStagea) & as.numeric(!!CStagea) < 3 ~ "Rule1",
-        !!IMorNoIMa == "IM" & !is.na(!!CStagea) & as.numeric(!!CStagea) < 3 ~ "Rule2",
-        (!is.na(!!CStagea) & as.numeric(!!CStagea)) >= 3 ~ "Rule3",
+        grepl("SM2|SM1|T1b_Unspec|T1a|T1b|LGD|HGD|IGD|Cancer unstaged", !!IMorNoIMa, ignore.case = TRUE) ~ "Therapy", #Therapy group
+        !!CStagea == "Insufficient" & !!MStagea == "Insufficient" ~ "NoRules", # Can't figure it out
+        !!IMorNoIMa == "No_IM" & !is.na(!!MStagea) & as.numeric(!!MStagea) < 3 ~ "Rule1", #Short segment No IM
+        !!IMorNoIMa == "IM" & !is.na(!!MStagea) & as.numeric(!!MStagea) < 3 ~ "Rule2", #Short segment IM
+        !is.na(!!MStagea) & as.numeric(!!MStagea) >= 3 ~ "Rule3", #Long segment whatever the path
+        !!IMorNoIMa == "No_IM" & !is.na(!!CStagea) & as.numeric(!!CStagea) < 3 ~ "Rule1", # If M stage missing - Short segment no IM
+        !!IMorNoIMa == "IM" & !is.na(!!CStagea) & as.numeric(!!CStagea) < 3 ~ "Rule2", # If M stage missing - Short segment  IM
+        !is.na(!!CStagea) & as.numeric(!!CStagea) >= 3 ~ "Rule3", # If M stage missing - Long segment
         TRUE ~ "NoRules"
       )
     )
