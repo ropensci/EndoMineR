@@ -43,6 +43,7 @@ if (getRversion() >= "2.15.1") {
 
 Eosinophilics<-function(dataframe,findings,histol,IndicationsFroExamination){
   
+  dataframe<-data.frame(dataframe,stringsAsFactors = F)
   dataframe$Eosinoph<-str_extract_all(dataframe[,histol],"[Ee]osinophil")
   dataframe$EoE_EndoFindings<-str_extract_all(dataframe[,findings],"[Tt]racheal|[Rr]idg|[Ff]urrow|[Nn]arrow|[Pp]ipe|[Pp]laqu|[Ww]hit|[Ss]trict|[Rr]ing|[Ee]xud|edema|[Ss]chat|[Ss]hat|\\b(?=\\w*tz)\\w+\\b|[Cc]andi|[Dd]ebris|[Oo]esophagit")
   dataframe$HPF<-as.numeric(sapply(str_extract_all(dataframe[,histol], "[0-9]+(?=(\\s+[Ii]ntraepithelial)?(\\s+[Ee]osinophils)?\\s+(per|in one|in a|\\/)?.+([Hh][Pp][Ff]|[Hh]igh.+power.+field|[Hh]ighpower\\s+field))"), 
