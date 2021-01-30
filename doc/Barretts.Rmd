@@ -1,0 +1,164 @@
+---
+title: "Barrett's Oesophagus"
+author: "Sebastian Zeki"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  rmarkdown::html_document:
+    theme: lumen
+    toc: true
+    css: style.css
+vignette: >
+  %\VignetteIndexEntry{Barretts}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+
+```{r setup, include=FALSE}
+
+library(knitr)
+library(EndoMineR)
+library(pander)
+library(prettydoc)
+```
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+```
+
+<br>
+
+## **Specific diseases - Barrett's oesophagus**
+
+<br>
+
+One particular disease that lends itself well to analytics, particularly as it is part of a surveillance programme, is the premalignant oesophageal condition Barrett's oesophagus. This is characterised by the growth of cells (called columnar lined epithelium) in the oesophagus. These cells usually occupy the lower part of the oesophagus as a continuous sheet from the top of the stomach to varying lengths up the oesophagus. 
+
+This condition requires endoscopic surveillance and the timing of this depends on the prior endoscopic features (namely the length of the Barretts segment as measured by the Prague score- explained below) and the pathological stage at that endoscopy (which for non-dysplastic samples, since the revised 2013 UK guidelines, means the presence or absence of intestinal metaplasia). This can be seen in the image below (from Fitzgerald RC, et al. Gut 2013;0:1–36. doi:10.1136/gutjnl-2013-305372)
+
+<br>
+
+```{r ,fig.align='center',echo=FALSE,fig.width=18, fig.height=12}
+knitr::include_graphics("img/BarrettsGuide.png")
+```
+
+<br>
+
+## **1. Pre-processing Barrett's samples**
+
+<br>
+
+Such a dataset needs some processing prior to the analysis so for this we can turn to a specific set of function for Barrett's oesophagus itself. 
+
+<br>
+
+### **a) Prague score**
+
+<br>
+
+Firstly we need to extract the length of the Barrett’s segment. This is known as the [Prague score](https://services.nhslothian.scot/endoscopyunit/InformationForClinicalStaff/Documents/PRAGUE%20CRITERIA.pdf) and is made up of the length from the top of the gastric folds (just below the gastro-oesophageal junction) to the top of the circumferential extent of the Barrett's segment (C). In addition the maximal extent is from the top of the gastric folds to the top of the tongues of Barrett's segment (M). This gives an overall score such as C1M2.
+
+<br>
+
+After filtering for endoscopic indication (eg “Surveillance-Barrett’s”- this is stored in the 'Indication' column in our data set) the aim of the following function is to extract a C and M stage (Prague score) for Barrett’s samples. This is done using a regular expression where C and M stages are explicitly mentioned in the free text. Specifically it extracts the Prague score. This is usually mentoned in the 'Findings' column in our dataset but obviously the user can define which column should be searched.
+
+```{r exampleBarretts_PragueScore,echo = TRUE,message=FALSE, warning=FALSE}
+v<-Barretts_PragueScore(Myendo,'Findings','OGDReportWhole')
+```
+
+```{r exampleBarretts_PragueScore2,echo = FALSE,message=FALSE, warning=FALSE}
+panderOptions('table.split.table', Inf)
+pander(v[23:27,(ncol(v)-4):ncol(v)])
+```
+
+### **b) Worst pathological stage**
+
+<br>
+
+We also need to extract the worst pathological stage for a sample, and if non-dysplastic, determine whether the sample has intestinal metaplasia or not. This is done using 'degredation' so that it will look for the worst overall grade in the histology specimen and if not found it will look for the next worst and so on. 
+
+It looks per report not per biopsy (it is more common for histopathology reports to contain the worst overall grade rather than individual biopsy grades).
+
+
+```{r exampleBarretts_PathStage, echo = TRUE,message=FALSE, warning=FALSE}
+#The histology column is the one we are interested in:
+Mypath$b <- Barretts_PathStage(Mypath, "Histology")
+```
+
+```{r exampleBarretts_PathStage2, echo = TRUE,message=FALSE, warning=FALSE,echo=FALSE}
+panderOptions('table.split.table', Inf)
+pander(Mypath[2:3,(ncol(Mypath)-4):ncol(Mypath)])
+```
+
+
+
+### **c)Follow-up groups**
+
+<br>
+
+Having done these pre-processing steps, the follow-up group to which the last endoscopy belongs (rather than the patient as their biopsy results or Barrett's segment length and therefore their follow-up timing, may fluctuate over time) can be determined. 
+
+The follow-up timing, as explained in the the original guideline flowchart above, depends on the length of the Barrett's segment and the presence of intestinal metaplasia (a type of columnar lined epithelium). If abnormal cells (dysplasia) are present the there is a different follow-up regime which we won't concern ourselves with at the moment. 
+
+The timing of follow-up is done with the function **Barretts_FUType.** This relies on the previous functions called **Barretts_PathStage**  and **Barretts_PragueScore** having been run. The Barretts_FUType function will tell you which follow up Rule the patient should be on so that the timing of the next endoscopy can be determined. As these functions usually go together a wrapper function called **BarrettAll** is also provided.
+
+<br>
+
+```{r exampleBarretts_FUType, echo = TRUE,message=FALSE, warning=FALSE}
+#Create the merged dataset
+v<-Endomerge2(Myendo,"Dateofprocedure","HospitalNumber",Mypath,"Dateofprocedure","HospitalNumber")
+#Find the worst pathological grade for that endoscopy
+v$IMorNoIM <- Barretts_PathStage(v, "Histology")
+#Find the Prague score for that endoscopy
+b1<-Barretts_PragueScore(v, "Findings", "OGDReportWhole")
+#Get the follow-up type for that endoscopy
+b1$FU_Type<-Barretts_FUType(b1,"CStage","MStage","IMorNoIM")
+
+```
+
+
+```{r exampleBarretts_FUType2, echo = FALSE,message=FALSE, warning=FALSE,echo=FALSE}
+panderOptions('table.split.table', Inf)
+pander(b1[23:27,(ncol(b1)-4):ncol(b1)])
+```
+
+
+
+
+
+## **2.Quality assessment in Barrett's surveillance**
+
+<br>
+
+Many of the aspects of generic quality monitoring apply to Barrett's as well. For example, you may want to make sure that the endoscopy reports adhere to guidance about what should be in an endoscopy report. This can be assessed using the generic function **ListLookUp**
+
+
+
+
+### **Quality of perfomance of Barrett's surveillance endoscopies as just by tissue sampling**
+
+Some things are specific to Barrett's oesophagus however. One of the essential requirements to demonstrate adequate sampling of Barrett's oesophagus during endoscopy is that the endoscopist should adhere to the 'Seattle protocol' for biopsies which is to take  4 equally spaced biopsies at 2cm intervals in the circumferential part of the oesophagus. Because the macroscopic description of the pathological specimen tells us how many samples are taken overall (and rarely how many at each level but this is usually not the case for a variety of reasons) we can determine the shortfall in the number of biopsies taken, per endoscopist. Again pre-processing the Barrett's samples is pre-requisite. The Number of biopsies and their size should also be extracted using the histopathology functions.
+
+```{r exampleBarrettsQuality_AnalysisBiopsyNumber,echo = FALSE,message=FALSE, warning=FALSE}
+ # The number of average number of biopsies is then calculated and
+ # compared to the average Prague C score so that those who are taking
+ # too few biopsies can be determined
+#Lets just use the Surveillance endoscopies:
+b1<-b1[grepl("[Ss]urv",b1$Indications),]
+b1$NumBx<-HistolNumbOfBx(b1$Macroscopicdescription,'specimen')
+b1$BxSize <- HistolBxSize(b1$Macroscopicdescription)
+b2<-BarrettsBxQual(b1,'Date.x','HospitalNumber',
+                                    'Endoscopist')
+```
+ 
+ 
+```{r exampleBarrettsQuality_AnalysisBiopsyNumbertbl, echo = FALSE,message=FALSE, warning=FALSE,echo=FALSE}
+
+#panderOptions('table.split.table', Inf)
+panderOptions('table.split.table', Inf)
+pander(b2)
+```
+ <br>
+ 
+ This function will again return a dataframe with the number of biopsies taken that is outside of the number that should have been taken for a certain Prague score.

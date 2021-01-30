@@ -13,3 +13,5 @@
 ^EndoMineR/inst/.*
 ^EndoMineR_Shiny/www/.*
 ^EndoMineR_Shiny/www/.*
+^doc$
+^Meta$
