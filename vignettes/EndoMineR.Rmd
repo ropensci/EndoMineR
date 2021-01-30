@@ -56,19 +56,19 @@ If using raw reports, then once you have imported the data into your R environme
 
 Once the data is ready you can use the **textPrep** function. This function is really a wrapper for a number of different functions that work on your data. 
 
-####a. **Dusting the data** 
+#### **i. Dusting the data** 
 Firstly the data is cleaned up so that extra newlines, spaces, unnecessary punctuation etc is dealt with. Although you dont need to know the details of this, if you want to look under the hood you can see that this is part of the **ColumnCleanUp** function.
 
-####b. **Spell checking** 
+#### **ii. Spell checking** 
 The textPrep also implements a spell checker (the **spellCheck** function). This really checks the spelling of gastroenterology terms that are present in the in-built lexicons. So, if for example the report contains the terms 'Radiafrequency ablashion' then this will be corrected using Radiofrequency ablation. This is one function that acts to standardise the text in the report so that downstream analyses can be robust. 
 
-####c. **Negative phrase removal** 
+#### **iii.Negative phrase removal** 
 The text is then passed along to the **NegativeRemove** function. This will remove any phrases that contain negative sentences indicating a non-positive finding. For example it would remove 'There is no evidence of dysplasia here'. This makes text extraction analyses, which often report the detection of a positive finding, much more accurate. If you wish to include negative phrases however, you can. This function is part of the parameters you can switch on and off for the **textPrep** function.
 
-####d. **Term mapping** 
+#### **iv. Term mapping** 
 The next step is to perform term mapping. This means that variations of a term are all mapped to a single common term. For example 'RFA' and 'HALO' may be both mapped to 'Radiofrequency ablation'. This is performed using the using the **DictionaryInPlaceReplace** function. This function looks through all of the lexicons included in this package to perform this. The lexicons are all manually created and consist of key-value pairs which therefore map a key which is the term variant) to a value (which is the standardised term that should be used).
 
-####e. **Segregating the data** 
+#### **Sv. egregating the data** 
   Finally the text is ready to separate into columns. The basic **Extractor** function will take your data with the list of terms you have supplied that act as the column boundaries and separate your data accordingly. It is up to the user to define the list of boundary keywords. This list is made up of the words that will be used to split the document. It is very common for individual departments in both gastroenterology and pathology to use semi-structured reporting so that the same headers are used between patient reports. The Extractor then does the splitting for each pair of words, dumps the text between the delimiter in a new column and names that column with the first keyword in the pair with some cleaning up and then returns the new dataframe.
 
 
