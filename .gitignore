@@ -6,3 +6,5 @@ pkgdown
 _pkgdown.yaml
 *.Rdata
 
+doc
+Meta
