@@ -1,0 +1,247 @@
+---
+title: "Analysis"
+author: "Sebastian Zeki"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  rmarkdown::html_document:
+    theme: lumen
+    toc: true
+    toc_depth: 5
+    css: style.css
+vignette: >
+  %\VignetteIndexEntry{Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(pander)
+library(EndoMineR)
+library(dplyr)
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set( warning=FALSE, message=FALSE)
+```
+
+<br>
+A fundamental design principle of EndoMineR was that it should address the important categories of questions we all have in gastroenterology, and endoscopy in particular. These questions roughly fall into the following: surveillance, quality and also operational questions (eg patient flow through endoscopy).
+
+
+
+##**1. Surveillance functions**
+
+<br>
+Surveillance tracking is difficult because it relies on assessment at several timepoint and then deciding on the next examination based on a ruleset. A basic question is often: 'How good are our surveillance programmes?" which really means "How good are we at making sure patients come back in a timely way for their endoscopy after a polyp removal or for Barrett's surveillance", for example?
+
+<br>
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE}
+knitr::include_graphics("img/EndoMineR_Surveillance.svg")
+```
+
+<br>
+
+Surveillance relates to the timing of a test relative to other tests or all tests done for a patient. To do this, the EndoMineR surveillance functions simply order the endoscopies by patient and date, and extract the date the first test was done, as well as the last test (of the same type) and the difference in timing between each test, always grouped by patient. 
+
+<br>
+As all these functions are simply looking at the date of the test, they can take a raw dataset, as long as a date column is present and use that, rather than have a lot of pre-processing steps. Of course, the pre-processing steps explained in the EndoMineR vignette (mainly using the **textPrep** function) are recommended however as then the user will be able to perform any other additional analyses if needed.
+
+<br>
+The basic surveillance functions are simple but are the most used. **SurveilTimeByRow** will extract the time difference between each individual endoscopy for an individual patient. This is useful to see how adherent the surveillance endoscopy is to guidelines. 
+
+<br>
+
+**SurveilLastTest** simply extracts the last and first test respectively for each patient so you can assess how long the patient has been surveilled for. This is likely to come in useful for future iterations of EndoMineR as patient Theographs are developed (work in progress). 
+
+<br>
+
+```{r exampleSurveillanceTimeByRow, eval = TRUE}
+em1<-SurveilTimeByRow(Myendo,'HospitalNumber','Dateofprocedure')
+```
+
+<br>
+
+```{r exampleSurveillanceTimeByRowtbl, echo = FALSE}
+pander(head(data.frame(em1[2],em1[ncol(em1)]),5))
+
+```
+
+<br>
+
+```{r exampleSurveilLastTest, echo = TRUE}
+em3<-SurveilLastTest(Myendo,'HospitalNumber','Dateofprocedure')
+```
+
+<br>
+
+```{r exampleSurveilLastTesttbl, echo = FALSE}
+pander(head(data.frame(em3[2],em3[5]),5))
+```
+
+<br>
+
+```{r exampleSurveilFirstTest, echo = TRUE}
+em4<-SurveilFirstTest(Myendo,'HospitalNumber','Dateofprocedure')
+```
+
+<br>
+
+```{r exampleSurveilFirstTesttbl, echo = FALSE}
+pander(head(data.frame(em4[2],em4[5]),5))
+```
+
+<br>
+
+Of course we may also want to know how many tests have been done over a time period and this is provided by the function **HowManyTests**
+
+<br>
+
+This function will return the number of tests by day, month and year so they can be easily graphed according to what you want.
+
+<br>
+
+```{r exampleHowManyTests, echo = TRUE}
+how<-HowManyOverTime(Myendo,'Indications','Dateofprocedure','Surv')
+```
+
+<br>
+
+```{r exampleHowManyTeststbl, echo = FALSE}
+pander(head(data.frame(how),5))
+```
+
+
+
+## **2. Assessment of quality functions**
+
+<br>
+
+Quality is measured in a variety of ways. For endoscopy it is measured according to the adherence to a) standards for endoscopic documentation as well as b) detection of certain pathological conditions such as dysplasia (best summarised as lesion recognition)
+
+
+<br>
+
+### **a) Documentation Quality**
+
+<br>
+
+As regards adherence to documentation for example, a generic function is provided that will look up the presence of words presented in a list in a target column. It will then output the proportion of reports that have these words, as well as a barchart to show what proportion of the endoscopies showed these words. The list can be comprised of terms that should be mentioned in a report.
+
+<br>
+
+_Input_
+                      
+```{r exampleListLookup, eval = TRUE,echo=FALSE}
+panderOptions('table.split.table', Inf)
+pander(head(data.frame(Myendo[2:3],Myendo[13])))
+```
+
+<br>
+
+In this example we are looking for the words Barrett's and coeliac as perhaps we have chosen the macroscopic recognition of these features to denote what an endoscopist should always describe in the endoscopy report:
+
+<br>
+
+```{r exampleListLookup2, eval = TRUE}
+library(tm)
+myNotableWords <- c("barrett", "coeliac")
+ListLookup(Myendo,'Findings',myNotableWords)
+```
+
+<br>
+
+```{r exampleListLookup3, echo=FALSE}
+#pander::panderOptions('table.split.table', Inf)
+#pander(head(tt))
+```
+
+<br>
+
+So we can see that the terms are present in the minority of reports across endoscopists, so perhaps we can look into this further..
+
+<br>
+
+### **b) Endoscopic Quality**
+
+#### **Sedation Usage**
+
+<br>
+
+Another measure of quality is the assessment of those factors that are recorded at endoscopy such as degree of sedation used etc. Rather than provide a function for each metric, again a generic function is provided that uses any quantifiable metric and plots it against the endoscopist. This function returns a list with two elements- the plot and the table:
+
+<br>
+
+```{r exampleEndoscChopperMeds,echo=TRUE}
+#We have to attach the output of EndoscMeds to the original dataframe
+MyendoNew<-cbind(EndoscMeds(Myendo$Medications),Myendo)
+#Average Fentanyl use by endoscopist:
+Mytable<-MetricByEndoscopist(MyendoNew,'Endoscopist','Fent')
+```
+
+<br>
+
+```{r exampleEndoscChopperMedstbl,echo=FALSE}
+
+pander(head(data.frame(MyendoNew$Endoscopist,MyendoNew$Fent),10))
+```
+
+<br>
+<br>
+
+
+
+<br>
+
+
+## **4.Patient flow functions**
+
+<br>
+
+### **Sankey plots**
+
+<br>
+
+We often like to get an overview of how patients are flowing through a system overall. This can give a nice visual representation of whether which patients diverge from the normal flow through a system so we can study them further. There are two ways to look at this. Sankey plots give good timepoint by timepoint representation of flow. This really works with more than one type of event at each timepoint. 
+
+<br>
+
+For example, if we have a dataset with events such as 'radiofrequency ablation' and 'endoscopic mucosal resection' or 'nothing' we can use the Sankey plot to determine the order of events over a large patient population. You choose the column in the dataframe that describes the Procedure type ("EMR","RFA","nothing" in this case)
+
+<br>
+
+```{r exampleSurveySankey, eval = FALSE}
+#how<-SurveySankey(Myendo,"ProcedurePerformed")
+```
+
+<br>
+
+
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "100%"}
+knitr::include_graphics("img/EndoMineR_Sankey.svg")
+```
+
+<br>
+
+
+### **Circos plots**
+
+<br>
+
+We may need something even more aggregated. Perhaps we want to see the overall number of patients that go from one event to another regardless of which timepoint it is at. To do this we can use a circos plot, which makes use of the circlize library, as follows:
+
+```{r examplePatientFlow_CircosPlots, eval = FALSE}
+#flow<-PatientFlow_CircosPlots(v,"Date.y","pHospitalNum","ProcedurePerformed")
+```
+
+<br>
+
+
+```{r fig.width=12, fig.height=8,fig.align='center',echo=FALSE,out.width = "60%"}
+knitr::include_graphics("img/EndoMineR_Circos.svg")
+```
+
+<br>

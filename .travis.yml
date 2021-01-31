@@ -5,9 +5,9 @@ warnings_are_errors: false
 sudo: false
 cache: packages
 
-
-r_github_packages:
-  - r-lib/covr
+install:
+  - R -e 'install.packages("devtools")'
+  - R -e 'devtools::install_deps(dep = T)'
   
 after_success:
     - Rscript -e 'covr::codecov()'
