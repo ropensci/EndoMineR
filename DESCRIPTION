@@ -46,6 +46,10 @@ Suggests:
     googleVis,
     reshape2,
     gplots
+Remotes:  
+    r-lib/rlang
+Remotes: 
+    r-lib/covr
 VignetteBuilder: knitr
 URL: https://docs.ropensci.org/EndoMineR, https://github.com/ropensci/EndoMineR
 BugReports: https://github.com/ropensci/EndoMineR/issues
