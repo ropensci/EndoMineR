@@ -45,10 +45,10 @@ Suggests:
     circlize,
     googleVis,
     reshape2,
-    gplots
+    gplots,
+    covr
 Remotes:  
-    r-lib/rlang,
-    r-lib/covr 
+    r-lib/rlang 
 VignetteBuilder: knitr
 URL: https://sebastiz.github.io/EndoMineR/index.html, https://github.com/ropensci/EndoMineR
 BugReports: https://github.com/ropensci/EndoMineR/issues
