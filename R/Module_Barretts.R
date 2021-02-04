@@ -155,7 +155,7 @@ Barretts_PathStage <- function(dataframe, PathColumn) {
     mutate(
       IMorNoIM = case_when(
         grepl("[Ss][Mm]2", !!PathColumna, ignore.case = TRUE) ~ "SM2",
-        grepl("[Ss[Mm]1", !!PathColumna, ignore.case = TRUE) ~ "SM1",
+        grepl("[Ss][Mm]1", !!PathColumna, ignore.case = TRUE) ~ "SM1",
         grepl("[Tt]1b", !!PathColumna, ignore.case = TRUE) ~ "T1b",
         grepl("[Tt]1a|ntramucosal", !!PathColumna, ignore.case = TRUE) ~ "T1a",
         grepl("denocarcino", !!PathColumna, ignore.case = TRUE) ~ "Cancer unstaged",
