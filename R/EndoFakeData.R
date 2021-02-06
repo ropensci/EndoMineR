@@ -69,7 +69,7 @@ Endomerge2 <-
     EndoHistoMerge$DayDiff<-difftime(EndoHistoMerge$Date.x, EndoHistoMerge$Date.y,units="days")
     
     #Then filter by datediff to get the final list including when no biopsies were taken
-    EndoHistoMerge<-EndoHistoMerge%>%filter((DayDiff<7&DayDiff>-1)|is.na(DayDiff))
+    EndoHistoMerge<-EndoHistoMerge%>%filter((DayDiff<14&DayDiff>-14)|is.na(DayDiff))
 
     return(EndoHistoMerge)
   }
