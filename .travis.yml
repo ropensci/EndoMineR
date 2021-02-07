@@ -6,8 +6,7 @@ sudo: false
 cache: packages
 
 install:
-  - R -e 'install.packages("devtools")'
-  - R -e 'devtools::install_deps(dep = T)'
-  
+  - R -e 'install.packages("devtools",dependecies=T)'
+
 after_success:
     - Rscript -e 'covr::codecov()'
