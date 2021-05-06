@@ -209,9 +209,9 @@ HistolNumbOfBx <- function(inputString, regString) {
   inputString <- DictionaryInPlaceReplace(inputString, WordsToNumbers())
   
   #If there is a number before the regstring then gsub with a period (positive lookbehind)
-
-         
-  inputString<-gsub(paste0("(","\\d+ ",regString,")"),"\\.\\1",inputString,perl=T)
+  
+  
+  inputString<-gsub(paste0("(","\\d+\\s*",regString,")"),"\\.\\1",inputString,perl=T)
   mylist <-
     # I need to collapse the unlist
     stringr::str_match_all(
@@ -225,7 +225,7 @@ HistolNumbOfBx <- function(inputString, regString) {
     )
   NumbOfBx <-
     vapply(mylist, function(p)
-      sum(as.numeric(stringr::str_replace_all(p, regString, ""))), numeric(1))
+      sum(as.numeric(stringr::str_replace_all(p, paste0(regString,"|.*\\."), ""))), numeric(1))
   return(NumbOfBx)
 }
 
