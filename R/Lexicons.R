@@ -690,8 +690,8 @@ GISymptomsList <- function() {
 
 WordsToNumbers <- function() {
   NumberConv <- list(
-    "[Oo]ne " = "1",
-    "[Ss]ingle " = "1",
+    "([Oo]ne) |([Ss]ingle) " = "1",
+    #"[Ss]ingle " = "1",
     "[Tt]wo " = "2",
     "[Tt]hree " = "3",
     "[Ff]our " = "4",
