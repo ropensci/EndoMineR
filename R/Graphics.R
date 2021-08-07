@@ -373,7 +373,7 @@ PatientFlow_CircosPlots <-
 #' @param PatientID Column with the patient's unique identifier
 #' @importFrom dplyr group_by filter n
 #' @import ggplot2 
-#' @importFrom ggplus facet_multiple
+#' @importFrom ggforce facet_grid_paginate
 #' @importFrom rlang sym
 #' @keywords Patient flow
 #' @family Patient Flow functions
@@ -408,11 +408,12 @@ f<-ggplot(theframe) +
   geom_point(aes(DateofProcedure,RecodedColumn),shape=11,colour="red",size=1) +
   xlab("Date") + 
   ylab("Histopathological State") +
-  theme(axis.text.x=element_text(angle=-90)) 
-limits=c(-4,4)
+  theme(axis.text.x=element_text(angle=-90))+
+  facet_grid_paginate(PatientID, ncol = 3, nrow = 3, page = 4) 
 
-theframe$HospitalNumber
-t<-facet_multiple(plot = f, facets = PatientID ,ncol = 1, nrow = 5,scales = "free_x")
+return(f)
+
+#t<-facet_multiple(plot = f, facets = PatientID ,ncol = 1, nrow = 5,scales = "free_x")
 
 }
 ##################### Basic Graph #########################
