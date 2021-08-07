@@ -202,7 +202,16 @@ EndoscopyEvent <- function(dataframe, EventColumn1, Procedure, Macroscopic, Hist
 #' @examples
 #' qq <- HistolNumbOfBx(Mypath$Macroscopicdescription, "specimen")
 HistolNumbOfBx <- function(inputString, regString) {
+  
+  #To Do: Need to make sure that if there is a number in front of the reg string then this is preceeded by a full stop
+  #This is so that in cases where you get "d1 x2 and duodenum x2 4 pieces" the 4 pieces is picked up,
+  #at the moment it is giving NA
   inputString <- DictionaryInPlaceReplace(inputString, WordsToNumbers())
+  
+  #If there is a number before the regstring then gsub with a period (positive lookbehind)
+  
+  
+  inputString<-gsub(paste0("(","\\d+\\s*",regString,")"),"\\.\\1",inputString,perl=T)
   mylist <-
     # I need to collapse the unlist
     stringr::str_match_all(
@@ -216,7 +225,7 @@ HistolNumbOfBx <- function(inputString, regString) {
     )
   NumbOfBx <-
     vapply(mylist, function(p)
-      sum(as.numeric(stringr::str_replace_all(p, regString, ""))), numeric(1))
+      sum(as.numeric(stringr::str_replace_all(p, paste0(regString,"|.*\\."), ""))), numeric(1))
   return(NumbOfBx)
 }
 
