@@ -28,8 +28,7 @@ Imports:
         DiagrammeR,
         here,
         pander,
-        Hmisc,
-        ggplus
+        Hmisc
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
