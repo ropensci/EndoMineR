@@ -44,6 +44,7 @@ reference:
       - Extractor
       - DictionaryInPlaceReplace
       - NegativeRemove
+      - NegativeRemoveWrapper
       - spellCheck
       - ColumnCleanUp
       - ListLookup
@@ -112,6 +113,7 @@ reference:
     contents:
       - SurveySankey
       - PatientFlow_CircosPlots
+      - PatientFlowIndividual
   - title: "Data overview:"
     desc: "Basic consort diagrams"
     contents:
@@ -123,6 +125,17 @@ reference:
       - scale_fill_Publication
       - scale_colour_Publication
       - EndoBasicGraph
-
-      
-      
+  - title: internal
+    desc: "undocumented functions"
+    contents:
+      - ColonFinal
+      - EndoMineR
+      - Eosinophilics
+      - IBD_Scores
+      - Myendo
+      - Mypath
+      - PathDataFrameFinal
+      - PathDataFrameFinalColon
+      - TheOGDReportFinal
+      - dev_ExtrapolateOPCS4Prep
+      - vColon
